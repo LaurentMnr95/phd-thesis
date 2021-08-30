@@ -1,0 +1,91 @@
+\section{Related Work}
+\label{sec:background}
+% \paragraph{Notations.} Let $\mathcal{Z}$ be a Polish space, we denote $\mathcal{M}(\mathcal{Z})$ the set of Radon measures. We call $\mathcal{M}_+(\mathcal{Z})$ the sets of positive Radon measures, and  $\mathcal{M}_+^1(\mathcal{Z})$ the set of probability measures. We denote $\mathcal{C}^b(\mathcal{Z})$ the vector space of bounded continuous functions on $\mathcal{Z}$. Let $\mathcal{X}$ and $\mathcal{Y}$ be two Polish spaces.  We denote $\Pi_1:(x,y)\in\mathcal{X}\times\mathcal{Y}\mapsto x$ and $\Pi_2:(x,y)\in\mathcal{X}\times\mathcal{Y}\mapsto y$ respectively the projections on $\mathcal{X}$ and  $\mathcal{Y}$, which are continuous applications. For an application $g$ and a measure $\mu$, we denote $g_\sharp\mu$ the pushforward measure of $\mu$ by $g$.  For  $\mathcal{X}$ and $\mathcal{Y}$ two Polish spaces, we denote $\text{LSC}(\mathcal{X}\times\mathcal{Y})$ the space of lower semi-continuous functions on $\mathcal{X}\times\mathcal{Y}$.
+\paragraph{Optimal Transport.} Optimal transport aims to move a distribution towards another at lowest cost. More formally, if $c$ is a cost function on the ground space $\mathcal{X}\times\mathcal{Y}$, then the relaxed Kantorovich formulation of OT is defined for $\mu$ and $\nu$ two distributions as $$\wass_c(\mu,\nu) := \inf_{\gamma} \int_{\mathcal{X}\times\mathcal{Y}}c(x,y)d\gamma(x,y)$$
+where the infimum is taken over all distributions $\gamma$ with marginals $\mu$ and $\nu$. Kantorovich theorem  states the following strong duality result under mild assumptions~\citep{villani2003topics}
+$$\wass_c(\mu,\nu) = \sup_{f,g} \int_{\mathcal{X}}f(x)d\mu(x) + \int_{\mathcal{Y}}g(y)d\nu(y)$$
+where the supremum is taken over continuous bounded functions satisfying for all $x,y$,  $f(x)+g(y)\leq c(x,y)$.
+% Let $c:\mathcal{X}\times\mathcal{Y}\rightarrow\mathbb{R}_+\cup\{+\infty\}\in\text{LSC}(\mathcal{X}\times\mathcal{Y})$, then the classical primal problem of optimal transport is defined for $\mu\in\mathcal{M}_+^1(\mathcal{X})$ and $\nu \in\mathcal{M}_+^1(\mathcal{Y})$ as
+% \begin{align*}
+%     \wass_c(\mu,\nu) := \inf_{\gamma\in\Gamma_{\mu,\nu}} \int_{\mathcal{X}\times\mathcal{Y}}c(x,y)d\gamma(x,y)
+% \end{align*}
+% where $\Gamma_{\mu,\nu}:=\left\{\gamma\in \mathcal{M}_+^1(\mathcal{X}\times \mathcal{Y})\text{ s.t. } \Pi_{1\sharp}\gamma=\mu \text{ and } \Pi_{2\sharp}\gamma=\nu\right\}$.
+% If $\mathcal{X}$ and $\mathcal{Y}$ are two Polish spaces, and $c:\mathcal{X}\times\mathcal{Y}\rightarrow\mathbb{R}_+\cup\{+\infty\}$ is a lower semi-continuous cost, Kantorovich theorem  states the following strong duality result~\citep{villani2003topics}:
+% \begin{align*}
+%     \wass_c(\mu,\nu) = \sup\limits_{\substack{f\in\mathcal{C}^b(\mathcal{X}),~g\in\mathcal{C}^b(\mathcal{Y})\\ f\oplus g\leq c}} \int_{\mathcal{X}}f(x)d\mu(x) + \int_{\mathcal{Y}}f(y)d\nu(y)
+% \end{align*}
+% However, the problem of choosing the cost or handling multiple costs is a difficult question which, to our knowledge, does not seem to be fully understood.
+The question of considering an optimal transport problem when multiple costs are involved has already been raised in recent works. For instance,~\citep{paty2019subspace} proposed a robust Wasserstein distance where the distributions are projected on a $k$-dimensional subspace that maximizes their transport cost. In that sense, they aim to choose the most expensive cost among Mahalanobis square distances with kernels of rank $k$. In articles~\citep{li2019learning,sun2020learning}, the authors aim to learn a cost given observed matchings by inversing the optimal transport problem~\citep{dupuy2016estimating}. In~\citep{petrovich2020feature} the authors study ``feature-robust'' optimal transport, which can be also seen as a robust cost selection for optimal transport. In articles~\citep{genevay2017learning,scetbon2020linear}, the authors learn an adversarial cost to train a generative adversarial network. Here, we do not aim to consider a worst case scenario among the available costs but rather consider that the costs work together in order to split equitably the transportation problem among them at lowest cost.
+ % Total distance is defined as $\TV(\mu,\nu) =\frac{1}{2} \sup_{A\subset \mathcal{B}}|\mu(A)-\nu(A)|$ for two probability measures $\mu$ and $\nu$ where $\mathcal{B}$ denotes the class of Borel sets.
+% This standard is a particular case of Wasserstein distance for the cost $c(x,y) = \mathbf{1}_{x\neq y}$. In this particular case, the space endowed with cost $c$ is \emph{not} complete hence, the space is not Polish. In terms of convergence, the convergence in $\TV$ is called \textit{strong convergence}, in contrast with \textit{weak convergence}. It has been proved  that  when $\mathcal{X}$ endowed with $d$ is a Polish space and $d$ is bounded, $\wass_{d}$ metrizes weak convergence.\todo{not sure that we need all this discussion about convergence. Do we state results about weak convergence of the problems we define?}
+
+\paragraph{Entropic relaxation of OT.} Computing exactly the optimal transport cost requires solving a linear program with a supercubic complexity $(n^3 \log n)$~\citep{Tarjan1997} that results in an output that is \textit{not} differentiable with respect to the measures' locations or weights~\citep{bertsimas1997introduction}. Moreover, OT suffers from the curse of dimensionality~\citep{dudley1969speed,fournier2015rate} and is therefore likely to be meaningless when used on samples from high-dimensional densities. Following the line of work introduced by~\cite{cuturi2013sinkhorn}, we propose an approximated computation of our problem by regularizing it with an entropic term. Such regularization in OT accelerates the computation, makes the problem differentiable with regards to the distributions~\citep{feydy2018interpolating} and reduces the curse of dimensionality~\citep{genevay2018sample}. Taking the dual of the approximation, we obtain a smooth and convex optimization problem under a simplicial constraint.
+
+\paragraph{Fair Division.} Fair division of goods has a long standing history in economics and computational choice. A classical problem is the fair cake-cutting that consists in splitting the cake between $N$ individuals according to their heterogeneous preferences. The cake $\mathcal{X}$, viewed as a set, is divided in $\mathcal{X}_1,\dots,\mathcal{X}_N$ disjoint sets among the $N$ individuals. The utility for a single individual $i$ for a slice $S$ is denoted $V_i(S)$. It is often assumed that $V_i(\mathcal{X}) = 1$ and that $V_i$ is additive for disjoint sets. There exists many criteria to assess fairness for a partition $\mathcal{X}_1,\dots,\mathcal{X}_N$ such as proportionality ($V_i(\mathcal{X}_i)\geq 1/N$), envy-freeness ($V_i(\mathcal{X}_i)\geq V_i(\mathcal{X}_j)$) or equitability ($V_i(\mathcal{X}_i)= V_j(\mathcal{X}_j)$).
+The cake-cutting problem has applications in many fields such as dividing land estates, advertisement space or broadcast time. An extension of the cake-cutting problem is the cake-cutting with two cakes problem~\citep{cloutier2010two} where two heterogeneous cakes are involved. In this problem, preferences of the agents can be coupled over the two cakes. The slice of one cake that an agent prefers might be influenced by the slice of the other cake that he or she might also obtain. The goal is to find a partition of the cakes that satisfies fairness conditions for the agents sharing the cakes.~\citet{cloutier2010two} studied the envy-freeness partitioning. Both the cake-cutting and the cake-cutting with two cakes problems assume that there is only one indivisible unit of supply per element $x\in\mathcal{X}$ of the cake(s). Therefore sharing the cake(s) consists in obtaining a paritition of the set(s). In this paper, we show that $\MOT$ is a relaxation of the cutting cake and the cake-cutting with two cakes problems, when there is a divisible amount of each element of the cake(s). In that case, cakes are no more sets but distributions that we aim to divide between the agents according to their coupled preferences.
+
+
+% We provide in this paper a proportional and equitable partition of the cutting with two cakes problem.
+
+
+
+% for instance one need to partition food and beverage among two
+% families who have heterogeneous preferences over combinations of food and beverage they wish to consume. 
+
+% Instead of decomposing the cake into disjoint subsets, we suppose food and beverages are probability distributions that we aim to divide, which is a natural extension of the MTRA problem when a certain quantity of each type of goods is available.
+% Since this seminal work, many other algorithms derived from this idea have been proposed using other regularizers~\citep{muzellec2016tsallis,dessein2018regularized}, or using Bregman projection iterations~\citep{benamou2015iterative} for instance. 
+
+
+% Entropic regularized transport has been introduced by~\cite{cuturi2013sinkhorn} to provide an efficient and fast computation of optimal transportation problems by adding an entropic regularization term to the primal problem. For some $\varepsilon>0$: 
+
+% \begin{align*}
+%     \wass^\varepsilon_c(\mu,\nu) := \inf_{\gamma\in\Gamma_{\mu,\nu}} \int_{\mathcal{X}\times\mathcal{Y}}c(x,y)d\gamma(x,y)+\varepsilon \KL(\gamma || \mu\otimes\nu)
+% \end{align*}
+
+% where $\KL$ denotes the standard Kullback-Leibler divergence. The idea behind regularized optimal transport is to make the problem strongly convex and hence apply fast optimization methods such as Sinkhorn's algorithm~\citep{cuturi2013sinkhorn}.  The strong duality can be proved  in the case of a  lower semi-continuous cost $c$:
+% \begin{align*}
+%     \wass^\varepsilon_c(\mu,\nu) = \sup\limits_{\substack{f\in\mathcal{C}^b(\mathcal{X})\\g\in\mathcal{C}^b(\mathcal{Y})}} \int_{\mathcal{X}}fd\mu + \int_{\mathcal{Y}}fd\nu+\varepsilon\left(\int_{\mathcal{X}\times\mathcal{Y}} \exp{\frac{f(x)+g(y)-c(x,y)}{\varepsilon}}d\mu(x)d\nu(y)-1\right)
+% \end{align*}
+
+
+\paragraph{Integral Probability Metrics. }
+In our work, we make links with some integral probability metrics. IPMs are (semi-)metrics on the space of probability measures. For a set of functions $\mathcal{F}$ and two probability distributions $\mu$ and $\nu$, they are defined as $$\textsc{IPM}_\mathcal{F}(\mu,\nu)=\sup_{f\in\mathcal{F}}\int fd\mu-\int fd\nu.$$ For instance, when $\mathcal{F}$ is chosen to be the set of bounded functions with uniform norm less or equal than 1, we recover the Total Variation distance~\citep{steerneman1983total} (TV). They recently regained interest in the Machine Learning community thanks to their application to Generative Adversarial Networks (GANs)~\citep{goodfellow2014generative} where  $\textsc{IPM}$s are natural metrics  for  the discriminator~\citep{dziugaite2015training,arjovsky2017wasserstein,mroueh2017fisher,husain2019primal}. They also helped to build consistent two-sample tests~\citep{gretton2012kernel,scetbon2019comparing}. However when a closed form of the IPM is not available, exact computation of $\textsc{IPM}$s between discrete distributions may not be possible or can be costful. For instance, the Dudley metric can be written as a Linear Program~\citep{sriperumbudur2012empirical} which has at least the same complexity as standard OT. Here, we show that the Dudley metric is in fact a particular case of our problem and obtain a faster approximation thanks to the entropic regularization.
+
+
+
+
+% The are defined with regards to the notion of \emph{weak convergence}, i.e. $\mu_n\rightharpoonup \mu$ \emph{iff} for all $f$ continuous and bounded, $\int fd\mu_n\to \int fd\mu$. Conditions on $\mathcal{F}$ so that $\textsc{IPM}_\mathcal{F}$ metrizes weak convergence have been studied by~\cite{muller1997integral}. 
+
+% \begin{defn}
+% Let $G$ a subset of function from $\mathcal{X}$ to $\mathbb{R}$. We define the integral probability metric (IPM) on $G$, for all probability distributions over $\mathcal{X}$ $\mathbb{P}$, $\mathbb{Q}$:
+% \begin{align*}
+% \text{IPM}_{G}(\mathbb{P},\mathbb{Q}) = \sup_{g \in G} |\mathbb{E}_{\mathbb{P}}(g)-\mathbb{E}_{\mathbb{Q}}(g)|
+% \end{align*}
+% \end{defn}
+
+% Let $\mathcal{X}$ a metrizable space. We denote $\lVert f \rVert_\infty = \sup_{x\in\mathcal{X}} |f(x)|$,  $\Vert g\Vert_{\infty}^{d\Gamma}=\sup \left\{C \text{:\quad}|g(x)|\leq C\text{\quad} \Gamma-\text{a.s}\right\} $ for any probability measure $\Gamma$ and for any metric $d$ on $\mathcal{X}\times \mathcal{X}$, $\Vert f\Vert_{d}:=\sup_{x\neq y}\frac{|f(x)-f(y)|}{d(x,y)}$
+% which may be infinite.
+
+
+
+% \textbf{Examples.} \todo{cite the good references for each of them}
+
+% If we denote $B_H:=\left\{f\text{:\quad} \Vert f\Vert_{H} \leq 1\right\}$ where $H$ represents a reproducing kernel Hilbert space (RKHS) with $k$ as its reproducing kernel,\footnote{A function $k :\mathcal{X} \times \mathcal{X} \rightarrow k(x,y)$ is a reproducing kernel of the Hilbert space $H$ if and only if the following hold: (i) $\forall y\in\mathcal{X}$, $k(\cdot,y)\in H$ and (ii) $\forall y\in\mathcal{X}$, $\forall f\in H$, $\langle f,k(\cdot ,y)\rangle_H = f(y)$. H is called a reproducing kernel Hilbert space.} then $\text{IPM}_{B_H}$ is the \textit{Maximum Mean Discrepancy} (MMD) given as the RKHS distance between the mean embeddings
+% $\text{MMD}(P,Q):= \Vert \mu_P - \mu_Q\Vert_H$ where 
+% \begin{equation*}
+% \mu_P(t):=\int_{\mathbb{R}^d}k(x,t)dP(x) 
+% \end{equation*}
+% If we denote by $T_{k,\Gamma}(B_\infty):=\left\{T_{k,\Gamma}(g)\text{:\quad} \Vert g\Vert_{\infty}^{d\Gamma} \leq 1\right\}$ where $T_{k,\Gamma}$ represents the integral operator associated to a kernel $k$ and a $\Gamma$ a continuous probability measure defined as
+% $$\begin{array}{ccccc}
+% \mathcal{T}_{k} & : &  L_{2}^{d\Gamma}(\mathbb{R}^d) & \to &  L_{2}^{d\Gamma}(\mathbb{R}^d)\\
+%  & & f &\to & \int_{\mathbb{R}^d} k(x,.)f(x)d\Gamma(x)
+% \end{array}$$
+% then $\text{IPM}_{T_{k,\Gamma}(B_\infty)}$ is the $L_1^{d\Gamma}$ distance between the mean embeddings $d_{L^1,\Gamma,}^2(P,Q) = \Vert \mu_P - \mu_Q\Vert_{L_1^{d\Gamma}}$.
+
+
+% If we denote $G_{TV}:=\{f\text{:\quad} \Vert f\Vert_{\infty}\leq 1\}$, we get the \textit{total variation distance}: $TV(P,Q) :=2\sup_{A}|P(A)-Q(A)|$\footnote{Usually $TV$ is defined  as $\sup_{A}|P(A)-Q(A)|$, but for sake of simplicity, we use this definition.}. 
+
+% If $d$ is a metric and $G_d:=\left\{f\text{:\quad} \Vert f\Vert_{d}\leq 1\right\}$, then $\text{IPM}_{G_d}$ is the \textit{Wassertein-1 metric} : $W_d(P,Q) := \inf_\gamma \int_{\mathcal{X}\times\mathcal{X}}d(x,y)d\gamma(x,y)$ where the infimum is taken over all probability distributions on  $\mathcal{X}\times\mathcal{X}$ with marginals $P$ and $Q$. The special case where $d(x,y)=2\times\mathbf{1}_{x\neq y}$ gives the total variation distance.
+
+% If $d$ is a metric and $\mathcal{G}_d:=\left\{f\text{:\quad} \Vert f\Vert_{\infty} + \Vert f\Vert_{d}\leq 1\right\}$ then $\text{IPM}_{\mathcal{G}_d}$ is called the \textit{Dudley Metric} and we denote such metric $\beta_d$. It is also called the Bounded Lipchitz distance.
+ 

@@ -1,0 +1,82 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{booktabs} % for professional tables
+
+
+\usepackage{etoolbox}
+
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}   % compact symbols for 1/2, etc.
+\usepackage[square,sort,comma,numbers]{natbib}
+\usepackage{microtype}      % microtypography
+\usepackage{todonotes}
+\usepackage{microtype,enumitem}
+\usepackage{mathtools} %microtypography
+\usepackage{amsmath}
+\usepackage{bm}
+\usepackage{algorithm2e}
+\usepackage{algorithm}
+\usepackage{amsthm}
+\input{preamble}
+\usepackage{wrapfig, framed, caption}
+\usepackage{multirow}
+
+
+
+
+\title{Equitable and Optimal Transport with Multiple Agents}
+
+
+\author{
+	Meyer Scetbon$^{*1}$\qquad Laurent Meunier$^{*3,4}$ \qquad Jamal Atif$^{3}$ \qquad
+	Marco Cuturi$^{1,2}$\\$^{1}$CREST, ENSAE\\
+	$^{2}$ Google Brain\\
+	$^{3}$LAMSADE, Université Paris-Dauphine\\
+	$^{4}$ Facebook AI Research
+	}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+
+\begin{abstract}
+ % We introduce an extension of the optimal transportation (OT) problem when multiple costs are involved. We consider a linear optimization problem which allows to choose locally among $N\geq 1$ cost functions in order to minimize the cost of transport, while making them contribute equally. When $N=1$, we recover the classical OT problem; for $N=2$ we are able to recover integral probability metrics defined by $\alpha$-Hölder functions, which includes the Dudley metric. We derive the dual formulation of the problem and show that strong duality holds under some mild assumptions. In the discrete case, as with regular OT, the problem can be solved with a linear program. We provide a faster, entropic regularized formulation of that problem. We validate our proposed approximation with experiments on real and synthetic datasets.
+We introduce an extension of the Optimal Transport problem when multiple costs are involved. Considering each cost as an agent, we aim to share equally between agents the work of transporting one distribution to another. To do so, we minimize the transportation cost of the agent who works the most. Another point of view is when the goal is to partition equitably goods between agents according to their heterogeneous preferences. Here we aim to maximize the utility of the least advantaged agent. This is a fair division problem. Like Optimal Transport, the problem can be cast as a linear optimization problem. When there is only one agent, we recover the Optimal Transport problem. When two agents are considered, we are able to recover Integral Probability Metrics defined by $\alpha$-Hölder functions, which include the widely-known Dudley metric. To the best of our knowledge, this is the first time a link is given between the Dudley metric and Optimal Transport. We provide an entropic regularization of that problem which leads to an alternative algorithm faster than the standard linear program. 
+ %We validate our proposed approximation with experiments on real and synthetic datasets.
+\end{abstract}
+
+\input{sections/sec1}
+\input{sections/sec2}
+\input{sections/sec3}
+\input{sections/sec4}
+\input{sections/sec5}
+%\input{sections/sec6}
+%\input{sections/sec7}
+
+\newpage
+\bibliography{biblio}
+\bibliographystyle{plainnat}
+
+
+\clearpage
+\appendix
+
+\input{sections/supp_placeholder}
+
+
+
+
+
+
+\end{document}
