@@ -1,0 +1,30 @@
+\section{Handling wider classes of functions}
+\label{sec:wider}
+The results we proved are valid for functions satisfying Assumption~\ref{ass:principal}. In particular, the functions are supposed to be regular and have a unique optimum point. In this section, we propose to extend our results to wider classes of functions.
+
+\subsection{Invariance by Composition with Non-Decreasing Functions}\label{invar}
+
+{Mathematical results are typically proved under some smoothness assumptions: however, algorithms enjoying some invariance to monotonic transformations of the objective functions do converge on wider spaces of functions as well \cite{monoto}.}
+Since the method is based on comparison between the samples, the rank is invariant when the function $f$ is composed with a strictly increasing function $g$. Let $f$ be a function satisfying Assumption~\ref{ass:principal} and $g$ be a strictly increasing function. Consider $h=g\circ f$. Then $h$ admits a unique minimum $x^\star$ coinciding with the one of $f$. As such, the expectation  $\mathbb{E}_{X_{1},...X_{\lambda}\sim U(B(0,r))}\left[\lVert X_{(\mu)}-x^\star\rVert^2\right]$ satisfies the same rates than Theorem~\ref{thm:principal}.
+% Moreover,  let $(\mu_\lambda)_{\lambda\in\mathbb{N}}$ be a sequence of integers such that $\forall\lambda\geq 2$, $1\leq \mu_\lambda \leq \lambda -1$ and $\mu_\lambda\to\infty$. Then, there exist two constants $C,C'>0$ and $\Tilde{\lambda}\in \mathbb{N}$ such that  for $\lambda\geq\Tilde{\lambda}$, we have the upper bound: 
+% \begin{align*}
+%  \mathbb{E}_{X_{1},...X_{\lambda}\sim U(B(0,r))}\left[\lVert X_{(\mu)}-x^\star\rVert^2\right] \leq C\frac{\mu_\lambda^{\frac{2(\alpha-1)}{d}}}{\lambda^{\frac{2(\alpha-1)}{d}}}+C'\frac{\mu_\lambda^{\frac{2}{d}-1}}{\lambda^{\frac{2}{d}}}\quad.
+% \end{align*}
+This an immediate consequence of Lemma~\ref{lem:sandwich}. In particular, using the square distance criteria, the rate are preserved even for potentially non regular functions. 
+{For example, our theorem can be adapted to convex piecewise-linear functions, compositions of quadratic functions with non-differentiable increasing functions, and many others.}
+Results based on surrogate models  are not applicable here. 
+
+
+\subsection{Beyond Unique Optima: the Convex Hull trick, Revisited}\label{nonqc}
+
+One of the drawbacks of averaging strategies is that they do not work when there are two basins of optima. For instance, if the two best points $x_{(1)}$ and $x_{(2)}$ have objective values close to those of two distinct optima $x^{\star},y^{\star}$ respectively then averaging $x_{(1)}$ and $x_{(2)}$ may result in a point whose objective value is close to neither. However, in the presence of quasi-convexity this can be countered. It thus makes sense to take into account the possible obstructions to the quasi-convexity of the function and try to counter these, while still maintaining the same basic algorithm as in the case of a unique optimum. \cite{ppsnkbest} proposed to take into account contradictions to quasi-convexity by restricting the number $\mu$ of points used in the averaging. Based on their ideas, we propose the following heuristic.
+
+Let us fix the number of initially selected  points equal to $\mu_{\max}$. Let $x_{(1)},\dots,x_{(\mu_{\max})}$ be these points ranked from best to worst. Define $S_i=(x_{(1)},\dots,x_{(i)})$ and $C_i$ the interior of the convex hull of $S_i$. Assume that there is no tie in fitness values, that is no $i\neq j$ such that $f(x_{i})=f(x_{j})$. Given $\mu_{\max}$, choose $\mu$ maximal such that
+\begin{equation}\forall i\leq \mu, x_{(i)} \not \in C_i.\label{oldeq}\end{equation}
+
+One can remark that
+$x_{(\mu)}\in C_\mu\Rightarrow f\mbox{ is not quasi-convex on }C_\mu$. However, this may not detect all cases in which $f$ is not quasi-convex on $C_\mu$. More generally,
+\begin{equation}\exists j > \mu-1,\ x_{(j)}\in C_\mu \Rightarrow f \mbox{ is not quasi-convex on }C_\mu.\label{neweq}\end{equation} 
+If such a $j$ is not $\mu$, Eq. \eqref{oldeq} does not detect the non-quasiconvexity: therefore, \eqref{neweq} detects more non-quasiconvexities than Eq. \eqref{oldeq}.
+
+Therefore we choose $\mu$ maximal such that for all $i<\mu, j>i$, $x_{(j)}\not\in C_i$. This heuristic leads to a choice of average which is "consistent" with the existence of multiple basins.

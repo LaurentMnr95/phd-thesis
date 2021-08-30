@@ -1,0 +1,198 @@
+% !TEX root = main.tex
+
+\vspace{-.1in}
+\section{Offline attacks on a Single Context}\label{sec:attack_one_context}
+Previous sections focused on the man-in-the-middle (MITM) attack either on reward or context.
+{The} MITM attack allows the attacker to arbitrarily change the information observed by the recommender system at each round.
+{This attack may be hardly feasible in practice, since the exchange channels are generally protected by authentication and cryptographic systems.} %This scenario may be not possible in many applications where authentication methods (e.g., cryptographic systems) are used to secure the exchange of messages.
+In this section, we consider the scenario where the attacker has control over a single user $u$.
+As an example, consider the case where the device of the user is infected by a malware (e.g., Trojan horse), giving full control of the system to the malicious agent.
+% \todot{This example is not more related to attacks on the reward? why do we not consider the reward?}
+% \todoe{At first, the attacker was not suppose to be able to control the clicks of the user otherwise it would be easily detectable}
+The attacker can thus modify the context of the specific user (e.g., by altering the cookies) that is perceived by the recommender system. %\footnote{MAYBE THIS INSTEAD OF RED\todot{We believe that changes to the context (\eg cookies) are more subtle and less easily detectable than changes to the reward (\eg signal). Moreover, if the reward is a purchase, this cannot be easily altered by taking control of the user's device.}} 
+We believe that changes to the context (\eg cookies) are more subtle and less easily detectable than changes to the reward (\eg click). Moreover, if the reward is a purchase, it cannot be altered easily by taking control of the user's device.
+% \changebr{\otc{Still, we consider that the attacker cannot modify} the rewards, since it would imply controlling the clicks of the user and \otc{would }be easily detectable.} 
+Clearly, the impact of the attacker on the overall performance of the recommender system depends on the frequency of the specific user, that is out of the attacker's control. It may be thus difficult to obtain guarantees on the cumulative regret of algorithm $\mathfrak{A}$.
+For this reason, we mainly focus on the study of the feasibility of the attack.
+
+The attacker targets a specific user (i.e., the infected user) associated to a context $x^\dagger$.
+Similarly to Sec.~\ref{sec:attack_all_context}, the objective of the attacker is to find the minimal change to the context presented to the recommender system $\mathfrak{A}$ such that $\mathfrak{A}$ {selects an arm in $A^\dagger$}.
+$\mathfrak{A}$ observes a modified context $\wt{x}$ instead of $x^\dagger$. After selecting an arm $a_t$, $\mathfrak{A}$ observes the true noisy reward $r_{t,a_t} = \langle \theta_{a_t}, x^{\dagger}\rangle + \eta^t_{a_t}$.
+We still study a white-box setting: the attacker can access all the \changebr{parameters of} $\mathfrak{A}$.
+
+In this section, we show under which condition it is possible for an attacker to fool both an optimistic and posterior sampling algorithm.
+
+
+
+%% \otc{The two previous sections focused} on attacks where the attacker could modify all rewards or all contexts. However, in a more practical setting, this assumption is a bit strong if, for example, a large number of contexts are available.
+%% %as it assumes that the attacker can modify the reward/context associated with every user.
+%% In this section, we consider a weaker attack where one user is infected by a Trojan, giving the attacker the possibility to modify the context associated with this particular user. That way, the attacker is weaker than what is previously assumed in the literature.
+%% %But also more realistic as modifying the rewards (resp. context) associated with each arm (resp. contexts) means that an attacker can control the information pipeline between all users and a recommender system.
+%%
+%% Because the attacker \otc{now depends} on the visiting times of a specific user, they can not have a long-term impact on \otc{A}lgorithm $\mathfrak{A}$. Now, the attacker targets a specific user $u^\dagger$  (the infected user) associated with a target context $x^{\dagger}$, the goal of the attacker is to modify the context $x^{\dagger}$ presented to a bandit algorithm such that a target arm $a^{\dagger}$ is presented to the user $u^{\dagger}$ as \otc{often} as possible. \otc{While the bandit algorithm observes a modified context}, the expected reward observed by algorithm $\mathfrak{A}$ \otc{is still} $\langle \theta_{a^{\dagger}}, x^{\dagger}\rangle$. Although, we do not enforce any \otc{constraint} on the cumulative cost of an attack, as the attack is localized on the user side. The attacker still aims to have a minimal instantaneous cost for an attack. Furthermore, we study a white-box setting where the attacker has access to all the statistics used by alg. $\mathfrak{A}$.
+%%
+%% %This algorithm is also assumed to be either $\varepsilon$-greedy or \linucb \cite{abbasi2011improved}. We also investigate this type of attack for random exploration based algorithms like \lints \cite{agrawal2013thompson}.
+
+
+\subsection{Optimistic Algorithm: \linucb}
+\label{sec:optimistic_algorithms}
+% The objective of the attacker is to force \linucb to pull arm $a^\dagger$ once presented with context $x^\dagger$.
+% Since \linucb pulls the optimistic arm, this means to find the perturbation to the context $x^\dagger$ that makes $a^\dagger$ the most optimistic arm.
+We consider the \linucb algorithm which chooses the arm to pull by maximizing an upper-confidence bound on the expected reward.
+For each arm $a$ and context $x$, the UCB value is given by $\max_{\theta \in \mathcal{C}_{t,a}}  \langle x, \theta \rangle = \langle x, \hat{\theta}_{a}^t \rangle + \beta_{t,a} \|x \|_{\wt{V}_{t,a}^{-1}}$ (see Sec.~\ref{sec:preliminaries}).
+% At any time $t$, the score of a context-arm pair $(x_t, a)$ is defined as $\phi(x_t, a) = \langle \hat{\theta}_{a}^t, x_t  \rangle + \beta_a(t)\|x_t \|_{\wt{V}_a^{-1}(t)}$ where we leverage the least-squares regression for the estimate of $\hat{\theta}_{a}^t$ (see Sec.~\ref{sec:preliminaries}).
+%
+The objective of the attacker is to force \linucb to pull \changebrtwo{an arm in $A^\dagger$} once presented with context $x^\dagger$.
+This means to find a perturbation of context $x^\dagger$ that makes \changebrtwo{any arm in $A^\dagger$} the most optimistic arm.
+Clearly, we would like to keep the perturbation as small as possible to reduce the cost for the attacker and the probability of being detected. Formally, the attacker needs to solve the following \emph{non-convex} optimization problem:
+\begin{equation}\label{eq:attack_one_user}
+\begin{aligned}
+\min_{y\in \mathbb{R}^{d}} \quad & \|y\|_2 \quad \quad \text{s.t }\quad &  \changelm{\max_{a\notin A^\dagger}}\max_{\theta \in \wt{\mathcal{C}}_{t,a}}  \langle x^\dagger + y, \theta \rangle + \xi \leq \changebrtwo{\max_{a^\dagger \in A^\dagger}} \max_{\theta \in \widetilde{\mathcal{C}}_{t,a^\dagger}}  \langle x^\dagger + y, \theta \rangle \\
+%\min_{y\in \mathbb{R}^{d}} \quad & \|y\|_2 \\
+%        \text{s.t }\quad &  \max_{\theta \in \wt{\mathcal{C}}_{t,a}}  \langle x^\dagger + y, \theta \rangle + \xi \leq \max_{\theta \in \widetilde{\mathcal{C}}_{t,a^\dagger}}  \langle x^\dagger + y, \theta \rangle \\
+\end{aligned}
+\end{equation}
+where $\xi>0$ is a parameter of the attacker and $\wt{\mathcal{C}}_{t,a} := \big\{\theta \mid \|\theta - \hat{\theta}_{a}^t\|_{\wt{V}_{t,a}} \leq \beta_{t,a} \big\}$ is the confidence set constructed by \linucb. We use the notation $\wt{\mathcal{C}}, \widetilde{V}$ to stress the fact that \linucb observes only the modified context.
+%
+% \todot{Fix notation for the estimated parameter, $t$ is missing}
+%At time $t$ when context $x^\dagger$ is presented, the attacker needs to modify it so that $\mathfrak{A}$ decides to pull arm $a^{\dagger}$. The attacker needs to solve the following optimization problem:
+%
+%\begin{equation}\label{eq:attack_one_user}
+%\begin{aligned}
+%\min_{y\in \mathbb{R}^{d}} \quad & ||y|| \\
+% \text{s.t }\quad &  \forall a\neq a^{\dagger}, \phi(x_t, a) + \xi \leq \phi(x_t, a^{\dagger}) \\
+%\end{aligned}
+%\end{equation}
+%
+% \begin{equation}\label{eq:attack_one_user}
+% \begin{aligned}
+% \min_{y\in \mathbb{R}^{d}} \quad & ||y|| \\
+%  \text{s.t }\quad &  \forall a\neq a^{\dagger}, \langle \hat{\theta}_{a}^t - \hat{\theta}_{a^\dagger}^t, x^{\dagger}+y \rangle + \beta_{a}(t)||x^{\dagger}+y||_{\wt{V}_{a}^{-1}(t)} \\
+% 	&+ \xi\leq \beta_{a^{\dagger}}(t)||x^{\dagger}+y||_{\wt{V}_{a^\dagger}^{-1}(t)}
+% \end{aligned}
+% \end{equation}
+%where $\wt{V}_{a}(t)$ the \say{perturbed} design matrix of arm $a$ (\say{perturbed} because of the attacks on the context $x^{\dagger}$), $\beta_{a}(t)$ (as described in App.~\ref{app:algorithms}) are exploration bonus and $\xi > 0$ is a parameter of the attacker.
+% For \linucb, $\beta_{a}(t) = \sqrt{\lambda}S + \sigma\sqrt{d\log\left( (1 + N_{a}(t)L^{2}/\lambda)/\delta\right) } $ and $\beta_{a}(t) = 0$ for $\varepsilon$-greedy with for all arm $a$, $||\theta_{a}||\leq S$, for all (unattacked) context $||x||_{2}\leq L$ and $\lambda>0$ a regularization parameter.
+% Problem \eqref{eq:attack_one_user} is not convex. 
+In contrast to Sec.~\ref{sec:attacks_rewards} \changebr{and}~\ref{sec:attack_all_context}, the attacker may not be able to force the algorithm to pull \changebrtwo{any of the target arms in $A^\dagger$}. In other words, Problem~\ref{eq:attack_one_user} may not be feasible. 
+% Finally, we need to investigate under which condition those two problems are feasible. This is the object of the following theorem.
+However, we are able to characterize the feasibility of~\eqref{eq:attack_one_user}.
+%
+\begin{thm}\label{thm:feasibility_attack_one_user}
+        %For $\xi>0$, 
+        Problem \eqref{eq:attack_one_user} is feasible at time $t$ \emph{iff.} 
+        \begin{equation}\label{eq:feasibilty_condition}
+        \exists \theta \in \changelm{\cup_{a^\dagger\in A^{\dagger}}}\wt{\mathcal{C}}_{t, a^{\dagger}}, ~ \theta\not\in \text{Conv}\Big( \cup_{\changelm{a\notin A^{\dagger}}} \wt{\mathcal{C}}_{t,a}\Big)
+        \end{equation}
+% \begin{align}\label{eq:feasibilty_condition}
+%         \exists \theta \in \wt{\mathcal{C}}_{t, a^{\dagger}}, \qquad \theta\not\in \text{Conv}\left( \bigcup_{a\neq a^{\dagger}} \wt{\mathcal{C}}_{t,a}\right)
+% \end{align}
+%	where for every arm $a$,  $\mathcal{C}_{t,a} := \big\{\theta \mid ||\theta - \hat{\theta}_{a}(t)||_{\wt{V}_{a,t}} \leq \beta_{a}(t) \big\}$, $\wt{V}_{a,t}$ is the design matrix of \linucb at time $t$ and $\hat{\theta}_{a}(t)$ is the least squares estimate for arm $a$ built by \linucb.
+\end{thm}
+
+The condition given by Theorem \ref{thm:feasibility_attack_one_user} says that this attack can be done when there exists a vector $x$ for which \changebrtwo{an arm in $A^{\dagger}$} is assumed to be optimal according to \linucb. The condition mainly stems from the fact that optimizing a linear product on a convex compact set will reach its maximum on the edge of this set. In our case this set is the convex hull of the confidence ellipsoids of \linucb. Although it is possible to use \otc{an} optimization algorithm for this class of non-convex problems\textemdash \eg DC programming~\cite{tuy1995dc}\textemdash they are still slow compared to convex algorithms. Therefore, we present a simple convex relaxation of the previous problem \changebrtwo{for a single target arm $a^\dagger \in A^\dagger$} that still enjoys some empirical performance compared to Problem \eqref{eq:attack_one_user}. \changebrtwo{The final attack can then be computed as the minimum of the attacks obtained for each $a^\dagger \in A^\dagger$.} The relaxed problem is the following \changebrtwo{for each $a^\dagger\in A^\dagger$}:
+\begin{equation}\label{eq:relaxed_attack_one_user}
+\begin{aligned}
+\min_{y\in \mathbb{R}^{d}} \quad & \| y \|_2 \quad \quad \text{s.t }\quad &  \max_{a\neq a^{\dagger}, \changee{a\not\in A^{\dagger}}} \max_{\theta \in \mathcal{C}_{t,a}} \langle x^{\dagger} + y, \theta - \hat{\theta}_{a^{\dagger}}^t \rangle \leq -\xi
+%\min_{y\in \mathbb{R}^{d}} \quad & \| y \|_2 \\
+%	\text{s.t }\quad &  \max_{a\neq a^{\dagger}} \max_{\theta \in \mathcal{C}_{t,a}} \langle x^{\dagger} + y, \theta - \hat{\theta}_{a^{\dagger}}^t \rangle \leq -\xi
+\end{aligned}
+\end{equation}
+Since the RHS of the constraint in Problem \eqref{eq:attack_one_user} can be written as $\max_{\theta\in\mathcal{C}_{t,a^{\dagger}}} \langle \theta, x^{\dagger} + y \rangle$ for any $y$, the relaxation here consists in using $\langle\theta, x^{\dagger}+y\rangle$ as a lower-bound to this maximum for any $\theta\in\mathcal{C}_{t,a^{\dagger}}$. 
+
+% \begin{proof}
+% The proof of Theorem \ref{thm:feasibility_attack_one_user} is decomposed in two parts.
+
+% First, let's assume that Equation \eqref{eq:feasibilty_condition} is satisfied. Then let $\theta \in \mathcal{C}_{t,a^{\dagger}}\setminus \text{Conv}\left( \bigcup_{a\neq a^{\dagger}} \mathcal{C}_{t,a}\right) $, then by the theorem of separation of convex sets applied to $\mathcal{C}_{t,a^{\dagger}}$ and $\{ \theta \}$. There exists a vector $v$ and $c_{1}< c_{2}$ such that for all $y \in \text{Conv}\left( \bigcup_{a\neq a^{\dagger}} \mathcal{C}_{t,a}\right)$:
+% \begin{align*}
+% \left\langle y, v\right\rangle \leq c_{1} < c_{2} \leq \left\langle \theta,v\right\rangle
+% \end{align*}.
+% Hence, for $\xi>0$ we have that for $\wt{v} = \frac{\xi}{c_{2}-c_{1}} v$ that:
+% \begin{align*}
+%     \left\langle y, \wt{v}\right\rangle + \xi \leq \left\langle \theta, \wt{v} \right\rangle
+% \end{align*}
+
+% Now let's assume that an attack is feasible then there exists a vector $y$ such that:
+% \begin{align*}
+%     \max_{\theta\in \mathcal{C}_{t,a^{\dagger}}} \left\langle y, \theta\right\rangle > c_{1} := \max_{a\neq a^{\dagger}} \max_{\theta\in \mathcal{C}_{t,a}} \left\langle y, \theta\right\rangle
+% \end{align*}
+% Let's reason by contradiction and assume that $\mathcal{C}_{t,a^{\dagger}} \subset \text{Conv}\left( \bigcup_{a\neq a^{\dagger}} \mathcal{C}_{t,a}\right)$ and consider $\theta\in \mathcal{C}_{t,a^{\dagger}}$. There exists $n\in\mathbb{N}^{\dagger}$, $\lambda_{1},\cdots, \lambda_{n}\geq 0$ and $\theta_{1}, \cdots, \theta_{n}\in \bigcup_{a\neq a^{\dagger}} \mathcal{C}_{t,a}$ such that $\theta = \sum_{i=1}^{n} \lambda_{i}\theta_{i}$ and $\sum_{i=1}^{n} \lambda_{i} = 1$. Thus
+% \begin{align*}
+%     \left\langle y, \theta\right\rangle = \sum_{i} \lambda_{i} \left\langle y, \theta_{i} \right\rangle \leq c_{1}\sum_{i=1}^{n} \lambda_{i} = c_{1}
+% \end{align*}
+% But because the problem is feasible we have that $c_{1}<  \max_{\theta\in \mathcal{C}_{t,a^{\dagger}}} \left\langle y, \theta\right\rangle$. We have a contradiction.
+% \end{proof}
+% \begin{remark}
+% For \epsgreedy, but with $\mathcal{C}_{t,a} = \{\hat{\theta}_{a}(t)\}$ for all arm $a$.
+% \end{remark}
+For the relaxed Problem \eqref{eq:relaxed_attack_one_user}, the same type of reasoning as for Problem \eqref{eq:attack_one_user} gives that Problem \eqref{eq:relaxed_attack_one_user} is feasible if and only if $     \hat{\theta}_{a^{\dagger}}(t)\not\in \text{Conv}\left( \bigcup_{a\neq a^{\dagger}, \changee{a\not\in A^{\dagger}}} \mathcal{C}_{t,a}\right)$. 
+% \begin{equation*}
+%     \hat{\theta}_{a^{\dagger}}(t)\not\in \text{Conv}\left( \bigcup_{a\neq a^{\dagger}} \mathcal{C}_{t,a}\right)
+% \end{equation*}
+% Proposition \ref{thm:feasibility_attack_one_user} shows that it may not be possible to attack \linucb (or similar algorithms) if the bandit problem exhibit some special structure. For example, if $\theta_{a^{\dagger}} \in \text{Conv}\left( \theta_{a}, a\neq a^{\dagger} \right)$, it is not possible for the attacker to  solve either of problems \ref{eq:relaxed_attack_one_user} and \ref{eq:attack_one_user}.
+
+% \begin{remark}
+% When a set of target arms is available, the feasibility condition is the same except that the attacker cares about the union of the confidence ellipsoids for each arm in the set of target arms.
+% \end{remark}
+
+If Condition \eqref{eq:feasibilty_condition} is not met, \changebrtwo{no arm $a^{\dagger} \in A^\dagger$} can be pulled by \linucb. Indeed, the proof of Theorem \ref{thm:feasibility_attack_one_user} shows that the upper-confidence of \changebrtwo{every arm in $A^{\dagger}$} is always dominated by another arm for any context. In other words, if \changebrtwo{any arm in $A^{\dagger}$} is optimal for some contexts then the condition is satisfied a linear number of times for \linucb (for formal proof of this fact see App.~\ref{app:condition_linear}).
+
+
+ \subsection{Random Exploration Algorithm: \lints}
+
+The previous subsection focused on \linucb, however we can obtain similar guarantees for  algorithms with random exploration such as \lints. In this case, it is not possible to guarantee that a specific arm will be pulled for a given context because of the randomness in the arm selection process. The objective is to guarantee that \changebrtwo{an arm from $A^{\dagger}$} is pulled with probability at least $1-\delta$.
+% \begin{algorithm}[tb]
+%   \caption{Linear Thompson Sampling with Gaussian prior}
+%   \label{alg:linTS}
+% \begin{algorithmic}
+%   \STATE {\bfseries Input:} regularization  $\lambda$, number of arms $K$, number of rounds $T$, variance $\nu$
+%   \STATE Initialize for all arm $a$, $\bar{V}_{a}^{-1}(t) = \lambda I_{d}$ and $\hat{\theta}_{a}(t) = 0$
+%   \FOR{$t=1,..., T$}
+%   \STATE Observe context $x_{t}$
+%   \STATE Draw $\wt{\theta}_{a}\sim\mathcal{N}(\hat{\theta}_{a}(t), \nu^{2}\bar{V}_{a}^{-1}(t))$
+%   \STATE Pull arm $a_{t} = \argmax_{a\in \llbracket 1, K\rrbracket} \left\langle \wt{\theta}_{a}, x_{t}\right\rangle$
+%   \STATE Observe reward $r_{t}$ and update parameters $\hat{\theta}_{a}(t)$ and $\bar{V}_{a}^{-1}(t)$
+%   \ENDFOR
+% \end{algorithmic}
+% \end{algorithm}
+Similarly to the previous subsection, the problem of the attacker can be written as: %$ \min_{\delta\in \mathbb{R}^{d}} \quad & || y ||$
+\begin{equation}\label{eq:TS_attack_one_user}
+\begin{aligned}
+\min_{y\in \mathbb{R}^{d}} \quad & \| y \| \quad \quad \text{s.t }\quad &  \mathbb{P}\left( \exists {a^\dagger\in A^\dagger},~\forall \changebrtwo{a\not\in A^{\dagger},~} \langle x^{\dagger} + y, \wt{\theta}_{a} - \wt{\theta}_{a^{\dagger}} \rangle \leq - \xi\right) \geq 1 - \delta
+%\min_{y\in \mathbb{R}^{d}} \quad & \| y \| \\
+% \text{s.t }\quad &  \mathbb{P}\left( \forall a\neq a^{\dagger}, \langle x^{\dagger} + y, \wt{\theta}_{a} - \wt{\theta}_{a^{\dagger}} \rangle \leq - \xi\right)
+% \geq 1 - \delta
+\end{aligned}
+\end{equation}
+% \changebrtwo{TODO: Not 100\% sure about this equation. Should we write the relaxation to a single arm directly ?}\changelm{I am OK perso} 
+% \changee{Try this instead:
+% \begin{equation}
+% \begin{aligned}
+% \min_{y\in \mathbb{R}^{d}} \quad & \| y \| \quad \quad \text{s.t }\quad &  \max_{a^\dagger\in A^\dagger}\mathbb{P}\left( \forall a\not\in A^{\dagger}, \langle x^{\dagger} + y, \wt{\theta}_{a} - \wt{\theta}_{a^{\dagger}} \rangle \leq - \xi\right) \geq 1 - \delta
+% %\min_{y\in \mathbb{R}^{d}} \quad & \| y \| \\
+% % \text{s.t }\quad &  \mathbb{P}\left( \forall a\neq a^{\dagger}, \langle x^{\dagger} + y, \wt{\theta}_{a} - \wt{\theta}_{a^{\dagger}} \rangle \leq - \xi\right)
+% % \geq 1 - \delta
+% \end{aligned}
+% \end{equation}}
+
+where the $\wt{\theta}_{a}$ for different arms $a$ are independently drawn from a normal distribution with mean $\hat{\theta}_{a}(t)$ and covariance matrix $\upsilon^{2}\bar{V}_{a}^{-1}(t)$ with $\upsilon = \sigma\sqrt{9d\ln(T/\delta)}$. Solving this problem is not easy and in general not possible, \changebrtwo{even for a single arm}. For a given $x$ and arm $a$, the random variable $\langle x, \wt{\theta}_{a}\rangle$ is normally distributed with mean $\mu_{a}(x) := \langle \hat{\theta}_{a}(t), x\rangle$ and variance $\sigma_{a}^{2}(x) := \nu^{2}||x||_{\bar{V}_{a}^{-1}(t)}^{2}$. We can then write $\langle x,\wt{\theta}_{a}\rangle = \mu_{a}(x) + \sigma_{a}(x)Z_{a}$ with $(Z_{a})_{a}\sim\mathcal{N}(0, I_{K})$. For \changelm{the sake of} clarity, we drop the variable $x$ when writing $\mu_{a}(x)$ and $\sigma_{a}(x)$. 
+
+
+Let's imagine (just for this paragraph) that $A^{\dagger} = \{ a^{\dagger}\}$, then the constraint in Problem \eqref{eq:TS_attack_one_user} becomes $\changebrtwo{\left[1-\mathbb{E}_{Z_{a^{\dagger}}}\left( \Pi_{\changebrtwo{a\not\in A^{\dagger}}} \Phi\left( \frac{\sigma_{a^\dagger}Z_{a^{\dagger}}+\mu_{a^\dagger} - \mu_{a}}{\sigma_{a}}\right)\right)\right]\leq\delta}$ \cmmnt{ \todoeout{In fact, we can not wirte this because the events for $a^{\dagger}\in A^{\dagger}$ are not independent}\todol{yes true :/ }
+\begin{align*}
+\mathbb{E}_{Z_{a^{\dagger}}}\left( \Pi_{a\neq a^{\dagger}} \Phi\left( \frac{\sigma_{a^\dagger}Z_{a^{\dagger}}+\mu_{a^\dagger} - \mu_{a}}{\sigma_{a}}\right)\right)
+ \geq 1 - \delta
+\end{align*}}
+ where $\Phi$ is the cumulative distribution function of a normally distributed Gaussian random variable. Unfortunately, computing exactly this expectation is an open problem.%, we thus have to use approximations to derive a sufficient condition for feasibility of the attack for \lints. 
+ 
+In the more general case where $|A^{\dagger}|\geq 1$, rewriting the constraints of Problem~\eqref{eq:TS_attack_one_user} is not possible. Following the idea of \cite{liu2019data}, \changebrtwo{for every single target arm $a^\dagger\in A^\dagger$}, a possible relaxation of the constraint in Problem \eqref{eq:TS_attack_one_user} is, \changee{to ensure that there exists an arm $a^{\dagger}\in A^{\dagger}$ such that} for every arm $a\not\in A^\dagger$,    $ 1 - \Phi\left( (\mu_{a^{\dagger}} - \mu_{a} - \xi)/(\sqrt{\sigma_{a}^{2} + \sigma_{a^{\dagger}}^{2}})\right) \leq \frac{\delta}{\changelm{K-|A^\dagger|}}$, \changelm{where $|A
+^\dagger|$ is the cardinal of  $A^\dagger$}.
+% \begin{equation*}
+%     1 - \Phi\left( \frac{\mu_{a^{\dagger}} - \mu_{a} - \xi}{\sqrt{\sigma_{a}^{2} + \sigma_{a^{\dagger}}^{2}}}\right) \leq \frac{\delta}{K-1}
+% \end{equation*}
+Thus the relaxed version of the attack on \lints \changebrtwo{for a single arm $a^\dagger$} is:
+\begin{align}
+\min_{y\in \mathbb{R}^{d}} \| y \|  
+ \quad \text{s.t.} \quad  \forall \changebrtwo{a\not\in A^{\dagger}},\langle x^{\dagger}+y, \hat{\theta}_{a^{\dagger}} - \hat{\theta}_{a}\rangle - \xi  \geq \nu\Phi^{-1}\left(1 - \tfrac{\delta}{\changelm{K-|A^\dagger|}}\right)\big\| x^{\dagger} + y \big\|_{\bar{V}_{a}^{-1} + \bar{V}_{a^{\dagger}}^{-1}} \label{eq:relaxed_TS_attack_one_user}
+\end{align} 
+Problem \eqref{eq:relaxed_TS_attack_one_user} is similar to Problem \eqref{eq:relaxed_attack_one_user} as the constraint is also a Second Order Cone Program but with different parameters (see App.~\ref{app:one_context_ts_linucb}). \changebrtwo{As in section \ref{sec:optimistic_algorithms}, we compute the final attack as the minimum of the attacks computed for each arm in $A^\dagger$.}

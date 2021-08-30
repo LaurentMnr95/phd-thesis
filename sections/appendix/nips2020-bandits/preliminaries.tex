@@ -1,0 +1,34 @@
+% !TEX root = main.tex
+\section{Preliminaries}\label{sec:preliminaries}
+We consider the standard contextual linear bandit setting with $K\in \mathbb{N}$ arms. At each time $t$, the agent observes a context $x_{t}\in\mathbb{R}^{d}$, selects an action $a_{t}\in \llbracket 1, K\rrbracket$ and observes a reward: $r_{t,a_{t}} = \langle \theta_{a_{t}}, x_{t}\rangle + \eta_{a_{t}}^{t}$ where for each arm $a$, $\theta_{a}\in \mathbb{R}^{d}$ is a feature vector and $\eta_{a_{t}}^{t}$ is a conditionally independent zero-mean, $\sigma^{2}$-subgaussian noise.  \changee{The contexts are assumed to be sampled \textit{stochastically} except in App.~\ref{app:adversarial_rewards}.} \cmmnt{We also make the following assumptions on the contexts and parameter vectors.}
+\begin{assump}\label{assumption1}
+There exist $L>0$ and $\mathcal{D}\subset \mathbb{R}^{d}$, such that for all $t$, $x_{t}\in\mathcal{D}$ and, $\forall x\in\mathcal{D},\forall a\in\llbracket 1, K\rrbracket,~ \|x\|_{2} \leq L \text{ and } \langle \theta_{a}, x\rangle \in (0,1]$. In addition, we assume that there exists $S>0$ such that $\|\theta_{a}\|_{2}\leq S$ for all arms $a$.
+\end{assump}
+The agent minimizes the cumulative regret after $T$ steps $R_{T} = \sum_{t=1}^{T} \langle \theta_{a^{\star}_{t}}, x_{t}\rangle - \langle \theta_{a_{t}}, x_{t}\rangle$,
+where $a_{t}^{\star} := \argmaxB_{a} \langle \theta_{a}, x_{t}\rangle$.
+A bandit learning algorithm $\mathfrak{A}$ is said to be \emph{no-regret} when it satisfies $R_{T} = o(T)$, i.e., the average expected reward received by $\mathfrak{A}$ \changebr{converges} to the optimal one. Classical bandit algorithms (\eg \linucb and \lints) compute an estimate of the unknown parameters $\theta_a$ using past observations. Formally, for each arm $a \in [K]$ we define $S_a^t$ as the set of times up to $t-1$ (included) where the agent played arm $a$. Then, the estimated parameters are obtained through regularized least-squares regression as $\wh{\theta}_a^t = (X_{t,a} X_{t,a}^\top + \lambda I)^{-1} X_{t,a} Y_{t,a}$, where $\lambda > 0$, $X_{t,a} = (x_i)_{i \in S_a^t} \in \mathbb{R}^{d \times |S_a^t|}$ and $Y_{t,a} = (r_{i,a_i})_{i \in S_a^t} \in \mathbb{R}^{|S_a^t|}$.
+Denote by $V_{t,a} = \lambda I + X_{t,a} X_{t,a}^\top$ the design matrix of the regularized least-square problem and by $\|x\|_{V} = \sqrt{x^\top V x}$ the weighted norm \wrt any positive matrix $V \in \mathbb{R}^{d \times d}$.
+We define the confidence set:
+\begin{equation}
+\label{eq:confidence.intervals}
+\mathcal{C}_{t,a} = \Big\{ \theta \in \mathbb{R}^d \,:\, \big\|\theta - \widehat{\theta}_{t,a} \big\|_{V_{t,a}} \leq \beta_{t,a} \Big\}
+\end{equation}
+% \begin{equation}
+%         \label{eq:confidence.intervals}
+%         \mathcal{C}_{t,a} = \left\{ \theta \in \mathbb{R}^d \,:\, \left\|\theta - \widehat{\theta}_{t,a} \right\|_{V_{t,a}} \leq \beta_{t,a} \right\}
+% \end{equation}
+ where 
+%\begin{equation}
+%\label{eq:beta_linucb}
+        $\beta_{t,a} = \sigma\sqrt{d\log\big( (1 + L^2(1+|S_a^t|)/\lambda)/\delta \big)} + S\sqrt{\lambda},$
+%\end{equation}
+which guarantees that $\theta_{a}\in \mathcal{C}_{t,a}$, for all $t>0$, w.p.\ $1-\delta$.
+%
+This uncertainty is used to balance the exploration-exploitation trade-off either through optimism (\eg \linucb) or through randomization (\eg \lints). 
+
+
+
+% \todot{add the confidence set property here}
+% In this paper, we consider the case where a learning algorithm $\mathfrak{A}$ is attacked by an adversary that can modify different quantities in the learning process, like the rewards or the contexts observed by $\mathfrak{A}$. Similarly to \cite{liu2019data,jun2018adversarial} the goal of the attacker being to fool $\mathfrak{A}$ into pulling a target arm $a^{\dagger}$  $(T - o(T))$-times while maintaining the total number of modifications (i.e., cost) to be sub-linear. 
+
+

@@ -1,0 +1,160 @@
+\section{Introduction}
+Finding the minimum of a function from a set of $\lambda$ points $(x_i)_{i\leq \lambda}$ and their images $(f(x_i))_{i\leq \lambda}$ is a standard task used for instance in hyper-parameter tuning \cite{bergstra2012random}, or control problems. While random search estimate of the optimum consists in returning $\arg\min f(x_i)_{i\leq \lambda}$, in this paper we focus on the similar strategy that consists in averaging the $\mu$ best samples, i.e. returning $\frac1\mu\sum_{i=1}^\mu x_{(i)}$ where $f(x_{(1)})\leq\ldots\leq f(x_{(\lambda)})$.
+
+These kinds of strategies are used in many evolutionary algorithms such as CMA-ES. Although experiments show that these methods perform well, it is not still understood why taking the average of best points actually leads to a lower regret. In \cite{ppsnkbest}, it is proved in the case of quadratic functions that the regret is indeed lower for the averaging strategy than for pure random search. In this paper, we extend the result of this paper by proving convergence rates for a wide class of functions including three times continuously differentiable functions with unique optima.
+
+
+\subsection{Related Work}
+
+\subsubsection{Better than picking up the best}
+Given a finite number of samples $\lambda$ equipped with their fitness values, we can simply pick up the best, or average the ``best ones''~\cite{beyerbenefitofsex,ppsnkbest}, or apply a surrogate model~\cite{sm1,sm2,sm3,AST,sm4,bach}. Overall, the best is quite robust, but the surrogate or the averaging usually provides  better convergence rates. Using surrogate modeling is fast when the dimension is moderate and the objective function is smooth (simple regret in $O(\lambda^{-m/d})$ for $\lambda$ points in dimension $d$ with $m$ times differentiability, leading to superlinear rates in evolutionary computation~\cite{AST}). In this paper, we are interested in the rates obtained by averaging the best samples for a wide class of functions. We extend the results of~\cite{ppsnkbest} which only hold for the sphere function.
+
+\subsubsection{Weighted averaging}
+Among the various forms of averaging,
+it has been proposed to take into account the fact that the sampling is not uniform (evolutionary algorithms in continuous domains typically use Gaussian sampling) in \cite{sumo}: we here simplify the analysis by considering a uniform sampling in a ball, though we acknowledge that this introduces the constraint that the optimum is indeed in the ball. \cite{arnoldweights,anneweights} have proposed weights depending on the fitness value, though they acknowledge a moderate impact: we here consider equal weights for the $\mu$ best.
+
+\subsubsection{Choosing the selection rate}
+The choice of the selection rate $\mu/\lambda$ is quite debated in evolutionary computation: one can find $\mu=\lambda/7$ \cite{amorales}, $\mu=\lambda/2$ \cite{cmsa}, $\mu=0.27\lambda$ \cite{escompr}, $\mu=\lambda/4$ \cite{HAN}, $\mu=\min(d,\lambda/4)$ \cite{chooselambda,fournierAlgorithmica} and still others in \cite{beyerbenefitofsex,jeb}. In this paper, we focus on the selection rate when the number of samples $\lambda$ is very large in the case of parallel optimization. In this case, the selection ratio would tend to $0$. We carefully analyze this ratio and derive convergence rates using this selection ratio.
+
+\subsubsection{Taking into account many basins} While averaging the best samples, the non-uniqueness of an optimum might lead to averaging points coming from different basins. Thus we consider at first the case of a unique optimum and hence a unique basin. Then we aim to tackle the case where there are possibly different basins. Island models~\cite{islands} have also been proposed for taking into account different basins. \cite{ppsnkbest} has proposed a tool for adapting $\mu$ depending on the (non) quasi-convexity. In the present work, we extend the methodology proposed in \cite{ppsnkbest}.
+
+\subsection{Outline}
+In the present paper, we first introduce, in Section~\ref{sec:assumptions}, the large class of functions we will study, and study some useful properties of these functions in Section~\ref{sec:teclemmas}. Then, in Section~\ref{sec:randomsearch}, we prove upper and lower convergence rates for random search for these functions. In Section~\ref{sec:mubestrate}, we extend \cite{ppsnkbest} by showing that asymptotically in the number of samples $\lambda$, the handled functions satisfy a better convergence rate than random search. We then extend our results on wider classes of functions in Section~\ref{sec:wider}. Finally we validate experimentally our theoretical findings and compare with other parallel optimization methods.
+
+\section{Beyond quadratic functions}
+\label{sec:assumptions}
+In the present section, we present the assumptions to extend the results from \cite{ppsnkbest} to the non-quadratic case. We will denote $B(0,r)$ the closed ball centered at $0$ of radius $r$ in $\mathbb{R}^d$ endowed with its canonical Euclidean norm denoted by $\lVert\cdot\rVert$. We will also denote by $\overset{\circ}{B}(0,r)$ the corresponding \emph{open} ball. All other balls intervening in what follows will also follow that notation. For any subset $S\subset B(0,r)$, we will denote $U(S)$ the uniform law on $S$. 
+
+Let $f:B(0,r)\to \mathbb{R}$ be a continuous function for which we would like to find an optimum point $x^*$. The existence of such an optimum point is guaranteed by continuity on a compact set.
+%if B(0,r) denotes the open ball, it is not compact. If we want to use compactness, we have to work with \bar{B}(0,r) the closed ball. This also ensures that the sublevel set is closed for the topology of R^{d} (as a subset of the closed ball which is also closed for the topology of the closed ball)
+For the sake of simplicity, we assume that $f(x^{\star}) = 0$. We define the $h$-level sets of $f$ as follows.
+%h-level set or sublevel set of level/height h I prefer.
+\begin{definition}
+Let $f:B(0,r)\to \mathbb{R}$ be a continuous function. The closed sublevel set of $f$ of level $h$ is defined as:
+\begin{align*}
+    S_{h}:=\{x\in B(0,r)\mid f(x)\leq h\}.
+\end{align*}
+\end{definition}
+We now describe the assumptions we will make on the function $f$ that we optimize. 
+\begin{assump}
+\label{ass:principal}
+$f:B(0,r)\to \mathbb{R}$ is a continuous function and admits a unique optimum point $x^\star$ such that $\lVert x^{\star}\rVert<r$. Moreover we assume that $f$ can be written:
+\begin{align*}
+f(x)=\left(x-x^\star\right)^T\mathbf{H}\left(x-x^\star\right)+ \left(\left(x-x^\star\right)^T\mathbf{H}\left(x-x^\star\right)\right)^{\alpha/2} \varepsilon(x-x^\star)
+\end{align*}
+for some bounded function $\varepsilon$ (there exists $M>0$ such that for all $x$, $\lvert \varepsilon(x)\rvert \leq M$), $\mathbf{H}$ a symmetric positive definite matrix and $\alpha>2$ a real number. 
+
+\end{assump}
+Note that $H$ is uniquely defined by the previous relation.
+In the following we will denote by $e_1(\mathbf{H})$ and $e_d(\mathbf{H})$ respectively the smallest and the largest eigenvalue of $\mathbf{H}$. As $\mathbf{H}$ is positive definite, we have $0<e_1(\mathbf{H})\leq e_d(\mathbf{H})$. We will also set $\lVert x\rVert_{\mathbf{H}}=\sqrt{x^T\mathbf{H}x}$, which is a norm (\emph{the $\mathbf{H}$-norm}) on $\mathbb{R}^{d}$ as $\mathbf{H}$ is symmetric positive definite. We then have $f(x)=\lVert x-x^{\star}\rVert_{\mathbf{H}}^2+ \lVert x-x^{\star}\rVert_{\mathbf{H}}^{\alpha} \varepsilon(x-x^\star)$ 
+%here this should be ||x-x^{\star}||_H. Do you want to redefine ||.||_H to change this ?
+\begin{rmq}[Why a unique optimum ?]The uniqueness of the optimum is an hypothesis required to avoid that chosen samples come from two or more wells for $f$. In this case the averaging strategy would lead to a mistaken point because points from the different wells would be averaged. {Nonetheless, multimodal functions can be tackled using our non-quasiconvexity trick (Section \ref{nonqc}).}\end{rmq}
+	\begin{rmq}[Which functions $f$ satisfy Assumption~\ref{ass:principal}?] One may wonder if Assumption~\ref{ass:principal} is restrictive or not. We can remark that three times continuously differentiable functions satisfy the assumption with $\alpha=3$, as long as the {unique} optimum satisfies a strict second order stationary condition. {Also, we will see in Section \ref{invar} that results are immediately valid for strictly increasing transformations of any $f$ for which Assumption~\ref{ass:principal} holds, so that we indirectly include all piecewise linear functions as well as long as they have a unique optimum. } So the class of functions is very large, and in particular allows non symmetric functions to be treated, which might seem counter intuitive at first. 
+\end{rmq}
+
+
+The aim of this paper is to study a parallel optimization problem as follows. We sample $X_{1},\cdots,X_{\lambda}$ from the uniform distribution
+on $B(0,r)$. Let $X_{(1)},\cdots,X_{(\lambda)}$ denote
+the ordered random variables, where the order is given by the objective
+function 
+\[
+f(X_{(1)})\leq\cdots\leq f(X_{(\lambda)}).
+\]
+We then introduce the $\mu$-best average 
+\[
+\overline{X}_{(\mu)}=\frac{1}{\mu}\sum_{i=1}^{\mu}X_{(i)}
+\]
+
+In the following of the paper, we will compare the standard random search algorithm (i.e. $\mu=1$) with the algorithm that consists in returning the average of the $\mu$ best points. To this end, we will study the expected simple regret for functions satisfying the assumption: \[\mathbb{E}\left[f(\overline{X}_{(\mu)})\right]\]
+
+
+\input{sections/appendix/foga2021-kbest/samples/technical_lemmas}
+\input{sections/appendix/foga2021-kbest/samples/random_search_bounds}
+\input{sections/appendix/foga2021-kbest/samples/mu_best_bounds}
+\input{sections/appendix/foga2021-kbest/samples/wider_classes}
+\begin{figure*}[!h]
+    \centering
+    \includegraphics[width=0.3\textwidth]{sections/appendix/foga2021-kbest/plots/sphere_3.pdf}~ \includegraphics[width=0.3\textwidth]{sections/appendix/foga2021-kbest/plots/sphere_6.pdf}~    \includegraphics[width=0.3\textwidth]{sections/appendix/foga2021-kbest/plots/sphere_9.pdf}\\ Sphere function\\
+    \includegraphics[width=0.3\textwidth]{sections/appendix/foga2021-kbest/plots/rastrigin_3.pdf}~ \includegraphics[width=0.3\textwidth]{sections/appendix/foga2021-kbest/plots/rastrigin_6.pdf}~     \includegraphics[width=0.3\textwidth]{sections/appendix/foga2021-kbest/plots/rastrigin_9.pdf}\\ Rastrigin function\\
+    
+        \includegraphics[width=0.3\textwidth]{sections/appendix/foga2021-kbest/plots/perturbed_sphere_3.pdf}~  \includegraphics[width=0.3\textwidth]{sections/appendix/foga2021-kbest/plots/perturbed_sphere_6.pdf}~     \includegraphics[width=0.3\textwidth]{sections/appendix/foga2021-kbest/plots/perturbed_sphere_9.pdf}\\ Perturbed sphere function\\
+    \caption{Average regret $f(\bar{X}_{(\mu)})-f(x^\star)$ in logarithmic scale in function of the selection ratio $\mu /\lambda$ for different values of $\lambda\in\{5000,10000,20000,50000\}$. The experiments are run on Sphere, Rastrigin and Perturbed Sphere function for different dimensions  $d\in \{3,6,9\}$. All results are averaged over $30$ independent runs. We observe, consistently with our theoretical results and intuition, that (i) the optimal $r=\frac{\mu}{\lambda}$ decreases as $d$ increases (ii) we need a smaller $r$ when the function is multimodal (Rastrigin) (iii) we need a smaller $r$ in case of dissymmetry at the optimum (perturbed sphere).}
+    \label{fig:examples}
+\end{figure*}
+\section{Experiments}
+\label{sec:xps}
+We divide the experimental section in two parts. In a first part, we focus on validating theoretical findings, then we compare with existing optimization methods.
+
+\subsection{Validation of Theoretical Findings}
+
+In this section, we will assume that $r=1$ and that the optimum $x^*$ will be sampled uniformly in the ball of radius $0.9$. We compare results on the following functions:
+\begin{enumerate}
+    \item Sphere function: 
+    \begin{align*}
+        f(x)=\sum_{i=1}^d (x_i-x_i^\star)^2
+    \end{align*}
+    \item Rastrigin function: 
+    \begin{align*}
+        f(x)=\sum_{i=1}^d (x_i-x_i^\star)^2 + 1-\cos{\left(2\pi (x_i-x_i^\star) \right)}
+    \end{align*}
+    \item Perturbed sphere function:
+       \begin{align*}
+        f(x)=\sum_{i=1}^d (x_i-x_i^\star)^2 +\left(\sum_{i=1}^d g(x_i-x_i^\star) \right)^3
+    \end{align*}
+    with $g(x) = x$ if $x>0$ and $-2x$ otherwise. This function has highly non symmetric sublevel sets, but still satisfies Assumption~\ref{ass:principal}.
+\end{enumerate}
+
+We plotted in Figure~\ref{fig:examples} the regret $f(\bar{X}_{(\mu)})-f(x^\star)$ as a function of $\mu/\lambda$ for different dimensions $d$ and number of samples $\lambda$. The experiments are averaged over $30$ runs. We remark for instance on the Rastrigin function that for the $\mu$-best averaging approach to be better than random search, we need a very large number of samples as the dimension increases. Overall, these plots validate our theoretical findings that averaging a few best points leads to a better regret than only taking the best one.
+
+
+\subsection{Comparison with Other Methods}
+\begin{figure*}
+    \centering
+    \includegraphics{sections/appendix/foga2021-kbest/samples/fight_all.png}
+    %\includegraphics{samples/xpresults_all.png}
+    \caption{Experimental results: row A and col B presents the frequency (over all 144 test cases) at which A outperforms B in terms of average loss. Then rows are sorted per average winning rate and we keep the 6 best ones. Zero is a naive method just choosing zero: we see that, consistently with \cite{icmldoe}, many methods are worse than that when the dimension is huge compared to the budget.}
+    \label{figxp}
+\end{figure*}
+In this section, we compare averaging strategies with other standard strategies, using the Nevergrad library~\cite{nevergrad}. 
+Figure \ref{figxp} presents experimental results based on Nevergrad. Instead of the uniform sampling used in the theoretical results and the previous experimental validation, we use Gaussian sampling in this set of experiments. Following the notation from \cite{ppsnkbest}, we consider distinct averaging prefixes:
+\begin{itemize}
+    \item \texttt{AvgXX} = method \texttt{XX}, plus averaging of the $\mu=\lambda/(1.1^d)$ best points in dimension $d$.
+    \item \texttt{HAvgXX} = = method  \texttt{XX}, plus averaging of the $\lambda/(1.1^d)$ best points, restricted by {the convex hull trick (Section \ref{nonqc}).}
+\end{itemize}
+{Many other methods are included: we refer to \cite{nevergrad} for more information.}
+Recently, \cite{icmldoe,ppsnrescaling} pointed out that when the optimum is randomly drawn from a standard normal distribution, we should use rescaling methods for focusing closer to the center in high dimensional setting. Several such methods have been proposed:
+\begin{itemize}
+\item \texttt{QOXX} = method \texttt{XX}, plus quasi-opposite sampling \cite{quasiopposite}, i.e. each time we draw $x$ with ${\mathcal{N}}$, we also use $-rx$ where $r$ is uniformly independently drawn in $(0,1)$.
+\item \texttt{XXPlusMiddlePoint} = method \texttt{XX}, except that there is one point forced at the center of the domain. 
+\item \texttt{MetaRecentering} \cite{icmldoe}:  rescaling $\sigma = (1+\log(n))/(4\log(d))$, i.e. we randomly draw with $\sigma \times {\mathcal{N}(0,I_d)}$ instead of ${\mathcal{N}(0,I_d)}$.
+\item \texttt{MetaTuneRecentering} \cite{ppsnrescaling}: rescaling $\sigma = \sqrt{\log(\lambda) / d}$, i.e. we randomly draw with $\sigma \times {\mathcal{N}(0,I_d)}$ instead of ${\mathcal{N}(0,I_d)}$.
+\end{itemize}
+
+\paragraph{Experimental setup.}
+
+We measure the simple regret and compare methods by average frequency of win against other methods. For each test case, we randomly draw the optimum as ${\mathcal {N}(0,I_d)}$ (multivariate standard Gaussian), with
+different budgets $\lambda$ in $\{30, 100, 300,$ $ 1000,3000, 10000, 100000\}$ and
+dimensions $d$ in $\{3,10,30,100,300,$ $1000, 3000\}$. Due to their time of evaluation, we did not run the cases with both $d=3000$ and $\lambda = 100000$. We evaluated on 3 different functions: the sphere function, the Griewank function, and the Highly Multimodal function. Previous results~\cite{bousquet} from the literature have already shown that replacing random sampling by scrambled Hammersley sampling (i.e. modern low discrepancy sequences compatible with high dimension) leads to better results.
+
+
+
+\paragraph{Analysis of results.}
+
+Analyzing the table results from Figure \ref{figxp}, we observe that
+\begin{itemize}
+\item Averaging performs well overall: \texttt{AvgXX} is better than \texttt{XX};
+\item The quasi-convex trick from Section \ref{nonqc} does work: \texttt{HAvgXX} is better than \texttt{AvgXX};
+\item The rescaling strategy from \cite{ppsnrescaling} outperforms the ones in \cite{icmldoe} 
+ (\texttt{MetaTuneRecentering} better than \texttt{MetaRecentering} or than \texttt{PlusMiddlePoint}) which are already better than standard quasi-random sampling. Quasi-Opposite sampling is also competitive.
+ \end{itemize}
+ We also include various methods present in the platform, including those which are based on Cauchy or Hammersley without scrambling (Hammersley in the name without ``Scr'' prefix), or sophisticated uses of convex hulls for estimating the location of the optimum (HCH in the name).
+
+
+\section{Conclusion}
+We proved that averaging $\mu>1$ points rather than picking up the best works even for non quadratic functions, in the sense that the convergence rate is better than the one obtained just by picking up the best point. We also proved faster rates than methods based on meta-models (such as \cite{bach}) unless the objective function is very smooth and low dimensional. {We also show that our results cover a wider family of functions (Section \ref{invar}).}
+{We also propose a rule for choosing $\mu$, depending on $\lambda$ and the dimension. This shows that the optimal $\mu/\lambda$ ratio decreases to $0$ as the dimension goes to infinity, which is confirmed by Fig. \ref{fig:examples}. We also note, by comparing with \cite{ppsnkbest}, that the optimal ratio should be smaller (Fig. \ref{zoli}), which is confirmed by our experiments on the perturbed sphere (Fig. \ref{fig:examples}).
+We also propose a method for adapting this $\mu$, by automatically detecting non-quasi-convexity and reducing it: and prove that it detects more non-quasiconvexities than the method proposed in \cite{ppsnkbest}. Finally, we validate the approach on a reproducible open-sourced platform (Fig. \ref{figxp}).}
+
+\subsection*{Further Work}
+Using density-dependent weights as in \cite{sumo} should allow us to get rid of the constraint $||x^*||<r$ using a Gaussian sampling instead of a uniform sampling. Better rates might be obtained with rank-dependent weights as in \cite{arnoldweights}. We also leave as further work the proof of the optimality of the rate for this strategy. Moreover, we also believe better rates can be obtained for smoother functions, and leave this study for further work.
+{The case of noisy objective functions \cite{arnoldbeyer} is critical. The study is harder, and good evolutionary algorithms use large populations, making the overall algorithm closer to a small number of one-shot optimization algorithms: actually, some fast algorithms use mainly learning \cite{astete,clop,noisymesh}. Population control\cite{beyerhellwignoise} is successful and its last stage looks exactly like a one-shot optimization method.}

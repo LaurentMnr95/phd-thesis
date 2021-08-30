@@ -1,0 +1,178 @@
+\section{Technical lemmas}
+\label{sec:teclemmas}
+In this section, we prove two technical lemmas on $f$ that will be useful to study the convergence of the algorithm. The first one shows that $f$ can be upper bounded and lower bounded by two spherical functions. 
+\begin{lemma}
+\label{lem:sandwich}
+Under Assumption~\ref{ass:principal}, there exist two real numbers $0<l\leq L$, such that, for all $x\in B(0,r)$:
+\begin{align}
+\label{eq:lip-cond}
+   l\lVert x-x^\star\rVert^2 \leq f(x)\leq L\lVert x-x^\star\rVert^2.
+\end{align}
+Moreover such $l$ and $L$ must satisfy  $0< l\leq e_1(\mathbf{H})\leq e_d(\mathbf{H})\leq L$.
+\end{lemma}
+\begin{proof}
+As $\mathbf{H}$ is symmetric positive definite, we have the following
+classical inequality for the $\mathbf{H}$-norm
+\begin{equation}\label{eq:sym-mat-ineq}
+e_{1}(\mathbf{H})\lVert x-x^{\star}\rVert^{2}\le\lVert x-x^{\star}\rVert_{\mathbf{H}}^{2}\le e_{d}(\mathbf{H})\lVert x-x^{\star}\rVert^{2}
+\end{equation}
+Now set for $x\in B(0,r)\setminus\{x^{\star}\}$
+\[
+\phi(x):=\frac{f(x)-f(x^{\star})}{\lVert x-x^{\star}\rVert^{2}}=\frac{\lVert x-x^{\star}\rVert_{\mathbf{H}}^{2}}{\lVert x-x^{\star}\rVert^{2}}(1+\lVert x-x^{\star}\rVert_{\mathbf{H}}^{\alpha-2}\varepsilon(x-x^{\star})).
+\]
+By the above inequalities, we have 
+\[
+e_{1}(\mathbf{H})^{(\alpha-2)/2}\lVert x-x^{\star}\rVert^{\alpha-2}\le\lVert x-x^{\star}\rVert_{\mathbf{H}}^{\alpha-2}\le e_{d}(\mathbf{H})^{(\alpha-2)/2}\lVert x-x^{\star}\rVert^{\alpha-2}.
+\]
+Thus, as $\alpha>2$, we obtain $\lVert x-x^{\star}\rVert_{\mathbf{H}}^{\alpha-2}\rightarrow_{x\rightarrow x^{\star}}0$.
+By assumption, the function $\varepsilon$ is also bounded as $x\rightarrow x^{\star}$.
+\\
+We thus conclude that there exists $\delta>0$ such that, for all
+$x\in\overset{\circ}{B}(x^{\star},\delta)$
+\[
+\frac{1}{2}e_{1}(\mathbf{H})\le\phi(x)\le2e_{d}(\mathbf{H}).
+\]
+Now notice that $B(0,r)\setminus\overset{\circ}{B}(x^{\star},\delta)$
+is a closed subset of the compact set $B(0,r)$ hence it is also compact.
+Moreover, by assumption $f$ is continuous on $B(0,r)$ and $f(x)>0=f(x^{\star})$
+for all $x\neq x^{\star}.$ Hence $\phi$ is continuous and positive
+on this compact set. Thus it attains its minimum and maximum on this
+set and its minimum is positive. In particular, we can write, on this set, for
+some $l_{0},L_{0}>0$
+\[
+l_{0}\le\phi(x)\le L_{0}.
+\]
+We now set $l=\min\{l_{0},\frac{1}{2}e_{1}(\mathbf{H})\}$. Note that
+$l>0$ because $l_{0}>0$ and $e_{1}(\mathbf{H})>0$ (as $\mathbf{H}$
+is positive definite). We also set $L=\max\{L_{0},2e_{1}(\mathbf{H})\}$
+which is also positive. These are global bounds for $\phi$ which gives the first part of the result.\\
+For the second part, let $\mathbf{u}_{1}$ be a normalized eigenvector
+respectively associated to $e_{1}(\mathbf{H})$. Then 
+\begin{align*}
+\frac{f(x^{\star}+\epsilon\mathbf{u}_{1})}{\lVert\epsilon\mathbf{u}_{1}\rVert^{2}}=e_{1}(\mathbf{H})+\epsilon^{\alpha-2}\varepsilon(\epsilon\mathbf{u}_{1})
+\end{align*}
+Taking the limit as $\epsilon\to0$. we get that, if $l$ satisfies~\eqref{eq:lip-cond},
+then $l\leq e_{1}(\mathbf{H})$. Similarly, we can prove that $L\geq e_{d}(\mathbf{H})$.\end{proof}
+Secondly, we frame $S_h$ into two ellipsoids as $h\to 0$. This lemma is a consequence of the assumptions we make on $f$.
+\begin{lemma}
+\label{lemma:sandwich-set}
+Under Assumption~\ref{ass:principal}, there exists $h_0\geq 0$ such that for $h\leq h_0$, we have $A_h\subset S_h\subset B_h$ where:
+\begin{align*}
+A_h:=\{x\mid  \lVert x-x^\star\rVert_{\mathbf{H}}\leq \phi_-(h)\}\\
+B_h:=\{x\mid   \lVert x-x^\star\rVert_{\mathbf{H}}\leq \phi_+(h)\}
+\end{align*}
+with $\phi_-(h)$ and $\phi_+(h)$ two functions satisfying 
+\begin{eqnarray*}\phi_-(h)&=&\sqrt{h}-\frac{M}{2}h^{(\alpha-1)/2}+o(h^{(\alpha-1)/2}) \\
+\mbox{ and } \phi_+(h)&=&\sqrt{h}+\frac{m}{2}h^{(\alpha-1)/2}+o(h^{(\alpha-1)/2})\end{eqnarray*} when $h\to 0$ for some constants $m>0$ and $M>0$ which are respectively a (specific) lower and upper bound for $\varepsilon$.
+\end{lemma}
+\begin{proof}
+By assumption $\lvert\varepsilon\rvert\leq M$, hence we have: 
+\begin{align*}
+\{x\in B(0,r) & \mid\lVert x-x^{\star}\rVert_{\mathbf{H}}^{2}+M\lVert x-x^{\star}\rVert_{\mathbf{H}}^{\alpha}\leq h\}\subset S_{h}
+\end{align*}
+Let $g\colon u\mapsto u^{2}+Mu^{\alpha}$. This is a continuous,
+strictly increasing function on $[0,+\infty)$. By a classical consequence
+of the intermediate value theorem, this implies that $g$ admits a
+continuous, strictly increasing inverse function. Note that $g(0)=0$
+hence $g^{-1}(0)=0$. Thus we can write $\{u\geq 0|u^{2}+Mu^{\alpha}\le h\}=[0,g^{-1}(h)]$.
+We now denote $g^{-1}$ by $\phi_{-}$. As $\phi_{-}$ is non-decreasing,
+we get
+\begin{align*}
+\{x\in B(0,r) & \mid\lVert x-x^{\star}\rVert_{\mathbf{H}}^{2}+M\lVert x-x^{\star}\rVert_{\mathbf{H}}^{\alpha}\leq h\}=A_{h}\cap B(0,r)
+\end{align*}
+Now observe that for $h$ sufficiently small
+\[
+\{x\in B(0,r)\mid\lVert x-x^{\star}\rVert_{\mathbf{H}}^{2}+M\lVert x-x^{\star}\rVert_{\mathbf{H}}^{\alpha}\leq h\}=A_{h}.
+\]
+Indeed, if $x\in A_{h}$, we have by the triangle inequality and~\eqref{eq:sym-mat-ineq}
+\begin{align*}
+\lVert x\rVert & \le\lVert x^{\star}\rVert+\lVert x-x^{\star}\rVert\\
+ & \le\lVert x^{\star}\rVert+e_{1}(\mathbf{H})^{-1/2}\lVert x-x^{\star}\rVert_{\mathbf{H}}\\
+ & \le\lVert x^{\star}\rVert+e_{1}(\mathbf{H})^{-1/2}\phi_{-}(h)
+\end{align*}
+Recall that by assumption $\lVert x^{\star}\rVert<r$ and let $\delta=r-\lVert x^{\star}\rVert$.
+As $\phi_{-}(h)\rightarrow_{h\rightarrow0}0$, for $h$ sufficiently
+small, we have $e_{1}(\mathbf{H})^{-1/2}\phi_{-}(h)\le\delta$ hence
+$\lVert x\rVert\le r$ for $h$ sufficiently small, which gives the inclusion $A_h \subset S_h$.\\
+For the asymptotics of $\phi_{-}$, as we have by definition $\phi_{-}(h)^{2}(1+M\phi_{-}(h)^{\alpha-2})=h$,
+and as $\phi_{-}(h)\rightarrow_{h\rightarrow0}0$ we deduce that $\phi_{-}(h)\sim_{0}\sqrt{h}$.
+Let us define $u(h)=\phi_{-}(h)-\sqrt{h}$. We have $u(h)\in o(\sqrt{h})$.
+We then compute: 
+\begin{align*}
+(\sqrt{h}+u(h))^{2}+M(\sqrt{h}+u(h))^{\alpha}=h
+\end{align*}
+This gives
+\begin{align*}
+u(h)(u(h)+2\sqrt{h}) & =-Mh^{\alpha/2}(1+\frac{u(h)}{\sqrt{h}})^{\alpha}\\
+u(h)(\frac{u(h)}{2\sqrt{h}}+1) & =-\frac{M}{2}h^{(\alpha-1)/2}(1+\frac{u(h)}{\sqrt{h}})^{\alpha}
+\end{align*}
+As $u(h)\in o(\sqrt{h})$ for $h\rightarrow0$, we obtain
+\[
+u(h)\sim-\frac{M}{2}h^{(\alpha-1)/2}.
+\]
+which concludes for $\phi_{-}$.
+
+On the other side, we recall that $f(x)>0$ for all $x\neq x^{\star}$
+as $x^{\star}$ is the unique minimum of $f$ on $B(0,r)$. Write
+\[
+0<\lVert x-x^{\star}\rVert_{\mathbf{H}}^{2}(1+\lVert x-x^{\star}\rVert_{\mathbf{H}}^{\alpha-2}\varepsilon(x-x^{\star})).
+\]
+Now observe that, as $\lVert x^{\star}\rVert<r$, we have for $x\in B(0,r)$,
+by the triangle inequality, $\lVert x-x^{\star}\rVert<2r$. Hence,
+by the classical inequality for the $\mathbf{H}$-norm~\eqref{eq:sym-mat-ineq}, we get
+\begin{align*}
+\varepsilon(x-x^{\star}) & >-\frac{1}{\lVert x-x^{\star}\rVert_{\mathbf{H}}^{\alpha-2}}\geq-\left(\sqrt{e_{d}(\mathbf{H})}2r\right)^{-(\alpha-2)}=:-m
+\end{align*}
+So we have: 
+\begin{align*}
+S_{h}\subset\{x\in B(0,r) & \mid\lVert x-x^{\star}\rVert_{\mathbf{H}}^{2}-m\lVert x-x^{\star}\rVert_{\mathbf{H}}^{\alpha}\leq h\}
+\end{align*}
+The function $g\colon u\mapsto u^{2}-mu^{\alpha}$ is differentiable.
+A study of the derivative shows that $g$ is continuous, strictly
+increasing on $[0,r_{0}]$ and continuous, strictly decreasing on
+$[r_{0},+\infty[$ where $r_{0}=(\frac{2}{\alpha m})^{1/(\alpha-2)}$.
+Hence $g_{|[0,r_{0}]}$ admits a continuous strictly increasing inverse
+$\phi_{+}$ and $g_{|[r_{0},+\infty[}$ a continuous strictly decreasing
+inverse $\Tilde{\phi}$. We thus write 
+\[
+\{u\ge0|u^{2}-mu^{\alpha}\le h\}=[0,\phi_{+}(h)]\cup[\Tilde{\phi}(h),+\infty).
+\]
+Hence 
+\begin{align*}
+ \{x\in B(0,r)\mid&\lVert x-x^{\star}\rVert_{\mathbf{H}}^{2}-m\lVert x-x^{\star}\rVert_{\mathbf{H}}^{\alpha}\leq h\}\\
+&=\big(B_{h}\cap B(0,r)\big)\cup\big(B(0,r)\cap V_{h}\big)
+\end{align*}
+
+with $V_{h}=\{x\in\mathbb{R}^{d}|\ \lVert x-x^{\star}\rVert_{\mathbf{H}}>\tilde{\phi}(h)\}$.
+We now show that for $h$ sufficiently small
+\[
+\{x\in B(0,r)\mid\lVert x-x^{\star}\rVert_{\mathbf{H}}^{2}-m\lVert x-x^{\star}\rVert_{\mathbf{H}}^{\alpha}\leq h\}=B_{h}.
+\]
+Indeed, note first that if $x\in B(0,r)$, we obtain by~\eqref{eq:sym-mat-ineq}
+\[
+\lVert x-x^{\star}\rVert_{\mathbf{H}}^{2}\le e_{d}(\mathbf{H})\lVert x-x^{\star}\rVert^{2}<4e_{d}(\mathbf{H})r^{2}.
+\]
+where we have used that, as $\lVert x\rVert<r$, the triangle inequality
+gives $\lVert x-x^{\star}\rVert<2r$. Hence $B(0,r)\subset\{x\in\mathbb{R}^{d}|\ \lVert x-x^{\star}\rVert_{\mathbf{H}}^{2}<4e_{d}(\mathbf{H})r^{2}\}$.
+We now show that $B(0,r)\subset\{x\in\mathbb{R}^{d}|\ \lVert x-x^{\star}\rVert_{\mathbf{H}}\le\Tilde{\phi}(h)\}$.
+Indeed, at $h=0$, $0=\phi_{+}(0)<\Tilde{\phi}(0)$ are by definition,
+the two roots of 
+\[
+u^{2}-mu^{\alpha}=0.
+\]
+Hence $\Tilde{\phi}(0)=\sqrt{e_{d}(\mathbf{H})2r}$. By continuity
+of $\Tilde{\phi}(h)$ at $h=0$, we obtain that $B(0,r)\subset\{x\in\mathbb{R}^{d}|\ \lVert x-x^{\star}\rVert_{\mathbf{H}}\le\Tilde{\phi}(h)\}$
+for $h$ sufficiently small. As $\phi_{+}(h)\le\Tilde{\phi}(h)$,
+we thus obtain that, for $h$ sufficiently small, $V_{h}\cap B(0,r)=\emptyset$.
+Next, the same line of reasoning as the one for $\phi_{-}$, using
+that $\phi_{+}(h)\rightarrow_{h\rightarrow0}0$ and $\lVert x^{\star}\rVert<r$,
+shows that $B_{h}\cap B(0,r)=B_{h}$ for $h$ sufficiently small.
+\\
+Hence, for $h$ small enough we have
+\[
+\{x\in B(0,r)\mid\lVert x-x^{\star}\rVert_{\mathbf{H}}^{2}-m\lVert x-x^{\star}\rVert_{\mathbf{H}}^{\alpha}\leq h\}=B_{h}.
+\]
+This gives $S_h \subset B_h$.\\
+Finally, similarly to $\phi_{-}$, we can show that $\phi_{+}(h)=\sqrt{h}+\frac{m}{2}h^{(\alpha-1)/2}+o(h^{(\alpha-1)/2})$,
+which concludes the proof of this lemma. 
+\end{proof}

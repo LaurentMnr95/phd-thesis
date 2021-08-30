@@ -1,0 +1,150 @@
+% !TEX root = main.tex
+\section{Online Adversarial Attacks on Rewards}\label{sec:attacks_rewards}
+The ultimate goal of a malicious agent is to force a bandit algorithm to perform a desired behavior. An attacker may simply want to induce the bandit algorithm to perform poorly\textemdash ruining the users' experience\textemdash or to force the algorithm to suggest a specific arm. The latter case is particularly interesting in advertising where a seller may want to increase the exposure of its product at the expense of the competitors. Note that the users' experience is also compromised by the latter attack since \changebr{ the suggestions they will receive will not be} tailored to their needs.
+Similarly to~\cite{liu2019data,jun2018adversarial}, we focus on the latter objective, \ie to fool the bandit algorithm into pulling arms \changelm{ in $A^\dagger$, a set of target arms,} for $T-o(T)$ time steps (\emph{independently of the user}).
+
+A way to obtain this behavior is to dynamically modify the reward in order to make the bandit algorithm believe that $a^\dagger$ is optimal, \changelm{for some $a^\dagger\in A^\dagger$.}
+Clearly, the attacker has to pay a price in order to modify the perceived bandit problem and fool the algorithm.
+If there is no restriction on when and how the attacker can alter the reward, the attacker can easily fool the algorithm.
+However, this setting is not interesting since the attacker may pay a cost higher than the loss suffered by the attacked algorithm. An attack strategy is considered successful when the total cost of the attack is sublinear in $T$.
+%\changebr{If there is no restriction on when and how they can attack, the attacker has complete control on the inputs of the bandit algorithm and can fool it easily. In practice, even though we restrict ourselves to attacking only the rewards or only the contexts,} we consider an attacker to be successful when the total cost of the attack is sublinear in $T$.%\todotout{explain better}
+
+In this section, we show that under Assumption~\ref{assumption1}, there exists an attack algorithm that is successful against any bandit algorithm, stochastic or adverserial.
+
+\textbf{Setting.} 
+We assume that the attacker has the same knowledge as the bandit algorithm $\mathfrak{A}$ about the problem (\ie knows $\sigma$ and $L$). %\todotout{should know $L$ for $\beta$, right?}\todoeout{yes}
+The attacker is assumed to be able to observe the context $x_t$, the arm $a_t$ pulled by $\mathfrak{A}$, and can modify the reward received by $\mathfrak{A}$.
+When the attacker modifies the reward $r_{t, a_{t}}$ into $\wt{r}_{t, a_{t}}$ the \emph{instantaneous cost} of the attack is defined as $c_{t} :=\big| r_{t,a_{t}} - \wt{r}_{t, a_{t}}\big|$. The goal of the attacker is to fool algorithm $\mathfrak{A}$ such that \changelm{the arms in $A^\dagger$ are} pulled $T - o(T)$ times and $\sum_{t=1}^{T}  c_{t} = o(T)$. \changee{We also assume that the action for the arms in the target set is strictly positive for every context $x\in\mathcal{D}$. That is to say that $\Delta := \min_{x\in \mathcal{D}}\left\{ \langle x, \theta_{a_{\star}^{\dagger}(x)}\rangle - \max_{a\in A
+^{\dagger}, a\neq a_{\star}^{\dagger}(x)} \langle x, \theta_{a}\rangle\right\}>0$ where $a_{\star}^{\dagger}(x) = \arg\max_{a\in A^{\dagger}} \langle x, \theta_{a}\rangle$ for every $x\in \mathcal{D}$}.
+
+
+\textbf{Attack idea.} We leverage the idea presented in \cite{liu2019data} and \cite{jun2018adversarial} where the attacker lowers the reward of arms $a\notin A^{\dagger}$ so that algorithm $\mathfrak{A}$ learns that an arm of the target set is optimal for every context.
+Since $\mathfrak{A}$ is assumed to be no-regret, the attacker only needs to modify the rewards $o(T)$ times to achieve this goal.
+%As a consequence, the total cost of attacks is $o(T)$. 
+%
+Lowering the rewards has the effect of shifting
+% Pushing down rewards consists in shifting  
+the vectors $(\theta_{a})_{a\notin A^{\dagger}}$ to new vectors $(\theta'_{a})_{a\notin A^{\dagger}}$ such that for all arms $a\notin A^{\dagger}$ and all contexts $x\in\mathcal{D}$, there exists an arm $a^\dagger\in A^\dagger$  such that $\langle\theta'_{a}, x\rangle \leq \langle \theta_{a^{\dagger}}, x\rangle$. Since rewards are assumed to be bounded (see Asm.~\ref{assumption1}), this objective can be achieved by simply forcing the reward of non-target arms $a\notin A^\dagger$ to the minimum value.
+Contextual ACE (see Fig.~\ref{alg:context_attack_protocol}) implements a soft version of this idea by leveraging the knowledge of the reward distribution.
+At each round $t$, Contextual ACE modifies the reward perceived by $\mathfrak{A}$ as follows:
+\vspace{-0.12cm}
+ \begin{equation}
+         \label{eq:perturbed.reward2}
+ \widetilde{r}^{1}_{t,a_{t}} =\eta_{t}'\mathds{1}_{\{a_{t} \notin A^{\dagger}\}}+r_{t, a_t}\mathds{1}_{\{a_{t} \in A^{\dagger}\}} 
+ \end{equation}
+%  \begin{equation}
+%          \label{eq:perturbed.reward2}
+%  \widetilde{r}^{1}_{t,a_{t}} = \left\{\begin{matrix}
+%  \eta_{t}'  & \text{if } a_{t} \neq a^{\dagger}\\ 
+% 	 r_{t, a^{\dagger}} & \text{otherwise} 
+% \end{matrix}\right.
+%  \end{equation}
+
+where $\eta_{t}'$ is a $\sigma$-subgaussian random variable generated by the attacker independently of all other random variables. Contextual ACE transforms the original problem into a \emph{stationary} bandit problem in which there is a targeted arm that is optimal for all contexts and all non targeted arms have expected reward of $0$. \changee{The following propostion shows that the cumulative cost of the attack is sublinear.}
+%Despite this attack may seem expensive, the following proposition shows that its cumulative cost is sublinear.
+
+% The approach used by the ACE algorithm \cite{liu2019data} effectively does this by constructing confidence intervals around the mean of each arm and feeding perturbed rewards to the bandit learner algorithm. However, the perturbed reward process seen by algorithm $\mathfrak{A}$ is non-stationary and in general there is no guarantee that an algorithm $\mathfrak{A}$ minimizing the regret in a stationary bandit problem keeps the same performance when the bandit problem is not stationary anymore. Nonetheless, transposing the idea of the ACE algorithm to our setting would give an attack of the following form, where at time $t$, Alg. $\mathfrak{A}$ pulls arm $a_{t}$ and receives rewards $\wt{r}^{1}_{t,a_{t}}$: 
+% \begin{align*}
+%         \wt{r}^{1}_{t, a_{t}} = \begin{cases}
+%                 r_{t, a_{t}} + \max(-1, \min(0, C_{t, a_{t}})) & \textit{if } a_t \neq a^\dagger\\
+%                 r_{t, a^{\dagger}} & \textit{otherwise}
+%         \end{cases}
+% \end{align*}
+% with $C_{t,a_{t}} = (1 - \gamma)\min_{\theta \in \mathcal{C}_{t,a^{\dagger}}} \left\langle \theta, x_{t} \right\rangle - \max_{\theta\in\mathcal{C}_{t,a_t}} \left\langle \theta, x_{t}\right\rangle$.
+% Note that $\mathcal{C}_{t,a}$ is defined as in Eq.~\ref{eq:confidence.intervals} using the \emph{non-perturbed} rewards, \ie $Y_{t,a} = (r_{i,a_i})_{i \in S_a^t}$.
+
+
+%with $C_{t,a_{t}} = 0$ if $a_{t} = a^{\dagger}$ and $C_{t,a_{t}} = (1 - \gamma)\min_{\theta \in \mathcal{C}_{t,a^{\dagger}}} \left\langle \theta, x_{t} \right\rangle - \max_{\theta\in\mathcal{C}_{t,a_t}} \left\langle \theta, x_{t}\right\rangle$ where $\mathcal{C}_{t,a} = \big\{ \theta\in \mathbb{R}^{d} \mid ||\theta - \hat{\theta}_{a} ||_{\bar{V}_{a}(t)} \leq \beta_{a}(t)\big\}$ with $\bar{V}_{a,t} = \sum_{l, a_{l} = a} x_{l}x_{l}^{\intercal}$, $\beta_{a}(t)$ a real such that $\mathbb{P}\left( \theta_{a} \in \mathcal{C}_{t,a} \right) \geq 1 - \delta$ and $1 \geq \gamma \geq 0$ an attack parameter. For every time $t$, $\beta_{a}(t) = \sqrt{\lambda}S + \sigma\sqrt{d\log\left( (1 + N_{a}(t)L^{2}/\lambda)/\delta\right) }$ where $\lambda$ is regularization parameter and $N_{a}(t)$ is the number of times arm $a$ has been pulled before time $t$.
+%\todot{Check if this version is reasonable.}
+
+% Even though this approach works well in practice, we have no guarantees that all no-regret algorithms can adapt to a non-stationary bandit problem. This is why we analyze the following attack, defined as follows at time $t$: 
+%  \begin{equation}
+%          \label{eq:perturbed.reward2}
+%  \widetilde{r}^{2}_{t,a_{t}} = \left\{\begin{matrix}
+%  \eta_{t}'  & \text{if } a_{t} \neq a^{\dagger}\\ 
+% 	 r_{t, a^{\dagger}} & \text{otherwise} 
+% \end{matrix}\right.
+%  \end{equation}
+%   where $\eta_{t}'$ is a $\sigma$-subgaussian random variable generated by the attacker independently of all other random variables. With this new attack, Alg. $\mathfrak{A}$ ``sees'' the rewards from a bandit problem with $K$ arms, the optimal one being arm $a^{\dagger}$ with mean $\langle x, \theta_{a^{\dagger}}\rangle$ for all contexts $x$ and all the other arms appearing to have a reward of mean $0$ for all contexts. 
+
+% \begin{algorithm}[t]
+%   \caption{Contextual ACE}
+%   \label{alg:attacker_rewards}
+% \begin{algorithmic}
+%   \FOR{$t=1,...,T$}
+%   \STATE Alg. $\mathfrak{A}$ chooses arm $a_{t}$ based on context $x_{t}$
+%   \STATE Environment generates reward: $r_{t,a_{t}} = \langle \theta_{a_{t}}, x_{t}\rangle + \eta_{t}$ with $\eta^{t}_{a_t}$ conditionally $\sigma^{2}$-subgaussian
+%   \STATE Attacker observes reward $r_{t,a_{t}}$ and feeds the perturbed reward $\wt{r}^{1}_{t,a_{t}}$ (or $\wt{r}^{2}_{t,a_{t}}$) to $\mathfrak{A}$ 
+%   \ENDFOR
+% \end{algorithmic}
+% \end{algorithm}
+
+\begin{prop}\label{prop:reward_attack}
+	For any $\delta\in(0, 1/K]$, when using Contextual ACE algorithm (Fig. ~\ref{alg:attacker_rewards}) with perturbed rewards $\wt{r}^{1}$, with probability at least $1-K\delta$, algorithm $\mathfrak{A}$ pulls \changelm{an arm in $A^{\dagger}$} for $T - o(T)$ time steps and the total cost of attacks is $o(T)$.
+\end{prop}
+The proof of this proposition is provided in App.~\ref{app:proof_prop_rewd_attack}. 
+%It is based, on the fact that the rewards seen by the alg.~$\mathfrak{A}$ is similar to learning in a bandit environment where the arm $a^{\dagger}$ is optimal.
+% \begin{proof}
+% Let's consider the contextual bandit problem, $\mathcal{A}_{1}$ with $K$ arms with contexts $x\in \mathcal{D}$ such that the optimal arm has mean $\langle \theta_{a^{\dagger}}, x\rangle$ and every $K-1$ other arms has mean $0$. Then the regret of algorithm $\mathfrak{A}$ for this bandit problem is upper-bounded with probability at least $1 - \delta$ by a function $f_{\mathfrak{A}}(T)$ such that $f_{\mathfrak{A}}(T) = o(T)$. In addition, the reward process fed to alg. $\mathfrak{A}$ by the attacker is a stationary reward process with $\sigma^{2}$-subgaussian noise. Therefore, the number of times algorithm pulls an arm different from $a^{\dagger}$ is upper-bounded by $f_{\mathfrak{A}}(T)/\min_{x\in \mathcal{D}} \langle x, \theta_{a^{\dagger}}\rangle$. 
+% In addition, the total cost of attack is upper-bounded by $\max_{a\in \llbracket 1, K\rrbracket} \max_{x\in \mathcal{D}} \langle x, \theta_{a}\rangle (T - N_{a^{\dagger}}(T))$ where $N_{a^{\dagger}}(T)$ is the number of times arm $a^{\dagger}$ has been pulled up to time $T$ but because of the previous argument $T - N_{a^{\dagger}}(T) \leq  f_{\mathfrak{A}}(T)/\min_{x\in \mathcal{D}} \langle x, \theta_{a^{\dagger}}\rangle$. 
+% \end{proof}
+While Prop.~\ref{prop:reward_attack} holds for any no-regret algorithm $\mathfrak{A}$, we can provide a more precise bound on the total cost by inspecting the algorithm.
+% Prop.~\ref{prop:reward_attack} is true for every algorithm $\mathfrak{A}$ but the total number of pulls depends on the actual alg.~$\mathfrak{A}$. 
+For example, we can show (see App.~\ref{app:algorithms}), that, with probability at least $1-K\delta$, \changebr{the number of times} \linucb~\cite{abbasi2011improved} pulls arms not in \changelm{$A^\dagger$ is at most $\sum_{j\notin A^{\dagger}} N_{j}(T) \leq  \frac{64K\sigma^{2}\lambda S^{2}}{\Delta^{2}}\Big( d\log\Big(\frac{\lambda + \frac{TL^{2}}{d}}{\delta^{2}}\Big) \Big)^{2}$} . 
+% For example, when $\mathfrak{A}$ is \linucb from \cite{abbasi2011improved} (see also App~\ref{app:algorithms}), we have that with probability at least $1-K\delta$, arm $a^{\dagger}$ is not pulled at most:
+% \begin{align*}
+%     \sum_{j\neq a^{\dagger}} N_{j}(T) \leq  \frac{64K\sigma^{2}\lambda S^{2}}{\min_{x\in D} \langle \theta_{a^{\dagger}}, x\rangle^{2}}\Bigg( d\log\left(\frac{\lambda + \frac{TL^{2}}{d}}{\delta^{2}}\right) \Bigg)^{2}&
+% \end{align*}
+% where $\lambda$ is a regularization parameter. The total cost is bounded by the same upper-bound.
+This directly translates \changebr{into} a bound on the total cost. % of the attacks.
+% with a total cost of at most:
+% \begin{align*}
+% \frac{\min_{x\in D} \left\langle \theta_{a^{\dagger}}, x\right\rangle}{\left(\min_{x\in D} \left\langle \theta_{a^{\dagger}}, x\right\rangle\right)^{2}}64K\sigma^{2}\lambda S^{2}\Bigg( d\log\left(\frac{\lambda + \frac{TL^{2}}{d}}{\delta^{2}}\right)  \Bigg)^{2}&
+% \end{align*}
+
+\textbf{Comparison with ACE \cite{liu2019data}.} In the stochastic setting, the ACE algorithm~\cite{liu2019data} leverages a bound on the expected reward of each arm in order to modify the reward. 
+However, the perturbed reward process seen by algorithm $\mathfrak{A}$ is non-stationary and in general there is no guarantee that an algorithm minimizing the regret in a stationary bandit problem keeps the same performance when the bandit problem is not stationary anymore. Nonetheless, transposing the idea of the ACE algorithm to our setting would give an attack of the following form, where at time $t$, Alg. $\mathfrak{A}$ pulls arm $a_{t}$ and receives rewards \changebr{$\wt{r}^{2}_{t,a_{t}}$}: 
+\vspace{-0.2cm}
+\begin{align*}
+        \wt{r}^{2}_{t, a_{t}} =
+                (r_{t, a_{t}} + \max(-1, \min(0, C_{t, a_{t}}))) \mathds{1}_{\{a_t \notin A^\dagger\}} + 
+                r_{t, a_t} \mathds{1}_{\{a_t \in A^\dagger\}}
+\end{align*}
+with $C_{t,a_{t}} = (1 - \gamma)\min_{a^\dagger\in A^\dagger}\min_{\theta \in \mathcal{C}_{t,a^{\dagger}}} \left\langle \theta, x_{t} \right\rangle - \max_{\theta\in\mathcal{C}_{t,a_t}} \left\langle \theta, x_{t}\right\rangle$.
+Note that $\mathcal{C}_{t,a}$ is defined as in Eq.~\ref{eq:confidence.intervals} using the \emph{non-perturbed} rewards, \ie $Y_{t,a} = (r_{i,a_i})_{i \in S_a^t}$. 
+
+\textbf{Bounded Rewards.}  The bounded reward assumption is necessary in our analysis to prove a formal bound on the total cost of the attacks for \textit{any} no-regret bandit algorithm, otherwise we need more information about the attacked algorithm. In practice, the second attack on the rewards, $\wt{r}^{2}$, can be used in the case of unbounded rewards for any
+algorithms. The difficulty for unbounded reward is that the attacker has to adapt to the environment reward but in order to do so the reward process observed by the bandit algorithm becomes non-stationary under the attack. Thus, there is no guarantee that an algorithm like \linucb will pull a target arm as the proof relies on the environment observed by the bandit algorithm being stationary. %To sum up, it is possible to construct an attack which does not assume bounded rewards but this comes at the price of a formal proof of the total cost for the attacker or knowing the bandit algorithm. 
+We observe empirically that the total cost of attack is sublinear when using $\wt{r}^{2}$.
+% In our setting, we make the assumption that the rewards are positive which is not necessary in the MAB setting of \cite{liu2019data}. This assumption comes from the linear structure of the rewards. Indeed the goal is to lower  rewards for every arm $a\not\in A^{\dagger}$ and every context $x\in\mathcal{D}$. But for a given vector $\theta$ and context $x\in\mathbb{R}^{d}$ \cmmnt{such that there exists a context $x\in \mathbb{R}^{d}$} such that, $\langle \theta_{a^{\dagger}} - \theta, x\rangle \geq 0$ for some $a^{\dagger} \in A^{\dagger}$, if $-x$ can be presented to the learning $\mathfrak{A}$ then it would learn not to pull $a^{\dagger}$ when presented with context $-x$. Hence it is not possible to find a parameter $\theta\neq 0$ dominated over the all space by some $\theta_{a^{\dagger}}$. Although for positive rewards, $\mathbf{0}^{d}$ is dominated by all parameters $(\theta_{a})_{a\in A^{\dagger}}$ under Assumption~\ref{assumption1}.
+% To attack rewards between $[r_{\min}, r_{\max}]$, the attacker could use attacks similar to $\wt{r}_{t,a_{t}}^{2}$ (with $\gamma=0$ and small negative bias for arms not in $A^{\dagger}$), although there is no regret guarantee on the performance of this attack as the reward stream is non-stationary. Hence, the learning algorithm is not guaranteed to converge toward an environment where $A^{\dagger}$ contains an optimal arm for every context. In Sec.~\ref{sec:experiments}, we show that in practice this is not an issue as the attacker exhibits a logarithmic cumulative cost.
+
+\cite{jun2018adversarial} does not assume that rewards are bounded but focus on attacking algorithms in the stochastic multi-armed setting. That is to say they study attacks only designed for $\varepsilon$-greedy and \ucb while we provide an efficient attack for any algorithms in the linear contextual case. We can extend their work, and thus remove the bounded reward assumption, in the linear contextual case by using the following attack, designed only for \linucb:
+%If the bandit algorithm is \linucb then using the following attack:
+\begin{align}
+    \wt{r}^{3}_{t, a_{t}} = \left(r_{t, a_{t}} + \min_{a^\dagger\in A^\dagger}\min_{\theta \in \mathcal{C}_{t,a^{\dagger}}} \left\langle \theta, x_{t} \right\rangle - \max_{\theta\in\mathcal{C}_{t,a_t}} \left\langle \theta, x_{t}\right\rangle\right) \mathds{1}_{\{a_t \notin A^\dagger\}} + r_{t, a_t} \mathds{1}_{\{a_t \in A^\dagger\}}
+\end{align}
+with $C_{t,a}$ defined as in Eq.~\eqref{eq:confidence.intervals}. Although, the attack $\wt{r}^{3}$ is not stationary, it is possible to prove that the total cost of attack is $\mathcal{O}(\log(T))$ because we know that the attacked bandit algorithm is \linucb. 
+% The attacker can fool \linucb algorithm into pulling arms $A^{\dagger}$ $o(T)$ times while keeping the total cost logarithmic in $T$.
+
+\textbf{Constrained Attack.}
+When the attacker has a constraint on the instantaneous cost of \changebr{the} attack, using the perturbed reward $\widetilde{r}^{1}$ may not be possible as the cost of the attack at time $t$ is not decreasing over time. Using the perturbed reward $\widetilde{r}^{2}$ offers a more flexible type of attack with more control on the instantaneous cost thanks to the parameter $\gamma$. \changede{But it still suffers from a minimal cost of attack from lowering rewards of arms not in $A^{\dagger}$.}%there is still a minimum of perturbations to apply. % I think the previous version of this sentence sounded bad. I'm not sure we even need this sentence so feel free to comment.
+
+\textbf{Defense mechanism.}
+The attack based on reward $\wt{r}_1$ is hardly detectable without prior knownledge about the problem.
+In fact, the reward process associated to $\wt{r}_1$ is stationary and compatible with the assumption about the true reward (\eg subgaussian). While having very low rewards is reasonable in advertising, it can make the attack easily detectable in some other problems.
+On the other hand, the fact that $\wt{r}_2$ is a non-stationary process makes this attack easier to detect.
+%The learner cannot detect the attack solely based on the observed rewards and contexts. \changede{Although, because the perturbed reward process $\wt{r}^{1}$ is non-stationary, the attack could be easier to detect \changebr{by} monitoring the distribution of rewards.} However, 
+When some data are already available on \changebr{each arm}, the learner can monitor the difference between the average reward\changebr{s} per action \changebr{computed on new and old data.}%based on previously collected data and the one from the online rewards. 
+%\todobr{I'm not that happy about my new sentence here but I think the previous one was really unclear (it can still be seen in comments)}
+%\todot{Maybe stress that $r^2$ is non-stationary while $r^1$ is stationary and compatible with the assumption about the true reward (subgaussian). Is it correct to say that $r^1$ is simpler to detect?}
+% In a cold start problem, the learner will not be aware of the bias induced by the attacks.  Since this perturbation is ``small", it would be difficult for the learner to detect the attack. One possible way to detect tampering is for the learner to observe its average reward decrease over time. But in the case of a warm start, the learner has a prior estimation of the reward distribution for each arm given an input context. Hence, a bias on the real reward may be detected, i.e. the learner observes an ``extreme" reward  w.r.t. the one he expected. 
+
+% \begin{remark}
+%         It is possible to extend this attack to multiple target arms $a^\dagger \in A^\dagger$.
+%         % This attack can be extended to the case of multiple targets arms. Let $A^\dagger$ be the set of target arms.
+%         Similarly to~\eqref{eq:perturbed.reward2}, we can set $\widetilde{r}^1_{t,a_t} = \eta'_t\,$ when $a_t \notin A^\dagger$.
+	%When there are several target arms, we can still apply the same type of attacks. One only needs to replace the reward $r_{t,a_t}$ if $a_t$ is not in the set of target arms.% Otherwise we pick a random arm inside this target set, instead of $a^{\dagger}$, in the attack.}
+% \end{remark}
+
+

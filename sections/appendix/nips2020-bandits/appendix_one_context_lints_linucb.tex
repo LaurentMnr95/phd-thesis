@@ -1,0 +1,20 @@
+% !TEX root = main.tex
+\section{Problem \eqref{eq:relaxed_TS_attack_one_user} as a Second Order Cone (SOC) Program}\label{app:one_context_ts_linucb}
+Problem \eqref{eq:relaxed_attack_one_user} and Problem \eqref{eq:relaxed_TS_attack_one_user} are both SOC programs. We can see the similarities between both problems as follows. Let us define for every arm \changee{$a\not\in A^{\dagger}$}, the ellipsoid:
+
+$$\mathcal{C}_{t,a}^{'} := \Big\{ y \in \mathbb{R}^{d} \mid || y - \hat{\theta}_{a}(t)||_{A_{a}^{-1}(t)} \leq \upsilon\Phi^{-1}\left( 1 - \frac{\delta}{K-|A^{\dagger}|}\right)\Big\}$$
+
+with $A_{a}(t) = \tilde{V}_{a}^{-1}(t) + \tilde{V}_{a^{\dagger}}^{-1}(t)$ with $\tilde{V}_{a}(t)$ and $\tilde{V}_{a^{\dagger}}(t)$ the design matrix built by \lints and $\hat{\theta}_{a}(t)$ the least squares estimate of $\theta_a$ at time $t$. Therefore for an arm $a$, the constraint in Problem \eqref{eq:relaxed_TS_attack_one_user} can be written for any $y\in\mathbb{R}^{d}$ and some arm $a^{\dagger}\in A^{\dagger}$ as:
+\begin{align*}
+    \left\langle x^{\star}+y, \hat{\theta}_{a^{\dagger}}(t)\right\rangle - \xi \geq \max_{z\in \mathcal{C}_{t,a}^{'}} \left\langle z, x^{\star} + y\right\rangle
+\end{align*}
+Indeed for any $x\in \mathbb{R}^{d}$,
+\begin{align*}
+    \max_{y\in \mathcal{C}_{t,a}^{'}} \left\langle y,x\right\rangle &= \left\langle x, \hat{\theta}_{a}(t)\right\rangle + \upsilon\Phi^{-1}\left( 1 - \frac{\delta}{K-|A^{\dagger}|}\right)\times\max_{ ||A_{a}^{-1/2}(t)u||_{2}\leq 1} \left\langle u, x\right\rangle\\
+    &= \left\langle x, \hat{\theta}_{a}(t)\right\rangle + \upsilon\Phi^{-1}\left( 1 - \frac{\delta}{K-|A^{\dagger}|}\right)\max_{ ||z||_{2}\leq 1} \left\langle z, A_{a}^{1/2}(t)x\right\rangle \\
+    &= \left\langle x, \hat{\theta}_{a}(t)\right\rangle + \upsilon\Phi^{-1}\left( 1 - \frac{\delta}{K-|A^{\dagger}|}\right)\lVert A_{a}^{1/2}(t)x\rVert_{2}
+\end{align*}
+Thus, the constraint is feasible if and only if:
+\begin{align*}
+    \hat{\theta}_{a^{\dagger}}(t) \not\in \text{Conv}\left( \bigcup_{a\not\in A^{\dagger}}  \mathcal{C}_{t,a}^{'}\right)
+\end{align*}

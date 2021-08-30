@@ -1,0 +1,74 @@
+% !TEX root = main.tex
+\section{Contextual Bandit Algorithms}\label{app:algorithms}
+
+In this appendix, we present the different bandit algorithms studied in this paper. All algorithms we consider except \expfour uses disjoint models for building estimate of the arm feature vectors $(\theta_{a})_{a\in\llbracket 1, K\rrbracket}$. Each algorithm (except \expfour) builds least squares estimates of the arm features.
+
+\begin{algorithm}[h]
+  \caption{Contextual \linucb}
+  \label{alg:linucb}
+\begin{algorithmic}
+  \STATE {\bfseries Input:} regularization  $\lambda$, number of arms $K$, number of rounds $T$, bound on context norms: $L$, bound on norms $\theta_{a}$: $D$
+  \STATE Initialize for every arm $a$, $\bar{V}_{a}^{-1}(t) = \frac1\lambda I_{d}$, $\hat{\theta}_{a}(t) = 0$ and $b_{a}(t) = 0$
+  \FOR{$t=1,..., T$}
+  \STATE Observe context $x_{t}$
+  \STATE Compute $\beta_{a}(t) = \sigma\sqrt{d\log\left(\frac{1 +  N_{a}(t)L^{2}/\lambda}{\delta}\right)}$ with $N_{a}(t)$ the number of pulls of arm $a$
+  \STATE Pull arm  $a_{t} =\argmax_a \langle \hat{\theta}_{a}(t),x_t\rangle + \beta_{a}(t)||x_{t}||_{\bar{V}_{a}^{-1}(t)}$
+  \STATE Observe reward $r_{t}$ and update parameters $\hat{\theta}_{a}(t)$ and $\bar{V}_{a}^{-1}(t)$ such that:
+  \begin{align*}
+      \bar{V}_{a_{t}}(t+1) = \bar{V}_{a_{t}}(t) + x_{t}x_{t}^{\intercal},\quad b_{a_{t}}(t+1) = b_{a_{t}}(t) + r_{t}x_{t},\quad\theta_{a_{t}}(t+1) = \bar{V}_{a_{t}}^{-1}(t+1)b_{a_{t}}(t+1)
+  \end{align*}
+  \ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[h]
+  \caption{Linear Thompson Sampling with Gaussian prior}
+  \label{alg:linTS}
+\begin{algorithmic}
+  \STATE {\bfseries Input:} regularization  $\lambda$, number of arms $K$, number of rounds $T$, variance $\upsilon$
+  \STATE Initialize for every arm $a$, $\bar{V}_{a}^{-1}(t) = \lambda I_{d}$ and $\hat{\theta}_{a}(t) = 0$, $b_{a}(t) = 0$
+  \FOR{$t=1,..., T$}
+  \STATE Observe context $x_{t}$
+  \STATE Draw $\tilde{\theta}_{a}\sim\mathcal{N}(\hat{\theta}_{a}(t), \upsilon^{2}\bar{V}_{a}^{-1}(t))$
+  \STATE Pull arm $a_{t} = \argmax_{a\in \llbracket 1, K\rrbracket} \left\langle \tilde{\theta}_{a}, x_{t}\right\rangle$
+  \STATE Observe reward $r_{t}$ and update parameters $\hat{\theta}_{a}(t)$ and $\bar{V}_{a}^{-1}(t)$
+    \begin{align*}
+      \bar{V}_{a_{t}}(t+1) = \bar{V}_{a_{t}}(t) + x_{t}x_{t}^{\intercal},\quad b_{a_{t}}(t+1) = b_{a_{t}}(t) + r_{t}x_{t},\quad\theta_{a_{t}}(t+1) = \bar{V}_{a_{t}}^{-1}(t+1)b_{a_{t}}(t+1)
+  \end{align*}
+  \ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[h]
+  \caption{\epsgreedy}
+  \label{alg:egreedy}
+\begin{algorithmic}
+  \STATE {\bfseries Input:} regularization  $\lambda$, number of arms $K$, number of rounds $T$, exploration parameter $(\varepsilon)_{t}$
+	\STATE Initialize, for all arms $a$, $\bar{V}_{a}^{-1}(t) = \lambda I_{d}$ and $\hat{\theta}_{a}(t) = 0$, $\varepsilon_{t} = 1$, $b_{a}(t) = 0$
+  \FOR{$t=1,..., T$}
+  \STATE Observe context $x_{t}$
+  \STATE With probability $\varepsilon_{t}$, pull $a_{t} \sim \mathcal{U}\left(\llbracket 1,K\rrbracket\right)$, or pull $a_{t} = \argmax \langle \theta_{a}, x_{t}\rangle$ 
+  \STATE Observe reward $r_{t}$ and update parameters $\hat{\theta}_{a}(t)$ and $\bar{V}_{a}^{-1}(t)$
+    \begin{align*}
+      &\bar{V}_{a_{t}}(t+1) = \bar{V}_{a_{t}}(t) + x_{t}x_{t}^{\intercal},\quad b_{a_{t}}(t+1) = b_{a_{t}}(t) + r_{t}x_{t},\\
+      &\theta_{a_{t}}(t+1) = \bar{V}_{a_{t}}^{-1}(t+1)b_{a_{t}}(t+1)
+  \end{align*}
+  \ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[h]
+  \caption{\expfour}
+  \label{alg:exp4}
+\begin{algorithmic}
+	\STATE {\bfseries Input:} number of arms $K$, experts: $(E_{m})_{m\in\llbracket 1, N\rrbracket}$, parameter $\eta$
+  \STATE Set $Q_{1} = (1/N)_{j\in\llbracket 1, N\rrbracket}$
+  \FOR{$t=1,..., T$}
+  \STATE Observe context $x_{t}$ and probability recommendation $(E_{m}^{(t)})_{m\in\llbracket 1, N\rrbracket}$
+  \STATE Pull arm $a_{t}\sim P_{t}$ where $P_{t,j} = \sum_{k=1}^{N} Q_{t,k}E_{j,k}^{(t)}$ 
+  \STATE Observe reward $r_{t}$ and define for all arms $i$ $\hat{r}_{t,i} = 1 - \mathds{1}_{\{ a_{t}=i\}}( 1 - r_{t})/P_{t,i}$
+  \STATE Define $\tilde{X}_{t,k} = \sum_{a} E_{k, a}^{(t)}\hat{r}_{t,a}$
+  \STATE Update $Q_{t+1, j} = \exp(\eta Q_{t,i})/\sum_{j=1}^{N} \exp(\eta Q_{t,j})$ for all experts $i$
+  \ENDFOR
+\end{algorithmic}
+\end{algorithm}

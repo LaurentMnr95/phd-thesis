@@ -1,0 +1,61 @@
+\documentclass{report}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{booktabs} % for professional tables
+\usepackage[ruled,vlined]{algorithm2e}
+
+\newcommand{\laurent}[1]{{\textcolor{blue}{#1}}}
+
+\usepackage{etoolbox}
+
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}   % compact symbols for 1/2, etc.
+\usepackage[square,sort,comma]{natbib}
+\usepackage{microtype}      % microtypography
+%\usepackage{todonotes}
+\usepackage{microtype,enumitem}
+\usepackage{mathtools} %microtypography
+\usepackage{amsmath}
+\usepackage{bm}
+\usepackage{amsthm}
+\input{preamble}
+\usepackage{wrapfig, framed, caption}
+\usepackage{multirow}
+\usepackage{fancybox}
+\usepackage{tcolorbox}
+\usepackage{minitoc}
+\usepackage{geometry}
+\usepackage[toc,page]{appendix}
+\usepackage{stmaryrd}
+\usepackage{dsfont}
+\usepackage{pifont}
+\usepackage{amssymb}
+
+\geometry{margin=1.4in}
+
+\title{phd thesis}
+\author{Laurent Meunier}
+\date{August 2021}
+
+\begin{document}
+\maketitle
+\dominitoc
+\tableofcontents
+\listoffigures
+\input{sections/intro}
+\input{sections/1_background/_background}
+\input{sections/2_game/_game}
+\input{sections/3_calibration/_calibration}
+\input{sections/4_certification/_certification}
+\bibliography{biblio}
+\bibliographystyle{plainnat}
+\newpage
+\input{sections/appendix/_appendix}
+\end{document}

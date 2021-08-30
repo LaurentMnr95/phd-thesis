@@ -1,0 +1,120 @@
+\section{Attacks on Adversarial Bandits}\label{app:adversarial_rewards}
+In the previous sections, we studied algorithms with sublinear regret $R_T$, \ie mainly bandit algorithms designed for stochastic stationary environments. Adversarial algorithms like \expfour do not provably \otc{enjoy} a \changee{sublinear \textbf{stochastic} regret $R_{T}$ (as defined in the introduction) \footnote{\expfour enjoys a sublinear hindsight regret though. Showing a sublinear upper-bound for the stochastic regret of \expfour is still an open problem (see Section $29.1$ in \cite{lattimore2018bandit})}}. In addition, because this type of algorithms are, by design, robust to non-stationary environments, one could expect them to induce a linear cost on the attacker. In this section, we show that this is not the case for most contextual adversarial algorithms. Contextual adversarial algorithms are studied through the reduction to the bandit with expert advice problem. This is a bandit problem with $K$ arms where at every step, $N$ experts suggest a probability distribution over the arms. The goal of the algorithm is to learn which expert gets the best expected reward in hindsight after $T$ steps. The regret in this type of problem is defined as $R_{T}^{\text{exp}} = \mathbb{E}\left( \max_{m\in \llbracket 1, N \rrbracket}\sum_{t=1}^{T} \sum_{j=1}^{K} E_{m,j}^{(t)}r_{t,j} - r_{t,a_{t}}\right)$
+% \begin{equation*}
+% R_{T}^{\text{exp}} = \mathbb{E}\left( \max_{m\in \llbracket 1, N \rrbracket}\sum_{t=1}^{T} \sum_{j=1}^{K} E_{m,j}^{(t)}r_{t,j} - r_{t,a_{t}}\right)
+% \end{equation*} 
+where $E_{m,j}^{(t)}$ is the probability of selecting arm $j$ for expert $m$. In the case of contextual adversarial bandit\changebr{s}, the experts first observe the context $x_{t}$ before recommending an expert $m$. 
+% In the setting studied in \otc{the present paper, we assume that the rewards are linear. However, defining  a no-regret, similar to the stochastic regret, algorithm for adversarial bandit with this assumption is still an open problem\cite{lattimore2018bandit}.}
+% \todobr{I'm not sure I understand this sentence. Does it mean that getting a sublinear regret for linear adversarial bandits is an open problem ? 
+% Should we say: In our setting, we assume that the rewards are linear. Finding an sublinear-regret algorithm for adversarial bandits in this setting is still an open problem \cite{lattimore2018bandit}.}
+Assuming the current setting with linear rewards, we can show that if an algorithm $\mathfrak{A}$, like \expfour, enjoys a sublinear regret $R_{T}^{\text{exp}}$, then, using the Contextual ACE attack with either $\tilde{r}^{1}$ or $\tilde{r}^{2}$, the attacker can fool the algorithm into pulling arm $a^{\dagger}$ a linear number of times under some \otc{mild} assumptions. However, attacking contexts for this type of algorithm is difficult because, even though the rewards are linear, the experts are not assumed to use a specific model for selecting an action.
+
+% However, for contextual adversarial algorithms like \expfour the regret is not defined in the same way. But through the reduction to bandit with expert advice. Where 
+% Proposition \ref{prop:reward_attack} assumes that the regret $R_{T}$ of algorithm $\mathfrak{A}$ is of order $o(T)$ which excludes adversarial algorithms in like \expfour. However, it does not mean that adversarial algorithms are robust to adversarial attacks similar to Contextual ACE. Indeed, for contextual adversarial algorithms the regret is defined through a reduction to bandit with expert advice where at each step a context is presented to a set of $N$ policies and the bandit algorithm has to find the best policy in hindsight after $T$ steps. In that case, the regret is defined as:
+
+% By assuming that to be in the same setting as previously, that is to say for all arms $a$, the reward for arm $a$ is $\langle \theta_{a}, x_{t}\rangle + \eta_{t}$, we can show a similar result concerning the number of times arm $a^{\dagger}$ is pulled as in proposition \ref{prop:rewards_attack} using Contextual ACE with either $\tilde{r}^{1}$ or $\tilde{r}^{2}$ as adversarial algorithms can adapt to no-stationary reward processes.
+%\todol{Explain the condition on the expert}
+\begin{prop}\label{prop:rwd_attack_adv}
+	Suppose an adversarial algorithm $\mathfrak{A}$ satisfies a regret $R_{T}^{\exp}$ of order $o(T)$ for any bandit problem and that there exists an expert $m^{\star}$ such that $ T - \sum_{t=1}^{T} \mathbb{E}\left(E^{(t)}_{m^{\star}, a_{t,\star}^{\dagger}}\right) = o(T)$ with $a_{t,\star}^{\dagger}$ the optimal arim in $A^{\dagger}$ at time $t$. Then attacking alg. $\mathfrak{A}$ with Contextual ACE leads to pulling arm $a^{\dagger}$, $T-o(T)$ of times in expectation with a total cost of $o(T)$ for the attacker.
+\end{prop}
+
+\begin{proof}
+Similarly to the proof of Proposition \ref{prop:reward_attack}, let's define the bandit with expert advice problem, $\mathcal{A}_{i}$, such that at each time $t$ the reward vector is $(\tilde{r}^{i}_{t,a})_{a}$ (with $i\in\{1, 2\}$). The regret of this algorithm is: $\Tilde{R}_{T}^{i,\text{exp}} = \mathbb{E}\left( \max_{m\in \llbracket 1, N \rrbracket}\sum_{t=1}^{T} E_{m}^{(t)}\Tilde{r}^i_{t} - \Tilde{r}^i_{t,a_{t}}\right)\in o(T)$. The regret of the learner is: $\mathbb{E}\left( \max_{m\in \llbracket 1, N \rrbracket}\sum_{t=1}^{T} E_{m}^{(t)}r_{t} - r_{t,a_{t}}\right)$ where $a_t$ are the actions taken by algorithm $\mathcal{A}_i$ to minimize $\Tilde{R}_{T}^{i,\text{exp}}$. Then we have:
+\begin{align*}
+    \Tilde{R}_{T}^{i,\text{exp}} \geq \mathbb{E}\left(\sum_{t=1}^{T}\sum_{j=1}^{K} (E_{m^{\star}, j}^{(t)} - \mathds{1}_{\{\changee{j = a_{t,\star}^{\dagger}}\}})\tilde{r}_{t,j}^{i} + \sum_{t=1}^{T} \tilde{r}^{i}_{t, a^{\dagger}_{t,\star}} - \tilde{r}^{i}_{t,a_{t}} \right)
+\end{align*}
+Therefore, 
+\begin{align*}
+  \mathbb{E}\left(\sum_{t=1}^{T} \tilde{r}^{i}_{t, a^{\dagger}_{t, \star}} - \tilde{r}^{i}_{t,a_{t}} \right) &\leq \Tilde{R}_{T}^{i,\text{exp}} + \mathbb{E}\left(\sum_{t=1}^{T}\sum_{j=1}^{K} (\mathds{1}_{\{\changee{j = a_{t,\star}^{\dagger}}\}} - E_{m^{\star}, j}^{(t)})\tilde{r}_{t,j}^{i}\right) \\
+  &\leq \Tilde{R}_{T}^{i,\text{exp}} + \mathbb{E}\left(\sum_{t=1}^{T}(1 - E_{m^{\star}, a^{\dagger}_{t,\star}}^{(t)})\tilde{r}_{t,j}^{i}\right) \\
+  &\leq \Tilde{R}_{T}^{i,\text{exp}} + \mathbb{E}\left(\sum_{t=1}^{T}(1 - E_{m^{\star}, a^{\dagger}_{t,\star}}^{(t)})\right)
+\end{align*}
+
+For strategy $i=1$, we have:
+\begin{align*}
+    \mathbb{E}\left(\sum_{t=1}^{T} \tilde{r}^{1}_{t, a^{\dagger}_{t, \star}} - \tilde{r}^{1}_{t,a_{t}} \right) &=
+    \changee{\sum_{t=1}^{T} \mathbb{E}\left(r_{t,a_{t,\star}^{\dagger}} - \mathds{1}_{\{ a_{t}\in A^{\dagger}\}}\right)\geq \left(T-\mathbb{E}\left(\sum_{t=1}^{T} \mathds{1}_{\{ a_{t} = a_{t,\star}^{\dagger}\}}\right)\right)\Delta}
+\end{align*}
+\changee{where $\Delta := \min_{x\in \mathcal{D}}\left\{ \langle \theta_{a^\dagger(x)}, x\rangle - \max_{a\in A^{\dagger},a\neq a^{\dagger}(x)} \langle \theta_{a'}, x\rangle\right\}$ with $a^{\dagger}(x) := \arg\max_{a\in A^{\dagger}} \langle \theta_{a}, x\rangle$}. Then, as $\Tilde{R}_{T}^{1,\text{exp}}\in o(T)$ and $\mathbb{E}\left(\sum_{t=1}^{T}(1 - E_{m^{\star}, a^{\dagger}_{t, \star}}^{(t)})\right)\in o(T)$, we deduce that $\mathbb{E}(\sum_{t} \mathds{1}_{\{ a_{t} = a_{t,\star}
+^{\dagger}\}}) = T-o(T)$. 
+% For this strategy the cost is therefore bounded by: 
+% \begin{align*}
+% \mathbb{E}\left( \sum_{t=1}^{T} c_{t}\right) &\leq \mathbb{E}\left(\sum_{t=1}^{T} \mathds{1}_{\{a_{t}\neq a^{\dagger}\}} + |\eta_{a_{t}, t}|+ |\eta_{a_{t},t}'|\right) \leq (1 + 2\sigma) \mathbb{E}\left( N_{a^{\dagger}}(T)\right)
+% \end{align*}
+
+For strategy $i=2$, and $\delta>0$, let us denote by $E_{\delta}$ the event that all confidence intervals hold with probability $1 - \delta$. But on the event $E_{\delta}$, for a time $t$ where $a_{t}\neq a^{\dagger}_{t,\star}$ and such that $-1\leq C_{t,a_{t}} \leq 0$:
+\begin{align*}
+\tilde{r}^{2}_{t,a_{t}} = r_{t, a_{t}} + C_{t,a_{t}} &= (1 - \gamma)\min_{a^{\dagger}\in A^{\dagger}} \min_{\theta\in \mathcal{C}_{t,a^{\dagger}}} \langle \theta, x_{t}\rangle + \eta_{a_{t},t} + \langle\theta_{a}, x_{t}\rangle - \max_{\theta\in \mathcal{C}_{t,a_{t}}} \langle \theta, x_{t}\rangle \\
+&\leq (1 - \gamma) \langle \theta_{a^{\dagger}_{t,\star}}, x_{t}\rangle + \eta_{a_{t},t}
+\end{align*}
+when $C_{t,a_{t}} >0$ (still on the event $E_{\delta}$):
+\begin{align*}
+\tilde{r}^{2}_{t,a_{t}} = r_{t,a_{t}} \leq (1 - \gamma) \langle \theta_{a^{\dagger}_{t,\star}}, x_{t}\rangle + \eta_{a_{t},t}
+\end{align*}
+because $C_{t,a_{t}}>0$ means that $(1 - \gamma) \langle \theta_{a^{\dagger}_{t,\star}}, x_{t}\rangle \geq (1 - \gamma)\min_{a^{\dagger}\in A^{\dagger}}\min_{\theta\in \mathcal{C}_{t,a^{\dagger}}} \langle \theta, x_{t}\rangle \geq \max_{\theta\in \mathcal{C}_{t,a_{t}}} \langle \theta, x_{t}\rangle \geq \langle \theta_{a}, x_{t}\rangle$. But finally, when $C_{t,a_{t}} \leq -1$, $\tilde{r}^{2}_{t,a_{t}} = r_{t,a_{t}} -1 \leq \eta_{a_{t},t} \leq (1- \gamma)\langle \theta_{a^{\dagger}_{t,\star}}, x_{t}\rangle + \eta_{a_{t},t}$.  But on the complementary event $E_{\delta}^{c}$,  $ \tilde{r}^{2}_{t,a_{t}} \leq r_{t,a_t}$. Thus, given that the expected reward is assumed to be bounded in $(0,1]$ (Assumption~\ref{assumption1}):
+\begin{align*}
+    \mathbb{E}\left(\sum_{t=1}^{T} \tilde{r}^{2}_{t, a^{\dagger}_{t,\star}} - \tilde{r}^{2}_{t,a_{t}} \right) & =  \mathbb{E}\left(\sum_{t=1}^{T} (r_{t, a^{\dagger}} - \tilde{r}^{2}_{t,a_{t}})\mathds{1}_{\{a_{t}\neq a^{\dagger}_{t,\star}\}} \right) \\
+    &\geq \mathbb{E}\left(\sum_{t=1}^{T} \min\{\gamma\min_{x\in\mathcal{D}} \langle x, \theta_{a^{\dagger}_{t,\star}}\rangle, \Delta\} \mathds{1}_{\{a_{t}\neq a^{\dagger}_{t,\star}\}}\mathds{1}_{\{E_{\delta}\}}\right)-T\delta
+\end{align*}
+Finally, putting everything together we have:
+\begin{align*}
+    \mathbb{E}&\left(\sum_{t=1}^{T} \gamma\min_{x\in\mathcal{D}} \langle x, \theta_{a^{\dagger}_{t,\star}}\rangle \mathds{1}_{\{a_{t}\neq a^{\dagger}_{t,\star}\}}\right) \leq \Tilde{R}_{T}^{2,\text{exp}} + \mathbb{E}\left(\sum_{t=1}^{T}(1 - E_{m^{\star}, a^{\dagger}_{t,\star}}^{(t)})\right) + \delta T \left(\min\{\gamma\min_{a^{\dagger}\in A^{\dagger}}\min_{x\in\mathcal{D}} \langle x, \theta_{a^{\dagger}}\rangle, \Delta\} +1\right)
+\end{align*}
+Hence, because $\Tilde{R}_{T}^{1,\text{exp}} = o(T)$ and $\mathbb{E}\left(\sum_{t=1}^{T}(1 - E_{m^{\star}, a^{\dagger}}^{(t)})\right) = o(T)$ we have that for $\delta \leq 1/T$, the expected number of pulls of the optimal arm in $A^{\dagger}$ is of order $o(T)$. In addition, the cost for the attacker is bounded by: 
+\begin{align*}
+\mathbb{E}\left(\sum_{t=1}^{T} c_{t}\right) &= \mathbb{E}\left(\sum_{t=1}^{T} \mathds{1}_{\{a_{t}\neq a^{\dagger}_{t,\star}\}} \big|\max(-1, \min(C_{t, a_{t}},0))\big| \right)\leq  \mathbb{E}\left( \sum_{t=1}^{T} \mathds{1}_{\{a_{t}\neq a^{\dagger}_{t,\star}\}}\right)
+\end{align*}
+\end{proof}
+
+The proof is similar to the one of Prop.~\ref{prop:reward_attack}. The condition on the expert in Prop.~\ref{prop:rwd_attack_adv} means that there exists an expert which believes an arm $a^{\dagger}\in A^{\dagger}$ is optimal most of the time. The adversarial algorithm will then learn that this expert is optimal. %The rewards presented to the algorithm are build in such a way that the latter learns that the expert pulling arm $a^{\dagger}$ the majority of times being optimal.% \begin{proof}
+% Similarly to the proof of Proposition \ref{prop:reward_attack}, let's define the bandit with expert advice problem, $\mathcal{A}_{i}$, such that at each time $t$ the reward vector is $(\tilde{r}^{i}_{t,a})_{a}$ (with $i\in\{1, 2\}$). The regret of this algorithm is: $\Tilde{R}_{T}^{i,\text{exp}} = \mathbb{E}\left( \max_{m\in \llbracket 1, N \rrbracket}\sum_{t=1}^{T} E_{m}^{(t)}\Tilde{r}^i_{t} - \Tilde{r}^i_{t,a_{t}}\right)\in o(T)$. The regret of the learner is: $\mathbb{E}\left( \max_{m\in \llbracket 1, N \rrbracket}\sum_{t=1}^{T} E_{m}^{(t)}r_{t} - r_{t,a_{t}}\right)$ where $a_t$ are the actions taken by algorithm $\mathcal{A}_i$ to minimize $\Tilde{R}_{T}^{i,\text{exp}}$. Then we have:
+% \begin{align*}
+%     \Tilde{R}_{T}^{i,\text{exp}} \geq \mathbb{E}\left(\sum_{t=1}^{T}\sum_{j=1}^{K} (E_{m^{\star}, j}^{(t)} - \mathds{1}_{\{j\neq a^{\dagger}\}})\tilde{r}_{t,j}^{i} + \sum_{t=1}^{T} \tilde{r}^{i}_{t, a^{\dagger}} - \tilde{r}^{i}_{t,a_{t}} \right)
+% \end{align*}
+% Therefore, 
+% \begin{align*}
+%   \mathbb{E}\left(\sum_{t=1}^{T} \tilde{r}^{i}_{t, a^{\dagger}} - \tilde{r}^{i}_{t,a_{t}} \right) &\leq \Tilde{R}_{T}^{i,\text{exp}} + \mathbb{E}\left(\sum_{t=1}^{T}\sum_{j=1}^{K} (\mathds{1}_{\{j\neq a^{\dagger}\}} - E_{m^{\star}, j}^{(t)})\tilde{r}_{t,j}^{i}\right) \\
+%   &\leq \Tilde{R}_{T}^{i,\text{exp}} + \mathbb{E}\left(\sum_{t=1}^{T}(1 - E_{m^{\star}, a^{\dagger}}^{(t)})\tilde{r}_{t,j}^{i}\right) \\
+%   &\leq \Tilde{R}_{T}^{i,\text{exp}} + \mathbb{E}\left(\sum_{t=1}^{T}(1 - E_{m^{\star}, a^{\dagger}}^{(t)})\right)
+% \end{align*}
+% For strategy $i=1$, and $\delta>0$, let denote $E_{\delta}$ the event that all confidence intervals holds with probability $1 - \delta$. But on the event $E_{\delta}$, for a time $t$ where $a_{t}\neq a^{\dagger}$ and such that $-1\leq C_{t,a_{t}} \leq 0$:
+% \begin{align*}
+% \tilde{r}^{1}_{t,a_{t}} = r_{t, a_{t}} + C_{t,a_{t}} &= (1 - \gamma) \min_{\theta\in \mathcal{C}_{t,,a^{\dagger}}} \langle \theta, x_{t}\rangle + \eta_{a_{t},t} + \langle\theta_{a}, x_{t}\rangle - \max_{\theta\in \mathcal{C}_{t,a_{t}}} \langle \theta, x_{t}\rangle \\
+% &\leq (1 - \gamma) \langle \theta_{a^{\dagger}}, x_{t}\rangle + \eta_{a_{t},t}
+% \end{align*}
+% when $C_{t,a_{t}} >0$ (still on the event $E_{\delta}$):
+% \begin{align*}
+% \tilde{r}^{1}_{t,a_{t}} = r_{t,a_{t}} \leq (1 - \gamma) \langle \theta_{a^{\dagger}}, x_{t}\rangle + \eta_{a_{t},t}
+% \end{align*}
+% because $C_{t,a_{t}}>0$ means that $(1 - \gamma) \langle \theta_{a^{\dagger}}, x_{t}\rangle \geq (1 - \gamma)\min_{\theta\in \mathcal{C}_{t,,a^{\dagger}}} \langle \theta, x_{t}\rangle \geq \max_{\theta\in \mathcal{C}_{t,a_{t}}} \langle \theta, x_{t}\rangle \geq \langle \theta_{a}, x_{t}\rangle$. But finally, when $C_{t,a_{t}} \leq -1$, $\tilde{r}^{1}_{t,a_{t}} = r_{t,a_{t}} -1 \leq \eta_{a_{t},t} \leq (1- \gamma)\langle \theta_{a^{\dagger}}, x_{t}\rangle + \eta_{a_{t},t}  $.  But on the complementary event $E_{\delta}^{c}$,  $ \tilde{r}^{1}_{t,a_{t}} \leq r_{t,a_t}$. Thus we have because the expected reward are assumed to be bounded in $(0,1]$:
+% \begin{align*}
+%     \mathbb{E}\left(\sum_{t=1}^{T} \tilde{r}^{1}_{t, a^{\dagger}} - \tilde{r}^{1}_{t,a_{t}} \right)  =  \mathbb{E}\left(\sum_{t=1}^{T} (r_{t, a^{\dagger}} - \tilde{r}^{1}_{t,a_{t}})\mathds{1}_{\{a_{t}\neq a^{\dagger}\}} \right) &\\
+%     \geq \mathbb{E}\left(\sum_{t=1}^{T} \gamma\min_{x\in\mathcal{D}} \langle x, \theta_{a^{\dagger}}\rangle \mathds{1}_{\{a_{t}\neq a^{\dagger}\}}\mathds{1}_{\{E_{\delta}\}}\right)-T\delta
+% \end{align*}
+% Finally, putting everything together we have:
+% \begin{align*}
+%     \mathbb{E}&\left(\sum_{t=1}^{T} \gamma\min_{x\in\mathcal{D}} \langle x, \theta_{a^{\dagger}}\rangle \mathds{1}_{\{a_{t}\neq a^{\dagger}\}}\right) \leq \Tilde{R}_{T}^{1,\text{exp}} \\
+%     &+ \mathbb{E}\left(\sum_{t=1}^{T}(1 - E_{m^{\star}, a^{\dagger}}^{(t)})\right) + \delta T \left(\gamma\min_{x\in\mathcal{D}} \langle x, \theta_{a^{\dagger}}\rangle +1\right)\\
+% \end{align*}
+% Hence, because $\Tilde{R}_{T}^{1,\text{exp}} = o(T)$ and $\mathbb{E}\left(\sum_{t=1}^{T}(1 - E_{m^{\star}, a^{\dagger}}^{(t)})\right) = o(T)$ we have that for $\delta \leq 1/T$, the expected number of pulls of arm $a^{\dagger}$ is of order $o(T)$. In addition, the cost for the attacker is bounded by: 
+% \begin{align*}
+% \mathbb{E}\left(\sum_{t=1}^{T} c_{t}\right) &= \mathbb{E}\left(\sum_{t=1}^{T} \mathds{1}_{\{a_{t}\neq a^{\dagger}\}} \big|\max(-1, \min(C_{t, a_{t}},0))\big| \right)\\
+% &\leq  \mathbb{E}\left( \sum_{t=1}^{T} \mathds{1}_{\{a_{t}\neq a^{\dagger}\}}\right)
+% \end{align*}
+% For strategy $i=2$, we have:
+% \begin{align*}
+%     \mathbb{E}\left(\sum_{t=1}^{T} \tilde{r}^{2}_{t, a^{\dagger}} - \tilde{r}^{2}_{t,a_{t}} \right) &=
+%     \sum_{t=1}^{T} \mathbb{E}\left(r_{t, a^{\dagger}}\mathds{1}_{a_t\neq a^\star}\right)\\
+%  &\geq (T-\mathbb{E}(N_{a^\star}(T)))\min_{x\in\mathcal{D}} \langle x, \theta_{a^{\dagger}}\rangle 
+% \end{align*}
+% Then, as $\Tilde{R}_{T}^{2,\text{exp}}\in o(T)$ and $\mathbb{E}\left(\sum_{t=1}^{T}(1 - E_{m^{\star}, a^{\dagger}}^{(t)})\right)\in o(T)$, we deduce that $\mathbb{E}(N_{a^\star}(T)) = T-o(T)$. For this strategy the cost is bounded by: 
+% \begin{align*}
+% \mathbb{E}\left( \sum_{t=1}^{T} c_{t}\right) &\leq \mathbb{E}\left(\sum_{t=1}^{T} \mathds{1}_{\{a_{t}\neq a^{\dagger}\}} + |\eta_{a_{t}, t}|+ |\eta_{a_{t},t}'|\right) \\
+% &\leq (1 + 2\sigma) \mathbb{E}\left( N_{a^{\dagger}}(T)\right)
+% \end{align*}
+% \todol{add regret (I have it but need to write) + add details on line 480 col 2}
+% \end{proof}
+Algorithm \expfour has a regret $R_{T}^{\text{exp}}$ bounded by $\sqrt{2TK\log(N)}$, thus the total number of pulls of arms not in $A^{\dagger}$ %different from $a^{\dagger}$ 
+is bounded by $\sqrt{2TK\log(M)}/\gamma$. This result also implies that for adversarial algorithms like \expthree \cite{auer2002finite}, the same type of attacks could be used to fool $\mathfrak{A}$ into pulling arms in $A^{\dagger}$ because the MAB problem can be seen as a reduction of the contextual bandit problem with a unique context and one expert for each arm.
+
+%consisting of the mean of each arm as coordinate and each experts selects only one arm.

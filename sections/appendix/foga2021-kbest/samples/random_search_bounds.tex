@@ -1,0 +1,137 @@
+
+
+\section{Bounds for random search}
+\label{sec:randomsearch}
+In this section we provide upper bounds and lower bounds for the random search algorithm for functions satisfying Assumption~\ref{ass:principal}. These bounds will also be useful for analyzing the convergence of the $\mu$-best approach.
+\subsection{Upper Bound}
+First, we prove an upper bound for functions satisfying Assumption~\ref{ass:principal}.
+% \begin{lemma}[Upper bound for random search algorithm]\label{lem:upper1best}
+% Let $f$ be a function satisfying Assumption~\ref{ass:principal}. Let $\lambda$ be a positive integer. As $\lambda\to\infty$ we have:
+% $$\mathbb{E}_{X_1,\cdots,X_\lambda\sim U(B(0,r))}\left[ f\left(X_{(1)}\right)\right] \leq C_1 \lambda^{-\frac2d} +o(\lambda^{-\frac2d}) $$
+% with $C_1>0$ a constant independent of $\lambda$.
+% \end{lemma}
+
+\begin{lemma}[Upper bound for random search algorithm]\label{lem:upper1best}
+Let $f$ be a function satisfying Assumption~\ref{ass:principal}. There exists a constant $C_0>0$ and an integer $\lambda_0\in \mathbb{N}$ such that for all integers $ \lambda\geq \lambda_0$:
+$$\mathbb{E}_{X_1,\cdots,X_\lambda\sim U(B(0,r))}\left[ f\left(X_{(1)}\right)\right] \leq C_0 \lambda^{-\frac2d}\quad. $$
+\end{lemma}
+\begin{proof}
+Let us first recall the following classical property about the expectation of a positive valued random variable:    
+\begin{align*}
+\mathbb{E}_{X_1,\dots,X_\lambda\sim U(B(0,r))}&\left[ f\left(X_{(1)}\right)\right]= \int_0^\infty \mathbb{P}\left[ f\left(X_{(1)}\right)\geq t\right] dt
+\end{align*}
+By independence of the samples we have:  
+\begin{align*}
+\int_0^\infty \mathbb{P}\left[ f\left(X_{(1)}\right)\geq t\right] dt= \int_0^\infty \mathbb{P}_{X\sim U(B(0,r))}\left[ f\left(X\right)\geq t\right]^\lambda dt
+\end{align*}
+Then thanks to Lemma~\ref{lem:sandwich}:
+\begin{align*}
+     \int_0^\infty \mathbb{P}_{X\sim U(B(0,r))}&\left[ f\left(X\right)\geq t\right]^\lambda dt\\
+ &\leq \int_0^\infty \mathbb{P}_{X\sim U(B(0,r))}\left[ L\lVert X-x^\star\rVert^2 \geq t\right]^\lambda dt\\
+  &= \int_0^{L\left(r+\lVert x^\star\rVert\right)^2} \mathbb{P}\left[ \lVert X-x^\star\rVert \geq \sqrt{\frac{t}{L}}\right]^\lambda dt
+\end{align*}
+where the second equality follows because $\lVert X-x^{\star} \rVert \leq r$ almost surely.
+Then, by definition of the uniform law as well as the non-increasing character of $t\mapsto \mathbb{P}_{X\sim U(B(0,r))}\left[ \lVert X-x^\star\rVert \geq \sqrt{\frac{t}{L}}\right]$, we obtain
+\begin{align*}
+  &\int_0^{L\left(r+\lVert x^\star\rVert\right)^2} \mathbb{P}_{X\sim U(B(0,r))}\left[ \lVert X-x^\star\rVert \geq \sqrt{\frac{t}{L}}\right]^\lambda dt \\
+&=\int_0^{L\left(r-\lVert x^\star\rVert\right)^2} \mathbb{P}_{X\sim U(B(0,r))}\left[ \lVert X-x^\star\rVert \geq \sqrt{\frac{t}{L}}\right]^\lambda dt \\
+&+ \int_{L\left(r-\lVert x^\star\rVert\right)^2}^{L\left(r+\lVert x^\star\rVert\right)^2} \mathbb{P}_{X\sim U(B(0,r))}\left[ \lVert X-x^\star\rVert \geq \sqrt{\frac{t}{L}}\right]^\lambda dt\\
+&\leq \int_0^{L\left(r-\lVert x^\star\rVert\right)^2} \left[ 1-\left(\sqrt{\frac{t}{Lr^2}}\right)^d\right]^\lambda dt\\
+ &+L\left(\left(r+\lVert x^\star\rVert\right)^2-\left(r-\lVert x^\star\rVert\right)^2\right) \mathbb{P}\left[ \lVert X-x^\star\rVert \geq r-\lVert x^\star\rVert\right]^\lambda \\
+&\leq \int_0^{Lr^2} \left[ 1-\left(\frac{t}{Lr^2}\right)^{\frac{d}{2}}\right]^\lambda dt+4Lr\lVert x^\star\rVert\mathbb{P}\left[ \lVert X-x^\star\rVert \geq r-\lVert x^\star\rVert\right]^\lambda\\
+&= Lr^2\int_0^{1} \left[ 1-u^{\frac{d}{2}}\right]^\lambda du+4Lr\lVert x^\star\rVert\mathbb{P}\left[ \lVert X-x^\star\rVert \geq r-\lVert x^\star\rVert\right]^\lambda
+\end{align*}
+Note that  $\mathbb{P}\left[ \lVert X-x^\star\rVert < r-\lVert x^\star\rVert\right] < 1$. Thus the second term in the last equality satisfies $\mathbb{P}\left[ \lVert X-x^\star\rVert < r-\lVert x^\star\rVert\right]^\lambda
+\in o(\lambda^{-2/d})$.
+The first term has a closed form given in~\cite{ppsnkbest}:
+\begin{align*}
+    \int_0^{1} \left[ 1-u^{\frac{d}{2}}\right]^\lambda du=\frac{\Gamma(\frac{d+2}{d})\Gamma(\lambda+1)}{\Gamma(\lambda+1+2/d)}
+\end{align*}
+Finally thanks to the Stirling approximation, we conclude:
+\begin{align*}
+\mathbb{E}_{X_1,\dots,X_\lambda\sim U(B(0,r))}&\left[ f\left(X_{(1)}\right)\right]\leq C_1 \lambda^{-2/d}+o(\lambda^{-2/d})
+\end{align*}
+where $C_1>0$ is a constant independent from $\lambda$.
+\end{proof}
+This lemma proves that the strategy consisting in returning the best sample (i.e. random search) has an upper rate of convergence of order $\lambda^{-2/d}$, which depends on dimension of the space. It also worth noting this result is common in the literature~\cite{bach,bergstra2012random}
+
+\subsection{Lower Bound}
+We now give a lower bound for the convergence of the random search algorithm. We also prove a conditional expectation bound that will be useful for the analysis of the $\mu$-best averaging approach.
+
+
+\begin{lemma}[Lower bound for random search algorithm]\label{lem:lower1best}
+Let $f$ be a function satisfying Assumption~\ref{ass:principal}. There exist a constant $C_1>0$ and $\lambda_1\in \mathbb{N}$ such that for all integers $\lambda\geq \lambda_1$, we have the following lower bound for random search:
+\begin{align*}
+\mathbb{E}_{X_1,\dots,X_\lambda\sim U(B(0,r))}&\left[ f\left(X_{(1)}\right)\right]\geq C_1 \lambda^{-2/d}\quad.
+\end{align*}
+Moreover, let $(\mu_\lambda)_{\lambda\in\mathbb{N}}$ be a sequence of integers such that $\forall\lambda\geq 2$, $1\leq \mu_\lambda \leq \lambda -1$ and $\mu_\lambda\to\infty$. Then, there exist a constant $C_2>0$ and $\lambda_2\in \mathbb{N}$ such that for all $h\in [0,\max f]$ and $\lambda\geq\lambda_2$, we have the following lower bound when the sampling is conditioned: 
+\begin{align*}
+   \mathbb{E}_{X_1,\dots,X_\lambda\sim U(B(0,r))}&\left[ f\left(X_{(1)}\right)\mid f(X_{(\mu_{\lambda}+1)})= h\right] \geq C_2 h\mu_\lambda^{-2/d}\quad.
+\end{align*}
+\end{lemma}
+\begin{proof}
+The proof is very similar to the previous one. Let us first show the unconditional inequality. We use the identity for the expectation of a positive random variable
+\begin{align*}
+\mathbb{E}&_{X_1,\dots,X_\lambda\sim  U(B(0,r))}\left[ f\left(X_{(1)}\right)\right] \\
+&= \int_0^\infty \mathbb{P}_{X_1,\dots,X_\lambda\sim  U(B(0,r))}\left[ f\left(X_{(1)}\right)\geq t\right] dt
+\end{align*}
+Since the samples are independent, we have
+\begin{align*}
+ \int_0^\infty &\mathbb{P}_{X_1,\dots,X_\lambda\sim U(B(0,r))}\left[ f\left(X_{(1)}\right)\geq t \right] dt\\ 
+ & = \int_0^\infty \mathbb{P}_{X\sim  U(B(0,r))}\left[ f\left(X\right)\geq t\right]^\lambda dt
+ \end{align*}
+ Using Lemma~\ref{lem:sandwich}, we get:
+ \begin{align*}
+ \int_0^\infty& \mathbb{P}_{X\sim U(B(0,r))}\left[ f\left(X\right)\geq t\right]^\lambda dt\\
+& \geq \int_0^\infty \mathbb{P}_{X\sim  U(B(0,r))}\left[ l\lVert X-x^\star\rVert^2 \geq t\right]^\lambda dt\\
+& \geq \int_0^{l(r-\lVert x^\star\rVert)^2} \mathbb{P}_{X\sim U(B(0,r))}\left[ l\lVert X-x^\star\rVert^2 \geq t\right]^\lambda dt\\
+&=\int_0^{l(r-\lVert x^\star\rVert)^2} \left[ 1-\left(\sqrt{\frac{t}{lr^2}}\right)^d\right]^\lambda dt
+\end{align*}
+%I don't think Chasles' relation is the right term in English.
+We can decompose the integral to obtain:
+\begin{align*}
+    &\int_0^{l(r-\lVert x^\star\rVert)^2} \left[ 1-\left(\sqrt{\frac{t}{lr^2}}\right)^d\right]^\lambda dt\\
+    &=\int_0^{lr^2} \left[ 1-\left(\sqrt{\frac{t}{lr^2}}\right)^d\right]^\lambda - \int_{l(r-\lVert x^\star\rVert)^2}^{lr^2} \left[ 1-\left(\sqrt{\frac{t}{lr^2}}\right)^d\right]^\lambda dt\\
+    &\geq lr^2\frac{\Gamma(\frac{d+2}{d})\Gamma(\lambda+1)}{\Gamma(\lambda+1+\frac2d)}- l(r^2-(r-\lVert x^\star\rVert)^2)\left[ 1-\left(\frac{r-\lVert x^\star\rVert}{r}\right)^{d}\right]^\lambda\\
+    &\geq \frac12 lr^2 \Gamma(\frac{d+2}{d}) \lambda^{-2/d}\text{ for $\lambda$ sufficiently large.}
+\end{align*}
+where the last inequality follows by Stirling's approximation applied to the first term and because the second term is $o(\lambda^{-2/d})$ as in previous proof.\\
+This concludes the proof of the first part of the lemma. Let us now treat the case of the conditional inequality. Using the same first identity as above we have
+\begin{align*}
+\mathbb{E}&_{X_1,\dots,X_\lambda\sim U(B(0,r))}\left[ f\left(X_{(1)}\right)\mid f(X_{(\mu_{\lambda}+1)}) = h\right] \\
+&= \int_0^\infty \mathbb{P}_{X_1,\dots,X_\lambda\sim U(B(0,r))}\left[ f\left(X_{(1)}\right)\geq t \mid f(X_{({\mu_{\lambda}}+1)}) = h\right] dt
+\end{align*}
+% Note that sampling $\mu$ independent ordered variables on $B(0,r)$ while conditioning on the $\mu+1$ belonging to the $h$-level set of $f$ is equivalent to sampling $\mu$ independent \emph{unordered} variables on the $h-$level set of $f$ directly.
+%
+\begin{rmq}
+\label{rk:samples}
+Note that if we sample $\lambda$ independent variables $X_1 \ldots X_\lambda$ while conditioning on $f(X_{(\mu+1)})=h$ % belonging to the $h$-level set of $f$
+and keep only the $\mu$-best variables $X_i$ such that $f(X_i)\le h$, this is exactly equivalent to sampling directly $X_1 \ldots X_\mu$ from the $h$-level set. This result was justified and used in~\cite{ppsnkbest} in their proofs.
+\end{rmq}
+%
+Hence we obtain
+\begin{align*}
+ \int_0^\infty &\mathbb{P}_{X_1,\dots,X_\lambda\sim U(B(0,r))}\left[ f\left(X_{(1)}\right)\geq t \mid f(X_{(\mu_{\lambda}+1)})= h\right] dt\\ 
+ & = \int_0^\infty \mathbb{P}_{X\sim U(S_h)}\left[ f\left(X\right)\geq t\right]^{\mu_{\lambda}} dt
+ \end{align*}
+ Using Lemma~\ref{lem:sandwich}, we get:
+ \begin{align*}
+ \int_0^\infty& \mathbb{P}_{X\sim U(S_h)}\left[ f\left(X\right)\geq t\right]^{\mu_{\lambda}} dt\\
+& \geq \int_0^\infty \mathbb{P}_{X\sim U(S_h)}\left[ l\lVert X-x^\star\rVert^2 \geq t\right]^{\mu_{\lambda}} dt\\
+& \geq \int_0^\infty \mathbb{P}_{X\sim U(B(x^\star,\sqrt{\frac{h}{l}}))}\left[ l\lVert X-x^\star\rVert^2 \geq t\right]^{\mu_{\lambda}} dt
+\end{align*}
+where the last inequality follows from the inclusion $S_h\subset B(x^\star,\sqrt{\frac{h}{l}})$, which is also a consequence of Lemma~\ref{lem:sandwich}. We then get
+\begin{align*}
+\int_0^\infty& \mathbb{P}_{X\sim U(B(x^\star,\sqrt{\frac{h}{l}}))}\left[ l\lVert X-x^\star\rVert^2 \geq t\right]^{\mu_{\lambda}} dt\\
+& = \int_0^h \mathbb{P}_{X\sim U(B(x^\star,\sqrt{\frac{h}{l}}))}\left[ l\lVert X-x^\star\rVert^2 \geq t\right]^{\mu_{\lambda}} dt\\
+& = \int_0^{h} \left[ 1-\left(\sqrt{\frac{t}{h}}\right)^d\right]^{\mu_{\lambda}} dt\\
+& = h\frac{\Gamma(\frac{d+2}{d})\Gamma(\mu_\lambda+1)}{\Gamma(\mu_\lambda+1+2/d)}\\
+& \geq \frac12 h \Gamma(\frac{d+2}{d})\mu_\lambda^{-2/d}\text{ for $\lambda$ sufficiently large.}
+\end{align*}
+%TODO: change by $\mu_\lambda$
+\end{proof}
+This lemma, along with Lemma~\ref{lem:upper1best}, proves that for any function satisfying Assumption~\ref{ass:principal}, its rate of convergence is exponentially dependent on the dimension and of order $\lambda^{-2/d}$ where $\lambda$ is the number of points sampled to estimate the optimum. 
+\begin{rmq}[Convergence of the distance to the optimum]
+It is worth noting that, thanks to Lemma~\ref{lem:sandwich}, the convergence rates are also valid for the square distance to the optimum $x^\star$. 
+\end{rmq}
+

@@ -1,0 +1,72 @@
+% !TEX root = main.tex
+\section{Semi-Online Attacks}
+
+\cite{liu2019data} studies what they call the offline setting for adversarial attacks on stochastic bandits. They consider a setting where a bandit algorithm is successively updated with mini-batch\changebr{es} of fixed size $B$. \changebr{The attacker can tamper with some of the incoming mini-batches. % Each mini-batch that can be t\changebr{a}mpered with by the attacker. 
+ More precisely, they can modify the context, the reward and even the arm that was pulled for any entry of the attacked mini-batches.}
+% That is to say, that the attacker can change the context, arm chosen and the reward obtained for each entry in the mini-batch. 
+\changebr{The main difference between this type of attacks and the online attacks we considered in the main paper is that we do not assume that we can attack from the start of the learning process: the bandit algorithm may have already converged by the time we attack}. 
+
+We can still study the cumulative cost for the attacker to change the mini-batch in order to fool a bandit algorithm to pull a target arm $a^{\dagger}$ (\changee{here we take $A^{\dagger} = \{ a^{\dagger}\}$}). Contrarily to \cite{liu2019data}, we call this setting semi-online. We first study the impact of an attacker on \linucb where we show that, by modifying only $(K-1)d$ entries from the batch $\mathcal{B}$, the attacker can force \linucb to pull arm $a^{\dagger}$, $M'B - o(M'B)$ times with $M'$ the number of remaining batches updates. The cost of our attack is $\sqrt{MB}$ with $M$ the total number of batches.
+
+\paragraph{Cost of an attack:} If presented with a mini-batch $\mathcal{B}$, with elements $(x_{t}, a_{t}, r_{t})$ composed of the context $x_{t}$ presented at time $t$, the action taken $a_{t}$ and the reward received $r_{t}$, the attacker modifies element $i$, namely  $(x^{i}_{t}, a^{i}_{t}, r^{i}_{t})$ into $(\tilde{x}^{i}_{t}, \tilde{a}^{i}_{t}, \tilde{r}^{i}_{t})$. The cost of doing so is $c^{i}_{t} = ||x^{i}_{t} - \tilde{x}^{i}_{t}||_{2} + \big|\tilde{r}^{i}_{t} - r^{i}_{t}\big| + \mathds{1}_{\{a^{i}_{t} \neq \tilde{a}^{i}_{t}\}}$ and the total cost for mini-batch $\mathcal{B}$ is defined as $c_{\mathcal{B}} = \sum_{i\in \mathcal{B}} c_{t}^{i}$. Finally, we consider the cumulative cost of the attack over $M$ different mini-batches $\mathcal{B}_{1}, \hdots, \mathcal{B}_{M}$, $\sum_{l=1}^{M} c_{\mathcal{B}_{l}}$. The interaction between the environment, the attacker and the learning algorithm is summarized in Alg.~\ref{alg:semi_online_setting}.  
+\begin{algorithm}[h]
+	\caption{Semi-Online Attack Setting.}
+  \label{alg:semi_online_setting}
+\begin{algorithmic}
+  \STATE {\bfseries Input:} Bandit alg.~$\mathfrak{A}$, size of a mini-batch: $B$
+  \STATE Set $t = 0$
+  \WHILE{True}
+  \STATE $\mathfrak{A}$ observe context $x_{t}$
+  \STATE $\mathfrak{A}$ pulls arm $a_{t}$ and observes reward $r_{t}$
+  \STATE Interaction $(x_{t}, a_{t}, r_{t})$ is saved in mini-batch $\mathcal{B}$
+  \IF{$\big|\mathcal{B}\big| = B$}
+  \STATE Attacker modifies mini-batch $\mathcal{B}$ into $\tilde{\mathcal{B}}$
+  \STATE Update alg.~$\mathfrak{A}$ with poisoned mini-batch $\tilde{\mathcal{B}}$
+  \ENDIF
+  \ENDWHILE
+\end{algorithmic}
+\end{algorithm}
+
+
+% If the attacker can also choose the arm that is pulled, it is possible to attack \linucb with attacks of cumulative norm $O(\sqrt T)$. In practice, it can happen if the attacker manages to infiltrate a server on which part of training data is stored. Modifying or injecting $(K-1) \times d$ lines in the training data with attacks of norm $O(\sqrt T)$ is enough to make the algorithm pull the arm $a^{\dagger}$ all the time. 
+
+The attack presented here is based on the Ahlberg–Nilson–Varah bound \cite{varah1975lower}, which gives a control on the sup norm of a matrix with dominant diagonal elements. More precisely, when presented with a mini-batch $\mathcal{B}$, the attacker needs to modify the contexts and the rewards. We assume that the attacker knows the number of mini-batch updates $M$ and has access to a lower-bound on the reward of the target arm, $\nu$ as in Assumption~\ref{assumption2}. 
+
+The attacker changes $(K-1)\times d$ rows of the first mini-batch to rewards of $0$ with a context $\delta_a e_i$ for each arm $a \neq a^{\dagger}$ with $(e_i)$ the canonical basis of $\mathbb{R}^{d}$. Moreover, $\delta_{a}$ is chosen such that: 
+\begin{equation}
+    \delta_{a}  > \max\left(\sqrt{\frac{2MBL^{2}d}{\nu} + dMB},  \sqrt{\frac{4\beta_{max}^2L^{2}d}{\nu^{2}} + dMB}\right)
+    \label{eq:delta_botnets}
+\end{equation}
+with $\beta_{max} = \max_{t=0}^{MB} \beta_a(t)$ and $M$ the number of mini-batch updates.
+
+\begin{prop}\label{prop:attacker_can_choose}
+After the first attack, with probability $1-\delta$, \linucb always pulls arm $a^{\dagger}$, 
+\end{prop}
+
+\begin{proof}
+After having poisoned the first mini-batch $\mathcal{B}$, the latter can be partitioned into two subsets, $\mathcal{B}_{c}$ (with non-perturbed rows) and $\mathcal{B}_{nc}$ (with the poisoned rows). The design matrix of arm $a\neq a^{\dagger}$ for every time $t$ after the poisoning is:
+\begin{align}
+    V_{t,a} = \lambda I_d +  \sum_{l=1, a_{l} = a}^{t} x_{l}x_{l}^{\intercal} + \delta_{a}^2 \sum_{i=1}^{d} e_i e_i^{\intercal}
+\end{align}
+For every time $t$, non diagonal elements of $V_{t,a} = (v_{i,j})_{i,j}$ are bounded by: 
+\begin{align}\label{non_diagonal_element}
+    \forall i, r_i &:= \sum_{j \neq i} v_{i,j}\leq \sum_{j \neq i} \sum_{l=1, a_{l} = a}^{t} \lVert x_l x_{l}^{\intercal}\rVert_\infty\leq dN_{a}(kB)
+\end{align}
+Whereas for all diagonal elements, $v_{i,i} \geq \delta_{a}^2 > r_i$. Thus $V_{t,a}$ is strictly diagonal dominant and by the Ahlberg–Nilson–Varah bound \cite{varah1975lower}:
+\begin{align}\label{eq:bound_norm_design_matrix}
+\lVert V_{t,a}^{-1} \rVert_\infty &\leq \frac{1}{\min_{i} \left(\lVert v_{i,i}\rVert - r_i\right)} \leq \frac{1}{\delta_{a}^{2} - dMB}
+\end{align}
+Then, for every arm $a \neq a^{\dagger}$ and any context $x\in \mathcal{D}$ and any time $t$ after the attack:
+\begin{align*}
+    \langle\hat{\theta}_{a,t}, x\rangle + \beta_{a}(t) ||x||_{V_{t,a}^{-1}} & \leq  \sum_{l=1, a_{l} = a}^{t} r_t (V_{t,a}^{-1} x_t)^{\intercal} x + \beta_{a}(t)||x||_{1}\sqrt{\lVert V_{t,a}^{-1} \rVert_\infty}\\
+    & \leq  \lVert V_{t,a}^{-1} \rVert_\infty dN_{t}(a) \sup_{y\in\mathcal{D}} ||y||_{2}^{2} + \beta_{\text{max}}\sqrt{d}\sup_{y\in\mathcal{D}} ||y||_{2}\sqrt{\lVert V_{t,a}^{-1} \rVert_\infty} < \nu
+\end{align*}
+
+    % &= \left({A'}^{-1} \sum_{t=0}^{N(a)} r_t x_t\right)^{\intercal} x + \beta_{a}(t) \sqrt{x^{\intercal} A'^{-1} x}\\
+    % & =  (\sum_{t=0}^{N(a)} r_t {A'}^{-1} x_t)^{\intercal} x + \beta_{a}(t) \sqrt{x^{\intercal} A'^{-1} x}\\
+    
+We have shown that for any arm $a \neq a^{\dagger}$ and any time step $t$ after the attack, the upper confidence bound computed by \linucb is upper-bounded bu $\nu$ the arm $a^{\dagger}$. Then, with probability $1-\delta$, the confidence set for arm $a^{\dagger}$ holds and, for all $x \in \mathcal{D}$, arm $a^{\dagger}$ is chosen by \linucb. The total cost of this attack is $d \sum_{a\neq a^{\dagger}} \delta_{a} L = O(\sqrt{MB})$
+\end{proof}
+
+
+

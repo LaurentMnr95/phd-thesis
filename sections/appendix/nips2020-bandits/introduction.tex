@@ -1,0 +1,36 @@
+% !TEX root = main.tex
+\section{Introduction}
+
+% \todol{split the intro in two parts or make subtitles}
+
+Recommender systems are at the heart of the business model of many industries like e-commerce or video streaming~\cite{davidson2010youtube,gomez2015netflix}. The two most common approaches for this task are based either on matrix factorization \cite{park2017comparative} or bandit algorithms \cite{li2010contextual}, which both
+rely on a unaltered feedback loop between the recommender system and the user. In recent years, a fair amount of work has been dedicated to understanding how targeted perturbations in the feedback loop can fool a recommender system into recommending low quality items.
+
+Following the line of research on adversarial attacks in supervised learning \cite{biggio2012poisoning,goodfellow2014explaining, jagielski2018manipulating, li2016data, liu2017robust}, attacks on recommender systems have been focused on filtering-based algorithms \cite{10.1145/3298689.3347031, mehta2008attack} and offline contextual bandits \cite{ma2018data}.
+ % studying the effects of poisoning a dataset used by a learning algorithm. For recommender systems, those works are related to the study of attacks on Collaborative
+The question of adversarial attacks for online bandit algorithms %(that is to say learning on the fly and not in batch)
+has only \cmmnt{started being} \changee{been studied} quite recently \cite{jun2018adversarial, liu2019data, Immorlica2018AdversarialBW, guan2020robust}, and solely in the multi-armed stochastic setting.
+Although the idea of online adversarial bandit algorithms is not new (see \expthree algorithm in \cite{auer2002finite}), the focus is different from what we are considering \changee{in this article}. Indeed, algorithms like \expthree or \expfour \cite{lattimore2018bandit} are designed to find optimal actions in hindsight in order to adapt to any rewards stream\cmmnt{ without any further assumptions}. 
+
+
+ The opposition between adversarial and stochastic bandit settings has sparked interests in studying a middle ground.
+ In \cite{bubeck2012best}, the learning algorithm has no knowledge of the type of feedback it receives \changee{(either stochastic or adversarial)}. In \cite{lykouris2018stochastic, li2019stochastic, gupta2019better, Lykouris2019CorruptionRE, kapoor2019corruption}, the rewards are assumed to be \changee{corrupted by adversarial rewards}\cmmnt{ but can be perturbed by some attacks}. The authors focus on \changee{building} algorithms able to find the optimal actions even in the presence of some non-random perturbations. \changee{This setting is different from what is studied in this article because} those perturbations are bounded and agnostic to \changee{arms pulled} by the learning algorithm, \changee{i.e., the adversary corrupt the rewards before the algorithm chooses an arm.}
+
+% In addition, the opposition between the adversarial bandit setting and the stochastic setting %more classical one where the eward are assumed to be drawn from a stationary random distribution
+% has sparked interests in studying a middle ground where the learning algorithm
+% has no knowledge of the type of feedback it receives \citep[e.g.,][]{bubeck2012best} and %However, the recent growth in the use of bandit algorithms has
+% % shown that the stochastic assumption is mostly true (up to some uncontrolled perturbations) in an overwhelming number of cases, the study of this setting where
+% where rewards are assumed to be stochastic but can be perturbed by some attacks %has given birth to a very recent line of work
+% \cite{li2019stochastic, gupta2019better, Lykouris2019CorruptionRE, kapoor2019corruption}. \changede{Those last works being focused} on constructing algorithms able to find the optimal actions even in the presence of some non-reward perturbations but bounded and agnostic to the choices of the learning algorithm.
+% \todot{Previous sentence is not clear. You are referring to second work not ``best of both worlds'', right?}
+In the broader Deep Reinforcement Learning (DRL) literature, the focus is placed on modifying the observations of different states to fool a DRL system at inference time
+\cite{hussenot2019targeted, sunstealthy} \changee{or the rewards \cite{ma2019policy}.}
+\paragraph{Contribution.}In this work, we first follow the research direction opened by \cite{jun2018adversarial} where the attacker has the objective of fooling a learning algorithm into taking a specific action as much as possible. \changee{For example} \cmmnt{Consider } in a news recommendation problem, as described in \cite{li2010contextual}, a bandit algorithm chooses between $K$ articles to recommend to a user, based on some information about them, \changee{called} context. We assume that an attacker sits between the user and the website, they can choose the reward (i.e., click or not) for the recommended article observed by the recommending algorithm. Their goal is to fool the bandit algorithm into recommending \changee{some articles} \cmmnt{\changelm{a particular or a set of target articles}} to most users. The contributions of our work can be summarized as follows:
+\begin{itemize}
+    \item We extend the work of~\cite{jun2018adversarial, liu2019data} to the contextual linear bandit setting showing how to perturb rewards for both stochastic and adversarial algorithms, forcing \textbf{any} bandit algorithms to pull a specific set of arms, $o(T)$ times for logarithmic cost for the attacker.
+    \item We analyze, for the first time, the setting in which the attacker can only modify the context $x$ associated with the current user (the reward is not altered). The goal of the attacker is to fool the bandit algorithm into pulling arms of a target set for most users (\ie contexts) while minimizing the total norm of their attacks. We show that the widely known \linucb algorithm \cite{abbasi2011improved, lattimore2018bandit} is vulnerable to this new type of attack.
+    \item We present a harder setting for the attacker, where the latter can only modify the context associated to a specific user. This situation may occur when a malicious agent has infected some computers with a Remote Access Trojan (RAT). The attacker can then modify the history of navigation of a specific user and, as a consequence, the information seen by the online recommender system.We show how the attacker can attack the two very common bandit algorithms \linucb and Linear Thompson Sampling (\lints) \cite{agrawal2013thompson,abeille2017linear} and, in certain cases, force them to pull a set of arms most of the time \changebr{when} a specific context (\ie user) is presented to the algorithm (\ie visits a website). 
+\end{itemize}
+
+
+

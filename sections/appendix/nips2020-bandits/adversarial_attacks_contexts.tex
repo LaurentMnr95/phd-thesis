@@ -1,0 +1,197 @@
+% !TEX root = main.tex
+\section{Online Adversarial Attacks on Contexts}
+\label{sec:attack_all_context}
+In this section, we consider the attacker to be able to alter the context $x_t$ perceived by the algorithm rather than the reward. The attacker is now restricted to change the type of users presented to the learning algorithm $\mathfrak{A}$, hence changing its perception of the environment. We show that under the assumption that the attacker knows a lower-bound to the reward of the target set, it is possible to fool \linucb.
+
+\textbf{Setting.} As in Sec.~\ref{sec:attacks_rewards}, we consider the attacker to have the same knowledge about the problem as $\mathfrak{A}$.
+The main difference with \otc{the} previous setting is that the attacker \changee{attacks} before the algorithm. \changee{We adopt a \textit{white-box} \cite{goodfellow2014explaining} setting attacking \linucb.}
+%It means that the attacker does not know the arm that would have been chosen by $\mathfrak{A}$ when presented with the true context $x_t$.Therefore, we need to have knowledge about the way the algorithm $\mathfrak{A}$ behaves. We focus on \linucb and we assume the attacker knows the parameter\changebr{s} of the algorithm. This is known as \changebr{a \emph{white-box} setting} in the \changebr{adversarial attacks} literature~\cite{goodfellow2014explaining}.
+The goal of the attacker is unchanged: \changebr{they aim at forcing} the algorithm to pull \changelm{arms in $A^\dagger$ for} $T -o(T)$ \changebr{time steps} while paying a sublinear total cost. 
+We denote by $\widetilde{x}_t$ the context after the attack and by $c_t = \|x_t - \widetilde{x}_t\|_2$ the instantaneous cost.
+
+\textbf{Difference between attacks on contexts and rewards.} Perturbing contexts is fundamentally different from perturbing the rewards. The attacker only modifies the context that is shown to the bandit algorithm. The true context, which is used to compute the reward, remains unchanged. In other words, the attacker cannot modify the reward observed by the bandit algorithm. Instead, the attack algorithm described in this  section fools the bandit algorithm by making the rewards appear small relative to the contexts and requires more assumptions on the bandit algorithm than in Sec.~\ref{sec:attacks_rewards}.
+% Finally, we assume that the attacker knows a positive lower bound of the expected reward as follows.
+% \begin{assumption}\label{assumption2}
+% 	For all $x\in \mathcal{D}$, \changelm{there exists $a^\dagger\in A^\dagger$}, such that $0 <\nu \leq \left\langle x, \theta_{a^{\dagger}} \right\rangle$.
+% \end{assumption}
+%\todot{we use a different notation for the cost compared to previous section BR: fixed it (use $c_t$ everywhere)} 
+%In this second setting, the attacker can decide to modify the context $x_t$ before it is observed by algorithm $\mathfrak{A}$ but the reward received by alg.~$\mathfrak{A}$ is the same as if the context was not modified. The goal of the attacker is still to have a cumulative cost $o(T)$ and to fool the algorithm $\mathfrak{A}$ to choose the target arm $a^\dagger$, $T - o(T)$ times. 
+%%\todol{the two following paragraphs need to be merged}
+%We denote by $\wt{x_t}$ the context after the attack and we define the instantaneous cost of the attack as $c_t = ||x_t - \wt{x_t}||_2$. In this setting, the attacker does not have access to the arm chosen by algorithm $\mathfrak{A}$ when presented with context $x_{t}$. Therefore, they cannot adapt to the algorithm effectively. Hence, we focus on \linucb and assume that the attacker has access to the parameters of the algorithm\otc{: }it is a \emph{white-box} setting, as in  \cite{goodfellow2014explaining}. %.\todot{Put a reference to mention that it is a standard case in supervised learning}
+%\otc{ Finally, we assume that the attacker knows a lower bound on expected rewards as follows:}
+% \todo{Maybe reference these two assumptions, namely in latex terms assumption1 and assumption2}
+
+%% \begin{assumption}\label{assumption2}
+%% 	For all $x\in \mathcal{D}$, $0 <\nu \leq \left\langle x, \theta_{a^{\dagger}} \right\rangle$.
+%% \end{assumption}
+% \paragraph{Cost of attacking contexts:}
+% In this second setting, the attacker can modify the context $x_{t}$ into $\wt{x}_{t}$ which is then presented to the algorithm $\mathfrak{A}$. The instantaneous cost of attack for a context is defined as $c^{x}_{t} := || x_{t} - \wt{x_{t}} ||_{2}$.
+\textbf{Attack Idea.} The idea \changee{of} the attack in this setting is similar to the attack \changee{of} Sec.~\ref{sec:attacks_rewards}. The attacker builds a bandit problem where arm an $a^{\dagger}\in A^{\dagger}$ is optimal for all contexts by lowering the perceived value of all other arms not in $A^{\dagger}$. 
+The attacker cannot modify the reward but, thanks to the linear reward assumption, they can scale the contexts to decrease the predicted rewards in the original context. 
+
+At time $t$, the attacker receives the context $x_t$ and computes the attack. 
+Thanks to the white-box setting, it computes the arm $a_{t}$ that algorithm $\mathfrak{A}$ would pull if presented with context $x_{t}$. If \changelm{$a_{t} \notin A^{\dagger}$} then the attacker changes the context to $\wt{x}_{t} =  \alpha_{a_t} x_{t}$ with $\alpha_{a_t} > \max_{x \in \mathcal{D}}\changelm{\min_{a^\dagger\in A^\dagger}} \langle \theta_{a_t}, x \rangle/\langle \theta_{a^{\dagger}}, x \rangle$.\changee{This factor is chosen such that for a ridge regression computed on the dataset $(\alpha x_{i}, \langle \theta, x_{i} \rangle)_{i}$ outputs a parameter close to $\theta/\alpha$ therefore the attacker needs to choose $\alpha$ such that for every context $x\in\mathcal{D}$, $\langle x, \theta/\alpha\rangle \leq \max_{a^{\dagger}\in A^{\dagger}} \langle x, \theta_{a
+^{\dagger}}, x \rangle$.}
+%
+In other words, the attacker performs a dilation of the incoming context every time algorithm $\mathfrak{A}$ does not pull \changelm{an arm in $A^{\dagger}$}. The fact that the decision rule used by \linucb is invariant by dilation guarantees that the attacker will not inadvertently lower the perceived rewards for \changelm{arms in $A^{\dagger}$}.
+%This idea of re-scaling is motivated by the fact that the decision rule used by \linucb is invariant by dilatation.
+Because the rewards are assumed to be linear, presenting a large context $\alpha x$ and receiving the reward associated with the normal context $x$ will skew the estimated rewards of \linucb. The attack protocol is summarized in Fig.~\ref{alg:context_attack_protocol}. 
+
+
+\changee{In order to compute the parameter $\alpha$ used in the attack, we make the following assumption concerning the performance of the arms in the target set:}
+\begin{assumption}\label{assumption2}
+	For all $x\in \mathcal{D}$, \changelm{there exists $a^\dagger\in A^\dagger$}, such that $0 <\nu \leq \left\langle x, \theta_{a^{\dagger}} \right\rangle$ and $\nu$ is known to the attacker.
+\end{assumption}
+
+\changee{\textbf{Knowing $\nu$.} For advertising and recommendation systems, knowing $\nu$ is not problematic. Indeed in those cases, the reward is the probability of impression of the ad ($r \in [0,1]$). The attacker has the freedom to choose one of multiple target arms with strictly positive click probability in every context. This freedom is an important aspect for the attacker since it allows the attacker to cherry pick the target ad(s). In particular, the attacker can estimate $\nu$ based on data from previous campaigns (only for the target ad). For instance, a company could have run many ad campaigns for one of their products and try to get the defender’s system to advertise it.}
+
+
+An issue is that the norm of the attacked context can be greater that the upper bound $L$ of Assumption~\ref{assumption1}. To prevent this issue, we choose a context-dependent multiplicative constant $\alpha(x) = \min\{ 2/\nu, L/\|x\|_{2}\}$ which amounts to clip the norm of the attacked context to $L$. In Sec.~\ref{sec:experiments}, we show that this attack is effective for different size of target arms sets. We also show that in the case of contexts such that $\|x\|_{2} \leq \nu L/2$ that the cost of attacks is logarithmic in the horizon $T$.
+
+
+\begin{figure}[t]
+\begin{minipage}{0.45\linewidth}
+%\vspace{-0.3in}
+\bookboxx{
+        %\textbf{Input:} attack parameter: $\alpha$ \\
+        \noindent \textbf{For} time $t=1, 2, ..., T$ \textbf{do}
+        \begin{enumerate}[leftmargin=4mm,itemsep=0mm]
+                \item Alg. $\mathfrak{A}$ chooses arm $a_{t}$ based on context $x_{t}$
+                \item Environment generates reward: $r_{t,a_{t}} = \langle \theta_{a_{t}}, x_{t}\rangle + \eta_{t}$ with $\eta^{t}_{a_t}$ conditionally $\sigma^{2}$-subgaussian
+                \item Attacker observes reward $r_{t,a_{t}}$ and feeds the perturbed reward $\wt{r}^{1}_{t,a_{t}}$ (or $\wt{r}^{2}_{t,a_{t}}$) to $\mathfrak{A}$ 
+        \end{enumerate}
+}
+\vspace{-0.1in}
+\caption{\small Contextual ACE algorithm}
+\label{alg:attacker_rewards}
+\end{minipage}\hfill
+\begin{minipage}{0.52\linewidth}
+%\vspace{-0.3in}
+\bookboxx{
+        \textbf{Input:} attack parameter: $\alpha$ \\
+        \noindent \textbf{For} time $t=1, 2, ..., T$ \textbf{do}
+        \begin{enumerate}[leftmargin=4mm,itemsep=0mm]
+                \item Attacker observes the context $x_{t}$, computes potential arm $a_{t}'$ and \otc{sets} $\wt{x}_{t} = x_{t} + (\alpha(x_{t}) -1 )x_{t}~\mathds{1}_{\{ a_{t}' \notin  A^{\dagger}\}}$
+                \item Alg. $\mathfrak{A}$ chooses arm $a_{t}$ based on context $\wt{x}_{t}$
+                \item Environment generates reward: $r_{t,a_{t}} = \langle \theta_{a_{t}}, x_{t}\rangle + \eta_{t}$ with $\eta_{t}$ conditionally $\sigma^{2}$-subgaussian
+                \item Alg. $\mathfrak{A}$ observes reward $r_{t,a_{t}}$
+        \end{enumerate}
+}
+\vspace{-0.1in}
+\caption{\small ConicAttack algorithm.}
+\label{alg:context_attack_protocol}
+\end{minipage}
+\vspace{-0.15in}
+\end{figure}
+ 
+% Thus if we have the bandit problem of Fig.\ref{fig:context_positive} then the attacker can not make the alg. $\mathfrak{A}$ learns an environment where $a^{\dagger}$ is optimal for all contexts.
+
+
+% \begin{minipage}{0.45\linewidth}
+% \centering
+% \includegraphics[width=0.5\linewidth]{images/positive_context.pdf}
+% %\caption{Example of bandit problem where the target arm can not be learned as optimal all the time}
+% \end{minipage}\hfill
+% \begin{minipage}{0.45\linewidth}
+% \end{minipage}
+
+\begin{prop}
+\label{prop:cost_attack_all_ctx}
+	Using the attack described in Fig.~\ref{alg:context_attack_protocol} \changee{and assuming that $\|x\|_{2}\leq \nu L/2$ for all contexts $x\in\mathcal{D}$}, for any $\delta\in (0,1/K]$, with probability at least $1 - K\delta$, the number of times \linucb does not pull \changebrtwo{an} arm \changelm{in $A^{\dagger}$} \otc{before time $T$} is at most     $\sum_{j\notin A^{\dagger}} N_{j}(T) \leq 32K^{2}\left( \frac{\lambda}{\alpha^{2}} + \sigma^{2}d\log\left(\frac{\lambda d + TL^2\alpha^{2}}{d\lambda\delta}\right) \right)^{3}$ 
+% \begin{align*}
+%     \sum_{j\neq a^{\dagger}} N_{j}(T) \leq 32K^{2}\left( \frac{\lambda}{\alpha^{2}} + \sigma^{2}d\log\left(\frac{\lambda d + TL^2\alpha^{2}}{d\lambda\delta}\right) \right)^{3}
+% \end{align*}
+	with $N_{j}(T)$ the number of times arm $j$ has been pulled \otc{during the first }$T$ steps, 
+	%$|| \theta_{a}|| \leq S$ for all arms $a$, $\lambda$ the regularization parameter of \linucb and for all $x\in \mathcal{D}$, $||x||_{2}\leq L$.
+The total cost for the attacker is bounded by: $   \sum_{t=1}^{T} c_{t} \leq \frac{64K^{2}}{\nu}\left( \frac{\lambda}{\alpha^{2}} + \sigma^{2}d\log\left(\frac{\lambda d + TL^2\alpha^{2}}{d\lambda\delta}\right) \right)^{3}$ with $\alpha = 2/\nu$. 
+% \begin{align*}
+%     \sum_{t=1}^{T} c_{t} \leq \frac{64K^{2}}{\nu}\left( \frac{\lambda}{\alpha^{2}} + \sigma^{2}d\log\left(\frac{\lambda d + TL^2\alpha^{2}}{d\lambda\delta}\right) \right)^{3}
+% \end{align*}
+\end{prop}
+
+The proof of Proposition \ref{prop:cost_attack_all_ctx} (see App.~\ref{app:proof_attack_all_ctx}) assumes that the attacker can attack at any time step, and that \changebr{they} can know in advance which arm will be pulled by Alg. $\mathfrak{A}$ in a given context. Thus it is not applicable to random exploration algorithms like \lints \cite{agrawal2013thompson} and \epsgreedy.  We also observed empirically that thowe two randomized algorithms are more robust to attacks (see Sec.~\ref{sec:experiments}) than \linucb.
+
+\textbf{Norm Clipping.} Clipping the norm of the attacked contexts is not beneficial for the attacker. Indeed, this means that an attacked context was violating the assumption (used by the bandit algorithm) that contexts are bounded by $L$. The attack could then be easily detectable and may succeed only because it is breaking an underlying assumption used by the bandit algorithm. Prop.~\ref{prop:cost_attack_all_ctx} provides a theoretical grounding for the proposed attack when contexts are bounded by $\nu L/2$ and not only $L$.
+Although, we can not prove a bound on the cumulative cost of attacks in general, we show in Sec.~\ref{sec:experiments} that attacks are still successful for multiple datasets where contexts are not bounded by $\nu L/2$. 
+%This difficulty for random exploration algorithms is reflected in our experiments. See Section \ref{sec:experiments} for further details.
+%\todot{We have also observed empirically that randomized algorithms are more robust to attacks (see Sec.~\ref{sec:experiments}).}
+
+% \begin{remark}
+%         If the attacker wants alg. $\mathfrak{A}$ to pull any arm in a set of target arms $A^{\dagger}$, the same type of attack can still be used with $\nu$ such that $0<\nu \leq \max_{a \in A^{\dagger}} \langle x, \theta_{a}\rangle$ for all $x \in \mathcal{D}$. %\todot{min? BR: No it would be a min on the contexts but it is a max on the target arms} 
+%         Then, the context is multiplied by $\alpha = 2 / \nu$ when alg. $\mathfrak{A}$ is going to pull an arm not in $A^{\dagger}$.
+% \end{remark}
+
+% \todot{can we say something on estimating $\nu$. For example by constructing an estimate of $\theta_{a^\dagger}$ and the associated confidence interval?}
+% \todoe{We could use an estimate of $\nu$ but we do not have any guarantees on the number of target pulls}
+
+% \begin{proof}
+  
+% Let $a_{t}$ be the arm pulled by \linucb at time $t$. For each arms $a$, let $\wt{\theta}_a(t)$ be the result of the linear regression with the attacked context and $\hat{\theta}_{a}(t, \lambda/\alpha^{2})$ the one with the unattacked context and a regularization of $\frac{\lambda}{\alpha^{2}}$. At any time step $t$, we can write, for all $a\neq a^\dagger$:
+
+% \begin{align*}
+% \wt{\theta}_a(t) &=  \left(\lambda I_d + \sum_{l=0, a_{l} = a}^{t} \alpha^{2} x_l x_l^{\intercal}\right)^{-1} \sum_{k=0, a_{k} = a}^{t} r_k \alpha x_{k}\\
+%   & =\frac{1}{\alpha} \left(\frac{\lambda}{\alpha^2} I_d + \sum_{k=0, a_{k} = a}^t x_k x_k^{\intercal}\right)^{-1} \sum_{k=0, a_{k} = a}^t r_k x_k \\
+%     &= \frac{\hat{\theta}_{a}(t,\lambda/\alpha^{2})}{\alpha}
+% \end{align*}
+% We also note that, since the contexts are not modified for arm $a^\dagger$: $\wt{\theta}_{a^\dagger}(t)=\hat{\theta}_{a^\dagger}(t,\lambda)$.
+
+% In addition, for any context $x$ and arm $a\neq a^\dagger$, the exploration term used by \linucb becomes:
+% \begin{align}
+%     ||x||_{\wt{V}_{a,t}^{-1}}&= \frac{1}{\alpha} ||x||_{\hat{V}_{a,t}^{-1}}
+% \end{align}
+% where $\wt{V}_{a,t} = \lambda I_d + \sum_{l=0, a_{l} = a}^{t} \alpha^{2} x_l x_l^{\intercal}$ and $\hat{V}_{a,t}^{-1} =\lambda/ \alpha^2 I_d + \sum_{k=0, a_{k} = a}^t x_k x_k^{\intercal}$. For a time $t$, if presented with context $x_{t}$ \linucb pulls arm $a_{t} \neq a^{\dagger}$, we have:
+% \begin{align*}
+% \alpha\left(\left\langle \hat{\theta}_{a^\dagger}(t), x_{t} \right\rangle +\beta_{a^\dagger}(t)||x_t||_{V_{a^\dagger,t}^{-1}}\right)\\\leq \left\langle \hat{\theta}_{a_{t}}(t, \lambda/\alpha^{2}), x_{t} \right\rangle +  \beta_{a_{t}}(t)||x_{t}||_{\hat{V}_{a_{t},t}^{-1}} 
+% \end{align*}
+
+% % Assuming that the confidence set for $a^{\dagger}$ holds, we have:
+% % \begin{align*}
+% % \alpha \left\langle \theta_{a^\dagger}(t), x_{t} \right\rangle \leq \left\langle \hat{\theta}_{a_{t}}(t, \lambda/\alpha^{2}), x_{t} \right\rangle +  \beta_{a_{t}}(t)||x_{t}||_{\hat{V}_{a_{t},t}^{-1}} 
+% % \end{align*}
+
+
+% As $\alpha = \frac2\nu\geq\frac{2}{\left\langle \theta_{a^\dagger}, x_{t} \right\rangle}$, we deduce that on the event that the confidence sets hold: 
+% \begin{align*}
+%     2&\leq\left\langle \hat{\theta}_{a_{t}}(t, \lambda/\alpha^{2}), x_{t} \right\rangle +  \beta_{a_{t}}(t)||x_{t}||_{\hat{V}_{a_{t},t}^{-1}}\\
+%     &\leq \langle\theta_{a_{t}}, x_{t}\rangle+2\beta_{a_{t}}(t)||x_{t}||_{\hat{V}_{a_{t},t}^{-1}}
+% \end{align*}
+% And, then:
+
+% \begin{align*}
+%   1 \leq 2 - \langle\theta_{a_{t}}, x_{t}\rangle \leq 2\beta_{a_{t}}(t)||x_{t}||_{\hat{V}_{a_{t},t}^{-1}} 
+% \end{align*}
+% Therefore,
+% \begin{align*}
+%     \sum_{t=1}^{T} \mathds{1}_{\{a_{t}\neq a^{\dagger}\}} \leq \sum_{t=1}^{T} \min(2\beta_{a_{t}}(t)||x_{t}||_{\hat{V}_{a_{t},t}^{-1}},1)\mathds{1}_{\{a_{t} \neq a^{\dagger}\}}& \\
+%     \leq \sum_{j\neq a^{\dagger}} 2\beta_{j}(T)\sqrt{\sum_{t=1}^{T}\mathds{1}_{\{a_{t}=j\}}\sum_{t=1, a_{t}=j}^{T} \min(1, ||x_{t}||^{2}_{\hat{V}_{j,t}^{-1}})}&
+%   \end{align*}
+%   But using Lemma $11$ from \cite{abbasi2011improved} and the bound on the $\beta_{j}(T)$ for all arm $j$, we have with Jensen inequality:
+%   \begin{align*}
+%     \sum_{t=1}^{T} \mathds{1}_{\{a_{t}\neq a^{\dagger}\}} \leq 4\sqrt{K\sum_{t=1}^{T} \mathds{1}_{\{a_{t}\neq a^{\dagger}\}}d\log\left( \lambda/\alpha^{2} + TL/d\right)}&\\
+%     \Big( \sqrt{\lambda/\alpha^{2}} S + \sigma\sqrt{2\log(1/\delta) + d\log(1 + TL\alpha^{2}/(\lambda d)}\Big)&
+% \end{align*}
+% Hence the result.
+% \end{proof}
+% \begin{prop}
+% \label{prop:cost_attack_all_ctx}
+% As in proposition \ref{prop:cost_attack_reward},
+% for \linucb, the number of times the arm $a^{\dagger}$ is pulled is at least:
+% \begin{align*}
+%     T - \frac{256\sigma^{2}\lambda S^{2}}{\left(\min_{x\in D} \left\langle \theta_{a^{\dagger}}, x\right\rangle\right)^{2}}\Bigg( d\log\left(\lambda + \frac{TL^{2}}{d}\right) + &\\ 2\log\left(\frac{1}{\delta}\right) \Bigg)^{2}&
+% \end{align*}
+
+% %As the attacker only attacks when the arm $a^{\dagger}$ is not pulled and the contexts are bounded by 1, 
+% The total cost of the attack is bounded by :
+% \begin{align*}
+%     \frac{256\sigma^{2}\lambda S^{2}\delta}{\left(\min_{x\in D} \left\langle \theta_{a^{\dagger}}, x\right\rangle\right)^{2}}\Bigg( d\log\left(\lambda + \frac{TL^{2}}{d}\right) + &\\ 2\log\left(\frac{1}{\delta}\right) \Bigg)^{2}&
+% \end{align*}
+% \end{prop}
+% \paragraph{Context attacks for adversarial contextual bandits:}
+% This type of attack can not work for general contextual bandit algorithm as it is relies heavily on the fact that algorithms like \linucb use linear models to estimate the bandit environment. That is not the case anymore for more general algorithm like Exp$4$. 
+
+%However, our experiments show that this attack works well in practice when the attacker can only modify the contexts for a fraction of the time steps or when the attacked algorithm is \epsgreedy. 
+
+% \begin{remark}\label{rk:detection}
+% Similarly to the previous section, in a cold start setting the learner is unlikely to see any bias induced by the attack. But, in this case, a simple yet effective defense would be to filtrate on the contexts that have a ``too big" norm, i.e. remove outliers from the datasets in terms of norm. In that sense, it  might constitute a defense against this type of  attack.
+% \todoeout{This does not work}
+% \end{remark}
