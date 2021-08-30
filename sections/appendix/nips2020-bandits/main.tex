@@ -8,14 +8,12 @@
 \newcommand{\cmmnt}[1]{\ignorespaces}
 
 
-\begin{abstract}
 Contextual bandit algorithms are applied in a wide range of domains, from advertising to recommender systems, from clinical trials to education. In many of these domains, malicious agents may have incentives to {force a bandit algorithm into a desired behavior.} %attack the bandit algorithm to induce it to perform a desired behavior.
 For instance, an unscrupulous ad publisher may try to increase their own revenue at the expense of the advertisers; a seller may want to increase the exposure of their products, or thwart a competitor's advertising campaign.
 In this paper, we study several attack scenarios and show that a malicious agent can force a linear contextual bandit algorithm to pull any desired arm $T - o(T)$ times over a horizon of $T$ steps, while applying adversarial modifications to either rewards or contexts {with a cumulative cost} that only grow logarithmically as $O(\log T)$.
 We also investigate the case when a malicious agent is interested in affecting the behavior of the bandit algorithm in a single context (e.g., a specific user). We first provide sufficient conditions for the feasibility of the attack and %we then propose 
 an efficient algorithm to perform an attack. %test
 {We empirically validate the proposed approaches in synthetic and real-world datasets.} %o  ur theoretical results on experiments performed on both synthetic and real-world datasets.
-\end{abstract}
 
 
 
@@ -24,10 +22,10 @@ an efficient algorithm to perform an attack. %test
 \input{sections/appendix/nips2020-bandits/introduction}
 \input{sections/appendix/nips2020-bandits/preliminaries}
 \input{sections/appendix/nips2020-bandits/adversarial_attacks_rewards}
-\input{sections/appendix/nips2020-bandits/adversarial_attacks_rewards}
+\input{sections/appendix/nips2020-bandits/adversarial_attacks_contexts}
 \input{sections/appendix/nips2020-bandits/one_user_attack}
 
-\input{sections/2_game/experiments}
+\input{sections/appendix/nips2020-bandits/experiments}
 \input{sections/appendix/nips2020-bandits/conclusion}
 
 \begin{subappendices}

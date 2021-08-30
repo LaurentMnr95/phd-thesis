@@ -12,7 +12,7 @@ In this appendix, we present the different bandit algorithms studied in this pap
   \FOR{$t=1,..., T$}
   \STATE Observe context $x_{t}$
   \STATE Compute $\beta_{a}(t) = \sigma\sqrt{d\log\left(\frac{1 +  N_{a}(t)L^{2}/\lambda}{\delta}\right)}$ with $N_{a}(t)$ the number of pulls of arm $a$
-  \STATE Pull arm  $a_{t} =\argmax_a \langle \hat{\theta}_{a}(t),x_t\rangle + \beta_{a}(t)||x_{t}||_{\bar{V}_{a}^{-1}(t)}$
+  \STATE Pull arm  $a_{t} =\argmaxB_a \langle \hat{\theta}_{a}(t),x_t\rangle + \beta_{a}(t)||x_{t}||_{\bar{V}_{a}^{-1}(t)}$
   \STATE Observe reward $r_{t}$ and update parameters $\hat{\theta}_{a}(t)$ and $\bar{V}_{a}^{-1}(t)$ such that:
   \begin{align*}
       \bar{V}_{a_{t}}(t+1) = \bar{V}_{a_{t}}(t) + x_{t}x_{t}^{\intercal},\quad b_{a_{t}}(t+1) = b_{a_{t}}(t) + r_{t}x_{t},\quad\theta_{a_{t}}(t+1) = \bar{V}_{a_{t}}^{-1}(t+1)b_{a_{t}}(t+1)
@@ -30,7 +30,7 @@ In this appendix, we present the different bandit algorithms studied in this pap
   \FOR{$t=1,..., T$}
   \STATE Observe context $x_{t}$
   \STATE Draw $\tilde{\theta}_{a}\sim\mathcal{N}(\hat{\theta}_{a}(t), \upsilon^{2}\bar{V}_{a}^{-1}(t))$
-  \STATE Pull arm $a_{t} = \argmax_{a\in \llbracket 1, K\rrbracket} \left\langle \tilde{\theta}_{a}, x_{t}\right\rangle$
+  \STATE Pull arm $a_{t} = \argmaxB_{a\in \llbracket 1, K\rrbracket} \left\langle \tilde{\theta}_{a}, x_{t}\right\rangle$
   \STATE Observe reward $r_{t}$ and update parameters $\hat{\theta}_{a}(t)$ and $\bar{V}_{a}^{-1}(t)$
     \begin{align*}
       \bar{V}_{a_{t}}(t+1) = \bar{V}_{a_{t}}(t) + x_{t}x_{t}^{\intercal},\quad b_{a_{t}}(t+1) = b_{a_{t}}(t) + r_{t}x_{t},\quad\theta_{a_{t}}(t+1) = \bar{V}_{a_{t}}^{-1}(t+1)b_{a_{t}}(t+1)
@@ -47,7 +47,7 @@ In this appendix, we present the different bandit algorithms studied in this pap
 	\STATE Initialize, for all arms $a$, $\bar{V}_{a}^{-1}(t) = \lambda I_{d}$ and $\hat{\theta}_{a}(t) = 0$, $\varepsilon_{t} = 1$, $b_{a}(t) = 0$
   \FOR{$t=1,..., T$}
   \STATE Observe context $x_{t}$
-  \STATE With probability $\varepsilon_{t}$, pull $a_{t} \sim \mathcal{U}\left(\llbracket 1,K\rrbracket\right)$, or pull $a_{t} = \argmax \langle \theta_{a}, x_{t}\rangle$ 
+  \STATE With probability $\varepsilon_{t}$, pull $a_{t} \sim \mathcal{U}\left(\llbracket 1,K\rrbracket\right)$, or pull $a_{t} = \argmaxB \langle \theta_{a}, x_{t}\rangle$ 
   \STATE Observe reward $r_{t}$ and update parameters $\hat{\theta}_{a}(t)$ and $\bar{V}_{a}^{-1}(t)$
     \begin{align*}
       &\bar{V}_{a_{t}}(t+1) = \bar{V}_{a_{t}}(t) + x_{t}x_{t}^{\intercal},\quad b_{a_{t}}(t+1) = b_{a_{t}}(t) + r_{t}x_{t},\\

@@ -39,9 +39,9 @@ Because the rewards are assumed to be linear, presenting a large context $\alpha
 
 
 \changee{In order to compute the parameter $\alpha$ used in the attack, we make the following assumption concerning the performance of the arms in the target set:}
-\begin{assumption}\label{assumption2}
+\begin{assump}\label{assumption2}
 	For all $x\in \mathcal{D}$, \changelm{there exists $a^\dagger\in A^\dagger$}, such that $0 <\nu \leq \left\langle x, \theta_{a^{\dagger}} \right\rangle$ and $\nu$ is known to the attacker.
-\end{assumption}
+\end{assump}
 
 \changee{\textbf{Knowing $\nu$.} For advertising and recommendation systems, knowing $\nu$ is not problematic. Indeed in those cases, the reward is the probability of impression of the ad ($r \in [0,1]$). The attacker has the freedom to choose one of multiple target arms with strictly positive click probability in every context. This freedom is an important aspect for the attacker since it allows the attacker to cherry pick the target ad(s). In particular, the attacker can estimate $\nu$ based on data from previous campaigns (only for the target ad). For instance, a company could have run many ad campaigns for one of their products and try to get the defender’s system to advertise it.}
 

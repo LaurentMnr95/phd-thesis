@@ -17,8 +17,8 @@ In this appendix, we present empirical evolution of the total cost and the numbe
 
 \begin{figure}[htbp]
     \centering
-    \subfigure[Total cost]{\includegraphics[width=0.35\textwidth]{images/attack_reward/simulations/cost_epsilon.pdf}}
-    \subfigure[Number of draws]{\includegraphics[width=0.3\textwidth]{images/attack_reward/simulations/draws_epsilon.pdf}}
+    \subfigure[Total cost]{\includegraphics[width=0.35\textwidth]{sections/appendix/nips2020-bandits/images/attack_reward/simulations/cost_epsilon.pdf}}
+    \subfigure[Number of draws]{\includegraphics[width=0.3\textwidth]{sections/appendix/nips2020-bandits/images/attack_reward/simulations/draws_epsilon.pdf}}
     \caption{Total cost of attacks and number of draws of the target arm at $T = 10^{6}$ as a function of $\gamma$ on synthetic data}
     \label{fig:synth_cost_draws_gamma}
 \end{figure}
@@ -66,22 +66,22 @@ Stationary CACE \expfour &     $993, 673.24$ &  $988, 463.56$ &   $934, 304.23$ 
 \begin{figure}[h]
    \begin{minipage}{0.25\linewidth}
         \centering
-        \includegraphics[width=0.85\linewidth]{images/regret_cost_attacks_context/simulations/legend.pdf}
+        \includegraphics[width=0.85\linewidth]{sections/appendix/nips2020-bandits/images/regret_cost_attacks_context/simulations/legend.pdf}
         %\caption{Lorem ipsum}
     \end{minipage}\hfill
     \begin{minipage}{0.25\linewidth}
     \centering
-    \includegraphics[width=0.95\linewidth]{images/regret_cost_attacks_context/simulations/standalone.pdf}
+    \includegraphics[width=0.95\linewidth]{sections/appendix/nips2020-bandits/images/regret_cost_attacks_context/simulations/standalone.pdf}
     % \caption{Synthetic}
     \end{minipage}\hfill
     \begin{minipage}{0.25\linewidth}
     \centering
-    \includegraphics[width=0.85\linewidth]{images/regret_cost_attacks_context/jester/standalone.pdf}
+    \includegraphics[width=0.85\linewidth]{sections/appendix/nips2020-bandits/images/regret_cost_attacks_context/jester/standalone.pdf}
     % \caption{Jester}
     \end{minipage}\hfill
     \begin{minipage}{0.25\linewidth}
     \centering
-    \includegraphics[width=0.85\linewidth]{images/regret_cost_attacks_context/movielens/standalone.pdf}
+    \includegraphics[width=0.85\linewidth]{sections/appendix/nips2020-bandits/images/regret_cost_attacks_context/movielens/standalone.pdf}
     % \caption{MovieLens}
     \end{minipage}
     \label{fig:regret_all_algs_attack_all_ctx}
@@ -97,9 +97,9 @@ For Problem \eqref{eq:attack_one_user} we use the \textsc{SLSQP} method from the
 
 \begin{figure}[htbp]
     \centering
-    \subfigure[Synthetic data]{\includegraphics[width=0.33\textwidth]{images/one_context/simulations/standalone.pdf}}\hfill
-    \subfigure[Jester Dataset]{\includegraphics[width=0.33\textwidth]{images/one_context/jester/standalone.pdf}}\hfill
-    \subfigure[MovieLens Dataset]{\includegraphics[width=0.33\textwidth]{images/one_context/movielens/standalone.pdf}}
+    \subfigure[Synthetic data]{\includegraphics[width=0.33\textwidth]{sections/appendix/nips2020-bandits/images/one_context/simulations/standalone.pdf}}\hfill
+    \subfigure[Jester Dataset]{\includegraphics[width=0.33\textwidth]{sections/appendix/nips2020-bandits/images/one_context/jester/standalone.pdf}}\hfill
+    \subfigure[MovieLens Dataset]{\includegraphics[width=0.33\textwidth]{sections/appendix/nips2020-bandits/images/one_context/movielens/standalone.pdf}}
     \caption{Total cost of the attacks for the attacks one one context on our synthetic dataset, Jester and MovieLens. As expected, the total cost is linear.}
     \label{fig:cost_attack_one_ctx}
 \end{figure}
