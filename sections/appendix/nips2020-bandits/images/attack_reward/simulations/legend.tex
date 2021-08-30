@@ -1,0 +1,49 @@
+% This file was created by tikzplotlib v0.9.3.
+\begin{tikzpicture}
+\definecolor{color0}{rgb}{0.894117647058824,0.101960784313725,0.109803921568627}
+\definecolor{color1}{rgb}{0.215686274509804,0.494117647058824,0.72156862745098}
+\definecolor{color2}{rgb}{0.301960784313725,0.686274509803922,0.290196078431373}
+\definecolor{color3}{rgb}{0.596078431372549,0.305882352941176,0.63921568627451}
+\definecolor{color4}{rgb}{1,0.498039215686275,0}
+\definecolor{color5}{rgb}{1,1,0.2}
+\definecolor{color6}{rgb}{0.650980392156863,0.337254901960784,0.156862745098039}
+\definecolor{color7}{rgb}{0.968627450980392,0.505882352941176,0.749019607843137}
+
+\begin{axis}[%
+legend cell align={left},
+legend style={fill opacity=1, draw opacity=1, text opacity=1, draw=white!80!black},
+% tick align=outside,
+% tick pos=left,
+x grid style={white!69.0196078431373!black},
+xmin=0, xmax=1,
+% xtick style={color=black},
+% xtick={-20000000,0,20000000,40000000,60000000,80000000,100000000,120000000},
+% xticklabels={−0.2,0.0,0.2,0.4,0.6,0.8,1.0,1.2},
+y grid style={white!69.0196078431373!black},
+ymin=0, ymax=1,
+ytick style={color=black},
+% ytick={-2000000,0,2000000,4000000,6000000,8000000,10000000,12000000,14000000},
+% yticklabels={−0.2,0.0,0.2,0.4,0.6,0.8,1.0,1.2,1.4},
+hide axis
+]
+
+
+\addlegendimage{very thick, color0}
+\addlegendentry{CACE \linucb, $\gamma=0.5$};
+\addlegendimage{very thick, color0, dashed}
+\addlegendentry{Stationary CACE \linucb};
+\addlegendimage{very thick, color1, dotted}
+\addlegendentry{CACE \lints, $\gamma=0.5$};
+\addlegendimage{very thick, color1, dash pattern=on 1pt off 3pt on 3pt off 3pt}
+\addlegendentry{Stationary CACE \lints};
+\addlegendimage{very thick, color2, mark={*}, mark repeat = {2}}
+\addlegendentry{CACE \expfour, $\gamma=0.5$};
+\addlegendimage{very thick, color2, mark={+}, mark repeat={2}}
+\addlegendentry{Stationary CACE \expfour};
+\addlegendimage{very thick, color3, mark={x}, mark repeat={2}}
+\addlegendentry{CACE \epsgreedy, $\gamma=0.5$};
+\addlegendimage{very thick, color3, mark={diamond}, mark repeat={2}}
+\addlegendentry{Stationary CACE \epsgreedy};
+\end{axis}
+
+\end{tikzpicture}

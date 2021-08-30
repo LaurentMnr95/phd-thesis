@@ -1,0 +1,57 @@
+% This file was created by tikzplotlib v0.9.3.
+\begin{tikzpicture}
+
+\definecolor{color0}{rgb}{0.967797559291991,0.441274560091574,0.53581031550587}
+\definecolor{color1}{rgb}{0.903599057664843,0.511987276335809,0.195883500601616}
+\definecolor{color2}{rgb}{0.735022898563272,0.595271990475095,0.194441913384752}
+\definecolor{color3}{rgb}{0.59208915296397,0.641846701637824,0.193506913499104}
+\definecolor{color4}{rgb}{0.312689001950433,0.692875461029606,0.192370483033038}
+\definecolor{color5}{rgb}{0.203127571978999,0.688124924980342,0.51776181674473}
+\definecolor{color6}{rgb}{0.210447538321833,0.677310508045675,0.643394116846868}
+\definecolor{color7}{rgb}{0.217867106624284,0.665667160132225,0.748280938506581}
+\definecolor{color8}{rgb}{0.232991209247039,0.639586552066035,0.926070609397774}
+\definecolor{color9}{rgb}{0.642304434921974,0.549768005125647,0.958265143365673}
+\definecolor{color10}{rgb}{0.908257243676556,0.401957907296565,0.957690925029023}
+\definecolor{color11}{rgb}{0.963332174206496,0.406438256457318,0.759253759956867}
+
+\begin{axis}[%
+legend cell align={left},
+legend style={fill opacity=1, draw opacity=1, text opacity=1, draw=white!80!black},
+% tick align=outside,
+% tick pos=left,
+x grid style={white!69.0196078431373!black},
+xmin=0, xmax=1,
+% xtick style={color=black},
+% xtick={-20000000,0,20000000,40000000,60000000,80000000,100000000,120000000},
+% xticklabels={−0.2,0.0,0.2,0.4,0.6,0.8,1.0,1.2},
+y grid style={white!69.0196078431373!black},
+ymin=0, ymax=1,
+ytick style={color=black},
+% ytick={-2000000,0,2000000,4000000,6000000,8000000,10000000,12000000,14000000},
+% yticklabels={−0.2,0.0,0.2,0.4,0.6,0.8,1.0,1.2,1.4},
+hide axis
+]
+
+\addlegendimage{very thick, color0}
+\addlegendentry{\linucb};
+\addlegendimage{very thick, color1}
+\addlegendentry{Attacked \linucb, $|A| = 0.3K$};
+\addlegendimage{very thick, color2}
+\addlegendentry{Attacked \linucb, $|A| = 0.6K$};
+\addlegendimage{very thick, color3}
+\addlegendentry{Attacked \linucb, $|A| = 0.9K$};
+\addlegendimage{very thick, color5}
+\addlegendentry{Attacked \epsgreedy, $|A| = 0.3K$};
+\addlegendimage{very thick, color6}
+\addlegendentry{Attacked \epsgreedy, $|A| = 0.6K$};
+\addlegendimage{very thick,color7}
+\addlegendentry{Attacked \epsgreedy, $|A| = 0.9K$};
+\addlegendimage{very thick, color9}
+\addlegendentry{Attacked \lints, $|A| = 0.3K$};
+\addlegendimage{very thick, color10}
+\addlegendentry{Attacked \lints, $|A| = 0.6K$};
+\addlegendimage{very thick, color11}
+\addlegendentry{Attacked \lints, $|A| = 0.9K$};
+\end{axis}
+
+\end{tikzpicture}
