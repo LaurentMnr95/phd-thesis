@@ -1,0 +1,102 @@
+
+\section{Background and Related Work}
+\label{section:background_rw}
+
+In this paper, we aim at devising {\em certified} defense mechanisms against adversarial attacks, in the following, we formally define an adversarial attacks and a robustness certificate.
+We consider a classification task from an input space $\mathcal{X}\subset\RR^d$ to a label space $\mathcal{Y}:=\{1,\dots,K\}$.
+To this end, we aim at learning a classifier function $\mathbf{f}:=(f_1,\dots,f_K):\mathcal{X}\to \RR^K$ such that the predicted label for an input $x$ is $\argmaxB_k f_k(x)$.
+For a given couple input-label $(x,y)$, we say that $x$ is correctly classified if $\argmaxB_k f_k(x)=y$.
+
+
+\begin{definition}[{\bf Adversarial Attacks}]
+Let $x \in \mathcal{X}$, $y \in \mathcal{Y}$ the label of $x$ and let $\mathbf{f}$ be a classifier.
+An adversarial attack at level $\varepsilon$ is a perturbation $\tau$ \st $\lVert\tau\rVert\leq\varepsilon$ such that:
+\begin{equation*}
+  \argmaxB_k f_k(x+\tau) \neq y
+\end{equation*}
+\end{definition}
+Let us now define the notion of  robust certification. For $x \in \mathcal{X}$, $y \in \mathcal{Y}$ the label of $x$ and let $\mathbf{f}$ be a classifier, a classifier $\mathbf{f}$ is said to be \emph{certifiably robust at radius $\varepsilon\geq 0$} at point $x$ if for all $\tau$ such that ${\lVert\tau\rVert \leq \varepsilon}$ :
+\begin{equation*}
+  \argmaxB_k f_k(x+\tau) = y
+\end{equation*}
+The task of robust certification is then to find methods that ensure the previous property. A key quantity in this case is the Lipschitz constant of the classifier.
+
+
+
+\subsection{Lipschitz property of Neural Networks}
+
+The Lipschitz constant has seen a growing interest in the last few years in the field of deep learning~\citep{scaman2018lipschitz,fazlyab2019efficient,combettes2020lipschitz,bethune2021many}.
+Indeed, numerous results have shown that neural networks with a small Lipschitz constant exhibit better generalization~\citep{bartlett2017spectrally}, higher robustness to adversarial attacks~\citep{szegedy2014intriguing,farnia2018generalizable,tsuzuku2018lipschitz}, better training stability~\citep{xiao2018dynamical,trockman2021orthogonalizing}, improved Generative Adversarial Networks~\citep{arjovsky2017wasserstein}, etc.
+Formally, we define the Lipschitz constant with respect to the $\ell_2$ norm of a Lipschitz continuous function $f$ as follows:
+\begin{equation*}
+  Lip_{2}{(f)} = \sup_{\substack{x, x' \in \mathcal{X} \\ x \neq x'}} \frac{\lVert f(x) - f(x') \rVert_2}{\lVert x - x' \rVert_2} \enspace.
+\end{equation*}
+
+Intuitively, if a classifier is Lipschitz, one can bound the impact of a given input variation on the output, hence obtaining guarantees on the adversarial robustness.
+We can formally characterize the robustness of a neural network with respect to its Lipschitz constant with the following proposition:
+\begin{prop}[\citet{tsuzuku2018lipschitz}] \label{proposition:tsuzuku}
+Let $\mathbf{f}$ be an $L$-Lipschitz continuous classifier for the $\ell_2$ norm.
+Let $\varepsilon > 0$, $x \in \mathcal{X}$ and $y \in \mathcal{Y}$ the label of $x$.
+If at point $x$, the margin $\mathcal{M}_{\mathbf{f}}(x)$ satisfies:
+\begin{equation*}
+  \mathcal{M}_{\mathbf{f}}(x):=\max(0,f_y(x)-\max_{y'\neq y}f_{y'}(x)) > \sqrt{2} L \varepsilon
+\end{equation*}
+then we have for every $\tau$ such that $\lVert \tau \rVert_2 \leq \varepsilon$:
+\begin{equation*}
+  \argmaxB_{k}f_k(x + \tau) = y
+\end{equation*}
+\end{prop}
+From Proposition~\ref{proposition:tsuzuku}, it is straightforward to compute a robustness certificate for a given point.
+Consequently, in order to build robust neural networks the margin needs to be large and the Lipschitz constant small to get optimal guarantees on the robustness for neural networks.
+
+
+
+\subsection{Certified Adversarial Robustness}
+
+Mainly two kinds of methods have been developed to come up with certified adversarial robustness.
+The first category relies on randomization and consists of convolving the input with a predefined probability distribution during both training and inference phases.
+Several works that rely on the method have proposed empirical~\cite{cao2017mitigating,liu2018towards,pinot2019theoretical,pinot2020randomization} and certified defenses~\cite{lecuyer2018certified,li2019certified,cohen2019certified,salman2019provably,yang2020randomized}. These methods are model-agnostic, in the sense they do not depend on the architecture of the classifier, and provide ``high probability'' certificates.
+However, this approach suffers from significant impossibility results: the maximum radius that can be certified for a given smoothing distribution vanishes as the dimension increases~\cite{yang2020randomized}.
+Furthermore, in order to get non-vacuous provable guarantees, such approaches often require to query the network hundreds of times to infer the label of a single image.
+This computational cost naturally limits the use of these methods in practice.
+
+The second approach directly exploits the Lipschitzness property with the design of built-in $1$-Lipschitz layers. Contrarily to previous methods,  these approaches provide deterministic guarantees.
+Following this line, one can either normalize the weight matrices by their largest singular values making the layer $1$-Lipschitz, \emph{e.g.}~\citep{yoshida2017spectral,miyato2018spectral,farnia2018generalizable,anil2019sorting} or project the weight matrices on the Stiefel manifold \citep{li2019preventing,trockman2021orthogonalizing,skew2021sahil}.
+The work of \citet{li2019preventing}, \citet{trockman2021orthogonalizing} and \citet{skew2021sahil} (denoted BCOP, Cayley and SOC respectively) are considered the most relevant approach to our work.
+Indeed, their approaches consist of projecting the weights matrices onto an orthogonal space in order to preserve gradient norms and enhance adversarial robustness by guaranteeing low Lipschitz constants. 
+While both works have similar objectives, their execution is different.
+The BCOP layer (Block Convolution Orthogonal Parameterization) uses an iterative algorithm proposed by \citet{bjorck1971iterative} to orthogonalize the linear transform performed by a convolution.
+The SOC layer (Skew Orthogonal Convolutions) uses the property that if $A$ is a skew symmetric matrix then $Q=\exp{A}$ is an orthogonal matrix. To approximate the exponential, the authors proposed to use a finite number of terms in its Taylor series expansion.
+Finally, the method proposed by~\citet{trockman2021orthogonalizing} use the Cayley transform to orthogonalize the weights matrices.
+Given a skew symmetric matrix $A$, the Cayley transform consists in computing the orthogonal matrix $Q = (I - A)^{-1} (I + A)$. Both methods are well adapted to convolutional layers and are able to reach high accuracy levels on CIFAR datasets. Also, several works~\cite{anil2019sorting,singla2021householder,huang2021local} proposed methods leveraging the properties of activation functions to constraints the Lipschitz of Neural Networks. These works are usually useful to help  improving the performance of linear orthogonal layers.
+
+
+\subsection{Residual Networks}
+
+To prevent from gradient vanishing issues in neural networks during the training phase~\citep{hochreiter2001gradient},~\cite{he2016deep} proposed the Residual Network (ResNet) architecture.
+Based on this architecture, several works~\citep{haber2017stable,e17Proposal,lu18beyond,chen2018neural} proposed a ``continuous time'' interpretation inspired by dynamical systems that can be defined as follows.
+
+\begin{definition}\label{def:flow}
+Let $(F_{t})_{t\in[0,T]}$ be a family of functions on $\RR^d$, we define the continuous time Residual Networks flow associated with $F_t$ as:
+\begin{align*}\label{eq:resnet_c0}
+  \left\{
+    \begin{array}{ll}
+    x_0 &= x\in\mathcal{X}\\
+    \frac{dx_{t}}{dt} &= F_{{t}}(x_{t}) \  \text{for } \ t\in[0, T]
+  \end{array}
+  \right.
+\end{align*}
+\end{definition}
+
+This continuous time interpretation helps as it allows us to consider the stability of the forward propagation through the stability of the associated dynamical system.
+A dynamical system is said to be \emph{stable} if two trajectories starting from an input and another one remain sufficiently close to each other all along the propagation.
+This stability property takes all its sense in the context of adversarial classification.
+
+It was argued by~\citet{haber2017stable} that when $F_{t}$ does not depend on $t$ or vary slowly with time\footnote{This blurry definition of "vary slowly" makes the property difficult to apply.}, the stability can be characterized by the eigenvalues of the Jacobian matrix $\nabla_x F_{t}(x_t)$: 
+the dynamical system is stable if the real part of the eigenvalues of the Jacobian stay negative throughout the propagation.
+This property however only relies on intuition and this condition might be difficult to  verify in practice.
+In the following, in order to derive stability properties, we study gradient flows and convex potentials, which are sub-classes of Residual networks.
+
+Other works~\citep{huang2020adversarial,li2020implicit} also proposed to enhance adversarial robustness using dynamical systems interpretations of Residual Networks. Both works argues that using particular discretization scheme would make gradient attacks more difficult to compute due to numerical stability. These works did not provide any provable guarantees for such approaches.
+
+

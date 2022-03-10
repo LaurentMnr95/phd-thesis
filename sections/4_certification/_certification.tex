@@ -1,89 +1,17 @@
 \chapter{Certification Methods for Adversarial Examples}
 \minitoc
+\label{chap:certification}
+In this chapter we focus on noise injection and convex flows to build certifiable defenses on adversarial robustness. A desirable property for a function to be robust against adversarial examples is that the classifier $\mathbf{f}=(f_1,\dots,f_K)$ is a $M$-Lipschitz function with regards to Euclidean norm i.e. $\lVert \mathbf{f}(x)-\mathbf{f}(x')\rVert_2\leq M\lVert x-x'\rVert$ for all $x,x'\in\mathcal{X}$. 
 
-\section{Certification by noise injection}
-
-\section{Certification of ResNets using Convex Potentials.}
-\textbf{Disclaimer: This section is still an ongoing work}
-\subsection{Certification of Lipschitz function}
-A desirable property for function to be robust against adversarial examples is that the classifier $\mathbf{f}$ is a $L$-Lipschitz function i.e. $\lVert \mathbf{f}(x)-\mathbf{f}(x')\rVert\leq L\lVert x-x'\rVert$ for all $x,x'\in\mathcal{X}$
-\subsection{Residual Networks}
-
-Residual Networks~\citep{He_2016_CVPR} are a type of neural network were introduced in our to prevent from vanishing gradients. The architecture basis forward pass is defined as follows:
-\begin{align*}
-    \left\{
-    \begin{array}{ll}
-    x_0 &= x\\
-    x_{t}& = x_t+f_{\theta_{t-1}}(x_{t-1})\text{ for } t\in\{1,\dots T\}\\
-    y &= h_{\theta_T}(x_{T})\in \mathbb{R}^K
-  \end{array}
-    \right.
+\begin{prop}[\citep{li2019preventing}]Let $\mathbf{f}$ be a  $M$-Lipschitz classifier. Then for $\varepsilon>0$ and for every $x$ with label $y$ such that \begin{align*}
+    \max(0,f_y(x)-\max_{y'\neq y}f_{y'}(x))> \sqrt{2}M\varepsilon
 \end{align*}
-
-where $f_{\theta_{i}}$ and $h_{\theta_T}$ are parametrized functions to learn. In practice there are often dimension reduction operation inside ResNets making the previous scheme not exactly true. But for the sake of our theory, we only focus on ResNets with the previous architecture. In this case, ResNets can have a continuous time interpretation as follows:
+then we have for every $\tau$ such that $\lVert \tau\rVert\leq \varepsilon$:
 \begin{align*}
-        \left\{
-    \begin{array}{ll}
-    x_0 &= x\\
-    \frac{dx_{t}}{dt} &= f_{\theta_{t}}(x_{t})\text{ for } t\in[0, T]\\
-    y &= h_{\theta_T}(x_{T-1})\in \mathbb{R}^K
-  \end{array}
-    \right.
+    \argmaxB_{i}f_i(x+\tau)=y
 \end{align*}
-
-\subsection{Residual Networks with Convex Potentials}
-From the previous continuous interpretation of ResNets, we can define continuous gradient flow ResNets. We even have the following property:
-
-\begin{prop} 
-Let $(f_{\theta_t})_{t\in[0,T]}$ be a family convex differentiable functions. Let define the following continuous flow:
-\begin{align*}
-    \begin{array}{ll}
-    \frac{dx_{t}}{dt} &= -\nabla_xf_{\theta_{t}}(x_{t})\text{ for } t\in[0,T]\\
-  \end{array}
- \end{align*}
-Then, for two flows $x_t$ and $y_t$ with initial point $x$ and $y$ respectively, then, for $t\in[0,T]$, $\lVert x_t-y_t\rVert_2\leq \lVert x-y\rVert_2$ 
 \end{prop}
 
-\begin{proof}
-Let define two flows $x_t$ and $y_t$ with initial point $x$ and $y$ respectively. Then we get:
-\begin{align*}
-   \frac{d}{dt} \lVert x_t-y_t\rVert_2^2& = \langle x_t-y_t,x_t'-y_t'\rangle\\
-    &=- \langle x_t-y_t,\nabla_xf_{\theta_{t}}(x_{t})-\nabla_xf_{\theta_{t}}(y_{t})\rangle\leq 0
-\end{align*}
-The last inequality is a usual characterization of convexity. Then we get that $\lVert x_t-y_t\rVert_2$ is a decreasing function. In particular, $\lVert x_t-y_t\rVert_2\leq\lVert x-y\rVert_2 $ which concludes the proof.
-\end{proof}
-In other words, a continuous ResNet defined from gradient flows of convex functions defines a $1$-Lipschitz feature extraction. However, this property is not valid when discretizing. We need an additional smoothness property. We recall that a function $f$ is $L$-smooth if and only if it is differentiablel and $x\mapsto\nabla_x f(x)$ is $L$-Lipschitz.
-
-
-\begin{prop} 
-Let $(f_{\theta_t})_{t\in\{0\dots T-1\}}$ be a family convex differentiable functions such that for all $t$, $f_{\theta_t}$ is $L_t$-smooth. Let define the following discretized flow:
-\begin{align*}
-    \begin{array}{ll}
-    x_{t} &= x_{t-1}-h_t\nabla_xf_{\theta_{t-1}}(x_{t-1})\text{ for } t\in\{1\dots T\}\\
-  \end{array}
- \end{align*}
-Then, for two flows $x_t$ and $y_t$ with initial point $x$ and $y$ respectively, then, if $0\leq h_t\leq \frac{2}{L_t}$ for $t\in\{0\dots T-1\}$,  then $\lVert x_t-y_t\rVert_2\leq \lVert x-y\rVert_2$  for all $t\in\{0\dots T\}$.
-\end{prop}
-
-\begin{proof}
-
-\end{proof}
-\subsection{Parametrizing Convex Potentials}
-
-The previous result requires building gradient of convex functions. It is clear that for every $w_1,\dots w_k\in\mathbb{R}^d$, $b_1,\dots,b_k\in \mathbb{R}$ and a convex function $\phi$ that
-\begin{align*}
-    g:x\mapsto \sum_{i=1}^k\phi( w_i^Tx+b_i)
-\end{align*}
-is a convex function. Its gradient with regards to $x$is then:
-
-\begin{align*}
-    x\mapsto \sum_{i=1}^kw_i\phi'(w_i^Tx+b_i) = \mathbf{W}^T \sigma(\mathbf{W} x+\mathbf{b})
-\end{align*}
-with $\mathbf{W}\in \mathbb{R}^{k\times d}$ and $\mathbf{b}\mathbb{R}^{k}$ a the concatenation of, respectively, $w_i^T$ and $b_i$. Moreover, assuming $\phi'$ is $L$-Lipschitz. We get that $g$ is a $ L\sigma^2_{max}(\mathbf{W})$-smooth with  
-$\sigma_{max}(\mathbf{W})$ the greatest singular value of $\mathbf{W}$. 
-
-The previous reasoning is valid for any type of linear layers. For instance, if $\mathbf{W}$ is a convolutional operator, $\mathbf{W}^T$ can be easily coded using transposed convolutions. Thus the implementation of such a layer is simple and the operation is fastly made and easily differentiable when back-propagating in the network. The only operation that might be complicated is to provide an efficient differentiable computation of the stepsize $h_t$ that requires computing an upper bound on $\sigma_{max}(\mathbf{W})$.
-
-\paragraph{Bounding singular values.} Efficient computation of singular values is often a demanding task. For linear layers, there exists many methods such that .... For upper bounding singular values of convolution layers, it can be done using results from 
-
-\subsection{Preliminary Experimental Results}
+This property ensures robustness guarantees for Lipschitz classifiers
+\input{sections/4_certification/noise_injection}
+\input{sections/4_certification/resnet}

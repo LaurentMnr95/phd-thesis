@@ -8,7 +8,7 @@
 \newcommand{\laurent}[1]{{\textcolor{blue}{#1}}}
 
 \usepackage{etoolbox}
-
+\usepackage{pdfpages}
 
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
@@ -37,11 +37,11 @@
 \usepackage{dsfont}
 \usepackage{pifont}
 \usepackage{amssymb}
+\usepackage[binary-units=true]{siunitx}
 \usepackage{algorithmic}
 
 \geometry{margin=1.4in}
-
-\title{phd thesis}
+\title{A Theoretical Approach to Adversarial Robustness}
 \author{Laurent Meunier}
 \date{August 2021}
 
@@ -49,14 +49,15 @@
 \maketitle
 \dominitoc
 \tableofcontents
-\listoffigures
 \input{sections/intro}
 \input{sections/1_background/_background}
 \input{sections/2_game/_game}
 \input{sections/3_calibration/_calibration}
 \input{sections/4_certification/_certification}
+\input{sections/conclusion}
+
 \bibliography{biblio}
 \bibliographystyle{plainnat}
 \newpage
-\input{sections/appendix/_appendix}
+%\input{sections/appendix/_appendix}
 \end{document}

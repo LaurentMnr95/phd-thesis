@@ -1,0 +1,37 @@
+\section{Standard Classification in a Nutshell}
+
+\subsection{Notations}
+We recall that a classification aims at assigning a label to a given input. We  formalize it as follows:
+\begin{itemize}
+    \item Consider an input space $\mathcal{X}$, typically images. We assume this space is endowed with an arbitrary metric $d$ possibly the perception distance or any $\ell_p$ norm. In the remaining of the manuscript, unless it is specified, $(\mathcal{X},d)$ will be a \textit{proper} (i.e. closed balls are compact) \textit{Polish} (i.e. completely separable) metric space. Note that for any norm $\lVert\cdot\rVert$,  $(\mathbb{R}^d,\lVert\cdot\rVert)$ is a proper Polish metric space.
+    \item Each image $x\in \mathcal{X}$ has to be associated with  a label $y$. We designate the set of labels $\mathcal{Y}:=\{1,\dots,K\}$ as descriptors of an input. For instance the label of an image will be its description. $\mathcal{Y}$ will be endowed with the trivial metric  $d'(y,y') = \mathbf{1}_{y\neq y'}$. Note that $(\mathcal{X}\times\mathcal{Y},d\oplus d')$ is also a proper Polish space.
+\end{itemize}
+With such spaces, the space $(\mathcal{X}\times\mathcal{Y},d\oplus d')$ is also a proper Polish space. As in every classification problem, the data is sampled from an unknown probability distribution $\PP$. We will assume from now that the distributions we consider are Borel. For any Polish Space $\mathcal{Z}$, we will denote $\mathcal{B}(\mathcal{Z})$ the Borel $\sigma$-algebra and the set of Borel distributions over $\mathcal{Z}$  will be denoted $\mathcal{M}_+^1(\mathcal{Z})$. We also recall the notion of \textit{universal measurability}: a set $A\subset \mathcal{Z}$ is said to be universally measurable if it is measurable for every \textit{complete} Borel probability measure.
+
+\subsection{Classification Task}
+In standard classification, we aim at learning a (universally or Borel) measurable function $h:\mathcal{X}\to\mathcal{Y}$ minimizing the $0/1$ loss risk:
+\begin{align}
+   \risk_{0/1}(h):=\PP(h(x)\neq y) = \EE_{(x,y)\sim\PP}\left[\mathbf{1}_{h(x)\neq y}\right]
+\end{align}
+Note that this quantity is well defined when $h$ is measurable. The optimal classifier is called the Bayes Optimal classifier and is defined as $h(x) = \argmaxB_k\PP(y=k\mid x)$. One can note, using disintegration theorem that $h$ is indeed Borel measurable.
+
+However in practice, the access to the Bayes Optimal classifier is impossible because it requires full knowledge of the probability distribution $\PP$ which is not the case in general. Let us assume having access to a training set of $n$ data points $\{(x_1,y_1),\dots,(x_\numsamples,y_\numsamples)\}$. The knowledge of the Bayes classifier on training points would not be sufficient to have generalization properties for the classifier on out-of-sample data points because such functions would overfit the training set. Hence one need to reduce the search space of measurable functions to a much smaller one, denoted $\mathcal{H}$ in the sequel. More precisely, for binary classification (i.e $\mathcal{Y}:=\{-1,+1\})$, we aim at learning a function $\mathbf{f}:\XX\to\mathbb{R}$ such that $h(x)=\sign(f(x))$ (with a convention on $sign(0)$). In multilabel classification (i.e $|\mathcal{Y}|\geq2$), we learn a function $\mathbf{f}:\XX\to\mathbb{R}^K$ and $h$ is set to $h(x)=\argmaxB_k f_k(x)$. Minimizing directly the $0/1$ loss risk is  NP-hard CITE. Then one needs to minimize a well-chosen surrogate loss function $\loss$. A \textit{loss function} $\loss:\mathbb{R}^K\times\mathcal{Y}\to\mathbb{R}$ will be without loss of generality a non negative Borel measurable function. An example of such a loss is the cross entropy loss defined as:
+\begin{align*}
+    \loss(\mathbf{f}(x),y)=-\sum_{i=1}^K \mathbf{1}_{y=i}\log f_i(x)
+\end{align*}
+where $f_i(x)$ is the probability learnt by the model that input $x$ belongs to the class $i$. The study of which loss is suited for classification has been a widely studied topic~\citep{bartlett2006convexity,steinwart2007compare}. Hence the learning objective is then defined as:
+
+\begin{align*}
+\inf_{\mathbf{f}\in\mathcal{H}}\riskemp_{\numsamples}(\mathbf{f}):= \frac{1}{\numsamples}\sum_{i=1}^\numsamples \loss(\mathbf{f}(x_i),y_i).
+\end{align*}
+
+\subsection{Background in Learning Theory} 
+
+
+
+Learning theory focuses on understanding and deriving convergence results for machine learning algorithms. % Instead, we aim at learning either a classifier $h\in\mathcal{H}$ such that:
+
+
+\paragraph{Surrogate losses} In classification, optimizing the risk associated $0/1$ loss is a difficult task, often NP-hard. To do so 
+
+

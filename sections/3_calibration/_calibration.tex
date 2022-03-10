@@ -1,60 +1,64 @@
-\chapter{Consistenct Study of Adversarial loss}
+\chapter{Consistency Study of Adversarial loss}
+\label{chap:calibration}
+
 \minitoc
 \textbf{Disclaimer: This section is still an unachieved work}
 
-In this section we assume a binary classification task, i.e. an output space $\mathcal{Y}=\{-1,+1\}$. We also denote in this section we extend the notion of loss functions to general cost functions a cost function is a function $L:\mathcal{X}\times\mathcal{Y}\times \mathcal{F}(\mathcal{X})\to \mathbb{R}$ such that $L(\cdot,\cdot,f)$ is universally measurable for all $f\in\mathcal{F}(\mathcal{X})$. 
+In this section we assume a binary classification task, i.e. an output space $\mathcal{Y}=\{-1,+1\}$. W extend the notion of loss functions to general cost functions.  A cost function is a function $\loss:\mathcal{X}\times\mathcal{Y}\times \mathcal{F}(\mathcal{X})\to \mathbb{R}$ such that $\loss(\cdot,\cdot,f)$ is universally measurable for all $f\in\mathcal{F}(\mathcal{X})$. We will denote $\mathcal{R}_{\loss}$ the risk associated with a loss $\loss$. 
 
 
-\section{Consistency}
+\section{Loss Consistency in Classification}
 
 \subsection{Consistency in Standard Classification}
-In a standard classification setting,  given $(x,y)$, we recall the  the classification loss is defined as:
+In a standard classification setting,  given $(x,y)$, we recall  the classification loss is defined as:
 \begin{align*}
-    L_{0/1}(x,y,f) = \mathbf{1}_{y\sign(f(x))\leq 0}
+    \loss_{0/1}(x,y,f) = \mathbf{1}_{y\sign(f(x))\leq 0}
 \end{align*}
-NOTATIONS
-In the literature the notion of notion of consistency with regards to $0/1$ loss is defined as follows.
-\begin{definition}[Consistency]
-A cost function $L$ is said to be consistent with respect to $0/1$ loss if and only if for all probability distributions $\PP\in\mathcal{M}_1^+(\mathcal{X}\times\mathcal{Y})$ for all sequences $(f_n)_n $ of measurable functions:
+In the literature the notion of consistency with regards to the $0/1$ loss is defined as follows.
+\begin{definition}[Classification Consistency]
+A cost function $\loss$ is said to be consistent with respect to $0/1$ loss for a a probability distribution $\PP\in\mathcal{M}_1^+(\mathcal{X}\times\mathcal{Y})$ if and only if for all sequences $(f_n)_n $ of measurable functions:
 \begin{align}
-    \mathcal{R}_{L}(f_n)\to \mathcal{R}_{L}^\star\implies\mathcal{R}_{0/1}(f)\to \mathcal{R}_{0/1}^\star
+    \mathcal{R}_{\loss}(f_n)\to \mathcal{R}_{\loss}^\star\implies\mathcal{R}_{0/1}(f_n)\to \mathcal{R}_{0/1}^\star
 \end{align}
 \end{definition}
 
 
-\paragraph{Standard results in classification.} Previous literature have focused,in standard classification, on margin losses, and it is defined as follows.
+\paragraph{Standard results in classification.} Previous literature have focused, in standard classification, on margin losses, and it is defined as follows.
 
-\begin{definition}[Margin loss] We say a loss $L$ is a margin loss if and only their exist a measurable function $\phi:\mathbb{R}\to\mathbb{R}_+$, such that for all $x\in\mathcal{X}$, $y\in\mathcal{Y}$, $f:\mathcal{X}\to\mathbb{R}$ a measurable function,
-$$L(x,y,f)=\phi(yf(x))$$
+\begin{definition}[Margin loss] We say a loss $\loss$ is a margin loss if there exists a measurable function $\phi:\mathbb{R}\to\mathbb{R}_+$, such that for all $x\in\mathcal{X}$, $y\in\mathcal{Y}$, $f:\mathcal{X}\to\mathbb{R}$ a measurable function,
+$$\loss(x,y,f)=\phi(yf(x))$$
 \end{definition}
 Without loss of generality, we will denote $\mathcal{R}_\phi$ the risk associated with a margin loss. Standard classification consistency highly relies on the fact that given a loss, the minimization can be made pointwisely, independently from the considered distribution $\PP$. The notion of consistency exactly matches with the notion of calibration, defined as follows:
-\begin{definition}[Calibration]XXX
-
+\begin{definition}[Classification Calibration] A margin loss $\phi$ is said to be classification-calibrated if for all $\eta\in[0,1]$, $\eta\neq \frac12$:
+\begin{align*}
+    H(\eta)>H^-(\eta)
+\end{align*}
+where $H(\eta):=\inf_{\alpha\in\RR}C_\eta(\alpha)$,  $H^-(\eta) = \inf_{\alpha,~\alpha(2\eta-1)\leq0}C_\eta(\alpha)$ and $C_\eta(\alpha):=\eta\phi(\alpha)+(1-\eta)\phi(-\alpha)$.
 \end{definition}
 
 \cite{bartlett2006convexity} and \cite{steinwart2007compare} show that consistency and calibration are equivalent notions in standard classification.
 
-\begin{thm}
-
+\begin{thm} In standard calibration, a margin loss $\phi$ is consistent with regards to classification loss if and only if $\phi$ is classification calibrated. 
 \end{thm}
 
-In particular, convex losses are interesting thanks XXX
+In particular, one can state the following results on convex margin losses.
+\begin{thm} Let $\phi$ be a convex margin differentiable in $0$. $\phi$ is consistent with regards to  classification loss if and only if $\phi'(0)<0$.
+\end{thm}
 \paragraph{What is the good 0/1 loss?}
-
-Let $f:\mathcal{X}\to\mathbb{R}$ be a measurable function. In the literature,  we generally find three ways for defining the 0/1 loss:
+In this paragraph, we precise why this $0/1$ loss is used in consistency/calibration study. Let $f:\mathcal{X}\to\mathbb{R}$ be a measurable function. In the literature,  we generally find three ways for defining the $0/1$ loss:
 \begin{itemize}
-    \item $L_{\leq}(x,y,f)=\mathbf{1}_{yf(x)\leq 0}$, the loss that penalizes indecision.
-    \item $L_{<}(x,y,f)=\mathbf{1}_{yf(x)< 0}$, the loss that encourages indecision.
-    \item $L_{0/1}(x,y,f)=\mathbf{1}_{y\text{sign}(f(x))\leq 0}$, with a sign convention ($sign(0) = 1$ for instance).
+    \item $\loss_{\leq}(x,y,f)=\mathbf{1}_{yf(x)\leq 0}$, the loss that penalizes indecision.
+    \item $\loss_{<}(x,y,f)=\mathbf{1}_{yf(x)< 0}$, the loss that encourages indecision.
+    \item $\loss_{0/1}(x,y,f)=\mathbf{1}_{y\text{sign}(f(x))\leq 0}$, with a sign convention ($sign(0) = 1$ for instance).
 \end{itemize}
 
 The original results from~\citep{bartlett2006convexity,steinwart2007compare} tackles the problem of the consistency with respect to the latter one. We can even remark that usual consistency results stated in the two previous papers are false for the two first losses, as shown in the following simple counterexample.
 
 \begin{counterexample*}
-Let $\PP$ defined as follows: $\PP(Y=-1)=\PP(Y=1)=\frac12$, and $\PP(X=0\mid Y)=1$. Let $\phi:\mathbb{R}\to\mathbb{R}$ be a margin based loss. The $\phi$-risk minimization problem writes $\inf_{\alpha} \frac{1}{2} (\phi(\alpha)+\phi(-\alpha))$. For a convex margin loss $\phi$ the optimum is attained in $\alpha=0$. 
+Let $\PP$ defined as follows: $\PP(Y=-1)=\PP(Y=1)=\frac12$, and $\PP(X=0\mid Y)=1$. Let $\phi:\mathbb{R}\to\mathbb{R}$ be a margin  loss. The $\phi$-risk minimization problem writes $\inf_{\alpha} \frac{1}{2} (\phi(\alpha)+\phi(-\alpha))$. For a convex margin loss $\phi$ the optimum is attained in $\alpha=0$. 
 \begin{enumerate}
-    \item $f_n:x\mapsto 0$ is a minimizing sequence for the $\phi$-risk. However $R_{L_{\leq}}(f_n)=1$ for all $n$ and $R_{L_{\leq}}^*=\frac{1}{2}$. Then we deduce that no convex margin based loss can be calibrated for $L_{\leq}$.
-    \item $f_n:x\mapsto \frac{1}{n}$ is a minimizing sequence for the $\phi$-risk. However $R_{L_{<}}(f_n)=1/2$ for all $n$ and $R_{L_{<}}^*=0$. Then we deduce that no convex margin based loss can be calibrated for $L_{<}$.
+    \item $f_n:x\mapsto 0$ is a minimizing sequence for the $\phi$-risk. However $R_{\loss_{\leq}}(f_n)=1$ for all $n$ and $R_{\loss_{\leq}}^*=\frac{1}{2}$. Then we deduce that no convex margin based loss can be calibrated for $\loss_{\leq}$.
+    \item $f_n:x\mapsto \frac{1}{n}$ is a minimizing sequence for the $\phi$-risk. However $R_{\loss_{<}}(f_n)=1/2$ for all $n$ and $R_{\loss_{<}}^*=0$. Then we deduce that no convex margin based loss can be calibrated for $\loss_{<}$.
 \end{enumerate}
 
 \end{counterexample*}
@@ -64,16 +68,18 @@ Let $\PP$ defined as follows: $\PP(Y=-1)=\PP(Y=1)=\frac12$, and $\PP(X=0\mid Y)=
 \subsection{Consistency in adversarial setting}
 
 
-Consistency in standard classification is studied with respect to the cost $L_{0/1}(x,y,f)=\mathbf{1}_{y\text{sign}(f(x))\leq 0}$. In the adversarial setting, the natural loss to consider then is  $$L_{0/1,\varepsilon}(x,y,f)(f(x),y)=\sup_{x'\in B_\varepsilon(x)}\mathbf{1}_{y\text{sign}(f(x'))\leq 0}$$ 
-with a sign convention (e.g. $sign(0)=1$). Otherwise, when $\varepsilon=0$, the consistency results would be wrong as stated in the previous counterexample. Previous works~\citep{XXX} focused on the loss $\sup_{x'\in B_\varepsilon(x)}\mathbf{1}_{yf(x'\leq 0}$ that consequently lead to misleading results because not compatible with standard classification when $\varepsilon=0$. We define the notion of consistency with regards to adversarial $0/1$ loss as follows.
-\begin{definition}[ Adversarial Consistency]
-A cost function $L$ is said to be consistent with respect to $0/1$ loss if and only if for all probability distributions $\PP\in\mathcal{M}_1^+(\mathcal{X}\times\mathcal{Y})$ for all sequences $(f_n)_n $ of measurable functions:
+Consistency in standard classification is studied with respect to the cost $\loss_{0/1}(x,y,f)=\mathbf{1}_{y\text{sign}(f(x))\leq 0}$. In the adversarial setting, the natural loss to consider then is  $$\loss_{0/1,\varepsilon}(x,y,f)=\sup_{x'\in B_\varepsilon(x)}\mathbf{1}_{y\text{sign}(f(x'))\leq 0}$$ 
+with a sign convention (e.g. $sign(0)=1$). Otherwise, when $\varepsilon=0$, the consistency results would be wrong as stated in the previous counterexample. Previous works~\citep{pmlr-v125-bao20a,awasthi2021calibration,awasthi2021finer} focused on the loss $\sup_{x'\in B_\varepsilon(x)}\mathbf{1}_{yf(x')\leq 0}$ that consequently lead to misleading results because not compatible with standard classification when $\varepsilon=0$. We define the notion of consistency with regards to adversarial $0/1$ loss as follows.
+\begin{definition}[Adversarial Consistency]
+A cost function $\loss$ is said to be consistent with respect to $0/1$ loss for a distribution  $\PP\in\mathcal{M}_1^+(\mathcal{X}\times\mathcal{Y})$ if and only if for all sequences $(f_n)_n $ of measurable functions:
 \begin{align}
-    \mathcal{R}_{L}(f_n)\to \mathcal{R}_{L}^\star\implies\mathcal{R}^\varepsilon_{0/1,\varepsilon}(f)\to \mathcal{R}_{0/1,\varepsilon}^\star
+    \mathcal{R}_{\loss}(f_n)\to \mathcal{R}_{\loss}^\star\implies\mathcal{R}_{0/1}^\varepsilon(f_n)\to \mathcal{R}_{0/1}^{\varepsilon,\star}
 \end{align}
 \end{definition}
 
-\paragraph{Calibration in adversarial classification} We need to note that the notion of calibration in the adversarial setting is misleading. EXPLAIN WHY 
+\paragraph{Calibration in adversarial classification} One need to note that the notion of calibration in the adversarial setting is misleading.  
+
+TODO.
 
 
 
@@ -82,12 +88,12 @@ Hence, one need to focus specifically on the notion of consistency in the advers
 \section{Adversarial Consistency Results}
 
 \subsection{Convex Losses are not Consistent}
-Following the work on standard classification, natural candidates loss for adversarial consistency would be supremum of standardly calibrared margin losses:
+Following the work on standard classification, natural candidate losses for adversarial consistency would be suprema of standardly calibrared margin losses:
 
-$$L(x,y,f)=\sup_{x', d(x,x')\leq\varepsilon}\phi(yf(x))$$
-including a wide range of  convex functions $\phi$. Next theorem shows the counter-intuitive result that no convex loss can define a consistent loss for adversarial classification
+$$\loss(x,y,f)=\sup_{x', d(x,x')\leq\varepsilon}\phi(yf(x))$$
+including a wide range of  convex functions $\phi$. Next theorem shows the counter-intuitive result that no calibrated convex loss can define a consistent loss for adversarial classification
 \begin{prop}
-Let $\phi$ be a convex classification-calibrated loss $\phi'(0) <0$. Then, for any $\varepsilon > 0$, there exist a distribution $\PP$ such that $x\to\sup_{x', d(x,x')\leq\varepsilon}\phi(yf(x))$ is not consistent with regards to $L_{0/1,\varepsilon}$.
+Let $\phi$ be a convex classification-calibrated margin loss (i.e. $\phi'(0) <0$). In $\RR$, for any $\varepsilon > 0$, there exists a distribution $\PP$ such that $x\to\sup_{x', d(x,x')\leq\varepsilon}\phi(yf(x))$ is not consistent for $\PP$ with regards to $\loss_{0/1,\varepsilon}$.
 \end{prop}
 
 \begin{proof}
@@ -100,7 +106,7 @@ Let $\epsilon$ > 0. We will construct a distribution $\mathcal{D}$ and a sequenc
 \mathbb{P}(Y=1, X=0) = \frac{1}{2} & \\
 \mathbb{P}(Y=-1, X=-a) = \frac{1}{4} & \\
 \mathbb{P}(Y=-1, X=a) = \frac{1}{4} & \\
-\mathbb{P}(X=x, Y=y) = 0 & \mbox{for any other (x,y).} \\
+\mathbb{P}(X, Y) = 0 & \mbox{otherwise.} \\
 \end{array} \right.
 \]
 
@@ -121,7 +127,7 @@ Let us then define :
 
 \begin{figure}
     \centering
-    %\includegraphics[scale=0.6]{images/Exemple.png}
+    \includegraphics[scale=0.6]{sections/3_calibration/images/example.png}
     \caption{The distribution we use as a counter-example. For the $0-1$ loss, there are two optimal classifiers, putting either both $Z_1$ and $Z_2$ to $1$ (and saving point A), or both to $-1$ (saving points B and C). With convex surrogate losses however, the optimal is to bring values in both $Z_1$ and $Z_2$ to zero, which can be done while maintaining opposite signs on $Z_1$ and $Z_2$, and so ensuring the loss of both A and one of B and C for the $0-1$ loss. }
     \label{fig:my_label}
 \end{figure}
@@ -169,8 +175,12 @@ Hence the result.
 \end{proof}
 
 
-\section{Realisable case}
-
+\subsection{Realisable case}
+In this realisable case, i.e. $\mathcal{R}^{\varepsilon}_{0/1} = 0$, results about standard classification consistency still hold.
 \begin{prop}
-Let $\PP$ be a Borel probability distribution over $\mathcal{X}\times\mathcal{Y}$ such that $\mathcal{R}^{\varepsilon}_\PP = 0$. Then, let $\phi$ be a standard classification calibrated margin-based loss. Then $\Tilde{\phi}:(x,y,f)\mapsto\sup_{x'\in B_\varepsilon(x)}\phi(yf(x'))$ is adversarially consistent at level $\varepsilon$.
+Let $\PP$ be a Borel probability distribution over $\mathcal{X}\times\mathcal{Y}$ such that $\mathcal{R}^{\varepsilon}_{0/1} = 0$. Then, let $\phi$ be a standard classification calibrated margin-based loss. Then $\Tilde{\phi}:(x,y,f)\mapsto\sup_{x'\in B_\varepsilon(x)}\phi(yf(x'))$ is adversarially consistent at level $\varepsilon$.
 \end{prop}
+
+\begin{proof}
+Coming soon
+\end{proof}

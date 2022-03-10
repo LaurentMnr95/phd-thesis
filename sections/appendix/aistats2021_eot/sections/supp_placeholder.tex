@@ -325,7 +325,7 @@ To conclude, we apply Lemma~\ref{lem:technical-lemma-primal}, and we get:
 
 \subsection{Proof of Proposition~\ref{prop:optimality-cond}}
 \label{prv:optimality-cond}
-\begin{prv}
+\begin{prv*}
 Let recall that, from standard optimal transport results:
 \begin{align*}
     \MOT_\mathbf{c}(\mu,\nu) = \sup_{u\in\Phi_\mathbf{c}}\int u d\mu d\nu
@@ -360,7 +360,7 @@ then $\gamma_k$ is solution of the primal problem. We also have for any $k$:
 &=\int c_k d\gamma_k\\
 &\geq \MOT_{\mathbf{c}}(\mu,\nu)\\
 \end{align*}
-\end{prv}
+\end{prv*}
 then, thanks to Theorem~\ref{thm:duality-GOT}, $(\lambda,f,g)$ is solution of the dual problem.
 
 Let now proof the result stated in Remark~\ref{rk:lambdanonzero}. Let assume the costs are strictly positive or strictly negative. If there exist $i$ such that $\lambda_i=0$, thanks to the condition $f\oplus g\leq \lambda_i c_i$, we get $f\oplus g\leq0$ and then $f\oplus g=0$ which contradicts the conditions $f\oplus g = \lambda_kc_k$ for all $k$. 
@@ -869,14 +869,14 @@ Let us now introduce the following algorithm.
 % \label{algo:Proj-grad}
 % \end{figure}
 
-\begin{algorithm}[H]
+\begin{algorithm}[!ht]
 \SetAlgoLined
-\textbf{Input:} $\mathbf{C}=(C_i)_{1\leq i\leq N}$, $a$, $b$, $\varepsilon$, $L$\\
-\textbf{Init:} $f^{-1}=f^0 \leftarrow \mathbf{0}_n\text{;  }$ $g^{-1} = g^0 \leftarrow \mathbf{0}_m\text{;  }$ $\lambda^{-1} = \lambda^0 \leftarrow (1/N,...,1/N)\in\mathbb{R}^N$\\
+\textbf{Input:} $\mathbf{C}=(C_i)_{1\leq i\leq N}$, $a$, $b$, $\varepsilon$, $L$
+\textbf{Init:} $f^{-1}=f^0 \leftarrow \mathbf{0}_n\text{;  }$ $g^{-1} = g^0 \leftarrow \mathbf{0}_m\text{;  }$ $\lambda^{-1} = \lambda^0 \leftarrow (1/N,...,1/N)\in\mathbb{R}^N$
 \For{$k=1,2,...$}{
-$(v,w,z)^T \leftarrow (\lambda^{k-1},f^{k-1},g^{k-1})^T+\frac{k-2}{k+1}\left((\lambda^{k-1},f^{k-1},g^{k-1})^T- (\lambda^{k-2},f^{k-2},g^{k-2})^T\right);\\
+$(v,w,z)^T \leftarrow (\lambda^{k-1},f^{k-1},g^{k-1})^T+\frac{k-2}{k+1}\left((\lambda^{k-1},f^{k-1},g^{k-1})^T- (\lambda^{k-2},f^{k-2},g^{k-2})^T\right);
 \lambda^k \leftarrow \text{Proj}_{\Delta_N^{+}}\left( v + \frac{1}{L}\nabla_{\lambda} F_{\mathbf{C}}^{\varepsilon}(v,w,z)\right);
-\\ (g^k, f^k)^T \leftarrow (w,z)^T + \frac{1}{L}\nabla_{(f,g)} F_{\mathbf{C}}^{\varepsilon}(v,w,z).$}
+ (g^k, f^k)^T \leftarrow (w,z)^T + \frac{1}{L}\nabla_{(f,g)} F_{\mathbf{C}}^{\varepsilon}(v,w,z).$}
 \caption{Accelerated Projected Gradient Ascent Algorithm\label{algo:Proj-grad}}
 \textbf{Result}: $\lambda,f,g$
 \end{algorithm}
@@ -990,10 +990,10 @@ that  $$\forall i~~\int c_id\gamma_i^{2}\leq \int c_id\gamma_i^{1}.$$
 
 \begin{figure*}[h!]
 \begin{tabular}{@{}c@{}c@{}c@{}c@{}}
-\includegraphics[width=0.25\textwidth]{figures/primal_W_1_neg_norm.pdf}&
-\includegraphics[width=0.25\textwidth]{figures/primal_W_2_neg_norm.pdf}&
-\includegraphics[width=0.25\textwidth]{figures/primal_W_3_neg_norm.pdf}&
-\includegraphics[width=0.25\textwidth]{figures/primal_W_1_2_3_neg_norm.pdf}
+\includegraphics[width=0.25\textwidth]{sections/appendix/aistats2021_eot/figures/primal_W_1_neg_norm.pdf}&
+\includegraphics[width=0.25\textwidth]{sections/appendix/aistats2021_eot/figures/primal_W_2_neg_norm.pdf}&
+\includegraphics[width=0.25\textwidth]{sections/appendix/aistats2021_eot/figures/primal_W_3_neg_norm.pdf}&
+\includegraphics[width=0.25\textwidth]{sections/appendix/aistats2021_eot/figures/primal_W_1_2_3_neg_norm.pdf}
 % \\[-.15cm]
 % (a)&(b)&(c)&(d)
 \end{tabular}
@@ -1004,10 +1004,10 @@ that  $$\forall i~~\int c_id\gamma_i^{2}\leq \int c_id\gamma_i^{1}.$$
 
 \begin{figure*}[h!]
 \begin{tabular}{@{}c@{}c@{}c@{}c@{}}
-\includegraphics[width=0.25\textwidth]{figures/primal_W_1_norm.pdf}&
-\includegraphics[width=0.25\textwidth]{figures/primal_W_2_norm.pdf}&
-\includegraphics[width=0.25\textwidth]{figures/primal_W_3_norm.pdf}&
-\includegraphics[width=0.25\textwidth]{figures/primal_W_1_2_3_norm.pdf}
+\includegraphics[width=0.25\textwidth]{sections/appendix/aistats2021_eot/figures/primal_W_1_norm.pdf}&
+\includegraphics[width=0.25\textwidth]{sections/appendix/aistats2021_eot/figures/primal_W_2_norm.pdf}&
+\includegraphics[width=0.25\textwidth]{sections/appendix/aistats2021_eot/figures/primal_W_3_norm.pdf}&
+\includegraphics[width=0.25\textwidth]{sections/appendix/aistats2021_eot/figures/primal_W_1_2_3_norm.pdf}
 % \\[-.15cm]
 % (a)&(b)&(c)&(d)
 \end{tabular}
@@ -1022,10 +1022,10 @@ Here we show the dual variables obtained in the exact same settings as in the pr
 
 \begin{figure*}[h!]
 \begin{tabular}{@{}c@{}c@{}c@{}c@{}}
-\includegraphics[width=0.23\textwidth]{figures/dual_MOT_1_neg_norm.pdf}&
-\includegraphics[width=0.23\textwidth]{figures/dual_MOT_2_neg_norm.pdf}&
-\includegraphics[width=0.23\textwidth]{figures/dual_MOT_3_neg_norm.pdf}&
-\includegraphics[width=0.268\textwidth]{figures/dual_MOT_1_2_3_neg_norm.pdf}
+\includegraphics[width=0.23\textwidth]{sections/appendix/aistats2021_eot/figures/dual_MOT_1_neg_norm.pdf}&
+\includegraphics[width=0.23\textwidth]{sections/appendix/aistats2021_eot/figures/dual_MOT_2_neg_norm.pdf}&
+\includegraphics[width=0.23\textwidth]{sections/appendix/aistats2021_eot/figures/dual_MOT_3_neg_norm.pdf}&
+\includegraphics[width=0.268\textwidth]{sections/appendix/aistats2021_eot/figures/dual_MOT_1_2_3_neg_norm.pdf}
 % \\[-.15cm]
 % (a)&(b)&(c)&(d)
 \end{tabular}
@@ -1107,10 +1107,10 @@ where the inversion is possible as the Slater's conditions are satisfied  and th
 
 \begin{figure*}[h!]
 \begin{tabular}{@{}c@{}c@{}c@{}c@{}}
-\includegraphics[width=0.23\textwidth]{figures/dual_MOT_1_norm.pdf}&
-\includegraphics[width=0.23\textwidth]{figures/dual_MOT_2_norm.pdf}&
-\includegraphics[width=0.23\textwidth]{figures/dual_MOT_3_norm.pdf}&
-\includegraphics[width=0.268\textwidth]{figures/dual_MOT_1_2_3_norm.pdf}
+\includegraphics[width=0.23\textwidth]{sections/appendix/aistats2021_eot/figures/dual_MOT_1_norm.pdf}&
+\includegraphics[width=0.23\textwidth]{sections/appendix/aistats2021_eot/figures/dual_MOT_2_norm.pdf}&
+\includegraphics[width=0.23\textwidth]{sections/appendix/aistats2021_eot/figures/dual_MOT_3_norm.pdf}&
+\includegraphics[width=0.268\textwidth]{sections/appendix/aistats2021_eot/figures/dual_MOT_1_2_3_norm.pdf}
 % \\[-.15cm]
 % (a)&(b)&(c)&(d)
 \end{tabular}
@@ -1127,6 +1127,6 @@ Figure~\ref{fig:result_acc} illustrates the convergence of the entropic regulari
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.6\linewidth]{figures/box_plot_accuracy.pdf}
+\includegraphics[width=0.6\linewidth]{sections/appendix/aistats2021_eot/figures/box_plot_accuracy.pdf}
 \caption{In this experiment, we draw 100 samples from two normal distributions and we plot the relative error from ground truth for different regularizations. We consider the case where two costs are involved: $c_1= 2\times\mathbf{1}_{x\neq y}$, and $c_2=d$ where $d$ is the Euclidean distance. This case corresponds exactly to the Dudley metric (see Proposition~\ref{prop:GOT-holder}). We remark that as $\varepsilon\to 0$, the approximation error goes also to $0$.\label{fig:result_acc}}
 \end{figure}

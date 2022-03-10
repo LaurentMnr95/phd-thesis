@@ -100,12 +100,12 @@ As in standard regularized optimal transport there is a link between primal and 
 % \end{figure}
 \begin{algorithm}[ht!]
 \SetAlgoLined
-\textbf{Input:} $\mathbf{C}=(C_i)_{1\leq i\leq N}$, $a$, $b$, $\varepsilon$, $L_{\lambda}$\\
-\textbf{Init:} $f^0\leftarrow \mathbf{1}_n\text{;  }$ $g^0 \leftarrow \mathbf{1}_m\text{;  }$ $\lambda^0 \leftarrow (1/N,...,1/N)\in\mathbb{R}^N$\\
+\textbf{Input:} $\mathbf{C}=(C_i)_{1\leq i\leq N}$, $a$, $b$, $\varepsilon$, $L_{\lambda}$
+\textbf{Init:} $f^0\leftarrow \mathbf{1}_n\text{;  }$ $g^0 \leftarrow \mathbf{1}_m\text{;  }$ $\lambda^0 \leftarrow (1/N,...,1/N)\in\mathbb{R}^N$
 \For{$k=1,2,...$}{$
-K^k \leftarrow \sum_{i=1}^N K_i^{\lambda_i^{k-1}},\\
-c_k \leftarrow \langle f^{k-1}, K^k g^{k-1}\rangle,~f^{k} \leftarrow \frac{c_k a}{K^{k}g^{k-1}},\\
-d_k \leftarrow\langle f^{k}, K^k g^{k-1}\rangle,~g^{k} \leftarrow \frac{d_k b}{ (K^k)^Tf^{k}}, \\
+K^k \leftarrow \sum_{i=1}^N K_i^{\lambda_i^{k-1}},
+c_k \leftarrow \langle f^{k-1}, K^k g^{k-1}\rangle,~f^{k} \leftarrow \frac{c_k a}{K^{k}g^{k-1}},
+d_k \leftarrow\langle f^{k}, K^k g^{k-1}\rangle,~g^{k} \leftarrow \frac{d_k b}{ (K^k)^Tf^{k}}, 
 \lambda^k \leftarrow \mathrm{Proj}_{\Delta^+_N}\left( \lambda^{k-1} + \frac{1}{L_\lambda}\nabla_{\lambda} F_{\mathbf{C}}^{\varepsilon}(\lambda^{k-1},f^{k},g^{k})\right).$}
 \caption{Projected Alternating Maximization \label{algo:Proj-Sinkhorn}}
 \textbf{Result}: $\lambda,f,g$
@@ -143,15 +143,15 @@ We show that the new objective obtained above is smooth w.r.t $(\lambda,f,g)$. S
 \begin{tabular}{ c  c  c  c}
 % \vspace{-0.1in}\\
 \includegraphics[width=0.28\textwidth%, %height=0.15\textwidth
-]{figures/plot_accuracy_vs_time_exp_1.pdf} &
+]{sections/appendix/aistats2021_eot/figures/plot_accuracy_vs_time_exp_1.pdf} &
 \includegraphics[width=0.28\textwidth%, height=0.15\textwidth
-]{figures/plot_accuracy_vs_time_exp_2.pdf}
+]{sections/appendix/aistats2021_eot/figures/plot_accuracy_vs_time_exp_2.pdf}
 &
 \includegraphics[width=0.28\textwidth%,height=0.15\textwidth
-]{figures/plot_accuracy_vs_time_exp_3.pdf} &
+]{sections/appendix/aistats2021_eot/figures/plot_accuracy_vs_time_exp_3.pdf} &
 \hspace*{-0.6cm}
 \raisebox{.9\height}{\includegraphics[width=0.08\textwidth%,height=0.15\textwidth
-]{figures/legend.png}}
+]{sections/appendix/aistats2021_eot/figures/legend.png}}
 \end{tabular}
 \caption{Comparison of the time-accuracy tradeoffs between the different proposed algorithms. \emph{Left:} we consider the case where the number of days is $N=2$, the size of support for both measures is $n=m=100$ and we vary $\varepsilon$ from $0.005$ to $0.5$. \emph{Middle:} we fix $n=m=100$ and the regularization $\varepsilon=0.05$ and we vary the number of days $N$ from 3 to 5. \emph{Right:} the setting considered is the same as in the figure in the middle, however we increase the sample size such that $n=m=500$. Note that in that case, $\textbf{LP}$ is too costly to be computed. \label{fig-seq-OT}}
 \end{figure*}

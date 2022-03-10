@@ -1,0 +1,19 @@
+\section{Conclusion}
+In this paper, we presented a new generic method to build $1$-Lipschitz layers.
+We leverage the continuous time dynamical system interpretation of Residual Networks and show that using convex potential flows naturally defines $1$-Lipschitz neural networks.
+After proposing a parametrization based on Input Convex Neural Networks~\citep{amos2017input}, we  show that our models  reach competitive results in classification and robustness in comparison which other existing $1$-Lipschitz approaches.
+We also experimentally show that our layers provide scalable approaches without further regularization tricks to train very deep architectures.
+
+Exploiting the ResNet architecture for devising flows have been an important research topic.
+For example, in the context of generative modeling, Invertible Neural Networks~\citep{behrmann2019invertible} and Normalizing Flows~\citep{rezende2015variational, verine2021expressivity} are both import research topic.
+More recently, Sylvester Normalizing Flows~\citep{vdberg2018sylvester} or Convex Potential Flows~\citep{huang2021convex} have had similar ideas to this present work but for a very different setting and applications. In particular, they did not have interest in the contraction property of convex flows and the link with adversarial robustness have been under-exploited.
+
+
+\paragraph{Further work.}
+Propoisition~\ref{prop:continuous-lip} suggests to constraint the symmetric part of the Jacobian of $F_t$. We proposed to decompose $F_t$ as a sum of potential gradient and skew symmetric matrix. Finding other parametrizations is an open challenge.
+Our models may not express all $1$-Lipschitz functions.
+Knowing which functions can be approximated by our CPL layers is difficult even in the linear case (see Appendix~\ref{app:express}). This is  an important question that requires further investigation. 
+One can also think of extending  our work by the study of  other dynamical systems. Recent architectures such as Hamiltonian Networks~\citep{greydanus2019hamiltonian} and Momentum Networks~\citep{sander2021momentum} exhibit interesting properties.
+Finally, we hope to use similar approaches to build robust Recurrent Neural Networks~\citep{sherstinsky2020fundamentals} and Transformers~\citep{vaswani2017attention}.
+
+

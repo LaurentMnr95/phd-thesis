@@ -23,30 +23,86 @@ Given access to $\PP$, the adversary aims to maximize the expected risk, but can
 Now, what happens if the adversary can use randomized strategies, meaning that for each point it can flip a coin before deciding where to move? In this case, the adversary could decide to move points from $0$ to $1$ w.p. $1/2$ and to $-1$ otherwise. This strategy is still optimal with an adversarial risk of $3/4$ but now the classifier cannot use its knowledge of the adversary's strategy to lower the risk. We are in a state where neither the adversary nor the classifier can benefit from unilaterally changing its strategy. In the game theory terminology, this state is called a Mixed Nash equilibrium. %Previous works studying adversarial examples from the scope of game theory investigated the existence of Mixed Nash equilibria in restricted settings where the adversary can by reduced to a set of parameters~\citep{7533509,DBLP:journals/corr/abs-1906-02816,bose2021adversarial}. But, as pointed out in \citep{pinot2020randomization} and \citep{pydi2019adversarial}, studying the existence of a Mixed Nash equilibrium in a more general framework is a challenging open problem. In the present paper we tackle the following question.
 
 \subsection{General setting}
-Let us consider a loss function: $l:\Theta\times (\mathcal{X}\times\mathcal{Y})\to [0,\infty)$ satisfying the following set of assumptions.
+Let us consider a loss function: $\loss:\Theta\times (\mathcal{X}\times\mathcal{Y})\to [0,\infty)$ satisfying the following set of assumptions.
 \begin{assump}[Loss function]
 \label{ass:loss}
-1) The loss function $l$ is a non negative Borel measurable function. 2) For all $\theta\in\Theta$, $l(\theta,\cdot)$ is upper-semi continuous. 3) There exists $M>0$ such that for all $\theta\in\Theta$, $(x,y)\in\mathcal{X}\times\mathcal{Y}$, $0\leq l(\theta,(x,y))\leq M$.
+1) The loss function $\loss$ is a non negative Borel measurable function. 2) For all $\theta\in\Theta$, $\loss(\theta,\cdot)$ is upper-semi continuous. 3) There exists $M>0$ such that for all $\theta\in\Theta$, $(x,y)\in\mathcal{X}\times\mathcal{Y}$, $0\leq \loss(\theta,(x,y))\leq M$.
 \end{assump}
 It is usual to assume upper-semi continuity when studying optimization over distributions~\citep{villani2003topics,blanchet2019quantifying}. Furthermore, considering bounded (and positive) loss functions is also very common in learning theory~\citep{bartlett2002rademacher} and is not restrictive. 
 
-In the adversarial examples framework, the loss of interest is the $0/1$ loss, for whose surrogates are misunderstood~\citep{pmlr-v97-cranko19a,pmlr-v125-bao20a}; hence it is essential that the $0/1$ loss satisfies Assumption~\ref{ass:loss}. In the binary classification setting (\emph{i.e.} $\mathcal{Y}=\{-1,+1\}$) the $0/1$ loss writes $l_{0/1}(\theta,(x,y)) = \mathbf{1}_{yf_\theta(x)\leq 0}$. Then, assuming that for all $\theta$, $f_\theta(\cdot)$ is continuous and for all $x$, $f_\cdot(x)$ is continuous, the $0/1$ loss satisfies Assumption~\ref{ass:loss}. In particular, it is the case for neural networks with continuous activation functions.
+In the adversarial examples framework, the loss of interest is the $0/1$ loss, for whose surrogates are misunderstood~\citep{pmlr-v97-cranko19a,pmlr-v125-bao20a}; hence it is essential that the $0/1$ loss satisfies Assumption~\ref{ass:loss}. In the binary classification setting (\emph{i.e.} $\mathcal{Y}=\{-1,+1\}$) the $0/1$ loss writes $\loss_{0/1}(\theta,(x,y)) = \mathbf{1}_{yf_\theta(x)\leq 0}$. Then, assuming that for all $\theta$, $f_\theta(\cdot)$ is continuous and for all $x$, $f_\cdot(x)$ is continuous, the $0/1$ loss satisfies Assumption~\ref{ass:loss}. In particular, it is the case for neural networks with continuous activation functions.
+
+
+\subsection{Measure Theoretic Lemmas}
+
+We first recall and prove some important lemmas about theoretic measure.
+\begin{lemma}[Fubini's theorem]
+\label{lem:fubini}
+Let $l:\Theta\times(\mathcal{X}\times\mathcal{Y})\rightarrow [0,\infty)$ satisfying Assumption~\ref{ass:loss}. Then for all $\mu\in\mathcal{M}^1_+(\Theta)$, $\int l(\theta,\cdot)d\mu(\theta)$ is Borel measurable; for  $\QQ\in\mathcal{M}^1_+(\mathcal{X}\times\mathcal{Y})$, $\int l(\cdot,(x,y))d\QQ(x,y)$ is Borel measurable. Moreover: $\int l(\theta,(x,y))d\mu(\theta)d\QQ(x,y)=\int l(\theta,(x,y))d\QQ(x,y)d\mu(\theta)$
+\end{lemma}
+
+\begin{lemma}
+\label{lem:usc1}
+Let $l:\Theta\times(\mathcal{X}\times\mathcal{Y})\rightarrow [0,\infty)$ satisfying Assumption~\ref{ass:loss}.
+Then for all $\mu\in\mathcal{M}^1_+(\Theta)$, $(x,y)\mapsto\int l(\theta,(x,y))d\mu(\theta)$ is upper semi-continuous and hence Borel measurable.  
+\end{lemma}
+\begin{proof}
+Let $(x_n,y_n)_n$ be a sequence of $\mathcal{X}\times\mathcal{Y}$ converging to $(x,y)\in\mathcal{X}\times\mathcal{Y}$.  For all $\theta\in\Theta$, $M-l(\theta,\cdot)$ is non negative and lower semi-continuous. Then by Fatou's Lemma applied:
+\begin{align*}
+   \int M-l(\theta,(x,y))d\mu(\theta)&\leq\int \liminf_{n\to\infty}  M-l(\theta,(x_n,y_n))d\mu(\theta)\\
+   &\leq  \liminf_{n\to\infty}  \int M-l(\theta,(x_n,y_n))d\mu(\theta) 
+\end{align*}
+
+Then we deduce that: $\int M- l(\theta,\cdot)d\mu(\theta)$ is lower semi-continuous and then $\int l(\theta,\cdot)d\mu(\theta)$ is upper-semi continuous.
+\end{proof}
+
+
+\begin{lemma}
+\label{lem:usc2}
+
+Let $l:\Theta\times(\mathcal{X}\times\mathcal{Y})\rightarrow [0,\infty)$ satisfying Assumption~\ref{ass:loss}
+Then for all $\mu\in\mathcal{M}^1_+(\Theta)$, $\QQ\mapsto\int l(\theta,(x,y))d\mu(\theta)d\QQ(x,y)$ is upper semi-continuous for weak topology of measures. 
+\end{lemma}
+\begin{proof}
+ $-\int l(\theta,\cdot)d\mu(\theta) $ is lower semi-continuous from Lemma~\ref{lem:usc1}. Then $M-\int l(\theta,\cdot)d\mu(\theta) $ is lower semi-continuous and non negative. Let denote $v$ this function. Let $(v_n)_n$ be a non-decreasing sequence of continuous bounded functions such that $v_n\to v$. Let $(\QQ_k)_k$ converging weakly towards $\QQ$. Then by monotone convergence:
+ 
+ \begin{align*}
+     \int vd\QQ = \lim_n \int v_nd\QQ =\lim_n \lim_k\int v_nd\QQ_k\leq \liminf_k \int vd\QQ_k
+ \end{align*}
+ Then $\QQ\mapsto\int vd\QQ$ is lower semi-continuous and then $\QQ\mapsto\int l(\theta,(x,y))d\mu(\theta)d\QQ(x,y)$ is upper semi-continuous for weak topology of measures. 
+ \end{proof}
+
+
+
+\begin{lemma}
+\label{lem:measure-sup}
+Let $l:\Theta\times(\mathcal{X}\times\mathcal{Y})\rightarrow [0,\infty)$ satisfying Assumption~\ref{ass:loss}.
+Then for all $\mu\in\mathcal{M}^1_+(\Theta)$, $(x,y)\mapsto \sup_{(x',y'),d(x,x')\leq\varepsilon,y=y'} \int l(\theta,(x',y'))d\mu(\theta)$ is universally measurable (i.e. measurable for all Borel probability measures). And hence the adversarial risk is well defined. 
+\end{lemma}
+\begin{proof}
+Let $\phi :(x,y)\mapsto \sup_{(x',y'),d(x,x')\leq\varepsilon,y=y'} \int l(\theta,(x',y'))d\mu(\theta)$. Then for $u\in\bar{\mathbb{R}}$:
+\begin{align*}
+\left\{\phi(x,y)>u\right\}=\text{Proj}_1\left\{((x,y),(x',y'))\mid\int l(\theta,(x',y'))d\mu(\theta)-c_\varepsilon((x,y),(x',y'))>u\right\}
+\end{align*}
+By Lemma~\ref{lem:usc2}: $((x,y),(x',y'))\mapsto \int l(\theta,(x',y'))d\mu(\theta)-c_\varepsilon((x,y),(x',y'))$ is upper-semicontinuous hence Borel measurable. So its level sets are Borel sets, and by~\citep[Proposition 7.39]{bertsekas2004stochastic}, the projection of a Borel set is analytic. And then $\left\{\phi(x,y)>u\right\}$ universally measurable thanks to~\citep[Corollary 7.42.1]{bertsekas2004stochastic}. We deduce that $\phi$ is universally measurable.
+\end{proof}
+
 
 
 \subsection{Adversarial Risk Minimization}
-The standard risk for a single classifier $\theta$ associated with the loss $l$ satisfying Assumption~\ref{ass:loss} writes: $\risk(\theta):=\mathbb{E}_{(x,y)\sim \PP}\left[l(\theta,(x,y))\right]$. Similarly, the adversarial risk of $\theta$ at level $\varepsilon$ associated with the loss $l$ is defined as\footnote{For the well-posedness, see Lemma~\ref{lem:measure-sup} in Appendix.}
+The standard risk for a single classifier $\theta$ associated with the loss $\loss$ satisfying Assumption~\ref{ass:loss} writes: $\risk(\theta):=\mathbb{E}_{(x,y)\sim \PP}\left[\loss(\theta,(x,y))\right]$. Similarly, the adversarial risk of $\theta$ at level $\varepsilon$ associated with the loss $\loss$ is defined as\footnote{For the well-posedness, see Lemma~\ref{lem:measure-sup} in Appendix.}
 \begin{align*}
-    \riskadv^\varepsilon(\theta):=\mathbb{E}_{(x,y)\sim \PP}\left[\sup_{x'\in\mathcal{X},~d(x,x')\leq\varepsilon}l(\theta,(x',y))\right].
+    \risk^\varepsilon(\theta):=\mathbb{E}_{(x,y)\sim \PP}\left[\sup_{x'\in\mathcal{X},~d(x,x')\leq\varepsilon}\loss(\theta,(x',y))\right].
 \end{align*}
- It is clear that $\riskadv^0(\theta) =\risk(\theta)$ for all $\theta$. We can generalize these notions with distributions of classifiers. In other terms the classifier is then randomized according to some distribution $\mu\in\mathcal{M}^1_+(\Theta)$. A classifier is randomized if for a given input, the output of the classifier is a probability distribution.
+ It is clear that $\risk^0(\theta) =\risk(\theta)$ for all $\theta$. We can generalize these notions with distributions of classifiers. In other terms the classifier is then randomized according to some distribution $\mu\in\mathcal{M}^1_+(\Theta)$. A classifier is randomized if for a given input, the output of the classifier is a probability distribution.
  The standard risk of a randomized classifier $\mu$ writes $\risk(\mu) = \mathbb{E}_{\theta\sim\mu}\left[\risk (\theta)\right]$. Similarly, the adversarial risk of the randomized classifier $\mu$ at level $\varepsilon$ is\footnote{This risk is also well posed (see Lemma~\ref{lem:measure-sup} in the Appendix).}
 \begin{align*}
-    \riskadv^\varepsilon(\mu):=\mathbb{E}_{(x,y)\sim \PP}\left[\sup_{x'\in\mathcal{X},~d(x,x')\leq\varepsilon}\mathbb{E}_{\theta\sim\mu}\left[l(\theta,(x',y))\right]\right].
+    \risk^\varepsilon(\mu):=\mathbb{E}_{(x,y)\sim \PP}\left[\sup_{x'\in\mathcal{X},~d(x,x')\leq\varepsilon}\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(x',y))\right]\right].
 \end{align*}
-For instance, for the $0/1$ loss, the inner maximization problem, consists in maximizing the probability of misclassification for a given couple $(x,y)$. Note that $\risk(\delta_\theta)=\risk(\theta)$ and $\riskadv^\varepsilon(\delta_\theta)=\riskadv^\varepsilon(\theta)$. In the remainder of this section, we study the adversarial risk minimization problems with randomized and deterministic classifiers and denote
+For instance, for the $0/1$ loss, the inner maximization problem, consists in maximizing the probability of misclassification for a given couple $(x,y)$. Note that $\risk(\delta_\theta)=\risk(\theta)$ and $\risk^\varepsilon(\delta_\theta)=\risk^\varepsilon(\theta)$. In the remainder of this section, we study the adversarial risk minimization problems with randomized and deterministic classifiers and denote
 \begin{align}
 \label{eq:advriskmin}
-    \valuerand^\varepsilon:=\inf_{\mu\in\mathcal{M}^1_+(\Theta)} \riskadv^\varepsilon(\mu),~\valuedet^\varepsilon:=\inf_{\theta\in\Theta} \riskadv^\varepsilon(\theta)
+    \valuerand^\varepsilon:=\inf_{\mu\in\mathcal{M}^1_+(\Theta)} \risk^\varepsilon(\mu),~\valuedet^\varepsilon:=\inf_{\theta\in\Theta} \risk^\varepsilon(\theta)
 \end{align}
 
 \begin{rmq}
@@ -126,30 +182,30 @@ Finally $\mathcal{A}_\varepsilon(\PP)$ is a convex compact set for the weak topo
 Thanks to this result, we can reformulate the adversarial risk as the value of a convex problem over $\mathcal{A}_\varepsilon(\PP)$. %See proof in Appendix~\ref{prv:duality-rand}.
 \begin{prop} 
 \label{prop:dro_adv}
-Let $\PP$ be a Borel probability distribution on $\mathcal{X}\times\mathcal{Y}$ and $\mu$ a Borel probability distribution on $\Theta$. Let $l:\Theta\times(\mathcal{X}\times\mathcal{Y})\to [0,\infty)$ satisfying Assumption~\ref{ass:loss}. Let $\varepsilon>0$. Then:
+Let $\PP$ be a Borel probability distribution on $\mathcal{X}\times\mathcal{Y}$ and $\mu$ a Borel probability distribution on $\Theta$. Let $\loss:\Theta\times(\mathcal{X}\times\mathcal{Y})\to [0,\infty)$ satisfying Assumption~\ref{ass:loss}. Let $\varepsilon>0$. Then:
 \begin{align}
 \label{eq:dro-adv}
-\riskadv^\varepsilon(\mu)= \sup_{\QQ\in \mathcal{A}_{\varepsilon}(\PP)}\mathbb{E}_{(x',y')\sim\QQ,\theta\sim\mu}\left[l(\theta,(x',y'))\right].
+\risk^\varepsilon(\mu)= \sup_{\QQ\in \mathcal{A}_{\varepsilon}(\PP)}\mathbb{E}_{(x',y')\sim\QQ,\theta\sim\mu}\left[\loss(\theta,(x',y'))\right].
 \end{align}
-The supremum is attained. Moreover $\QQ^*\in \mathcal{A}_{\varepsilon}(\PP)$ is an optimum of Problem~\eqref{eq:dro-adv} if and only if there exists $\gamma^*\in\mathcal{M}^+_1\left((\mathcal{X}\times\mathcal{Y})^2\right)$ such that: $\Pi_{1\sharp}\gamma^*=\PP$, $\Pi_{2\sharp}\gamma^*=\QQ^*$, $d(x,x')\leq\varepsilon$, $y=y'$ and  $l(x',y')=\sup_{\substack{u\in\mathcal{X},d(x,u)\leq\varepsilon}}l(u,y)$ $\gamma^*$-almost surely.
+The supremum is attained. Moreover $\QQ^*\in \mathcal{A}_{\varepsilon}(\PP)$ is an optimum of Problem~\eqref{eq:dro-adv} if and only if there exists $\gamma^*\in\mathcal{M}^+_1\left((\mathcal{X}\times\mathcal{Y})^2\right)$ such that: $\Pi_{1\sharp}\gamma^*=\PP$, $\Pi_{2\sharp}\gamma^*=\QQ^*$, $d(x,x')\leq\varepsilon$, $y=y'$ and  $\loss(x',y')=\sup_{\substack{u\in\mathcal{X},d(x,u)\leq\varepsilon}}\loss(u,y)$ $\gamma^*$-almost surely.
 \end{prop}
 
 \begin{proof}
-Let $\mu\in\mathcal{M}^1_+(\Theta)$. Let $\Tilde{f}:((x,y),(x',y'))\mapsto \mathbb{E}_{\theta\sim\mu}\left[l(\theta,(x,y))\right]-c_\varepsilon((x,y),(x',y'))$. $\Tilde{f}$ is upper-semi continuous, hence upper semi-analytic. Then, by upper semi continuity of $\mathbb{E}_{\theta\sim\mu}\left[l(\theta,\cdot)\right]$ on the compact $\{(x',y')\mid~d(x,x')\leq\varepsilon,y=y'\}$ and~\citep[Proposition 7.50]{bertsekas2004stochastic}, there exists a universally measurable mapping $T$ such that $\mathbb{E}_{\theta\sim\mu}\left[l(\theta,T(x,y))\right]=\sup_{(x',y'),~d(x,x')\leq\varepsilon,y=y'}\mathbb{E}_{\theta\sim\mu}\left[l(\theta,(x,y))\right]$.  Let $\QQ = T_{\sharp}\PP$, then $\QQ\in\mathcal{A}_\varepsilon(\PP)$. And then $$\mathbb{E}_{(x,y)\sim\PP}\left[\sup_{(x',y'),~d(x,x')\leq\varepsilon,y=y'}\mathbb{E}_{\theta\sim\mu}\left[l(\theta,(x',y'))\right]\right]\leq \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)}\mathbb{E}_{(x,y)\sim\QQ}\left[\mathbb{E}_{\theta\sim\mu}\left[l(\theta,(x,y))\right]\right]$$.
+Let $\mu\in\mathcal{M}^1_+(\Theta)$. Let $\Tilde{f}:((x,y),(x',y'))\mapsto \mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(x,y))\right]-c_\varepsilon((x,y),(x',y'))$. $\Tilde{f}$ is upper-semi continuous, hence upper semi-analytic. Then, by upper semi continuity of $\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,\cdot)\right]$ on the compact $\{(x',y')\mid~d(x,x')\leq\varepsilon,y=y'\}$ and~\citep[Proposition 7.50]{bertsekas2004stochastic}, there exists a universally measurable mapping $T$ such that $\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,T(x,y))\right]=\sup_{(x',y'),~d(x,x')\leq\varepsilon,y=y'}\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(x,y))\right]$.  Let $\QQ = T_{\sharp}\PP$, then $\QQ\in\mathcal{A}_\varepsilon(\PP)$. And then $$\mathbb{E}_{(x,y)\sim\PP}\left[\sup_{(x',y'),~d(x,x')\leq\varepsilon,y=y'}\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(x',y'))\right]\right]\leq \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)}\mathbb{E}_{(x,y)\sim\QQ}\left[\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(x,y))\right]\right]$$.
 
 Reciprocally, let $\QQ\in\mathcal{A}_\varepsilon(\PP)$. There exists $\gamma\in\mathcal{M}^1_+((\mathcal{X}\times\mathcal{Y})^2)$, such that $d(x,x')\leq\varepsilon$ and $y=y'$ $\gamma$-almost surely, and, $\Pi_{1\sharp}\gamma=\PP$ and  $\Pi_{2\sharp}\gamma=\QQ$. Then:
-$\mathbb{E}_{\theta\sim\mu}\left[l(\theta,(x',y'))\right]\leq\sup_{(u,v),~d(x,u)\leq\varepsilon,y=v}\mathbb{E}_{\theta\sim\mu}\left[l(\theta,(u,v))\right]$ $\gamma$-almost surely. Then, we deduce that:
+$\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(x',y'))\right]\leq\sup_{(u,v),~d(x,u)\leq\varepsilon,y=v}\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(u,v))\right]$ $\gamma$-almost surely. Then, we deduce that:
 \begin{align*}
-    \mathbb{E}_{(x',y')\sim\QQ}\left[\mathbb{E}_{\theta\sim\mu}\left[l(\theta,(x',y'))\right]\right]& =     \mathbb{E}_{(x,y,x',y')\sim\gamma}\left[\mathbb{E}_{\theta\sim\mu}\left[l(\theta,(x',y'))\right]\right] \\
-    &\leq\mathbb{E}_{(x,y,x',y')\sim\gamma}\left[\sup_{(u,v),~d(x,u)\leq\varepsilon,y=v}\mathbb{E}_{\theta\sim\mu}\left[l(\theta,(u,v))\right]\right]\\
-    &\leq\mathbb{E}_{(x,y)\sim\PP}\left[\sup_{(u,v),~d(x,u)\leq\varepsilon,y=v}\mathbb{E}_{\theta\sim\mu}\left[l(\theta,(u,v))\right]\right]
+    \mathbb{E}_{(x',y')\sim\QQ}\left[\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(x',y'))\right]\right]& =     \mathbb{E}_{(x,y,x',y')\sim\gamma}\left[\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(x',y'))\right]\right] \\
+    &\leq\mathbb{E}_{(x,y,x',y')\sim\gamma}\left[\sup_{(u,v),~d(x,u)\leq\varepsilon,y=v}\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(u,v))\right]\right]\\
+    &\leq\mathbb{E}_{(x,y)\sim\PP}\left[\sup_{(u,v),~d(x,u)\leq\varepsilon,y=v}\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(u,v))\right]\right]
 \end{align*}
 
 Then we deduce the expected result:
 \begin{align*}
-\riskadv^\varepsilon(\mu)= \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)}\mathbb{E}_{(x,y)\sim\QQ}\left[\mathbb{E}_{\theta\sim\mu}\left[l(\theta,(x,y))\right]\right]
+\risk^\varepsilon(\mu)= \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)}\mathbb{E}_{(x,y)\sim\QQ}\left[\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(x,y))\right]\right]
 \end{align*}
-Let us show that the optimum is attained. $\QQ\mapsto\mathbb{E}_{(x,y)\sim\QQ}\left[\mathbb{E}_{\theta\sim\mu}\left[l(\theta,(x,y))\right]\right]$ is upper semi continuous by Lemma~\ref{lem:usc2} for the weak topology of measures, and $\mathcal{A}_\varepsilon(\PP)$ is compact by Proposition~\ref{prop:wass_ball}, then by~\citep[Proposition 7.32]{bertsekas2004stochastic}, the supremum is attained for a certain $\QQ^*\in\mathcal{A}_\varepsilon(\PP)$. 
+Let us show that the optimum is attained. $\QQ\mapsto\mathbb{E}_{(x,y)\sim\QQ}\left[\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(x,y))\right]\right]$ is upper semi continuous by Lemma~\ref{lem:usc2} for the weak topology of measures, and $\mathcal{A}_\varepsilon(\PP)$ is compact by Proposition~\ref{prop:wass_ball}, then by~\citep[Proposition 7.32]{bertsekas2004stochastic}, the supremum is attained for a certain $\QQ^*\in\mathcal{A}_\varepsilon(\PP)$. 
 
 \end{proof}
 
@@ -184,10 +240,10 @@ Proposition~\ref{prop:dro_adv} means that, against a fixed classifier $\mu$, the
 % \label{prop:dro_adv}
 % Let $\PP$ be a Borel probability distribution on $\mathcal{X}\times\mathcal{Y}$ and $\mu$ a Borel probability distribution on $\Theta$. Let $l:\Theta\times(\mathcal{X}\times\mathcal{Y})\to [0,+\infty]$ satisfying Assumption~\ref{ass:loss}. Let $\varepsilon>0$. Then:
 % \begin{align*}
-% \riskadv^\epsilon(\mu)= \sup_{\QQ\in \mathcal{A}_{\varepsilon}(\PP)}\mathbb{E}_{(x',y')\sim\QQ,\theta\sim\mu}\left[l(\theta,(x',y'))\right]
+% \risk^\epsilon(\mu)= \sup_{\QQ\in \mathcal{A}_{\varepsilon}(\PP)}\mathbb{E}_{(x',y')\sim\QQ,\theta\sim\mu}\left[\loss(\theta,(x',y'))\right]
 % \end{align*}
 % \begin{align*}
-% \mathbb{E}_{(x,y)\sim \PP}\left[\sup_{\substack{u\in\mathcal{X},\\d(x,u)\leq\varepsilon}}l(u,y)\right] = \sup_{\QQ\in \mathcal{A}_{\varepsilon}(\PP)}\mathbb{E}_{(x',y')\sim\QQ}\left[l(x',y')\right]
+% \mathbb{E}_{(x,y)\sim \PP}\left[\sup_{\substack{u\in\mathcal{X},\\d(x,u)\leq\varepsilon}}l(u,y)\right] = \sup_{\QQ\in \mathcal{A}_{\varepsilon}(\PP)}\mathbb{E}_{(x',y')\sim\QQ}\left[\loss(x',y')\right]
 % \end{align*}
 % The supremum is attained. Moreover $\QQ^*\in \mathcal{A}_{\varepsilon}(\PP)$ is an optimum if and only if there exists $\gamma^*\in\mathcal{M}^+_1\left((\mathcal{X}\times\mathcal{Y})^2\right)$ such that: $\Pi_{1\sharp}\gamma^*=\PP$, $\Pi_{2\sharp}\gamma^*=\QQ^*$, $d(x,x')\leq\varepsilon$, $y=y'$ and  $l(x',y')=\sup_{\substack{u\in\mathcal{X},d(x,u)\leq\varepsilon}}l(u,y)$ $\gamma^*$-almost surely.
 % \end{prop}
@@ -196,7 +252,7 @@ Proposition~\ref{prop:dro_adv} means that, against a fixed classifier $\mu$, the
 % say that the program is linear blabla + link with latest pydi
 % One can also recast the adversarial problem as an infinite linear problem:
 % \begin{align*}
-%   \riskadv^\epsilon(\mu) = \sup_{\gamma\in \Tilde{\mathcal{A}}_{\varepsilon}(\PP)}\mathbb{E}_{(x,y,x',y')\sim\gamma}\left[l(x',y')\right]
+%   \risk^\epsilon(\mu) = \sup_{\gamma\in \Tilde{\mathcal{A}}_{\varepsilon}(\PP)}\mathbb{E}_{(x,y,x',y')\sim\gamma}\left[\loss(x',y')\right]
 % \end{align*}
 
 % where 
@@ -208,16 +264,16 @@ Proposition~\ref{prop:dro_adv} means that, against a fixed classifier $\mu$, the
 
 % \paragraph{A primal-dual formulation of risk minimization.}Let $\mu\in\mathcal{M}^1_+(\Theta)$ a possibly randomized classifier. Thanks to Proposition~\ref{prop:dro_adv}, we have that for $\varepsilon>0$:
 % \begin{align*}
-%     \riskadv^\varepsilon(\mu)=\sup_{\QQ\in\mathcal{A}_{\varepsilon}(\PP)}\mathbb{E}_{(x,y)\sim\QQ,\theta\sim\mu}\left[l(\theta,(x,y))\right]
+%     \risk^\varepsilon(\mu)=\sup_{\QQ\in\mathcal{A}_{\varepsilon}(\PP)}\mathbb{E}_{(x,y)\sim\QQ,\theta\sim\mu}\left[\loss(\theta,(x,y))\right]
 % \end{align*}
 % Following the definition of the risk minimization objective,  one can define the dual of this problem for randomized classifiers:
 % \begin{align}
-%     \sup_{\QQ\in\mathcal{A}_{\varepsilon}(\PP)}\inf_{\mu\in\mathcal{M}^1_+(\Theta)}\mathbb{E}_{(x,y)\sim\QQ,\theta\sim\mu}\left[l(\theta,(x,y))\right]
+%     \sup_{\QQ\in\mathcal{A}_{\varepsilon}(\PP)}\inf_{\mu\in\mathcal{M}^1_+(\Theta)}\mathbb{E}_{(x,y)\sim\QQ,\theta\sim\mu}\left[\loss(\theta,(x,y))\right]
 % \label{eq:dual_pb}
 % \end{align}
 % and its analog for deterministic classifiers:
 % \begin{align*}
-%     \sup_{\QQ\in\mathcal{A}_{\varepsilon}(\PP)}\inf_{\theta\in\Theta}\mathbb{E}_{(x,y)\sim\QQ}\left[l(\theta,(x,y))\right]
+%     \sup_{\QQ\in\mathcal{A}_{\varepsilon}(\PP)}\inf_{\theta\in\Theta}\mathbb{E}_{(x,y)\sim\QQ}\left[\loss(\theta,(x,y))\right]
 % \end{align*}
 % Then, one can notice that the dual problems for deterministic and randomized classifiers are equivalent\footnote{See Appendix XXX for more details}. We denote $\dualvalue^\varepsilon$ the value of the dual problem.
 % Weak duality is always satisfied:
@@ -259,7 +315,7 @@ Proposition~\ref{prop:dro_adv} means that, against a fixed classifier $\mu$, the
 % \label{prop:dro_adv}
 % Let $\PP$ be a distribution on $\mathcal{X}\times\mathcal{Y}$. Let $l:\mathcal{X}\times\mathcal{Y}\mapsto\mathbb{R}$ be an upper semi continuous measurable function. We suppose that $l\in L^1(\PP)$. Let $\varepsilon>0$. Then:
 % \begin{align*}
-% \mathbb{E}_{(x,y)\sim \PP}\left[\sup_{\substack{u\in\mathcal{X},\\d(x,u)\leq\varepsilon}}l(u,y)\right] = \sup_{\QQ\in \mathcal{A}_{\varepsilon}(\PP)}\mathbb{E}_{(x',y')\sim\QQ}\left[l(x',y')\right]
+% \mathbb{E}_{(x,y)\sim \PP}\left[\sup_{\substack{u\in\mathcal{X},\\d(x,u)\leq\varepsilon}}l(u,y)\right] = \sup_{\QQ\in \mathcal{A}_{\varepsilon}(\PP)}\mathbb{E}_{(x',y')\sim\QQ}\left[\loss(x',y')\right]
 % \end{align*}
 % The supremum is attained. Moreover $\QQ^*\in \mathcal{A}_{\varepsilon}(\PP)$ is an optimum if and only if there exists $\gamma^*\in\mathcal{M}^+_1\left((\mathcal{X}\times\mathcal{Y})^2\right)$ such that: $\Pi_{1\sharp}\gamma^*=\PP$, $\Pi_{2\sharp}\gamma^*=\QQ^*$, $d(x,x')\leq\varepsilon$, $y=y'$ and  $l(x',y')=\sup_{\substack{u\in\mathcal{X},d(x,u)\leq\varepsilon}}l(u,y)$ $\gamma^*$-almost surely.
 % \end{prop}
@@ -273,14 +329,14 @@ Proposition~\ref{prop:dro_adv} means that, against a fixed classifier $\mu$, the
 
 Thanks to Proposition~\ref{sec:adv-problem}, the adversarial risk minimization problem can  be seen as a two-player zero-sum game that writes as follows,
 \begin{align}
-    \inf_{\mu\in\mathcal{M}^1_+(\Theta)} \sup_{\QQ\in\mathcal{A}_{\varepsilon}(\PP)}\mathbb{E}_{(x,y)\sim\QQ,\theta\sim\mu}\left[l(\theta,(x,y))\right].
+    \inf_{\mu\in\mathcal{M}^1_+(\Theta)} \sup_{\QQ\in\mathcal{A}_{\varepsilon}(\PP)}\mathbb{E}_{(x,y)\sim\QQ,\theta\sim\mu}\left[\loss(\theta,(x,y))\right].
 \label{eq:primal_pb}
 \end{align}
-In this game the classifier objective is to find the best distribution $\mu \in \mathcal{M}_1^+(\Theta)$ while the adversary is manipulating the data distribution. For the classifier, solving the infimum problem in Equation~\eqref{eq:primal_pb} simply amounts to solving the adversarial risk minimization problem -- Problem~\eqref{eq:advriskmin}, whether the classifier is randomized or not. Then, given a randomized classifier $\mu \in \mathcal{M}_1^+(\Theta)$, the goal of the attacker is to find a new data-set distribution $\mathbb{Q}$ in the set of adversarial distributions $\mathcal{A}_{\varepsilon}(\PP)$ that maximizes the risk of $\mu$. More formally, the adversary looks for $$\mathbb{Q} \in \argmaxB_{\QQ\in\mathcal{A}_{\varepsilon}(\PP)} \mathbb{E}_{(x,y)\sim\QQ,\theta\sim\mu}\left[ l(\theta,(x,y))\right]. $$
+In this game the classifier objective is to find the best distribution $\mu \in \mathcal{M}_1^+(\Theta)$ while the adversary is manipulating the data distribution. For the classifier, solving the infimum problem in Equation~\eqref{eq:primal_pb} simply amounts to solving the adversarial risk minimization problem -- Problem~\eqref{eq:advriskmin}, whether the classifier is randomized or not. Then, given a randomized classifier $\mu \in \mathcal{M}_1^+(\Theta)$, the goal of the attacker is to find a new data-set distribution $\mathbb{Q}$ in the set of adversarial distributions $\mathcal{A}_{\varepsilon}(\PP)$ that maximizes the risk of $\mu$. More formally, the adversary looks for $$\mathbb{Q} \in \argmaxB_{\QQ\in\mathcal{A}_{\varepsilon}(\PP)} \mathbb{E}_{(x,y)\sim\QQ,\theta\sim\mu}\left[\loss(\theta,(x,y))\right]. $$
 In the game theoretic terminology, $\mathbb{Q}$ is also called the best response of the attacker to the classifier $\mu$.
 
 \begin{rmq}
-Note that for a given classifier $\mu$ there always exists a ``deterministic'' best response, i.e. every single point $(x,y)$ is mapped to another single point $T(x,y)$. Let $T:\mathcal{X}\times\mathcal{Y}\to\mathcal{X}$ be defined such that for all $(x,y)\in\mathcal{X}\times\mathcal{Y}$, $l(T(x,y),y) = \sup_{x',~d(x,x')\leq\varepsilon} l(x',y)$. Thanks to~\citep[Proposition 7.50]{bertsekas2004stochastic}, $(T,id)$ is $\PP$-measurable. Moreover, we get that $\QQ = (T,id)_\sharp \PP$ belongs to the best response to $\mu$. Therefore, $T$ is the optimal ``deterministic'' attack against the classifier $\mu$.
+Note that for a given classifier $\mu$ there always exists a ``deterministic'' best response, i.e. every single point $(x,y)$ is mapped to another single point $T(x,y)$. Let $T:\mathcal{X}\times\mathcal{Y}\to\mathcal{X}$ be defined such that for all $(x,y)\in\mathcal{X}\times\mathcal{Y}$, $\EE_{\theta\sim\mu}\left[\loss(T(x,y),y)\right] = \sup_{x',~d(x,x')\leq\varepsilon}\EE_{\theta\sim\mu}\left[ L(x',y)\right]$. Thanks to~\citep[Proposition 7.50]{bertsekas2004stochastic}, $(T,id)$ is $\PP$-measurable. Moreover, we get that $\QQ = (T,id)_\sharp \PP$ belongs to the best response to $\mu$. Therefore, $T$ is the optimal ``deterministic'' attack against the classifier $\mu$.
 \end{rmq}
 
 
@@ -297,7 +353,7 @@ Note that for a given classifier $\mu$ there always exists a ``deterministic'' b
 
 Every zero sum game has a dual formulation that allows a deeper understanding of the framework. Here, from Proposition~\ref{prop:dro_adv}, we can define the dual problem of adversarial risk minimization for randomized classifiers. This dual problem also characterizes a two-player zero-sum game that writes as follows,
 \begin{align}
-    \sup_{\QQ\in\mathcal{A}_{\varepsilon}(\PP)}\inf_{\mu\in\mathcal{M}^1_+(\Theta)}\mathbb{E}_{(x,y)\sim\QQ,\theta\sim\mu}\left[l(\theta,(x,y))\right].
+    \sup_{\QQ\in\mathcal{A}_{\varepsilon}(\PP)}\inf_{\mu\in\mathcal{M}^1_+(\Theta)}\mathbb{E}_{(x,y)\sim\QQ,\theta\sim\mu}\left[\loss(\theta,(x,y))\right].
 \label{eq:dual_pb}
 \end{align}
 In this dual game problem, the adversary plays first and seeks an adversarial distribution that has the highest possible risk when faced with an arbitrary classifier. This means that it has to select an adversarial perturbation for every input $x$, without seeing the classifier first. In this case, as pointed out by the motivating example in Section~\ref{sec:motiv-ex}, the attack can (and should) be randomized to ensure maximal harm against several classifiers. Then, given an adversarial distribution, the classifier objective is to find the best possible classifier on this distribution. Let us denote $\dualvalue^\varepsilon$ the value of the dual problem. Since the weak duality is always satisfied, we get
@@ -307,12 +363,29 @@ In this dual game problem, the adversary plays first and seeks an adversarial di
 \end{align}
 Inequalities in Equation~\eqref{eq:weak_duality} mean that the lowest risk the classifier can get (regardless of the game we look at) is $\mathcal{D}^\varepsilon$. In particular, this means that the primal version of the game, \emph{i.e.} the adversarial risk minimization problem, will always have a value greater or equal to $\mathcal{D}^\varepsilon$. As we discussed in Section~\ref{sec:motiv-ex}, this lower bound may not be attained by a deterministic classifier. As we will demonstrate in the next section, optimizing over randomized classifiers allows to approach $\mathcal{D}^\varepsilon$ arbitrary closely.
 
-\begin{rmq}
 Note that, we can always define the dual problem when the classifier is deterministic, \begin{align*}
-    \sup_{\QQ\in\mathcal{A}_{\varepsilon}(\PP)}\inf_{\theta\in\Theta}\mathbb{E}_{(x,y)\sim\QQ}\left[l(\theta,(x,y))\right].
+    \sup_{\QQ\in\mathcal{A}_{\varepsilon}(\PP)}\inf_{\theta\in\Theta}\mathbb{E}_{(x,y)\sim\QQ}\left[\loss(\theta,(x,y))\right].
 \end{align*}
-Furthermore, we can demonstrate that the dual problems for deterministic and randomized classifiers have the same value \footnote{See Appendix~\ref{sec:complements} for more details}; hence the inequalities in Equation~\eqref{eq:weak_duality}.
-\end{rmq}
+Furthermore, we can demonstrate that the dual problems for deterministic and randomized classifiers have the same value, hence the inequalities in Equation~\eqref{eq:weak_duality}. Indeed in the absence of attackers, the deterministic and randomized optimal risks are the same.
+
+\begin{prop}
+Let $\PP$ be a Borel probability distribution on $\mathcal{X}\times\mathcal{Y}$, and $l$ a loss satisfying Assumption~\ref{ass:loss}, then:
+\begin{align*}
+        \inf_{\mu\in\mathcal{M}^1_+(\Theta)} \risk(\mu) =\inf_{\theta\in\Theta} \risk(\theta)
+\end{align*}
+\end{prop}
+\begin{proof}
+It is clear that:         $\inf_{\mu\in\mathcal{M}^1_+(\Theta)} \risk(\mu) \leq \inf_{\theta\in\Theta} \risk(\theta)$. Now, let $\mu\in\mathcal{M}^1_+(\Theta)$, then:
+\begin{align*}
+    \risk(\mu)= \mathbb{E}_{\theta\sim\mu}(\risk(\theta))&\geq \essinf_\mu \mathbb{E}_{\theta\sim\mu} \left(\risk(\theta)\right)\\
+    &\geq\inf_{\theta\in\Theta} \risk(\theta).
+\end{align*}
+where $\essinf$ denotes the essential infimum.
+\end{proof}
+We can deduce an immediate corollary that the dual problems for deterministic and randomized classifiers have the same value.
+\begin{corollary}
+Under Assumption~\ref{ass:loss}, the dual for randomized and deterministic classifiers are equal.
+\end{corollary}
 
 
 %This primal-dual formulation highlights the profound link between  game theory and adversarial examples. Indeed, the adversarial risk minimization can be seen as a zero-sum game. In this section we study the Nash equilibrium of this game in the randomized setting. \textcolor{red}{pas tres clair, en quoi c'est la formulation dual qui fait apparaitre le jeu?} %We show in the next section, that, under Assumption~\ref{ass:loss}, strong duality always holds for this min-max problem, and hence study the Nash equilibrium of the related game.
@@ -322,7 +395,7 @@ Furthermore, we can demonstrate that the dual problems for deterministic and ran
 
 
 %\textbf{Attacker Objective.}
-%Given a possibly  randomized classifier $\mu\in \mathcal{M}^1_+(\Theta)$, the goal of the attacker is to find a possibly random perturbation for each single pair $(x,y)\in \supp(\PP)$, such that this perturbation maximizes $\mathbb{E}_{\theta\sim\mu}[l(\theta,(x',y))]$ over $x'$ under the constraint that $d(x,x')\leq\varepsilon$. In other words, thanks to Proposition $1$, the set of best responses to $\mu$ writes
+%Given a possibly  randomized classifier $\mu\in \mathcal{M}^1_+(\Theta)$, the goal of the attacker is to find a possibly random perturbation for each single pair $(x,y)\in \supp(\PP)$, such that this perturbation maximizes $\mathbb{E}_{\theta\sim\mu}[\loss(\theta,(x',y))]$ over $x'$ under the constraint that $d(x,x')\leq\varepsilon$. In other words, thanks to Proposition $1$, the set of best responses to $\mu$ writes
 %\begin{align*}
 %    \text{BR}(\mu) := \argmaxB_{\QQ\in\mathcal{A}_{\varepsilon}(\PP)} \mathbb{E}_{(x,y)\sim\QQ,\theta\sim\mu}\left[ l(\theta,(x,y))\right] 
 %\end{align*}
@@ -338,13 +411,13 @@ Furthermore, we can demonstrate that the dual problems for deterministic and ran
 
 \subsection{Nash Equilibria for Randomized Strategies}
 
-In the adversarial examples game, a Nash equilibrium is a couple $(\mu^*,\QQ^*)\in\mathcal{M}^1_+(\Theta)\times\mathcal{A}_\varepsilon(\PP)$ where both the classifier and the attacker have no incentive to deviate unilaterally from their strategies $\mu^*$ and $\QQ^*$. More formally, $(\mu^*,\QQ^*)$ is a Nash equilibrium of the adversarial examples game if $(\mu^*,\QQ^*)$ is a saddle point of the objective function $$(\mu,\QQ)\mapsto \mathbb{E}_{(x,y)\sim\QQ,\theta\sim\mu}\left[l(\theta,(x,y))\right].$$ Alternatively, we can say that $(\mu^*,\QQ^*)$ is a Nash equilibrium if and only if $\mu^*$ solves the adversarial risk minimization problem -- Problem~\eqref{eq:advriskmin}, $\QQ^*$ the dual problem -- Problem~\eqref{eq:duality}, and $\mathcal{D}^\varepsilon=\mathcal{V}_{rand}^\varepsilon$. In our problem, $\QQ^*$ always exists but it might not be the case for $\mu^*$. Then for any $\delta>0$, we say that  $(\mu_\delta,\QQ^*)$ is a $\delta$-approximate Nash equilibrium if $\QQ^*$ solves the dual problem and $\mu_\delta$ satisfies $\mathcal{D}^\varepsilon\geq\riskadv^\varepsilon(\mu_\delta)-\delta$. 
+In the adversarial examples game, a Nash equilibrium is a couple $(\mu^*,\QQ^*)\in\mathcal{M}^1_+(\Theta)\times\mathcal{A}_\varepsilon(\PP)$ where both the classifier and the attacker have no incentive to deviate unilaterally from their strategies $\mu^*$ and $\QQ^*$. More formally, $(\mu^*,\QQ^*)$ is a Nash equilibrium of the adversarial examples game if $(\mu^*,\QQ^*)$ is a saddle point of the objective function $$(\mu,\QQ)\mapsto \mathbb{E}_{(x,y)\sim\QQ,\theta\sim\mu}\left[\loss(\theta,(x,y))\right].$$ Alternatively, we can say that $(\mu^*,\QQ^*)$ is a Nash equilibrium if and only if $\mu^*$ solves the adversarial risk minimization problem -- Problem~\eqref{eq:advriskmin}, $\QQ^*$ the dual problem -- Problem~\eqref{eq:duality}, and $\mathcal{D}^\varepsilon=\mathcal{V}_{rand}^\varepsilon$. In our problem, $\QQ^*$ always exists but it might not be the case for $\mu^*$. Then for any $\delta>0$, we say that  $(\mu_\delta,\QQ^*)$ is a $\delta$-approximate Nash equilibrium if $\QQ^*$ solves the dual problem and $\mu_\delta$ satisfies $\mathcal{D}^\varepsilon\geq\risk^\varepsilon(\mu_\delta)-\delta$. 
 % \begin{align*}
 %     \text{BR}(\QQ) := \argmaxB_{\mu\in\mathcal{A}_{\varepsilon}(\PP)} \int l(\theta,(x,y))d\QQ(x,y)d\mu(\theta)
 % \end{align*}
 
 % \begin{align*}
-%     \inf_{\theta\in\Theta} \sup_{\QQ\in \mathcal{A}_{\varepsilon}(\PP))} \mathbb{E}_{z\sim\QQ }\left[l(\theta,z)\right]:=\int l(\theta,z)d\QQ(z)
+%     \inf_{\theta\in\Theta} \sup_{\QQ\in \mathcal{A}_{\varepsilon}(\PP))} \mathbb{E}_{z\sim\QQ }\left[\loss(\theta,z)\right]:=\int l(\theta,z)d\QQ(z)
 % \end{align*}
 % where: 
 % \begin{align*}
@@ -354,7 +427,7 @@ In the adversarial examples game, a Nash equilibrium is a couple $(\mu^*,\QQ^*)\
 % We will study:
 
 % \begin{align*}
-%     \inf_{\mu\in \mathcal{M}^+_1(\Theta)} \sup_{\QQ\in \mathcal{A}_{\varepsilon}(\PP))} \mathbb{E}_{\theta \sim \mu, z\sim\QQ }\left[l(\theta,z)\right] \\
+%     \inf_{\mu\in \mathcal{M}^+_1(\Theta)} \sup_{\QQ\in \mathcal{A}_{\varepsilon}(\PP))} \mathbb{E}_{\theta \sim \mu, z\sim\QQ }\left[\loss(\theta,z)\right] \\
 %     =\int l(\theta,z)d\mu(\theta)d\QQ(z):=L(\mu,\QQ)
 % \end{align*}
 
@@ -364,14 +437,14 @@ We now state our main result: the existence of approximate Nash equilibria in th
 
 \begin{thm}
 \label{thm:duality-rand}
-Let $\PP\in\mathcal{M}^1_+(\mathcal{X}\times\mathcal{Y})$. Let $\varepsilon>0$. Let $l:\Theta\times(\mathcal{X}\times\mathcal{Y})\to [0,\infty)$ satisfying Assumption~\ref{ass:loss}. %Let assume that for all $\mu\in\mathcal{M}^1_+(\Theta)$ and $(x,y)\in\mathcal{X}\times\mathcal{Y}$, $l(\cdot,(x,y))$ is $\mu$-measurable.
+Let $\PP\in\mathcal{M}^1_+(\mathcal{X}\times\mathcal{Y})$. Let $\varepsilon>0$. Let $\loss:\Theta\times(\mathcal{X}\times\mathcal{Y})\to [0,\infty)$ satisfying Assumption~\ref{ass:loss}. %Let assume that for all $\mu\in\mathcal{M}^1_+(\Theta)$ and $(x,y)\in\mathcal{X}\times\mathcal{Y}$, $l(\cdot,(x,y))$ is $\mu$-measurable.
 Then strong duality always holds in the randomized  setting:
 \begin{align}
- \label{eq:duality}\inf_{\mu\in \mathcal{M}^+_1(\Theta)} \max_{\QQ\in \mathcal{A}_{\varepsilon}(\PP)} \mathbb{E}_{\theta \sim \mu, (x,y)\sim\QQ }\left[l(\theta,(x,y))\right]\\
+ \label{eq:duality}\inf_{\mu\in \mathcal{M}^+_1(\Theta)} \max_{\QQ\in \mathcal{A}_{\varepsilon}(\PP)} \mathbb{E}_{\theta \sim \mu, (x,y)\sim\QQ }\left[\loss(\theta,(x,y))\right]\\
 =
-\nonumber\max_{\QQ\in \mathcal{A}_{\varepsilon}(\PP)}\inf_{\mu\in \mathcal{M}^+_1(\Theta)}  \mathbb{E}_{\theta \sim \mu, (x,y)\sim\QQ }\left[l(\theta,(x,y))\right]
+\nonumber\max_{\QQ\in \mathcal{A}_{\varepsilon}(\PP)}\inf_{\mu\in \mathcal{M}^+_1(\Theta)}  \mathbb{E}_{\theta \sim \mu, (x,y)\sim\QQ }\left[\loss(\theta,(x,y))\right]
 \end{align}
-The supremum is always attained. If $\Theta$ is a compact set, and for all $(x,y)\in\mathcal{X}\times\mathcal{Y}$, $l(\cdot,(x,y))$ is lower semi-continuous, the infimum is also attained.
+The supremum is always attained. If $\Theta$ is a compact set, and for all $(x,y)\in\mathcal{X}\times\mathcal{Y}$, $\loss(\cdot,(x,y))$ is lower semi-continuous, the infimum is also attained.
 \end{thm}
 
 To prove this result, let us first recall the Fan's Theorem.
@@ -397,11 +470,11 @@ Under Assumption~\ref{ass:loss}, for any $\delta>0$, there exists a $\delta$-app
 
 
 \cite{bose2021adversarial} mentioned a particular form of Theorem~\ref{thm:duality-rand} for convex cases. As mentioned, this result has limited impact in the adversarial classification setting. It is still a direct corollary of Fan's theorem. This theorem can be stated as follows: 
-\begin{thm}Let $\PP\in\mathcal{M}^1_+(\mathcal{X}\times\mathcal{Y})$, $\varepsilon>0$ and $\Theta$ a convex set. Let $l$ be a loss satisfying Assumption~\ref{ass:loss}, and also, $(x,y)\in\mathcal{X}\times\mathcal{Y}$, $l(\cdot,(x,y))$ is a convex function, then we have the following:
+\begin{thm}Let $\PP\in\mathcal{M}^1_+(\mathcal{X}\times\mathcal{Y})$, $\varepsilon>0$ and $\Theta$ a convex set. Let $\loss$ be a loss satisfying Assumption~\ref{ass:loss}, and also, $(x,y)\in\mathcal{X}\times\mathcal{Y}$, $\loss(\cdot,(x,y))$ is a convex function, then we have the following:
 \begin{align*}
-\inf_{\theta\in\Theta} \sup_{\QQ\in \mathcal{A}_{\varepsilon}(\PP)} \mathbb{E}_{ \QQ }\left[l(\theta,(x,y))\right]
+\inf_{\theta\in\Theta} \sup_{\QQ\in \mathcal{A}_{\varepsilon}(\PP)} \mathbb{E}_{ \QQ }\left[\loss(\theta,(x,y))\right]
 =
-\sup_{\QQ\in \mathcal{A}_{\varepsilon}(\PP)}\inf_{\theta\in \Theta}  \mathbb{E}_{\QQ }\left[l(\theta,(x,y))\right]
+\sup_{\QQ\in \mathcal{A}_{\varepsilon}(\PP)}\inf_{\theta\in \Theta}  \mathbb{E}_{\QQ }\left[\loss(\theta,(x,y))\right]
 \end{align*}
 The supremum is always attained. If $\Theta$ is a compact set then, the infimum is also attained.
 \end{thm}
@@ -440,7 +513,7 @@ Theorem~\ref{thm:duality-rand} remains true if one replaces $\mathcal{A}_\vareps
 
 % We assume that $d_\mathcal{X}(x,x') =\lvert x-x'\rvert$. We now fix $\varepsilon=1$. Let consider the $0/1$ loss: $l(f,(x,y)) =\mathbf{1}_{f(x)\neq y}$.
 
-% In this example, every Bayes optimal classifier have a zero natural risk, but the its adversarial risk is actually equal to $1$. Let now reduce the hypothesis class to two classifiers: $f_1(x) = \sign\left\{x\leq 1/2\right\}$ and $f_2(x) = \sign\left\{x\geq -1/2\right\}$. Then for $i=1,2$, $\risk(f_i)=1/4$ and $\riskadv(f_i)=3/4$. Let now define the randomized classifier $f=f_1$ with probability $1/2$ and $f_2$ with probability $1/2$. In this case we have $\risk(f)=1/4$ and $\riskadv(f)=1/2$.
+% In this example, every Bayes optimal classifier have a zero natural risk, but the its adversarial risk is actually equal to $1$. Let now reduce the hypothesis class to two classifiers: $f_1(x) = \sign\left\{x\leq 1/2\right\}$ and $f_2(x) = \sign\left\{x\geq -1/2\right\}$. Then for $i=1,2$, $\risk(f_i)=1/4$ and $\risk(f_i)=3/4$. Let now define the randomized classifier $f=f_1$ with probability $1/2$ and $f_2$ with probability $1/2$. In this case we have $\risk(f)=1/4$ and $\risk(f)=1/2$.
 
 
 % \section{todo}
