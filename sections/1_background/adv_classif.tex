@@ -1,5 +1,18 @@
 
 \section{Introduction to Adversarial Classification}
+\subsection{What is an adversarial example?}
+
+Informally, an adversarial example is a perturbation of an input that is imperceptible to human senses, but that state-of-the-art classifiers totally missclassify. The notion of perception is difficult to define (TODO: discuss it). 
+
+
+\begin{definition} 
+    Let $h:\mathcal{X}\to\mathcal{Y}$ be a classifier. An adversarial attack of level $\varepsilon$ on the input $x$ with label $y$ to the classifier $h$ is a perturbation $x'$ such that:
+    \begin{align*}
+        h(x')\neq y\quad\text{and}\quad d(x,x')\leq\varepsilon~.
+    \end{align*}
+\end{definition}
+
+
 \subsection{Crafting adversarial examples}
 
 The most puzzling about adversarial examples is the facility to craft them. Let us consider an attacker that aim at finding an adversarial perturbation $x'$ of an input $x$ for a given classifier $\mathbf{f}$.  Given a differentiable loss $\loss$, typically the cross-entropy, the attacker usually maximizes the following objective:
@@ -43,6 +56,47 @@ TBC
 % The question of the loss function 
 \subsection{Defending against adversarial examples}
 
+Defending against adversarial examples is still an open research questions with few answers to it. One can derive the methods in two categories: empirical defenses and provable defenses.
+
+\subsubsection{Provable defenses}
+A defense is said to be provable if there is a theoretical guarantee to ensure a level of robustness. Formally, a classifier $h$ is said to \emph{certifiably robust at level $\varepsilon$} at input $x$ with label $y$ if there exist no adversarial example of level $\varepsilon$ on $h$ at the point $(x,y)$, i.e. for all $x'$ such that $d(x,x')\leq\varepsilon$, $h(x') = y$. 
+
+\paragraph{Lipschitz property of Neural Networks} 
+% TODO: define f properly
+The Lipschitz constant has seen a growing interest in the last few years in the field of deep learning~\citep{scaman2018lipschitz,fazlyab2019efficient,combettes2020lipschitz,bethune2021many}.
+Indeed, numerous results have shown that neural networks with a small Lipschitz constant exhibit better generalization~\citep{bartlett2017spectrally}, higher robustness to adversarial attacks~\citep{szegedy2014intriguing,farnia2018generalizable,tsuzuku2018lipschitz}, better training stability~\citep{xiao2018dynamical,trockman2021orthogonalizing}, improved Generative Adversarial Networks~\citep{arjovsky2017wasserstein}, etc.
+Formally, we define the Lipschitz constant with respect to the $\ell_2$ norm of a Lipschitz continuous function $f$ as follows:
+\begin{equation*}
+  Lip_{2}{(f)} = \sup_{\substack{x, x' \in \mathcal{X} \\ x \neq x'}} \frac{\lVert f(x) - f(x') \rVert_2}{\lVert x - x' \rVert_2} \enspace.
+\end{equation*}
+
+Intuitively, if a classifier is Lipschitz, one can bound the impact of a given input variation on the output, hence obtaining guarantees on the adversarial robustness.
+We can formally characterize the robustness of a neural network with respect to its Lipschitz constant with the following proposition:
+\begin{prop}[\citet{tsuzuku2018lipschitz}] \label{proposition:tsuzuku}
+Let $\mathbf{f}$ be an $L$-Lipschitz continuous classifier for the $\ell_2$ norm.
+Let $\varepsilon > 0$, $x \in \mathcal{X}$ and $y \in \mathcal{Y}$ the label of $x$.
+If at point $x$, the margin $\mathcal{M}_{\mathbf{f}}(x)$ satisfies:
+\begin{equation*}
+  \mathcal{M}_{\mathbf{f}}(x):=\max(0,f_y(x)-\max_{y'\neq y}f_{y'}(x)) > \sqrt{2} L \varepsilon
+\end{equation*}
+then we have for every $\tau$ such that $\lVert \tau \rVert_2 \leq \varepsilon$:
+\begin{equation*}
+  \argmaxB_{k}f_k(x + \tau) = y
+\end{equation*}
+\end{prop}
+From Proposition~\ref{proposition:tsuzuku}, it is straightforward to compute a robustness certificate for a given point.
+Consequently, in order to build robust neural networks the margin needs to be large and the Lipschitz constant small to get optimal guarantees on the robustness for neural networks.
+
+
+Hence, many research proposed methods to build 1-Lipschitz layers in order to boost adversarial robustness. These approaches provide deterministic guarantees for adversarial robustness. One can either normalize the weight matrices by their largest singular values making the layer $1$-Lipschitz, \emph{e.g.}~\citep{yoshida2017spectral,miyato2018spectral,farnia2018generalizable,anil2019sorting} or project the weight matrices on the Stiefel manifold \citep{li2019preventing,trockman2021orthogonalizing,skew2021sahil}.
+The work of \citet{li2019preventing}, \citet{trockman2021orthogonalizing} and \citet{skew2021sahil} (denoted BCOP, Cayley and SOC respectively) are examples of approaches that aims at building orthogonal weights in layers.
+Indeed, their approaches consist of projecting the weights matrices onto an orthogonal space in order to preserve gradient norms and enhance adversarial robustness by guaranteeing low Lipschitz constants. 
+While both works have similar objectives, their execution is different.
+The BCOP layer (Block Convolution Orthogonal Parameterization) uses an iterative algorithm proposed by \citet{bjorck1971iterative} to orthogonalize the linear transform performed by a convolution.
+The SOC layer (Skew Orthogonal Convolutions) uses the property that if $A$ is a skew symmetric matrix then $Q=\exp{A}$ is an orthogonal matrix. To approximate the exponential, the authors proposed to use a finite number of terms in its Taylor series expansion.
+Finally, the method proposed by~\citet{trockman2021orthogonalizing} use the Cayley transform to orthogonalize the weights matrices.
+Given a skew symmetric matrix $A$, the Cayley transform consists in computing the orthogonal matrix $Q = (I - A)^{-1} (I + A)$. Both methods are well adapted to convolutional layers and are able to reach high accuracy levels on CIFAR datasets. Also, several works~\cite{anil2019sorting,singla2021householder,huang2021local} proposed methods leveraging the properties of activation functions to constraints the Lipschitz of Neural Networks. These works are usually useful to help  improving the performance of linear orthogonal layers.
+
 
 \section{Evaluating Adversarial Robustness}
 
@@ -72,7 +126,7 @@ To evaluate the perfomance of an attack of a classification algorithm, one needs
 
 Unless defense mechanisms are provable and have guarantees, evaluating Adversarial Robustness is a complicated task. Many  defenses introduced in the literature are actually ``false'' defenses. Indeed, one needs to adapt each attack to the defense. We describe the following common issues. CITE more
 
-\paragraph{Evaluation on Randomized Classifiers.} When evaluating against randomized classifiers in either white-box or black-box setting, the return output is a random variable, hence using it FOLLOW HERE
+\paragraph{Evaluation of Randomized Classifiers.} When evaluating against randomized classifiers in either white-box or black-box setting, the return output is a random variable, hence the computation of an attack against it needs to be adapted to the nature of the classifier. To do so, \cite{athalye2018obfuscated} proposed to average either the outputs or the gradient of the classifier to build an efficient attack. This procedure was called Expectation Over Transformation (EOT).
 
 \paragraph{Benchmarking defenses.} To answer the need of adversarial examples community to evaluate accurately their models against adversarial examples, \cite{croce2020robustbench} proposed RobustBench as a unified platform for benchmarking adversarial defenses. The platform evaluates models on different attacks (AutoPGD~\citep{Croce2020ReliableEO}, FAB~\citep{Croce2020MinimallyDA}, SquareAttack~\citep{andriushchenko2019square}). The platform  does not propose to evaluate the robustness of randomized classifiers. 
 

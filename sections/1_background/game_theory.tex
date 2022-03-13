@@ -7,13 +7,12 @@ Game theory studies strategic interactions among agents assuming their actions a
 
 An important subclass of game theoretic problems are two-person zero-sum games.  In such a game there are two players namely Player 1 and Player 2 with opposite objectives. When Player 1 plays an action $x$ in some space $\mathcal{A}_1$ and Player 2 players an action $y$in some space $\mathcal{A}_2$, Player 1 receives a reward $u_1(x,y)$ (also named utility) and Player 2 receives a reward $u_2(x,y)= -u_1(x,y)$. The objective for each player is to find what is the best strategy to play against the other player to maximize their utility. These strategies are of two types:
 \begin{itemize}
-    \item \textbf{deterministic strategies:} the player plays a fixed strategy $x$ (for Player 1) or $y$ (for Player 2). 
+    \item \textbf{deterministic strategies:} the player plays a strategy $x$ (for Player 1) or $y$ (for Player 2). 
     \item \textbf{mixed strategies:} the player pick up $x$ (for Player 1) or $y$ (for Player 2) randomly according to some probability distribution $\mu$. In this case, the utility functions are averaged according to the strategies $\mu$ and $\nu$ for respectively Player 1 and Player 2.  The average reward of the Player 1 is then $\mathbb{E}_{x\sim\mu,y\sim\nu}\left[u_1(x,y)\right]$.
 \end{itemize}
 
-An important matter is the order of play in the game: the strategies might be different if the player know what was the action of the player before him. This leads us to the notion of best response. Assume that a mixed strategy $\mu$ was played by Player 1, then the set of best responses for Player 2 to Player 1 strategy is a strategy that maximizes the utility: $\arg\max_{\nu}\mathbb{E}_{x\sim\mu,y\sim\nu}\left[u_1(x,y)\right]$. We denote this set $BR_2(\mu)$.
+An important matter is the order of play in the game: the strategies might be different if the player know what was the action of the player before him. This leads us to the notion of best response. Assume that a mixed strategy $\mu$ was played by Player 1, then the set of best responses for Player 2 to Player 1 strategy is a strategy that maximizes the utility: $\arg\max_{\nu}\mathbb{E}_{x\sim\mu,y\sim\nu}\left[u_1(x,y)\right]$. We denote this set $BR_2(\mu)$. Game theory aims at studying and computing the nature of strategies in response to other players strategies.
 
-Another repetition of the game:
 \subsection{Equilibria in two-player zero-sum games}
 
 In game theory, optimal strategies for players are studied under the name of equilibria. Depending on the game, we might have interest in two types of equilibria: Nash equilibria where players do not cooperate and have to choose a strategy simultaneously, and Stackelberg equilibria where a player defines its strategy before the other one. We only focus on two-player zero-sum game.
@@ -26,7 +25,7 @@ Note that here the strategies can be either mixed or deterministic. In a two-pla
 \begin{align*}
     u_1(x,y^\star)\leq u_1(x^\star,y^\star)\leq u_1(x^\star,y)
 \end{align*}
-We can then come to a necessary and sufficient conditions for the existence of Nash equilibria in the case of a two-player zero-sum game:
+We remark that a Nash equilbrium is defined as a best response to each other strategy, i.e. $(x^\star,y^\star)$ is a Nash equilibrium if and only if $x^\star\in BR_1(y^\star)$ and $y^\star\in BR_2(x^\star)$. We can then come to a necessary and sufficient condition for the existence of Nash equilibria in the case of a two-player zero-sum game:
 \begin{align*}
     \max_x\min_y u_1(x,y) = \min_y\max_x u_1(x,y)
 \end{align*}
@@ -38,8 +37,9 @@ It is a strong duality condition on the function $u_1$, with the additional prop
 To prove such strong duality results, many results have been derived especially when $u_1$ is concave in $x$ and convex in $y$ as Von-Neumann's Theorem, Sion's Theorem or Fan's Theorem. In particular, in a two-player zero-sum game where the actions space is finite for both players, there always exists a mixed equilibrium.
 For infinite spaces, the questions of existence of Nash equilibrium is more difficult and need to be treated case by case.
 
-\paragraph{Stackelberg Equilibria.} A Stackelberg game is a game where Player 1 defines its strategy before Player 2. Stackelberg equilibria are a tuple of optimal strategies for each player. As Player 1 needs to define its strategy before Player 2, the strategy $x^\star$ of Player 1 has to maximize $\min_y u_1(x,y)$. The strategy for Player 2 is then just to optimize the 
+\paragraph{Stackelberg Equilibria.} A Stackelberg game is a game where Player 1 defines its strategy before Player 2. Stackelberg equilibria are a tuple of optimal strategies for each player. As Player 1 needs to define its strategy before Player 2, the strategy $x^\star$ of Player 1 has to maximize $\min_y u_1(x,y)$. The strategy for Player 2 is then just to play an action that maximizes its utility given that Player 1 played $x^\star$. In other words, he has to choose a best response to $x^\star$. Note that if $(x^\star,y^\star)$ is a Nash equilibrium then it is also a Stackelberg equilibrium.
 
 
+\paragraph{Computing Equilibria.} The computation of Nash or Stackelberg equilbria highly depends on the setting of the game. For instance, the players might have or not knowledge of the other strategy or utility functions. In finite case settings there have been a large  TODO
 
-\
+For instance, under complete knowledge of utilities and strategies, vanilla optimization problems 
