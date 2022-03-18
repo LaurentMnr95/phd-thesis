@@ -15,6 +15,8 @@ An important matter is the order of play in the game: the strategies might be di
 
 \subsection{Equilibria in two-player zero-sum games}
 
+
+
 In game theory, optimal strategies for players are studied under the name of equilibria. Depending on the game, we might have interest in two types of equilibria: Nash equilibria where players do not cooperate and have to choose a strategy simultaneously, and Stackelberg equilibria where a player defines its strategy before the other one. We only focus on two-player zero-sum game.
 
 \paragraph{Nash Equilbria.} In a Nash equilibrium, each player is assumed to know the equilibrium strategies of the othe player, and no player has anything to gain by changing only their own strategy. In other words, it is the strategy a rational player should adopt without any cooperation with the other. Note that the existence of Nash equilibrium is not always guarantees. We are going to formalize mathematically the meaning of a Nash equilibrium. A Nash equilibrium is a tuple of actions $(x^\star,y^\star)$ for Players 1 and 2 such that for all other actions $x$ for Player 1 and $y$ for Player 2 we have:
@@ -34,8 +36,6 @@ It is a strong duality condition on the function $u_1$, with the additional prop
     u_1(x^\delta,y^\delta)\geq u_1(x,y^\delta)-\delta\text{ and } u_2(x^\delta,y^\delta)\geq u_2(x^\delta,y)-\delta
 \end{align*}
 
-To prove such strong duality results, many results have been derived especially when $u_1$ is concave in $x$ and convex in $y$ as Von-Neumann's Theorem, Sion's Theorem or Fan's Theorem. In particular, in a two-player zero-sum game where the actions space is finite for both players, there always exists a mixed equilibrium.
-For infinite spaces, the questions of existence of Nash equilibrium is more difficult and need to be treated case by case.
 
 \paragraph{Stackelberg Equilibria.} A Stackelberg game is a game where Player 1 defines its strategy before Player 2. Stackelberg equilibria are a tuple of optimal strategies for each player. As Player 1 needs to define its strategy before Player 2, the strategy $x^\star$ of Player 1 has to maximize $\min_y u_1(x,y)$. The strategy for Player 2 is then just to play an action that maximizes its utility given that Player 1 played $x^\star$. In other words, he has to choose a best response to $x^\star$. Note that if $(x^\star,y^\star)$ is a Nash equilibrium then it is also a Stackelberg equilibrium.
 
@@ -43,3 +43,49 @@ For infinite spaces, the questions of existence of Nash equilibrium is more diff
 \paragraph{Computing Equilibria.} The computation of Nash or Stackelberg equilbria highly depends on the setting of the game. For instance, the players might have or not knowledge of the other strategy or utility functions. In finite case settings there have been a large  TODO
 
 For instance, under complete knowledge of utilities and strategies, vanilla optimization problems 
+
+\subsection{Strong Duality Theorems}
+
+To prove strong duality results, many results have been derived especially 
+\paragraph{Finite action sets.} In a two-player zero-sum game where the actions space is finite for both players, the rewards can be casted in a matrix $A\in R^{n\times m}$ where $A_{ij} =u_1(x_i,y_j)$. In this case, Von Neumann~\ref{von} proved that there always exists a mixed equilibrium. A mixed strategy of $n$ actions can be embedded in the probability simplex:
+\begin{align*}
+    \Delta_n := \left\{(p_1,\dots,p_n)\in\RR_+^n| \sum_{i=1}^n p_i = 1  \right\}
+\end{align*}
+
+\begin{thm}[Von Neumann's Theorem]
+    Let $A\in R^{n\times m}$ then:
+    \begin{align*}
+        \max_{x\in \Delta_n}\min_{y\in \Delta_m} x^TAy = \min_{y\in \Delta_m}\max_{x\in \Delta_n} x^TAy
+    \end{align*}
+\end{thm}
+
+\paragraph{Infinite action sets.} For infinite action sets, Von Neumann's Theorem is usually not sufficient. There are two main extensions with different hypothesis, namely Sion's Theorem and Fan's Theorem.
+
+\begin{thm}[Sion's Theorem]
+Let $X$ be a compact convex set and $Y$ be a convex set of a linear topological space. Let $u:X\times Y\to\RR$ be a function such that for all $y\in Y$, $u(\cdot,y)$ is quasi-concave and upper semi-continuous; and for all $x\in X$, $u(x,\cdot)$ is quasi-convex and lower semi-continuous, then:
+\begin{align*}
+    \max_{x\in X}\inf_{y\in Y} u(x,y) = \inf_{y\in Y}\max_{x\in X} u(x,y)
+\end{align*}
+Moreover, if $Y$ is compact, the infimum is attained.
+\end{thm}
+
+
+
+\begin{thm}[Fan's Theorem]
+Let $X$ be a compact convex set and $Y$ be a convex set (not necessarily topological). Let $u:X\times Y\to\RR$ be a function such that for all $y\in Y$, $u(\cdot,y)$ is concave and upper semi-continuous; and for all $x\in X$, $u(x,\cdot)$ is convex, then:
+\begin{align*}
+    \max_{x\in X}\inf_{y\in Y} u(x,y) = \inf_{y\in Y}\max_{x\in X} u(x,y)
+\end{align*}
+Moreover, if $Y$ is compact and for all $x\in X$, $u(x,\cdot)$ is lower semi-continuous, the infimum is attained.
+\end{thm}
+
+The hypothesis are close since both concerns convexity or quasi convexity of the reward function and the semi-continuity of the partial reward. The differences are subtle and there are cases where one may use either Sion's or Fan's Theorem. For infinite action sets, it is usual to consider mixed strategies as probability distributions on $X$ or $Y$. In this case, we often endow $\mathcal{M}^1_+(\XX)$ and $\mathcal{M}^1_+(\YY)$ with the weak-$*$ topology of measures and use Sion's or Fan's Theorem directly on these probability spaces.
+
+\subsection{Computation of Nash Equilibria}
+
+TODO
+
+
+
+% when $u_1$ is concave in $x$ and convex in $y$ as Von-Neumann's Theorem, Sion's Theorem or Fan's Theorem. In particular, in a two-player zero-sum game where the actions space is finite for both players, there always exists a mixed equilibrium.
+% For infinite spaces, the questions of existence of Nash equilibrium is more difficult and need to be treated case by case.

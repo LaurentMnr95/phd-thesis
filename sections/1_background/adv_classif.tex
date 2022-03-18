@@ -2,50 +2,96 @@
 \section{Introduction to Adversarial Classification}
 \subsection{What is an adversarial example?}
 
-Informally, an adversarial example is a perturbation of an input that is imperceptible to human senses, but that state-of-the-art classifiers totally missclassify. The notion of perception is difficult to define (TODO: discuss it). 
+Informally, an adversarial example is a perturbation of an input that is imperceptible to human senses, but that state-of-the-art classifiers are unable to  classify accurately. In the following of the manuscript we define adversarial attacks as follows.
 
 
 \begin{definition} 
-    Let $h:\mathcal{X}\to\mathcal{Y}$ be a classifier. An adversarial attack of level $\varepsilon$ on the input $x$ with label $y$ to the classifier $h$ is a perturbation $x'$ such that:
+    Let $h:\mathcal{X}\to\mathcal{Y}$ be a classifier. An adversarial attack of level $\varepsilon$ on the input $x$ with label $y$ against the classifier $h$ is a perturbation $x'$ such that:
     \begin{align*}
         h(x')\neq y\quad\text{and}\quad d(x,x')\leq\varepsilon~.
     \end{align*}
 \end{definition}
 
 
-\subsection{Crafting adversarial examples}
+\begin{definition}
+  Let $\PP$ be a Borel distribution over $\XX \times \YY$. Let $h:\mathcal{X}\to\mathcal{Y}$ be a classifier. We define the adversarial risk of $h$ as:
+  \begin{align*}
+    \risk_\varepsilon(h):=\PP\left[\exists x'\in B_\varepsilon(x),~h(x')\neq y\right] = \mathbb{E}_{(x,y)\sim\PP}\left[\sup_{x'\in B_\varepsilon(x)}\mathbf{1}_{h(x')\neq y}\right]
+  \end{align*}
+We call adversarial Bayes risk, the infimum of adversarial risk over the set of Borel measurable classifiers $\mathcal{F}(\XX,\YY)$:
+\begin{align*}
+  \risk^\star_\varepsilon:=\inf_{h\in\mathcal{F}(\XX,\YY)} \risk_\varepsilon(h)
+\end{align*}
 
-The most puzzling about adversarial examples is the facility to craft them. Let us consider an attacker that aim at finding an adversarial perturbation $x'$ of an input $x$ for a given classifier $\mathbf{f}$.  Given a differentiable loss $\loss$, typically the cross-entropy, the attacker usually maximizes the following objective:
+\end{definition}
 
+\begin{prop}
+  Let $\PP$ be a Borel distribution over $\XX \times \YY$. Let $h:\mathcal{X}\to\mathcal{Y}$ be a classifier. If $h$ is Borel measurable then $\risk_\varepsilon(h)$ is well defined.
+\end{prop}
+
+\subsection{Adversarial examples in the wild}
+
+The probably most puzzling about adversarial examples is the facility to craft them. Let us consider an attacker that aim at finding an adversarial perturbation $x'$ of an input $x$ for a given classifier $\mathbf{f}$.  In order to craft an adversarial example, typically the cross-entropy, the attacker maximizes the following objective given a differentiable loss $\loss$:
 \begin{align}
     \max_{x'\in\XX\text{ s.t. } d(x,x')\leq \varepsilon}\loss\left(\mathbf{f}(x'), y)\right).
 \end{align}
-To do so, many attacks were proposed that we will categorize into two parts: 
-\begin{itemize}
-    \item \textbf{White box attacks:} the attacker has  full knowledge of the function $\mathbf{f}$ and its parameters. Hence these attacks are often based on the gradient of the former objective. The most popular white box attacks are PGD attack~\cite{kurakin2016adversarial,madry2017towards}, FGSM attack~\citep{goodfellow2014explaining}, Carlini\&Wagner attack~\citep{carlini2017towards}, AutoPGD~\citep{Croce2020MinimallyDA}, FAB~\citep{Croce2020MinimallyDA}, etc.
-    \item \textbf{Black box attacks:} the attacker has no knowledge on the classifier parameters and a limited access to the classifier, e.g. he can only access logits or predicted class for instance. CITE ZOO, nes. square, yetanother
-    
-\end{itemize}
-As an illustration we show hereafter how to craft a PGD attack in an $\ell_p$ case.
-\begin{example*}[PGD attack] Let $x_0\in\RR^d$ be an input. The projected gradient descent (PGD)~\cite{madry2017towards} of radius~$\varepsilon$, recursively computes
+To solve the previous optimization problem, many attacks were proposed that we will categorize into two parts: white-box attacks and black-box attacks.
+\paragraph{White box attacks:} In this setting, the attacker has  full knowledge of the function $\mathbf{f}$ and its parameters. Hence, these attacks often takes advantages of the differentiablity of $\mathcal{f}$ and the loss function $\loss$.Then, such attacks usually takes the gradient $\nabla_x \loss\left(f\left(x^t\right),y\right)$ as ascent direction for crafting adversarial examples.  These attacks are called \emph{gradient based attacks}. The most popular white box attacks are PGD attack~\cite{kurakin2016adversarial,madry2017towards}, FGSM attack~\citep{goodfellow2014explaining}, Carlini\&Wagner attack~\citep{carlini2017towards}, AutoPGD~\citep{Croce2020MinimallyDA}, FAB~\citep{Croce2020MinimallyDA}, etc. As an illustration of the simplicity of crafting adversarial examples, we show hereafter how the desingn of a PGD attack in an $\ell_p$ case.
+\begin{example*}[PGD attack] Let $x_0\in\RR^d$ be an input. The projected gradient descent (PGD)~\cite{kurakin2016adversarial,madry2017towards} of radius~$\varepsilon$, recursively computes
 \begin{align*}
 x^{t+1}=\prod_{B_p(x,\varepsilon)}\left(x^t
 +\alpha \argmaxB_{\delta\text{ s.t. }||\delta||_p\leq1} \langle\Delta^t,\delta \rangle\right)
 \end{align*}
-where $B_p(x,\varepsilon) = \{ x+\tau \text{~s.t.~} \lVert\tau\rVert_p \leq \epsilon\}$, $\Delta^t=\nabla_x \loss\left(f\left(x^t\right),y\right)$, $\alpha$ is a gradient step size, and $\prod_S$ is the orthogonal projection operator on $S$. Many attacks are extensions of this one~\citep{tramer2019adversarial,Croce2020ReliableEO}
+where $B_p(x,\varepsilon) = \{ x+\tau \text{~s.t.~} \lVert\tau\rVert_p \leq \epsilon\}$, $\Delta^t=\nabla_x \loss\left(f\left(x^t\right),y\right)$, $\alpha$ is a gradient step size, and $\prod_S$ is the orthogonal projection operator on $S$. Many attacks are extensions of this one as AutoPGD~\citep{Croce2020ReliableEO} and SparsePGD~\citep{tramer2019adversarial}
 \end{example*}
-\subsection{A Learning Approach to Adversarial Classification}
-Adversarial classification consists in  learning a (universally or Borel) measurable function $h:\mathcal{X}\to\mathcal{Y}$ minimizing the $0/1$ loss risk: 
-\begin{align*}
-\risk^\varepsilon_{0/1}(h)&:=\PP_{(x,y)}(\exists x'\in\XX\text{ s.t. } d(x,x')\leq \varepsilon \text{ and } h(x')\neq y)\\
-&= \EE_{(x,y)\sim\PP}\left[\sup_{x'\in\XX\text{ s.t. } d(x,x')\leq \varepsilon}\mathbf{1}_{h(x')\neq y}\right]
-\end{align*}
-The definition of this quantity is not immediate and requires the following proposition.
+\paragraph{Black box attacks:} In this setting, the attacker has limited knowledge of the classifier. The attacker does not have have access to the parameters of the classifier, but can query either the predicted logits or the predicted label for a given input $x$. To craft adversarial examples, it was proposed to mimic gradient-based attacks using gradient estimation as the ZOO attack~\citep{xxx} and NES attack~\citep{ilyas2018black,ilyas2019adversarial}. 
 
-\begin{prop}
-For any  Borel measurable function $h$, the adversarial risk is well defined $\risk^\varepsilon_{0/1}(h)$.
-\end{prop}
-TBC
+
+
+of the attacker has no knowledge on the classifier parameters and a limited access to the classifier, e.g. he can only access logits or predicted class for instance. CITE ZOO, nes. square, yetanother
+
+TO COMPLETE
+
+
+
+
+
+
+{Usual Datasets in Image Classification}
+%Images are embeddings in pixels laying in $[0,255]$ and then normalized to $[0,1]$. These images can be black and white, hence encoded on only one channel, or colorful and then encoded on three channels, often, Red, Green, Blue (RGB). The images are of diverse qualities, the number of pixels quantifies this quality.  
+To evaluate the perfomance of an attack of a classification algorithm, one needs to train and evaluate on datasets. In image classification evaluation, three datasets are mainly used:
+\begin{itemize}
+    \item \textbf{MNIST~\citep{lecun1998mnist}:} A dataset of black and white low-quality images representing the $10$ digits. The training set contains $50000$ images and test set $10000$ images. These images are of dimension $28\times28\times 1$ ($784$ in total). This dataset is known to be easy ($>99\%$ can be obtained using simple classifiers). In adversarial classification, the problem is also easy to be solved. Evaluation on MNIST is not sufficient to assess the performance of a classifier or even a defense against adversarial examples.
+    \item \textbf{CIFAR10 and CIFAR100~\citep{krizhevsky2009learning}:} Datasets of colored low-quality images representing the $10$ labels and $100$ labels for respectively CIFAR10 and CIFAR100. Each training set contains $50000$ images and test set $10000$ images. These images are of dimension $32\times32\times 1$ ($3072$ in total). The current state-of-the-art on CIFAR10 in standard classification is $>99\%$ of accuracy, but asks advanced methods to reach such a score. On CIFAR100, the current state-of-the-art is around $94\%$. In adversarial classification both datasets are challenging and difficult. The evolution of state-of-the-art in adversarial classification is available in RobustBench\footnote{\url{https://robustbench.github.io/}}. Benchmark in adversarial classification are often made on these datasets.
+    \item \textbf{ImageNet~\citep{imagenet_cvpr09}:} ImageNet refers to a dataset containing $1.2$ million of images labeled into $1000$ classes. Images are of diverse qualities, but models often takes input of dimension $224\times224\times 3$ (dimension $150528$ in total). The current state-of-the-art on ImageNet is about $87\%$. There is no need to say that adversarial classification on ImageNet is still a very-challenging task. Further than the standard dataset, ImageNet project is still in development: the project gathers $14197122$ images and $21841$ labels on August 31th, 2021.   
+
+
+\end{itemize}
+
+
+\paragraph{Adversarial Examples beyond Image Classification.} Adversarial examples do not only exist in Image Classification, but it is the most striking example as images are perceptually unchanged. We can enumerate, non exhaustively, the following examples of adversarial classification:
+\begin{itemize}
+    \item \textbf{Image Segmentation}
+    \item \textbf{Video classification:} Videos are series of images. Adversarial attacks against video classification systems are closed to adversarial examples in standard Image Classification. Adversarial attacks might aim at changing either a bit many frame or a lot only a few frames. 
+    \item \textbf{Audio classification}
+    \item \textbf{NLP classification tasks:} Adversaries change some words in a text to make it misclassified. However such examples can also change the meaning of the text and consequently change its classification. 
+    \item \textbf{Recommender Systems} A recent line of work~\cite{xxx,garcelon2020adversarial} aimed at crafting adversarial attacks against bandit algorithms~\citep{lattimore2018bandit}. The goal of these attacks are to force the learner to chose the wrong arms a linear number of times. While these works are mostly theoretical, their potential use in practical settings might raise issues for businesses in a close future.
+\end{itemize}
+
+
+
+% \subsection{A Learning Approach to Adversarial Classification}
+% Adversarial classification consists in  learning a (universally or Borel) measurable function $h:\mathcal{X}\to\mathcal{Y}$ minimizing the $0/1$ loss risk: 
+% \begin{align*}
+% \risk^\varepsilon_{0/1}(h)&:=\PP_{(x,y)}(\exists x'\in\XX\text{ s.t. } d(x,x')\leq \varepsilon \text{ and } h(x')\neq y)\\
+% &= \EE_{(x,y)\sim\PP}\left[\sup_{x'\in\XX\text{ s.t. } d(x,x')\leq \varepsilon}\mathbf{1}_{h(x')\neq y}\right]
+% \end{align*}
+% The definition of this quantity is not immediate and requires the following proposition.
+
+% \begin{prop}
+% For any  Borel measurable function $h$, the adversarial risk is well defined $\risk^\varepsilon_{0/1}(h)$.
+% \end{prop}
+% TBC
 % The existence of a minimizer for adversarial risk is a difficult question, that was partially answered in NOTYETPUBLISHED, which states, under some mild conditions, that the minimum is attained over the set of universally measurable functions.
 
 
@@ -100,28 +146,6 @@ Given a skew symmetric matrix $A$, the Cayley transform consists in computing th
 
 \section{Evaluating Adversarial Robustness}
 
-
-\subsection{Usual Datasets in Image Classification}
-%Images are embeddings in pixels laying in $[0,255]$ and then normalized to $[0,1]$. These images can be black and white, hence encoded on only one channel, or colorful and then encoded on three channels, often, Red, Green, Blue (RGB). The images are of diverse qualities, the number of pixels quantifies this quality.  
-To evaluate the perfomance of an attack of a classification algorithm, one needs to train and evaluate on datasets. In image classification evaluation, three datasets are mainly used:
-\begin{itemize}
-    \item \textbf{MNIST~\citep{lecun1998mnist}:} A dataset of black and white low-quality images representing the $10$ digits. The training set contains $50000$ images and test set $10000$ images. These images are of dimension $28\times28\times 1$ ($784$ in total). This dataset is known to be easy ($>99\%$ can be obtained using simple classifiers). In adversarial classification, the problem is also easy to be solved. Evaluation on MNIST is not sufficient to assess the performance of a classifier or even a defense against adversarial examples.
-    \item \textbf{CIFAR10 and CIFAR100~\citep{krizhevsky2009learning}:} Datasets of colored low-quality images representing the $10$ labels and $100$ labels for respectively CIFAR10 and CIFAR100. Each training set contains $50000$ images and test set $10000$ images. These images are of dimension $32\times32\times 1$ ($3072$ in total). The current state-of-the-art on CIFAR10 in standard classification is $>99\%$ of accuracy, but asks advanced methods to reach such a score. On CIFAR100, the current state-of-the-art is around $94\%$. In adversarial classification both datasets are challenging and difficult. The evolution of state-of-the-art in adversarial classification is available in RobustBench\footnote{\url{https://robustbench.github.io/}}. Benchmark in adversarial classification are often made on these datasets.
-    \item \textbf{ImageNet~\citep{imagenet_cvpr09}:} ImageNet refers to a dataset containing $1.2$ million of images labeled into $1000$ classes. Images are of diverse qualities, but models often takes input of dimension $224\times224\times 3$ (dimension $150528$ in total). The current state-of-the-art on ImageNet is about $87\%$. There is no need to say that adversarial classification on ImageNet is still a very-challenging task. Further than the standard dataset, ImageNet project is still in development: the project gathers $14197122$ images and $21841$ labels on August 31th, 2021.   
-
-
-\end{itemize}
-
-
-\paragraph{Adversarial Examples beyond Image Classification.} Adversarial examples do not only exist in Image Classification, but it is the most striking example as images are perceptually unchanged. We can enumerate, non exhaustively, the following examples of adversarial classification:
-\begin{itemize}
-    \item \textbf{Image Segmentation}
-    \item \textbf{Video classification:} Videos are series of images. Adversarial attacks against video classification systems are closed to adversarial examples in standard Image Classification. Adversarial attacks might aim at changing either a bit many frame or a lot only a few frames. 
-    \item \textbf{Audio classification}
-    \item \textbf{NLP classification tasks:} Adversaries change some words in a text to make it misclassified. However such examples can also change the meaning of the text and consequently change its classification. 
-    \item \textbf{Recommender Systems} A recent line of work~\cite{xxx,garcelon2020adversarial} aimed at crafting adversarial attacks against bandit algorithms~\citep{lattimore2018bandit}. The goal of these attacks are to force the learner to chose the wrong arms a linear number of times. While these works are mostly theoretical, their potential use in practical settings might raise issues for businesses in a close future.
-\end{itemize}
-
 \subsection{Evaluation Protocol}
 
 Unless defense mechanisms are provable and have guarantees, evaluating Adversarial Robustness is a complicated task. Many  defenses introduced in the literature are actually ``false'' defenses. Indeed, one needs to adapt each attack to the defense. We describe the following common issues. CITE more
@@ -130,4 +154,13 @@ Unless defense mechanisms are provable and have guarantees, evaluating Adversari
 
 \paragraph{Benchmarking defenses.} To answer the need of adversarial examples community to evaluate accurately their models against adversarial examples, \cite{croce2020robustbench} proposed RobustBench as a unified platform for benchmarking adversarial defenses. The platform evaluates models on different attacks (AutoPGD~\citep{Croce2020ReliableEO}, FAB~\citep{Croce2020MinimallyDA}, SquareAttack~\citep{andriushchenko2019square}). The platform  does not propose to evaluate the robustness of randomized classifiers. 
 
-\subsection{Which Perception Distance to Use?}
+\subsection{Theoretical knowledge in Adversarial classification}
+
+
+\paragraph{Curse of dimensionality.}
+
+
+
+
+
+\paragraph{}

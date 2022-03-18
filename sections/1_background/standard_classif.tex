@@ -3,19 +3,43 @@
 \subsection{Notations}
 We recall that a classification aims at assigning a label to a given input. We  formalize it as follows:
 \begin{itemize}
-    \item Consider an input space $\mathcal{X}$, typically images. We assume this space is endowed with an arbitrary metric $d$ possibly the perception distance or any $\ell_p$ norm. In the remaining of the manuscript, unless it is specified, $(\mathcal{X},d)$ will be a \textit{proper} (i.e. closed balls are compact) \textit{Polish} (i.e. completely separable) metric space. Note that for any norm $\lVert\cdot\rVert$,  $(\mathbb{R}^d,\lVert\cdot\rVert)$ is a proper Polish metric space.
-    \item Each image $x\in \mathcal{X}$ has to be associated with  a label $y$. We designate the set of labels $\mathcal{Y}:=\{1,\dots,K\}$ as descriptors of an input. For instance the label of an image will be its description. $\mathcal{Y}$ will be endowed with the trivial metric  $d'(y,y') = \mathbf{1}_{y\neq y'}$. Note that $(\mathcal{X}\times\mathcal{Y},d\oplus d')$ is also a proper Polish space.
+    \item Consider an input space $\mathcal{X}$, typically images. We assume this space is endowed with an arbitrary metric $d$ possibly a perception distance or any $\ell_p$ norm. In the following of the manuscript, unless it is specified, $(\mathcal{X},d)$ will be a \textit{proper} (i.e. closed balls are compact) \textit{Polish} (i.e. completely separable) metric space. Note that for any norm $\lVert\cdot\rVert$,  $(\mathbb{R}^d,\lVert\cdot\rVert)$ is a proper Polish metric space.
+    \item Each image $x\in \mathcal{X}$ has to be associated with a label $y$. We designate the set of labels $\mathcal{Y}:=\{1,\dots,K\}$ as descriptors of an input. For instance the label of an image will be its description. $\mathcal{Y}$ will be endowed with the trivial metric  $d'(y,y') = \mathbf{1}_{y\neq y'}$. Note that $(\mathcal{X}\times\mathcal{Y},d\oplus d')$ is also a proper Polish space.
 \end{itemize}
-With such spaces, the space $(\mathcal{X}\times\mathcal{Y},d\oplus d')$ is also a proper Polish space. As in every classification problem, the data is sampled from an unknown probability distribution $\PP$. We will assume from now that the distributions we consider are Borel. For any Polish Space $\mathcal{Z}$, we will denote $\mathcal{B}(\mathcal{Z})$ the Borel $\sigma$-algebra and the set of Borel distributions over $\mathcal{Z}$  will be denoted $\mathcal{M}_+^1(\mathcal{Z})$. We also recall the notion of \textit{universal measurability}: a set $A\subset \mathcal{Z}$ is said to be universally measurable if it is measurable for every \textit{complete} Borel probability measure.
+The space $(\mathcal{X}\times\mathcal{Y},d\oplus d')$ is also a proper Polish space. 
 
-\subsection{Classification Task}
-In standard classification, we aim at learning a (universally or Borel) measurable function $h:\mathcal{X}\to\mathcal{Y}$ minimizing the $0/1$ loss risk:
+In classification problem in machine learning, the data is assumed to be sampled from an unknown probability distribution $\PP$. We will assume from now that the distributions we consider are Borel. For any Polish Space $\mathcal{Z}$, we will denote $\mathcal{B}(\mathcal{Z})$ the Borel $\sigma$-algebra and the set of Borel distributions over $\mathcal{Z}$  will be denoted $\mathcal{M}_+^1(\mathcal{Z})$. We also recall the notion of \textit{universal measurability}: a set $A\subset \mathcal{Z}$ is said to be universally measurable if it is measurable for every \textit{complete} Borel probability measure.
+
+
+\subsection{Classification Task in Supervised Learning}
+
+
+In standard classification, it is usual to maximize the accuracy of the classifier, or equivalently, to minimize the risk associated with the $0/1$ loss defined as follows.
+
+    
+\begin{definition} Let $\PP$ be a Borel probability distribution over $\XX\times\YY$. Let $h:\XX\to\YY$ be a Borel measurable classifier. Then, the risk of $h$ associated with $0/1$ loss (or error of $h$) is defined as:
 \begin{align}
-   \risk_{0/1}(h):=\PP(h(x)\neq y) = \EE_{(x,y)\sim\PP}\left[\mathbf{1}_{h(x)\neq y}\right]
+   \risk_{0/1,\PP}(h):=\PP(h(x)\neq y) = \EE_{(x,y)\sim\PP}\left[\mathbf{1}_{h(x)\neq y}\right]
 \end{align}
-Note that this quantity is well defined when $h$ is measurable. The optimal classifier is called the Bayes Optimal classifier and is defined as $h(x) = \argmaxB_k\PP(y=k\mid x)$. One can note, using disintegration theorem that $h$ is indeed Borel measurable.
+The bayes risk is defined as the optimal risk over measurable classifiers $\mathcal{F}(\XX,\YY)$:
+\begin{align}
+    \risk^\star_{0/1,\PP}:=\inf_{h\in\mathcal{F}(\XX,\YY)}\risk_{0/1,\PP}(h)
+ \end{align}
 
-However in practice, the access to the Bayes Optimal classifier is impossible because it requires full knowledge of the probability distribution $\PP$ which is not the case in general. Let us assume having access to a training set of $n$ data points $\{(x_1,y_1),\dots,(x_\numsamples,y_\numsamples)\}$. The knowledge of the Bayes classifier on training points would not be sufficient to have generalization properties for the classifier on out-of-sample data points because such functions would overfit the training set. Hence one need to reduce the search space of measurable functions to a much smaller one, denoted $\mathcal{H}$ in the sequel. More precisely, for binary classification (i.e $\mathcal{Y}:=\{-1,+1\})$, we aim at learning a function $\mathbf{f}:\XX\to\mathbb{R}$ such that $h(x)=\sign(f(x))$ (with a convention on $sign(0)$). In multilabel classification (i.e $|\mathcal{Y}|\geq2$), we learn a function $\mathbf{f}:\XX\to\mathbb{R}^K$ and $h$ is set to $h(x)=\argmaxB_k f_k(x)$. Minimizing directly the $0/1$ loss risk is  NP-hard CITE. Then one needs to minimize a well-chosen surrogate loss function $\loss$. A \textit{loss function} $\loss:\mathbb{R}^K\times\mathcal{Y}\to\mathbb{R}$ will be without loss of generality a non negative Borel measurable function. An example of such a loss is the cross entropy loss defined as:
+\end{definition}
+
+Note that this quantity is well defined when $h$ is measurable. The optimal classifier is called the Bayes Optimal classifier and is defined as $h(x) = \argmaxB_k\PP(y=k\mid x)$. We remark that the disintegration theorem ensures that $h$ is indeed Borel measurable.
+
+In practice, the access to the Bayes Optimal classifier is not possible because it requires full knowledge of the probability distribution $\PP$ which is not the case in general. Instead, in the supervised learning setting, the learner has access to data points $\{(x_1,y_1),\dots,(x_\numsamples,y_\numsamples)\}$, that constitute the training set. The knowledge of the Bayes classifier on training points is not sufficient to generalize on points out of the training set. Thus the learner needs to learn the classifier over smaller classes of functions. Secondly, the $0/1$ loss is not convex neither continuous, 
+
+
+
+
+The two main questions in classification are the following:
+
+Hence one need to reduce the search space of measurable functions to a much smaller one, denoted $\mathcal{H}$ in the sequel.
+
+to have generalization properties for the classifier on out-of-sample data points because such functions would overfit the training set. Hence one need to reduce the search space of measurable functions to a much smaller one, denoted $\mathcal{H}$ in the sequel. More precisely, for binary classification (i.e $\mathcal{Y}:=\{-1,+1\})$, we aim at learning a function $\mathbf{f}:\XX\to\mathbb{R}$ such that $h(x)=\sign(f(x))$ (with a convention on $sign(0)$). In multilabel classification (i.e $|\mathcal{Y}|\geq2$), we learn a function $\mathbf{f}:\XX\to\mathbb{R}^K$ and $h$ is set to $h(x)=\argmaxB_k f_k(x)$. Minimizing directly the $0/1$ loss risk is  NP-hard CITE. Then one needs to minimize a well-chosen surrogate loss function $\loss$. A \textit{loss function} $\loss:\mathbb{R}^K\times\mathcal{Y}\to\mathbb{R}$ will be without loss of generality a non negative Borel measurable function. An example of such a loss is the cross entropy loss defined as:
 \begin{align*}
     \loss(\mathbf{f}(x),y)=-\sum_{i=1}^K \mathbf{1}_{y=i}\log f_i(x)
 \end{align*}
@@ -25,13 +49,51 @@ where $f_i(x)$ is the probability learnt by the model that input $x$ belongs to 
 \inf_{\mathbf{f}\in\mathcal{H}}\riskemp_{\numsamples}(\mathbf{f}):= \frac{1}{\numsamples}\sum_{i=1}^\numsamples \loss(\mathbf{f}(x_i),y_i).
 \end{align*}
 
-\subsection{Background in Learning Theory} 
 
 
+\paragraph{Usual Datasets in Image Classification}
+%Images are embeddings in pixels laying in $[0,255]$ and then normalized to $[0,1]$. These images can be black and white, hence encoded on only one channel, or colorful and then encoded on three channels, often, Red, Green, Blue (RGB). The images are of diverse qualities, the number of pixels quantifies this quality.  
+In this PhD thesis, although the results are general and applicable to every type of data, we only use image classification To evaluate the perfomance of a classification algorithm, one needs to train and evaluate on datasets. In image classification evaluation, three datasets are mainly used:
+\begin{itemize}
+    \item \textbf{MNIST~\citep{lecun1998mnist}:} A dataset of black and white low-quality images representing the $10$ digits. The training set contains $50000$ images and test set $10000$ images. These images are of dimension $28\times28\times 1$ ($784$ in total). This dataset is known to be easy ($>99\%$ can be obtained using simple classifiers). 
+    \item \textbf{CIFAR10 and CIFAR100~\citep{krizhevsky2009learning}:} Datasets of colored low-quality images representing the $10$ labels and $100$ labels for respectively CIFAR10 and CIFAR100. Each training set contains $50000$ images and test set $10000$ images. These images are of dimension $32\times32\times 3$ ($3072$ in total). The current state-of-the-art on CIFAR10 in standard classification is $>99\%$ of accuracy, but asks advanced methods to reach such a score. On CIFAR100, the current state-of-the-art is around $94\%$. 
+    \item \textbf{ImageNet~\citep{imagenet_cvpr09}:} ImageNet refers to a dataset containing $1.2$ million of images labeled into $1000$ classes. Images are of diverse qualities, but models often takes input of dimension $224\times224\times 3$ (dimension $150528$ in total). The current state-of-the-art on ImageNet is about $87\%$. Further than the standard dataset, ImageNet project is still in development: the project gathers $14197122$ images and $21841$ labels on August 31th, 2021.   
 
-Learning theory focuses on understanding and deriving convergence results for machine learning algorithms. % Instead, we aim at learning either a classifier $h\in\mathcal{H}$ such that:
+
+\end{itemize}
+
+\subsection{Surrogate losses, consistency and calibration} 
+
+In classification, optimizing the risk associated $0/1$ loss is a difficult task, generally an NP-hard problem~\cite{xxx}.  
+
+\begin{definition}[Loss function] A loss function is a function $\loss:\mathcal{X}\times\mathcal{Y}\times \mathcal{F}(\mathcal{X})\to \mathbb{R}$ such that $\loss(\cdot,\cdot,f)$ is a Borel measurable for all $f\in\mathcal{F}(\mathcal{X})$. 
+\end{definition}
 
 
-\paragraph{Surrogate losses} In classification, optimizing the risk associated $0/1$ loss is a difficult task, often NP-hard. To do so 
+Similarly to risk associated with the $0/1$ loss, 
+\begin{definition}[$\loss$-risk of a classifier]
+For a given measurable loss $\loss$, and a Borel probability distribution $\PP$ over $\XX\times\YY$ we define the risk of classifier $f$ associated with the loss $\loss$ and a distribution $\PP$ as:
+\begin{align*}
+     \mathcal{R}_{\loss,\PP}(f) := \mathbb{E}_{(x,y)\sim\PP}\left[\loss(x,y,f)\right].
+\end{align*}
+We also define the optimal risk associated with the loss $\loss$:
+\begin{align*}
+         \mathcal{R}_{\loss,\PP}^\star := \inf_{f\in\mathcal{F}(\XX)}\mathcal{R}_{\loss,\PP}(f)
+\end{align*}
+\end{definition}
 
+
+The risk of a classifier is then defined as the average loss over the distribution $\PP$. The loss $L$ is difficult to optimize in practice: the loss might, for instance, not convex  not differentiable or continuous. It is then often preferred to optimize a surrogate loss function instead. In the literature~\citep{zhang2004statistical,bartlett2006convexity,steinwart2007compare}, the notion of surrogate losses has been studied as a consistency problem: a surrogate loss is said to be consistent if any minimizing sequence of classifiers for the  risk associated with the surrogate loss is also one for the risk associated with $L$. Formally, the notion of consistency as  follows.
+
+\begin{definition}[Consistency]
+Let $L_1$ and $L_2$ be two loss functions. For a given $\PP\in\mathcal{M}_1^+(\XX\times\YY)$, $L_2$ is said to be consistent for $\PP$ with respect to $L_1$ if for all sequences $(f_n)_n \in \mathcal{F}(\mathcal{X})^\mathbb{N}$ :
+\begin{align}
+    \mathcal{R}_{L_2,\PP}(f_n)\to \mathcal{R}_{L_2,\PP}^\star\implies\mathcal{R}_{L_1,\PP}(f_n)\to \mathcal{R}_{L_1,\PP}^\star
+\end{align}
+We say that a loss $L_2$ is said to be consistent with respect to a loss $L_1$ if consistency holds for every distribution $\PP$.
+\end{definition}
+
+\subsection{Empirical Risk Minimization and Generalization}
+
+As mentioned earlier, the learner has access to training points 
 
