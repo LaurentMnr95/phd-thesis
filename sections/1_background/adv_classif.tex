@@ -1,33 +1,48 @@
 
 \section{Introduction to Adversarial Classification}
+
+In this section, we present the required background about adversarial classification. In the first part, we present formally what is an adversarial attack, then how to craft them in practice. After, we present ways of defending against adversarial examples. Finally, we state the main results about theoretical understanding of adversarial examples. 
 \subsection{What is an adversarial example?}
 
-Informally, an adversarial example is a perturbation of an input that is imperceptible to human senses, but that state-of-the-art classifiers are unable to  classify accurately. In the following of the manuscript we define adversarial attacks as follows.
+In classification tasks, an adversarial example is a perturbation of an input that is imperceptible to human senses, but that state-of-the-art classifiers are unable to  classify accurately. In the following of the manuscript we define adversarial attacks as follows.
 
 
 \begin{definition} 
-    Let $h:\mathcal{X}\to\mathcal{Y}$ be a classifier. An adversarial attack of level $\varepsilon$ on the input $x$ with label $y$ against the classifier $h$ is a perturbation $x'$ such that:
+    Let $h:\XX\to\YY$ be a classifier. An adversarial attack of level $\varepsilon$ on the input $x$ with label $y$ against the classifier $h$ is a perturbation $x'$ such that:
     \begin{align*}
         h(x')\neq y\quad\text{and}\quad d(x,x')\leq\varepsilon~.
     \end{align*}
 \end{definition}
-
-
+This definition is very simple and general. The distance $d$ can refer to either a $l^p$ distance or a perception distance. We can associate to adversarial examples a notion of adversarial risk. The adversarial risk is the worst case risk if each point are optimally attacked at level $\varepsilon$.
 \begin{definition}
-  Let $\PP$ be a Borel distribution over $\XX \times \YY$. Let $h:\mathcal{X}\to\mathcal{Y}$ be a classifier. We define the adversarial risk of $h$ as:
+  Let $\PP$ be a Borel distribution over $\XX \times \YY$. Let $h:\XX\to\YY$ be a classifier. We define the \emph{adversarial risk} of $h$ at level $\varepsilon$ as:
   \begin{align*}
     \risk_\varepsilon(h):=\PP\left[\exists x'\in B_\varepsilon(x),~h(x')\neq y\right] = \mathbb{E}_{(x,y)\sim\PP}\left[\sup_{x'\in B_\varepsilon(x)}\mathbf{1}_{h(x')\neq y}\right]
   \end{align*}
-We call adversarial Bayes risk, the infimum of adversarial risk over the set of Borel measurable classifiers $\mathcal{F}(\XX,\YY)$:
+
+  If $f:\XX\to\RR^K$, then the adversarial risk of $f$ at level $\varepsilon$ is defined as
+   \begin{align*}
+    \risk_{0/1,\PP}(f):=\PP\left[\exists x'\in B_\varepsilon(x),~\argmaxB_{k\in\YY}f_k(x)\neq y\right]
+   \end{align*}
+\end{definition}
+A first property is that the adversarial risk is well defined. While this result seems trivial, it requires advanced arguments from measure theory. 
+\begin{prop}
+  Let $\PP$ be a Borel distribution over $\XX \times \YY$. Let $h:\XX\to\YY$ be a classifier. If $h$ is Borel measurable then $\risk_\varepsilon(h)$ is well defined.
+\end{prop}
+\begin{proof}
+  TODO
+\end{proof}
+
+Similarly to the standard classification setting, 
+
+\begin{definition}
+  Let $\PP$ be a Borel distribution over $\XX \times \YY$. We call \emph{adversarial Optimal Bayes risk}at level $\varepsilon$ , the infimum of adversarial risk at level $\varepsilon$  over the set of Borel measurable classifiers $\mathcal{F}(\XX,\YY)$:
 \begin{align*}
   \risk^\star_\varepsilon:=\inf_{h\in\mathcal{F}(\XX,\YY)} \risk_\varepsilon(h)
 \end{align*}
 
 \end{definition}
 
-\begin{prop}
-  Let $\PP$ be a Borel distribution over $\XX \times \YY$. Let $h:\mathcal{X}\to\mathcal{Y}$ be a classifier. If $h$ is Borel measurable then $\risk_\varepsilon(h)$ is well defined.
-\end{prop}
 
 \subsection{Adversarial examples in the wild}
 
@@ -57,17 +72,6 @@ TO COMPLETE
 
 
 
-{Usual Datasets in Image Classification}
-%Images are embeddings in pixels laying in $[0,255]$ and then normalized to $[0,1]$. These images can be black and white, hence encoded on only one channel, or colorful and then encoded on three channels, often, Red, Green, Blue (RGB). The images are of diverse qualities, the number of pixels quantifies this quality.  
-To evaluate the perfomance of an attack of a classification algorithm, one needs to train and evaluate on datasets. In image classification evaluation, three datasets are mainly used:
-\begin{itemize}
-    \item \textbf{MNIST~\citep{lecun1998mnist}:} A dataset of black and white low-quality images representing the $10$ digits. The training set contains $50000$ images and test set $10000$ images. These images are of dimension $28\times28\times 1$ ($784$ in total). This dataset is known to be easy ($>99\%$ can be obtained using simple classifiers). In adversarial classification, the problem is also easy to be solved. Evaluation on MNIST is not sufficient to assess the performance of a classifier or even a defense against adversarial examples.
-    \item \textbf{CIFAR10 and CIFAR100~\citep{krizhevsky2009learning}:} Datasets of colored low-quality images representing the $10$ labels and $100$ labels for respectively CIFAR10 and CIFAR100. Each training set contains $50000$ images and test set $10000$ images. These images are of dimension $32\times32\times 1$ ($3072$ in total). The current state-of-the-art on CIFAR10 in standard classification is $>99\%$ of accuracy, but asks advanced methods to reach such a score. On CIFAR100, the current state-of-the-art is around $94\%$. In adversarial classification both datasets are challenging and difficult. The evolution of state-of-the-art in adversarial classification is available in RobustBench\footnote{\url{https://robustbench.github.io/}}. Benchmark in adversarial classification are often made on these datasets.
-    \item \textbf{ImageNet~\citep{imagenet_cvpr09}:} ImageNet refers to a dataset containing $1.2$ million of images labeled into $1000$ classes. Images are of diverse qualities, but models often takes input of dimension $224\times224\times 3$ (dimension $150528$ in total). The current state-of-the-art on ImageNet is about $87\%$. There is no need to say that adversarial classification on ImageNet is still a very-challenging task. Further than the standard dataset, ImageNet project is still in development: the project gathers $14197122$ images and $21841$ labels on August 31th, 2021.   
-
-
-\end{itemize}
-
 
 \paragraph{Adversarial Examples beyond Image Classification.} Adversarial examples do not only exist in Image Classification, but it is the most striking example as images are perceptually unchanged. We can enumerate, non exhaustively, the following examples of adversarial classification:
 \begin{itemize}
@@ -81,7 +85,7 @@ To evaluate the perfomance of an attack of a classification algorithm, one needs
 
 
 % \subsection{A Learning Approach to Adversarial Classification}
-% Adversarial classification consists in  learning a (universally or Borel) measurable function $h:\mathcal{X}\to\mathcal{Y}$ minimizing the $0/1$ loss risk: 
+% Adversarial classification consists in  learning a (universally or Borel) measurable function $h:\X\to\YY$ minimizing the $0/1$ loss risk: 
 % \begin{align*}
 % \risk^\varepsilon_{0/1}(h)&:=\PP_{(x,y)}(\exists x'\in\XX\text{ s.t. } d(x,x')\leq \varepsilon \text{ and } h(x')\neq y)\\
 % &= \EE_{(x,y)\sim\PP}\left[\sup_{x'\in\XX\text{ s.t. } d(x,x')\leq \varepsilon}\mathbf{1}_{h(x')\neq y}\right]
@@ -104,8 +108,7 @@ To evaluate the perfomance of an attack of a classification algorithm, one needs
 
 Defending against adversarial examples is still an open research questions with few answers to it. One can derive the methods in two categories: empirical defenses and provable defenses.
 
-\subsubsection{Provable defenses}
-A defense is said to be provable if there is a theoretical guarantee to ensure a level of robustness. Formally, a classifier $h$ is said to \emph{certifiably robust at level $\varepsilon$} at input $x$ with label $y$ if there exist no adversarial example of level $\varepsilon$ on $h$ at the point $(x,y)$, i.e. for all $x'$ such that $d(x,x')\leq\varepsilon$, $h(x') = y$. 
+\paragraph{Provable defenses.} A defense is said to be provable if there is a theoretical guarantee to ensure a level of robustness. Formally, a classifier $h$ is said to \emph{certifiably robust at level $\varepsilon$} at input $x$ with label $y$ if there exist no adversarial example of level $\varepsilon$ on $h$ at the point $(x,y)$, i.e. for all $x'$ such that $d(x,x')\leq\varepsilon$, $h(x') = y$. 
 
 \paragraph{Lipschitz property of Neural Networks} 
 % TODO: define f properly
@@ -113,14 +116,14 @@ The Lipschitz constant has seen a growing interest in the last few years in the 
 Indeed, numerous results have shown that neural networks with a small Lipschitz constant exhibit better generalization~\citep{bartlett2017spectrally}, higher robustness to adversarial attacks~\citep{szegedy2014intriguing,farnia2018generalizable,tsuzuku2018lipschitz}, better training stability~\citep{xiao2018dynamical,trockman2021orthogonalizing}, improved Generative Adversarial Networks~\citep{arjovsky2017wasserstein}, etc.
 Formally, we define the Lipschitz constant with respect to the $\ell_2$ norm of a Lipschitz continuous function $f$ as follows:
 \begin{equation*}
-  Lip_{2}{(f)} = \sup_{\substack{x, x' \in \mathcal{X} \\ x \neq x'}} \frac{\lVert f(x) - f(x') \rVert_2}{\lVert x - x' \rVert_2} \enspace.
+  Lip_{2}{(f)} = \sup_{\substack{x, x' \in \XX \\ x \neq x'}} \frac{\lVert f(x) - f(x') \rVert_2}{\lVert x - x' \rVert_2} \enspace.
 \end{equation*}
 
 Intuitively, if a classifier is Lipschitz, one can bound the impact of a given input variation on the output, hence obtaining guarantees on the adversarial robustness.
 We can formally characterize the robustness of a neural network with respect to its Lipschitz constant with the following proposition:
 \begin{prop}[\citet{tsuzuku2018lipschitz}] \label{proposition:tsuzuku}
 Let $\mathbf{f}$ be an $L$-Lipschitz continuous classifier for the $\ell_2$ norm.
-Let $\varepsilon > 0$, $x \in \mathcal{X}$ and $y \in \mathcal{Y}$ the label of $x$.
+Let $\varepsilon > 0$, $x \in \XX$ and $y \in \YY$ the label of $x$.
 If at point $x$, the margin $\mathcal{M}_{\mathbf{f}}(x)$ satisfies:
 \begin{equation*}
   \mathcal{M}_{\mathbf{f}}(x):=\max(0,f_y(x)-\max_{y'\neq y}f_{y'}(x)) > \sqrt{2} L \varepsilon
@@ -144,15 +147,29 @@ Finally, the method proposed by~\citet{trockman2021orthogonalizing} use the Cayl
 Given a skew symmetric matrix $A$, the Cayley transform consists in computing the orthogonal matrix $Q = (I - A)^{-1} (I + A)$. Both methods are well adapted to convolutional layers and are able to reach high accuracy levels on CIFAR datasets. Also, several works~\cite{anil2019sorting,singla2021householder,huang2021local} proposed methods leveraging the properties of activation functions to constraints the Lipschitz of Neural Networks. These works are usually useful to help  improving the performance of linear orthogonal layers.
 
 
-\section{Evaluating Adversarial Robustness}
 
-\subsection{Evaluation Protocol}
 
-Unless defense mechanisms are provable and have guarantees, evaluating Adversarial Robustness is a complicated task. Many  defenses introduced in the literature are actually ``false'' defenses. Indeed, one needs to adapt each attack to the defense. We describe the following common issues. CITE more
 
-\paragraph{Evaluation of Randomized Classifiers.} When evaluating against randomized classifiers in either white-box or black-box setting, the return output is a random variable, hence the computation of an attack against it needs to be adapted to the nature of the classifier. To do so, \cite{athalye2018obfuscated} proposed to average either the outputs or the gradient of the classifier to build an efficient attack. This procedure was called Expectation Over Transformation (EOT).
+\paragraph{Evaluation Protocol}
 
-\paragraph{Benchmarking defenses.} To answer the need of adversarial examples community to evaluate accurately their models against adversarial examples, \cite{croce2020robustbench} proposed RobustBench as a unified platform for benchmarking adversarial defenses. The platform evaluates models on different attacks (AutoPGD~\citep{Croce2020ReliableEO}, FAB~\citep{Croce2020MinimallyDA}, SquareAttack~\citep{andriushchenko2019square}). The platform  does not propose to evaluate the robustness of randomized classifiers. 
+Unless defense mechanisms are provable and have guarantees, evaluating Adversarial Robustness is a complicated task. Many  defenses introduced in the literature were actually proven to be ``false'' defenses. Indeed, one needs to adapt each attack to the defense. We describe the following common issues. CITE more. 
+
+For instance, when evaluating against randomized classifiers in either white-box or black-box setting, the return output is a random variable, hence the computation of an attack against it needs to be adapted to the nature of the classifier. To do so, \cite{athalye2018obfuscated} proposed to average either the outputs or the gradient of the classifier to build an efficient attack. This procedure was called Expectation Over Transformation (EOT). 
+
+To answer the need of adversarial examples community to evaluate accurately their models against adversarial examples, \cite{croce2020robustbench} proposed RobustBench as a unified platform for benchmarking adversarial defenses. The platform evaluates models on different attacks (AutoPGD~\citep{Croce2020ReliableEO}, FAB~\citep{Croce2020MinimallyDA}, SquareAttack~\citep{andriushchenko2019square}). The platform  does not propose to evaluate the robustness of randomized classifiers. 
+
+\paragraph{State-of-the-art in Image Classification}
+
+To evaluate the perfomance of an attack of a classification algorithm, one needs to train and evaluate on datasets. In image classification evaluation, three datasets are mainly used:
+\begin{itemize}
+    \item \textbf{MNIST~\citep{lecun1998mnist}:} A dataset of black and white low-quality images representing the $10$ digits. The training set contains $50000$ images and test set $10000$ images. These images are of dimension $28\times28\times 1$ ($784$ in total). This dataset is known to be easy ($>99\%$ can be obtained using simple classifiers). In adversarial classification, the problem is also easy to be solved. Evaluation on MNIST is not sufficient to assess the performance of a classifier or even a defense against adversarial examples.
+    \item \textbf{CIFAR10 and CIFAR100~\citep{krizhevsky2009learning}:} Datasets of colored low-quality images representing the $10$ labels and $100$ labels for respectively CIFAR10 and CIFAR100. Each training set contains $50000$ images and test set $10000$ images. These images are of dimension $32\times32\times 1$ ($3072$ in total). The current state-of-the-art on CIFAR10 in standard classification is $>99\%$ of accuracy, but asks advanced methods to reach such a score. On CIFAR100, the current state-of-the-art is around $94\%$. In adversarial classification both datasets are challenging and difficult. The evolution of state-of-the-art in adversarial classification is available in RobustBench\footnote{\url{https://robustbench.github.io/}}. Benchmark in adversarial classification are often made on these datasets.
+    \item \textbf{ImageNet~\citep{imagenet_cvpr09}:} ImageNet refers to a dataset containing $1.2$ million of images labeled into $1000$ classes. Images are of diverse qualities, but models often takes input of dimension $224\times224\times 3$ (dimension $150528$ in total). The current state-of-the-art on ImageNet is about $87\%$. There is no need to say that adversarial classification on ImageNet is still a very-challenging task. Further than the standard dataset, ImageNet project is still in development: the project gathers $14197122$ images and $21841$ labels on August 31th, 2021.   
+
+\end{itemize}
+
+
+
 
 \subsection{Theoretical knowledge in Adversarial classification}
 
