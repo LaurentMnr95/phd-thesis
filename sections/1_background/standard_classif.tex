@@ -129,8 +129,14 @@ This decomposition induces a tradeoff on the complexity of $\mathcal{H}$ named \
     \hat{f}_\numsamples = \argminB_{f\in\mathcal{H}}\riskemp_{\loss}(\mathbf{f}) +\lambda\times\Omega_\mathcal{H}(f)= \argminB_{f\in\mathcal{H}}\frac{1}{\numsamples}\sum_{i=1}^\numsamples \loss(f(x_i),y_i)+\lambda\times\Omega_\mathcal{H}(f).
 \end{align*}
 
-For instance when $\mathcal{H}$ is a Reproducing Kernel Hilbert Space, the regularization parameter is the square norm of $f$ $\lVert f\rVert_\mathcal{H}$
+For instance when $\mathcal{H}$ is a Reproducing Kernel Hilbert Space, the regularization parameter is the square norm of $f$: $\lVert f\rVert_\mathcal{H}$. The risk analysis for RKHS in the regularized least squares regression case have been widely studied in~\cite{xxxx} 
 
 
+\paragraph{Uniform Convergence.} Since $\hat{f}_\numsamples$ is dependent on the training samples, it is usually difficult to estimate $\risk(\hat{f}_\numsamples)$ from training samples. A natural thing to do is to upperbound this quantity using:
+\begin{align*}
+    \lvert\riskemp(\hat{f}_\numsamples) - \risk(\hat{f}_\numsamples)\rvert\leq\sup_{f\in\mathcal{H}}    \lvert\riskemp(f) - \risk(f)\rvert
+\end{align*}
 
+The convergence of the right-end term is referred as uniform convergence or PAC-learning. A large bench of literature have studied and proposed tools to study the convergence. We recall two main concepts: the VC-dimension and the Rademacher complexity.
 
+TODO: Rademacher + VC

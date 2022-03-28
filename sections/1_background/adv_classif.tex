@@ -75,10 +75,10 @@ TO COMPLETE
 
 \paragraph{Adversarial Examples beyond Image Classification.} Adversarial examples do not only exist in Image Classification, but it is the most striking example as images are perceptually unchanged. We can enumerate, non exhaustively, the following examples of adversarial classification:
 \begin{itemize}
-    \item \textbf{Image Segmentation}
-    \item \textbf{Video classification:} Videos are series of images. Adversarial attacks against video classification systems are closed to adversarial examples in standard Image Classification. Adversarial attacks might aim at changing either a bit many frame or a lot only a few frames. 
-    \item \textbf{Audio classification}
-    \item \textbf{NLP classification tasks:} Adversaries change some words in a text to make it misclassified. However such examples can also change the meaning of the text and consequently change its classification. 
+    \item \textbf{Image Segmentation and Object Detection:} \cite{xie2017adversarial} proposed to attack image segmentation and object detection. The goal of such attack is enforce a undesirable detection or segmentation in an image. 
+    \item \textbf{Video classification:} Videos are series of images. Adversarial attacks against video classification systems are closed to adversarial examples in standard Image Classification. Adversarial attacks might aim at changing either a bit many frame or a lot only a few frames. For instance,~\cite{}
+    \item \textbf{Audio systems:} Audio systems can be fooled by adding inaudible adversarial noise to an audiofile. 
+    \item \textbf{NLP classification tasks:} Adversaries change some words in a text to make it misclassified. However such examples can also change the meaning of the text and consequently change its classification also humans. Examples of attempts for adversarial examples against NLP systems are
     \item \textbf{Recommender Systems} A recent line of work~\cite{xxx,garcelon2020adversarial} aimed at crafting adversarial attacks against bandit algorithms~\citep{lattimore2018bandit}. The goal of these attacks are to force the learner to chose the wrong arms a linear number of times. While these works are mostly theoretical, their potential use in practical settings might raise issues for businesses in a close future.
 \end{itemize}
 
@@ -180,4 +180,4 @@ To evaluate the perfomance of an attack of a classification algorithm, one needs
 
 
 
-\paragraph{}
+\paragraph{Generalization bounds in Adversarial learning}
