@@ -113,19 +113,14 @@ The presence of adversaries in classification questions the knowledge we have in
 Yet a model can be very well performing on natural samples, small perturbations of these natural samples can lead to unexpected and critical behaviours of classification models~\citep{biggio2013evasion,Szegedy2013IntriguingPO}. To formalize that, we will assume the existence of a ``perception'' distance $d:\XX^2\to\mathbb{R}$ such that a perturbation $x'$ of an input $x$ remains imperceptible if $d(x,x')\leq \varepsilon$ for some constant $\varepsilon\geq0$. This ``perception'' distance is difficult to define in practice. For images, the $\lVert\cdot\rVert_\infty$ distance over pixels is often used, but is not able to capture all imperceptible perturbations.  This choice is purely arbitrary: for instance, we will highlight in the manuscript that $\lVert\cdot\rVert_2$ perturbations can also be imperceptible while having a large $\lVert\cdot\rVert_\infty$. Image classification algorithms are also vulnerable to geometric perturbations, i.e. rotations and translations~\citep{xxx}.
 
 Therefore, the goal of an attacker is to craft an adversarial input $x'$ from an input $x$ that is imperceptible , i.e. $d(x,x')\leq \varepsilon$ and misclassifies the input, i.e. $h(x')\neq y$. Such a sample $x'$ is called an adversarial attack. The used criterion cannot be the misclassification rate anymore, we need to take into account the possible presence of an adversary that maliciously perturbs the input. We then define the robust/adversarial misclassification rate or robust/adversarial $0/1$ loss risk: 
-
 \begin{align*}
 \risk_{0/1}^{\varepsilon}(h)&:=\PP_{(x,y)}(\exists x'\in\XX\text{ s.t. } d(x,x')\leq \varepsilon \text{ and } h(x')\neq y)\\
 &= \EE_{(x,y)\sim\PP}\left[\sup_{x'\in\XX\text{ s.t. } d(x,x')\leq \varepsilon}\mathbf{1}_{h(x')\neq y}\right]
 \end{align*}
-
-
 Akin standard risk minimization, we aim to learn a function $\mathbf{f}:\mathcal{X}\to\mathbb{R}^K$ such that $h(x)=\argmaxB_k f_k(x)$. Usually in adversarial classification we aim at solving the following optimization problem, that we will call adversarial empirical risk minimization:
-
 \begin{align*}
 \inf_{\mathbf{f}\in\mathcal{H}}\riskemp^\varepsilon_{\numsamples}(\mathbf{f}):= \frac{1}{\numsamples}\sum_{i=1}^\numsamples\sup_{x'\in\XX\text{ s.t. } d(x,x')\leq \varepsilon} \loss(\mathbf{f}(x_i),y_i).
 \end{align*}
-
 This problem is a  more challenging to tackle than the standard risk minimization  since it involves a hard inner supremum problem~\citep{madry2017towards}. Guarantees in the adversarial setting are therefore difficult to obtain both in terms of convergence and statistical guarantees. The usual technique to solve this problem is called Adversarial Training~\citep{goodfellow2014explaining,madry2017towards}. It consists in alternating inner and outer optimization problems. Such a technique improves in practice adversarial robustness but lack theoretical guarantees. So far, most results and advances in understanding and harnessing adversarial attacks are empirical~\citep{ilyas2019adversarial,rice2020overfitting}, leaving many theoretical and practical questions open.  Moreover, robust models suffer from a performance drop and vulnerablity of models is currently still very high (see Table~\ref{table:sota-cifar}), which leaves room for substantial improvements.
 
 \begin{table}[ht]

@@ -137,6 +137,9 @@ For instance when $\mathcal{H}$ is a Reproducing Kernel Hilbert Space, the regul
     \lvert\riskemp(\hat{f}_\numsamples) - \risk(\hat{f}_\numsamples)\rvert\leq\sup_{f\in\mathcal{H}}    \lvert\riskemp(f) - \risk(f)\rvert
 \end{align*}
 
-The convergence of the right-end term is referred as uniform convergence or PAC-learning. A large bench of literature have studied and proposed tools to study the convergence. We recall two main concepts: the VC-dimension and the Rademacher complexity.
+The convergence of the right-end term is referred as uniform convergence or PAC-learning. It can be bounded either with high probability or in expectation (i.e. $L^1$ convergence). We remark the speed of convergence depends on the complexity of $\mathcal{H}$: more complex $\mathcal{H}$ is, the slower the convergence will be, hence exhibiting again a tradeoff on the expressivity of $\mathcal{H}$. There have been a  lot of research that proposed tools to study this convergence. Now, we recall two fundamental tools, namely the VC-dimension and the Rademacher complexity.
 
 TODO: Rademacher + VC
+
+
+The Rademacher complexity was introduced by
