@@ -20,16 +20,16 @@ In standard classification, we usually aims at maximizing the accuracy of the cl
     
 \begin{definition} Let $\PP$ be a Borel probability distribution over $\XX\times\YY$. Let $h:\XX\to\YY$ be a Borel measurable classifier. Then, the risk of $h$ associated with $0/1$ loss (or error of $h$) is defined as:
 \begin{align}
-   \risk_{0/1,\PP}(h):=\PP(h(x)\neq y) = \EE_{(x,y)\sim\PP}\left[\mathbf{1}_{h(x)\neq y}\right]
+   \risk_{\PP}(h):=\PP(h(x)\neq y) = \EE_{(x,y)\sim\PP}\left[\mathbf{1}_{h(x)\neq y}\right]
 \end{align}
 The bayes risk is defined as the optimal risk over measurable classifiers $\mathcal{F}(\XX,\YY)$:
 \begin{align}
-    \risk^\star_{0/1,\PP}:=\inf_{h\in\mathcal{F}(\XX,\YY)}\risk_{0/1,\PP}(h)
+    \risk^\star_{\PP}:=\inf_{h\in\mathcal{F}(\XX,\YY)}\risk_{\PP}(h)
  \end{align}
-If $f:\XX\to\RR^K$, then the risk of $f$ is defined as $\risk_{0/1,\PP}(f):=\PP(\argmaxB_{k\in\YY}f_k(x)\neq y)$
+If $f:\XX\to\RR^K$, then the risk of $f$ is defined as $\risk_{\PP}(f):=\PP(\argmaxB_{k\in\YY}f_k(x)\neq y)$
 \end{definition}
 
-Note that this quantity is well defined when $h$ or $f$ is Borel or universally measurable. The optimal classifier is called the Bayes Optimal classifier and is defined as $h(x) = \argmaxB_k\PP(y=k\mid x)$. We remark that the disintegration theorem ensures that $x\to \PP(y=k\mid x)$ is indeed Borel measurable. 
+Note that this quantity is well defined when $h$ or $f$ is Borel or universally measurable. The optimal classifier is called the Bayes Optimal classifier and is defined as $h(x) = \argmaxB_k\PP(y=k\mid x)$. We remark that the disintegration theorem ensures that $x\mapsto \PP(y=k\mid x)$ is indeed Borel measurable. 
 
 In practice, the access to the Bayes Optimal classifier is not possible because it requires full knowledge of the probability distribution $\PP$ which is not the case in general. Instead, in the supervised learning setting, the learner has access to data points $\{(x_1,y_1),\dots,(x_\numsamples,y_\numsamples)\}$, that constitutes the \emph{training set}. Knowing the Bayes Optimal classifier on training points is not sufficient to generalize on points out of the training set. Hence one need to reduce the search space of measurable functions to a much smaller one, denoted $\mathcal{H}$ in the sequel. The $0/1$ loss is not convex neither continuous, and minimizing directly the 0/1 loss risk  on $\mathcal{H}$ is  NP-hard CITE. We usually minimize a well-chosen surrogate loss function $\loss$. A \textit{loss function} $\loss:\mathbb{R}^K\times\YY\to\mathbb{R}$ is a non negative Borel measurable function. An example of such a loss is the cross entropy loss defined as $\loss(\mathbf{f}(x),y)=-\sum_{i=1}^K \mathbf{1}_{y=i}\log f_i(x)$
 where $f_i(x)$ is the probability learnt by the model that input $x$ belongs to the class $i$. Hence the objective is to minimize the empirical risk associated over $\mathcal{H}$ with the loss $\loss$  defined as:
@@ -144,7 +144,7 @@ The Rademacher complexity was introduced by~\cite{bartlett2002rademacher} to stu
 \begin{align*}
     \widehat{Rad}_S(\mathcal{H}):=\frac2\numsamples\mathbb{E}_{\mathbf{\sigma}}\left[\sup_{h\in\mathcal{H}}\lvert\sum_{i=1}^\numsamples\sigma_i h(z_i)\rvert\right]
 \end{align*}
-where $\sigma_i$ are independent samples from Rademacher law: $P[\sigma_i =+1] = P[\sigma_i =-1]=\frac12$. One can bound the uniform bound with Rademacher complexity as follows:
+where $\sigma_i$ are independent samples from Rademacher law: $P[\sigma_i =+1] = P[\sigma_i =-1]=\frac12$. When $\mathcal{H}$ is not too complex (for instance, finite class or linear classes), one can bound the Rademacher complexity  by $O(n^{-1/2})$. The Rademacher complexity upperbound the uniform risk error as follows:
 \begin{align*}
     \mathbb{E}_{S\sim\PP^\numsamples}\left[\sup_{h\in\mathcal{H}}\lvert e_S(h)-e_\PP(h)\rvert\right]\leq 2\mathbb{E}_{S\sim\PP^\numsamples}\left[\widehat{Rad}_S(\mathcal{H})\right]
 \end{align*}
