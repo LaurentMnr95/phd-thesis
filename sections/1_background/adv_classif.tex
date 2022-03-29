@@ -20,9 +20,9 @@ This definition is very simple and general. The distance $d$ can refer to either
     \risk_\varepsilon(h):=\PP\left[\exists x'\in B_\varepsilon(x),~h(x')\neq y\right] = \mathbb{E}_{(x,y)\sim\PP}\left[\sup_{x'\in B_\varepsilon(x)}\mathbf{1}_{h(x')\neq y}\right]
   \end{align*}
 
-  where $B_\varepsilon(x) = \{x'\mid|~d(x,x')\leq\varepsilon\}$. If $f:\XX\to\RR^K$, then the adversarial risk of $f$ at level $\varepsilon$ is defined as
+  where $B_\varepsilon(x) = \{x'\in\XX\mid~d(x,x')\leq\varepsilon\}$. If $f:\XX\to\RR^K$, then the adversarial risk of $f$ at level $\varepsilon$ is defined as
    \begin{align*}
-    \risk_{0/1,\PP}(f):=\PP\left[\exists x'\in B_\varepsilon(x),~\argmaxB_{k\in\YY}f_k(x)\neq y\right]
+    \risk_{\PP}(f):=\PP\left[\exists x'\in B_\varepsilon(x),~\argmaxB_{k\in\YY}f_k(x')\neq y\right]
    \end{align*}
 \end{definition}
 A first property is that the adversarial risk is well defined. While this result seems trivial, it requires advanced arguments from measure theory. 
@@ -51,7 +51,7 @@ The probably most puzzling about adversarial examples is the facility to craft t
     \max_{x'\in\XX\text{ s.t. } d(x,x')\leq \varepsilon}\loss\left(\mathbf{f}(x'), y)\right).
 \end{align}
 To solve the previous optimization problem, many attacks were proposed that we will categorize into two parts: white-box attacks and black-box attacks.
-\paragraph{White box attacks:} In this setting, the attacker has  full knowledge of the function $\mathbf{f}$ and its parameters. Hence, these attacks often takes advantages of the differentiablity of $\mathcal{f}$ and the loss function $\loss$.Then, such attacks usually takes the gradient $\nabla_x \loss\left(f\left(x^t\right),y\right)$ as ascent direction for crafting adversarial examples.  These attacks are called \emph{gradient based attacks}. The most popular white box attacks are PGD attack~\cite{kurakin2016adversarial,madry2017towards}, FGSM attack~\citep{goodfellow2014explaining}, Carlini\&Wagner attack~\citep{carlini2017towards}, AutoPGD~\citep{Croce2020MinimallyDA}, FAB~\citep{Croce2020MinimallyDA}, etc. As an illustration of the simplicity of crafting adversarial examples, we show hereafter how the desingn of a PGD attack in an $\ell_p$ case.
+\paragraph{White box attacks:} In this setting, the attacker has  full knowledge of the function $\mathbf{f}$ and its parameters. Hence, these attacks often takes advantages of the differentiablity of $\mathcal{f}$ and the loss function $\loss$. Then, such attacks usually takes the gradient $\nabla_x \loss\left(f\left(x^t\right),y\right)$ as ascent direction for crafting adversarial examples.  These attacks are called \emph{gradient based attacks}. The most popular white box attacks are PGD attack~\cite{kurakin2016adversarial,madry2017towards}, FGSM attack~\citep{goodfellow2014explaining}, Carlini\&Wagner attack~\citep{carlini2017towards}, AutoPGD~\citep{Croce2020MinimallyDA}, FAB~\citep{Croce2020MinimallyDA}, etc. As an illustration of the simplicity of crafting adversarial examples, we show hereafter how the desingn of a PGD attack in an $\ell_p$ case.
 \begin{example*}[PGD attack] Let $x_0\in\RR^d$ be an input. The projected gradient descent (PGD)~\cite{kurakin2016adversarial,madry2017towards} of radius~$\varepsilon$, recursively computes
 \begin{align*}
 x^{t+1}=\prod_{B_p(x,\varepsilon)}\left(x^t
@@ -181,7 +181,7 @@ To evaluate the perfomance of an attack of a classification algorithm, one needs
 
 
 
-\paragraph{Generalization bounds in Adversarial learning.} Similarly to the standard classification case, research have focused on computing uniform bounds for adversarial classification. These works are often inspired from generalizations of standard tools as VC-dimension~\citep{cullina2018pac} or Rademacher complexity~\citep{yin2019rademacher,khim2018adversarial,awasthi2020adversarial} is the adversarial case. They exhibit generalization bounds that are highly dependent on the dimension of the input. Indeed the Rademacher complexity for classes adapted to the adversarial case add a polynomial term in the dimension $d$ of the input. 
+\paragraph{Generalization Bounds in Adversarial Learning.} Similarly to the standard classification case, research have focused on computing uniform bounds for adversarial classification. These works are often inspired from generalizations of standard tools as VC-dimension~\citep{cullina2018pac} or Rademacher complexity~\citep{yin2019rademacher,khim2018adversarial,awasthi2020adversarial} is the adversarial case. They exhibit generalization bounds that are highly dependent on the dimension of the input. Indeed the Rademacher complexity for classes adapted to the adversarial case add a polynomial term in the dimension $d$ of the input. 
 
 However, for randomized classifiers, it is difficult to adapt PAC-Bayes bounds to the adversaThere is still misunderstanding in the bias-complexity tradeoff in the adversarial case~\citep{xxx}. 
 

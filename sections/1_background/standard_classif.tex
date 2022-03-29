@@ -1,5 +1,5 @@
 \section{Supervised Classification in a Nutshell}
-A classification task aims at learning a function thats assigns a label to a given input. Classification is one of the two main categories of tasks along with regression. One can found classsification tasks in Computer Vision, Natural Language Processing, Speech Recognition, etc. In this thesis, most examples will be from Computer Vision and Image Recognition. 
+A classification task aims at learning a function that assigns a label to a given input. Classification is one of the two main categories of tasks along with regression. One can found classification tasks in Computer Vision, Natural Language Processing, Speech Recognition, etc. In this thesis, most examples will be from Computer Vision and Image Recognition. 
 \subsection{Notations}
 In this section, we formalize the task of classification. First, we define the notions of inputs and labels:
 \begin{itemize}
@@ -22,16 +22,16 @@ In standard classification, we usually aims at maximizing the accuracy of the cl
 \begin{align}
    \risk_{\PP}(h):=\PP(h(x)\neq y) = \EE_{(x,y)\sim\PP}\left[\mathbf{1}_{h(x)\neq y}\right]
 \end{align}
-The bayes risk is defined as the optimal risk over measurable classifiers $\mathcal{F}(\XX,\YY)$:
+The Optimal Bayes risk is defined as the optimal risk over measurable classifiers $\mathcal{F}(\XX,\YY)$:
 \begin{align}
     \risk^\star_{\PP}:=\inf_{h\in\mathcal{F}(\XX,\YY)}\risk_{\PP}(h)
  \end{align}
 If $f:\XX\to\RR^K$, then the risk of $f$ is defined as $\risk_{\PP}(f):=\PP(\argmaxB_{k\in\YY}f_k(x)\neq y)$
 \end{definition}
 
-Note that this quantity is well defined when $h$ or $f$ is Borel or universally measurable. The optimal classifier is called the Bayes Optimal classifier and is defined as $h(x) = \argmaxB_k\PP(y=k\mid x)$. We remark that the disintegration theorem ensures that $x\mapsto \PP(y=k\mid x)$ is indeed Borel measurable. 
+Note that this quantity is well defined when $h$ or $f$ is Borel or universally measurable. The optimal classifier is called the Optimal Bayes  classifier and is defined as $h(x) = \argmaxB_k\PP(y=k\mid x)$. We remark that the disintegration theorem ensures that $x\mapsto \PP(y=k\mid x)$ is indeed Borel measurable. 
 
-In practice, the access to the Bayes Optimal classifier is not possible because it requires full knowledge of the probability distribution $\PP$ which is not the case in general. Instead, in the supervised learning setting, the learner has access to data points $\{(x_1,y_1),\dots,(x_\numsamples,y_\numsamples)\}$, that constitutes the \emph{training set}. Knowing the Bayes Optimal classifier on training points is not sufficient to generalize on points out of the training set. Hence one need to reduce the search space of measurable functions to a much smaller one, denoted $\mathcal{H}$ in the sequel. The $0/1$ loss is not convex neither continuous, and minimizing directly the 0/1 loss risk  on $\mathcal{H}$ is  NP-hard CITE. We usually minimize a well-chosen surrogate loss function $\loss$. A \textit{loss function} $\loss:\mathbb{R}^K\times\YY\to\mathbb{R}$ is a non negative Borel measurable function. An example of such a loss is the cross entropy loss defined as $\loss(\mathbf{f}(x),y)=-\sum_{i=1}^K \mathbf{1}_{y=i}\log f_i(x)$
+In practice, the access to the Optimal Bayes  classifier is not possible because it requires full knowledge of the probability distribution $\PP$ which is not the case in general. Instead, in the supervised learning setting, the learner has access to data points $\{(x_1,y_1),\dots,(x_\numsamples,y_\numsamples)\}$, that constitutes the \emph{training set}. Knowing the Optimal Bayes classifier on training points is not sufficient to generalize on points out of the training set. Hence one need to reduce the search space of measurable functions to a much smaller one, denoted $\mathcal{H}$ in the sequel. The $0/1$ loss is not convex neither continuous, and minimizing directly the 0/1 loss risk  on $\mathcal{H}$ is  NP-hard CITE. We usually minimize a well-chosen surrogate loss function $\loss$. A \textit{loss function} $\loss:\mathbb{R}^K\times\YY\to\mathbb{R}$ is a non negative Borel measurable function. An example of such a loss is the cross entropy loss defined as $\loss(\mathbf{f}(x),y)=-\sum_{i=1}^K \mathbf{1}_{y=i}\log f_i(x)$
 where $f_i(x)$ is the probability learnt by the model that input $x$ belongs to the class $i$. Hence the objective is to minimize the empirical risk associated over $\mathcal{H}$ with the loss $\loss$  defined as:
 
 \begin{align*}
