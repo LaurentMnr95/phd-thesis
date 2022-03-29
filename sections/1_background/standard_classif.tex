@@ -62,17 +62,17 @@ A margin loss is a measurable function $\phi:\RR\to\RR_+$ defined as $\phi(yf(x)
     \mathcal{R}_{\phi,\PP}(f_n)\to \mathcal{R}_{\phi,\PP}^\star\implies\mathcal{R}_{\PP}(f_n)\to \mathcal{R}_{\PP}^\star
 \end{align}
 
- While this notion seems complicated to study,~\cite{bartlett2006convexity,steinwart2007compare} have focused on a relaxation named \emph{calibration}. A loss is said to be classification calibrated if for every $\varepsilon>0$, there exists $\delta>0$ such that for every $f$ measurable and $\eta\in[0,1]$:
+ While this notion seems complicated to study,~\cite{bartlett2006convexity,steinwart2007compare} have focused on a relaxation named \emph{calibration}. A loss is said to be classification calibrated if for every $\varepsilon>0$, there exists $\delta>0$ such that for every $\alpha\in\RR$ and $\eta\in[0,1]$:
 \begin{align*}
-    ccc
+    \eta\phi(\alpha)+(1-\eta)\phi(-\alpha)-\min_{\alpha} \eta\phi(\alpha)+(1-\eta)\phi(-\alpha)\leq \delta\implies sign\left((\eta-\frac12)\alpha\right)=1
 \end{align*}
-We remark the notion of calibration is basically a pointwise notion of consistency.~\cite{bartlett2006convexity,steinwart2007compare} proved the equivalence of the two notions in the case of standard-binary classification. In particular they show that a wide range of convex margin losses are actually classification-consistent: if $\phi$ is convex and differnetiable at $0$, then $\phi$ is calibrated if and only if $\phi'(0)<0$.
+We remark the notion of calibration is basically a pointwise notion of consistency with $\eta$ corresponding to $\PP(y=1|x)$.~\cite{bartlett2006convexity,steinwart2007compare} proved the equivalence of the two notions in the case of standard-binary classification. In particular they show that a wide range of convex margin losses are actually classification-consistent: if $\phi$ is convex and differnetiable at $0$, then $\phi$ is calibrated if and only if $\phi'(0)<0$.
 
 
 
 
 
-\paragraph{Beyond binary-classification.}
+\paragraph{Beyond binary-classification.} The problem of consistency have been digged beyond binary classification by~\cite{xxx}. The results can be similarily derived and it was show that large range of convex functions are actually consistent for classification problems.
 
 % We say that a loss $L_2$ is said to be consistent with respect to a loss $L_1$ if consistency holds for every distribution $\PP$. 
 
@@ -121,7 +121,7 @@ Since the learning procedure takes into account
 with $\risk_{\loss,\mathcal{H}}^\star = \inf_{f\in\mathcal{H}}\risk_\loss(f)$. The two terms in the previous decomposition corresponds respectively to:
 \begin{itemize}
     \item \textbf{The estimation risk}:  the empirical risk $\risk(\hat{f}_\numsamples)$ (i.e., training error) is only an estimate of the optimal risk, and so $\hat{f}_\numsamples$   is only an estimate of the predictor minimizing the true risk. The estimation risk depends on the training set size $\numsamples$ and on the size, or complexity, of  $\mathcal{H}$.  The more samples we have the smaller will be the estimation risk and more complex $\mathcal{H}$ is the larger the estimation error will be.
-    \item \textbf{The approximation risk}: 
+    \item \textbf{The approximation risk}: the approximation risk is the error made by optimizing over $\mathcal{H}$ instead of minimization over the whole space of measurable functions. As  the function space $\mathcal{H}$ grows, the approximation naturally decreases. 
 \end{itemize}
 
 This decomposition induces a tradeoff on the complexity of $\mathcal{H}$ named \emph{bias-complexity tradeoff} or \emph{bias-variance tradeoff}. On one hand, if $\mathcal{H}$ is not enough rich, then the estimation risk would be small but the approximation error can be large, it is called \emph{underfitting}. On the other hand, if $\mathcal{H}$ is is too rich, then the approximation risk would be small but the estimation error large, it is called \emph{overfitting}. To overcome these issues in practice, it is usual to add a regularization parameter to the empirical risk depending on the class $\mathcal{H}$:
@@ -137,9 +137,24 @@ For instance when $\mathcal{H}$ is a Reproducing Kernel Hilbert Space, the regul
     \lvert\riskemp(\hat{f}_\numsamples) - \risk(\hat{f}_\numsamples)\rvert\leq\sup_{f\in\mathcal{H}}    \lvert\riskemp(f) - \risk(f)\rvert
 \end{align*}
 
-The convergence of the right-end term is referred as uniform convergence or PAC-learning. It can be bounded either with high probability or in expectation (i.e. $L^1$ convergence). We remark the speed of convergence depends on the complexity of $\mathcal{H}$: more complex $\mathcal{H}$ is, the slower the convergence will be, hence exhibiting again a tradeoff on the expressivity of $\mathcal{H}$. There have been a  lot of research that proposed tools to study this convergence. Now, we recall two fundamental tools, namely the VC-dimension and the Rademacher complexity.
-
-TODO: Rademacher + VC
+The convergence of the right-end term is referred as uniform convergence or PAC-learning. It can be bounded either with high probability or in expectation (i.e. $L^1$ convergence). We remark the speed of convergence depends on the complexity of $\mathcal{H}$: more complex $\mathcal{H}$ is, the slower the convergence will be, hence exhibiting again a tradeoff on the expressivity of $\mathcal{H}$. There have been a  lot of research that proposed tools to study this convergence. Now, we recall a fundamental tool, namely the Rademacher complexity.
 
 
-The Rademacher complexity was introduced by
+The Rademacher complexity was introduced by~\cite{bartlett2002rademacher} to study the problem the uniform convergence. Given a set of functions~$\mathcal{H}$, and observations $S=\{z_1,\dots,z_\numsamples\}$ from a distribution $\PP$, the empirical Rademacher complexity is defined as:
+\begin{align*}
+    \widehat{Rad}_S(\mathcal{H}):=\frac2\numsamples\mathbb{E}_{\mathbf{\sigma}}\left[\sup_{h\in\mathcal{H}}\lvert\sum_{i=1}^\numsamples\sigma_i h(z_i)\rvert\right]
+\end{align*}
+where $\sigma_i$ are independent samples from Rademacher law: $P[\sigma_i =+1] = P[\sigma_i =-1]=\frac12$. One can bound the uniform bound with Rademacher complexity as follows:
+\begin{align*}
+    \mathbb{E}_{S\sim\PP^\numsamples}\left[\sup_{h\in\mathcal{H}}\lvert e_S(h)-e_\PP(h)\rvert\right]\leq 2\mathbb{E}_{S\sim\PP^\numsamples}\left[\widehat{Rad}_S(\mathcal{H})\right]
+\end{align*}
+where $e_\PP(h)=\mathbb{E}_{z\sim\PP}\left[h(z)\right]$ and $e_S(h)=\frac1\numsamples \sum_{i=1}^\numsamples h(z_i)$. This property leads to the following generalization error bound derived from classical concentration bounds: with probability $1-\delta$ (over the sampling $S$), for every $h\in \mathcal{H}$:
+\begin{align*}
+    e_S(h)-e_\PP(h)\leq 2  \widehat{Rad}_S(\mathcal{H})+4\sqrt{\frac{2\log(4/\delta)}{n}}\quad.
+\end{align*}
+
+
+Rademacher complexity along with VC dimension are the main tools for deriving generalization bounds. The two concepts are linked and one can upperbound the Rademacher complexity with the VC dimension.  There have been generalizations and variants for these bounds. We also mention PAC-Bayes bounds for randomized classifiers~\cite{xxx}.
+
+
+

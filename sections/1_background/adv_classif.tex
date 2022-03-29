@@ -20,7 +20,7 @@ This definition is very simple and general. The distance $d$ can refer to either
     \risk_\varepsilon(h):=\PP\left[\exists x'\in B_\varepsilon(x),~h(x')\neq y\right] = \mathbb{E}_{(x,y)\sim\PP}\left[\sup_{x'\in B_\varepsilon(x)}\mathbf{1}_{h(x')\neq y}\right]
   \end{align*}
 
-  If $f:\XX\to\RR^K$, then the adversarial risk of $f$ at level $\varepsilon$ is defined as
+  where $B_\varepsilon(x) = \{x'\mid|~d(x,x')\leq\varepsilon\}$. If $f:\XX\to\RR^K$, then the adversarial risk of $f$ at level $\varepsilon$ is defined as
    \begin{align*}
     \risk_{0/1,\PP}(f):=\PP\left[\exists x'\in B_\varepsilon(x),~\argmaxB_{k\in\YY}f_k(x)\neq y\right]
    \end{align*}
@@ -180,4 +180,4 @@ To evaluate the perfomance of an attack of a classification algorithm, one needs
 
 
 
-\paragraph{Generalization bounds in Adversarial learning}
+\paragraph{Generalization bounds in Adversarial learning.} Similarly to the standard classification case, research have focused on computing uniform bounds for adversarial classification. These works are often inspired from generalizations of standard tools as VC-dimension~\citep{cullina2018pac} or Rademacher complexity~\citep{yin2019rademacher,khim2018adversarial,awasthi2020adversarial} is the adversarial case. They exhibit generalization bounds highly dependent on the dimension of the input
