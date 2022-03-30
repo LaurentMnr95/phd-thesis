@@ -1,7 +1,9 @@
 \section{Q1}
 
 \subsection{Optimal Transport}
-The optimal 
+Optimal Transport have gained interest in Machine Learning applications during the past years. Indeed, Optimal Transport has the ability to model many problems as Generative Adversarial Networks~\citep{arjovsky2017wasserstein}, or in Robust Learning~\citep{xxx}. The computation methods for optimal transport problems have also been considerably improved recently.  We recall the main concepts from the Optimal Transport Theory. Originally introduced by Monge, this Optimal Transport was a problem where the aim was to move some quantity $x$ to some places $y$ while minimizing the total cost of transport. Formally, the problem was c
+
+
 
 \begin{definition}[Couplings between distributions] 
     Let $\ZZ$ be a Polish space. Let $\PP$ and $\QQ$ be two Borel probability distributions over $\ZZ$. The set of coupling distributions between $\PP$ and $\QQ$ is defined as:
@@ -17,28 +19,48 @@ Let $\ZZ$ be a Polish space. Let $c:\ZZ\to\bar{\RR}_+$ be a lower semi-continuou
 \end{align*} 
 \end{definition}
 The infimum is attained.
+When $\XX$ is endowed with ground metric $d$, one can endow the space of probability distributions with bounded $p$-moments with a metric named the Wasserstein-$p$ metric defined as:
+\begin{align*}
+    D_p(\PP,\QQ):=\inf_{\gamma\in\Gamma_{\PP,\QQ}}\mathbb{E}_{(x,y)\sim\gamma}\left[d^p(x,y) \right]^{1/p}
+\end{align*}
+With this metric, the space of probability distributions with bounded $p$-moments metrizes the weak topology of measures. When $p=\infty$, the $D_\infty$ be be defined in the limit as:
+\begin{align*}
+    D_\infty(\PP,\QQ):=\inf_{\gamma\in\Gamma_{\PP,\QQ}}\gamma-\esssup_{(x,y)} d(x,y) 
+\end{align*}
+\paragraph{Kantorovich Duality.} A fundammental theorem in Optimal Transportation is the Kantorovich duality theorem as follows:
 
 \begin{thm}[Kantorovich duality]
     Let $\ZZ$ be a Polish space. Let $c:\ZZ\to\bar{\RR}_+$ be a lower semi-continuous non-negative function. Let $\PP$ and $\QQ$ be two Borel probability distributions over $\ZZ$. Then   the following strong duality theorem holds:
 \begin{align*}
     W_c(\PP,\QQ)=\sup_{f,g\in C(\ZZ),~f\oplus g\leq c}   \int fd\PP+\int fd\QQ
 \end{align*}
-where for all $x,y\in\ZZ$, $f\oplus g(x,y):=f(x)+g(y)$.
+where for all $x,y\in\ZZ$, $f\oplus g(x,y):=f(x)+g(y)$. 
 \end{thm}
+One can find a proof of this result in~\citep{villani2003topics}. The main arguments are that the dual of continuous functions on  a compact space is the space of Radon measures, and the Rockafellar duality theorem. 
 
+\paragraph{Adversarial Risk Minimization as an Optimal Transport Pronlem.} Let $\PP$ be a distribution over the input-label space $\XX\times\YY$. We recall that the problem of adversarial risk minimization is defined as
+\begin{align*}
+    \risk_{\varepsilon,\PP}^\star = \inf_{h} \PP_{(x,y)}\left[\exists x'\in B_\varepsilon(x),~h(x')\neq y\right]
+\end{align*}
+A recent line of work draw important links between   $\risk_{\varepsilon,\PP}^\star$ and Optimal Transport problems in the case of binary classification ($\YY=\{-1,+1\}$) the space $\XX$ satisfy a midpoint property, i.e. TODO. It was shown that in this case:
+\begin{align*}
+\risk_{\varepsilon,\PP}^\star = \frac12-\frac12 W_{c_\varepsilon}(\PP,\PP^S)
+\end{align*}
+where $\PP^S = T^S_\sharp \PP$ with $T^S(x,y) = (x,-y)$ and
+\begin{align*}
+    c_\varepsilon\left((x,y),(x',y')\right) = d(x,x')\text{ if } y=y'\text{ and } \infty \text{ otherwise.}
+\end{align*}
+
+Note that $T^S$ only switches the label of pair $(x,y)$. 
 
 \subsection{Distributionally Robust Optimization}
 
-
-Let us consider the following problem. Let $\ZZ$ and $\Theta$ be Polish spaces. Let $\PP$ be a Borel probability distribution over $\ZZ$. Let $f:\Theta\times\ZZ\to\RR$ be an upper semi continuous function in its second variable. Let us consider the following problem:
+In this section, we give an introduction to distributionally robust optimization problems. We see these problems are related to adversarial attacks problems. We draw links in this introduction.  Let $\ZZ$ and $\Theta$ be Polish spaces. Let $\PP$ be a Borel probability distribution over $\ZZ$. Let $f:\Theta\times\ZZ\to\RR$ be an upper semi continuous function in its second variable. Let us consider the following problem:
 \begin{align}
     \label{eq:min-objective}
     \min_{\theta\in\Theta} \mathbb{E}_{z\sim\PP}\left[f(z)\right] = \min_{\theta\in\Theta} \int f(\theta,z)d\PP(z)
 \end{align}
-
-
-
-This problem can typically cast a risk minimization problem in Machine Learning when $\PP$ is a distribution over input-label pairs. A distributionally robust optimization (DRO) problem is a problem similar to Equation~\eqref{eq:min-objective}, but the learner aims at being robust to a change in the distribution $\PP$. Typically if $D$ is an uncertainty metric for distribubtions. Formally, the DRO problem is casted as follows:
+This problem can typically be a risk minimization problem in Machine Learning when $\PP$ is a distribution over input-label pairs and $\Theta$ is a parameter space for the classifier. A distributionally robust optimization (DRO) problem is a problem similar to Equation~\eqref{eq:min-objective}, but the learner aims at being robust to a change in the distribution $\PP$. Typically if $D$ is an uncertainty metric for distribubtions. Formally, the DRO problem is casted as follows:
 \begin{align*}
     \min_{\theta\in\Theta}\sup_{\QQ\in\mathcal{M}^1_+(\ZZ)\mid~D(\PP,\QQ)\leq \varepsilon}\mathbb{E}_{z\sim\QQ}\left[f(z)\right]
 \end{align*}
@@ -51,15 +73,16 @@ In the case of Wasserstein uncertainty sets, let $c:\ZZ\to\bar{\RR}_+$ be a lowe
 
 Then we can define the Wasserstein balls as 
 \begin{align*}
-    \mathcal{B}_{c}(\PP,\eta) := \left\{\QQ\in \mathcal{M}^+_1(\mathcal{Z})\mid W_c(\PP,\QQ)\leq \eta\right\}
+    \mathcal{B}_{c}(\PP,\varepsilon) := \left\{\QQ\in \mathcal{M}^+_1(\mathcal{Z})\mid W_c(\PP,\QQ)\leq \varepsilon\right\}
 \end{align*}
+This problem induces an attack on the distribution $\PP$. Informally, one can interpret a Wassertein ball as an attacker moving each point of the distribution $\PP$ to a distribution $\QQ_x$ so that the average ``distance'' $\mathbb{E}_{x\sim\PP}\left[\mathbb{E}_{y\sim\QQ_x}\left[c(x,y)\right]\right]$ at most equal to $\varepsilon$. With this interpretation, we can start linking the Wasserstein DRO problem to the adversarial learning problem. Indeed in the adversarial attack problem, the attacker is authorized to move each point to another at distance at most $\varepsilon$, i.e. he is authorized a mapping $T$ such that $d(x,T(x))\leq \varepsilon$ for every $x$ almost surely. 
 \paragraph{Properties of Wasserstein balls.} The Wasserstein balls inherits from nice properties. Since $\QQ\mapsto  W_c(\PP,\QQ)$ is convex, they are convex sets. Moreover the function $\QQ\mapsto  W_c(\PP,\QQ)$ is lower semi-continuous for the narrow topology of measures, then the set $\mathcal{B}_{c}(\PP,\eta) $ is closed for the narrow topology too. Concerning the compactness of this set, if $\ZZ$ is compact then the set $\mathcal{B}_{c}(\PP,\eta) $ is also compact as a closed subset of the compact set $\mathcal{M}^+_1(\mathcal{Z})$.~\cite{yue2020linear} proved the compactness for $l^p$ distances. In general, compactness is a case by case question. 
 
 
 \paragraph{Duality results} The problem of computing DRO solutions is difficult become it concerns optimization over distribution. A strong duality leading to a relaxation of the problem was proved by~\cite{blanchet2019quantifying}. We state this theorem as follows.
 
 
-\begin{thm}[Duality for Wasserstein DRO]
+\begin{thm}[Wasserstein DRO duality]
     Let $\PP$ be a Borel probability distribution over $\ZZ$. Let $f:\ZZ\to\RR$ be an upper semi continuous function. Let $c:\ZZ\to\RR_+$ be a lower semi-continuous non-negative function. 
     \begin{align*}
         \sup_{\QQ\in\mathcal{M}^1_+(\ZZ)\mid~W_c(\PP,\QQ)\leq \varepsilon}\mathbb{E}_{z\sim\QQ}\left[f(z)\right] = \inf_{\lambda\geq 0}\mathbb{E}_{z\sim\PP}\left[\sup_{z'\in\ZZ}f(z')-\lambda c(z,z')\right] +\lambda\varepsilon
@@ -67,6 +90,8 @@ Then we can define the Wasserstein balls as
   
 \end{thm}
 
+This theorem was proved by~\citep{blanchet2019quantifying} using similar arguments to Kantorovich duality. The link with the adversarial attack problem is made clearer with this theorem. Indeed $\mathbb{E}_{z\sim\PP}\left[\sup_{z'\in\ZZ}f(z')-\lambda c(z,z')\right]$ is closed to the adversarial attacks problem. We will make a direct link in the Chapter~\ref{chap:game}.
 
-\subsection{Optimal Transport and Adversarial Learning}
 \subsection{Game Theory and Adversarial Learning}
+
+A recent line of work focus on the game theory of adversarial examples. 
