@@ -46,12 +46,13 @@ A recent line of work draw important links between   $\risk_{\varepsilon,\PP}^\s
 \begin{align*}
 \risk_{\varepsilon,\PP}^\star = \frac12-\frac12 W_{c_\varepsilon}(\PP,\PP^S)
 \end{align*}
-where $\PP^S = T^S_\sharp \PP$ with $T^S(x,y) = (x,-y)$ and
+where $\PP^S := T^S_\sharp \PP$ with $T^S(x,y) = (x,-y)$ and
 \begin{align*}
-    c_\varepsilon\left((x,y),(x',y')\right) = d(x,x')\text{ if } y=y'\text{ and } \infty \text{ otherwise.}
+    c_\varepsilon\left((x,y),(x',y')\right) = xxx
 \end{align*}
 
-Note that $T^S$ only switches the label of pair $(x,y)$. 
+Note that $T^S$ only switches the label of pair $(x,y)$. When $\varepsilon=0$, $W_{c_\varepsilon}(\PP,\PP^S)$ equals the total variation distance between $\PP$ and $\PP^S$, which was a result proved in~\citep{xxx}.
+While this property does not have practical properties yet, there is a hope that this relation might help at building more robust classifiers to adversarial examples. 
 
 \subsection{Distributionally Robust Optimization}
 
@@ -75,7 +76,7 @@ Then we can define the Wasserstein balls as
 \begin{align*}
     \mathcal{B}_{c}(\PP,\varepsilon) := \left\{\QQ\in \mathcal{M}^+_1(\mathcal{Z})\mid W_c(\PP,\QQ)\leq \varepsilon\right\}
 \end{align*}
-This problem induces an attack on the distribution $\PP$. Informally, one can interpret a Wassertein ball as an attacker moving each point of the distribution $\PP$ to a distribution $\QQ_x$ so that the average ``distance'' $\mathbb{E}_{x\sim\PP}\left[\mathbb{E}_{y\sim\QQ_x}\left[c(x,y)\right]\right]$ at most equal to $\varepsilon$. With this interpretation, we can start linking the Wasserstein DRO problem to the adversarial learning problem. Indeed in the adversarial attack problem, the attacker is authorized to move each point to another at distance at most $\varepsilon$, i.e. he is authorized a mapping $T$ such that $d(x,T(x))\leq \varepsilon$ for every $x$ almost surely. 
+This problem induces an attack on the distribution $\PP$. Informally, one can interpret a Wassertein ball as an attacker moving each point $x$ of the distribution $\PP$ to a distribution $\QQ_x$ so that the average ``distance'' $\mathbb{E}_{x\sim\PP}\left[\mathbb{E}_{y\sim\QQ_x}\left[c(x,y)\right]\right]$ at most equal to $\varepsilon$. With this interpretation, we can start linking the Wasserstein DRO problem to the adversarial learning problem. Indeed in the adversarial attack problem, the attacker is authorized to move each point to another at distance at most $\varepsilon$, i.e. he is authorized a mapping $T$ such that $d(x,T(x))\leq \varepsilon$ for every $x$ almost surely. 
 \paragraph{Properties of Wasserstein balls.} The Wasserstein balls inherits from nice properties. Since $\QQ\mapsto  W_c(\PP,\QQ)$ is convex, they are convex sets. Moreover the function $\QQ\mapsto  W_c(\PP,\QQ)$ is lower semi-continuous for the narrow topology of measures, then the set $\mathcal{B}_{c}(\PP,\eta) $ is closed for the narrow topology too. Concerning the compactness of this set, if $\ZZ$ is compact then the set $\mathcal{B}_{c}(\PP,\eta) $ is also compact as a closed subset of the compact set $\mathcal{M}^+_1(\mathcal{Z})$.~\cite{yue2020linear} proved the compactness for $l^p$ distances. In general, compactness is a case by case question. 
 
 
@@ -91,6 +92,32 @@ This problem induces an attack on the distribution $\PP$. Informally, one can in
 \end{thm}
 
 This theorem was proved by~\citep{blanchet2019quantifying} using similar arguments to Kantorovich duality. The link with the adversarial attack problem is made clearer with this theorem. Indeed $\mathbb{E}_{z\sim\PP}\left[\sup_{z'\in\ZZ}f(z')-\lambda c(z,z')\right]$ is closed to the adversarial attacks problem. We will make a direct link in the Chapter~\ref{chap:game}.
+
+
+\paragraph{Adversarial classification as a Wasserstein-$\infty$ DRO problem.} It has been shown recently that the Adversarial classification problem could be casted as a Wasserstein-$\infty$ problem associated with a well-suited cost function. The previous result from~\citep{blanchet2019quantifying} does not directly apply to Wasserstein-$\infty$ distances but can be adapted. The Wasserstein-$\infty$ DRO problem can be understood as follows: each point $x$ of the distribution $\PP$ can be moved to a distribution $\QQ_x$ so that the worst-case ``distance'' $c(x,y)$ is smaller that $\varepsilon$. In general, one can prove the following result that proves that the adversarial classification problem is actually a Wasserstein-$\infty$ DRO problem.
+
+\begin{thm}[Duality for Wasserstein-$\infty$ DRO]
+Let $\ZZ$ be a Polish space. Let $\PP$ be a probability distribubtion over $\ZZ$. Let $c$ be a non-negative lower-semicontinuous function over $\ZZ^2$ and $f:\ZZ\to \RR$ be a Borel measurable function. Then the following strong duality holds
+    \begin{align*}
+        \sup_{\QQ|~W_{\infty,c}(\PP,\QQ)\leq \varepsilon}\mathbb{E}_{z\sim\QQ}\left[f(z)\right] = \mathbb{E}_{z\sim\PP}\left[\sup_{z'\in \ZZ|~c(z,z')\leq\varepsilon} f(z')\right]
+    \end{align*}  
+\end{thm}
+This result can be found in special case in~\citep{xxx}. For sake of completeness, we provide a proof of the result. 
+\begin{proof}
+    TODO
+\end{proof}
+
+When the problem is a classification problem (i.e., $\ZZ=\XX\times\YY$ with $\YY = [K]$), one can replace $f$ with  $\loss(f(x),y)$ with $\loss$ a measurable loss function and set the cost $c$ equals to:
+\begin{align*}
+    c((x,y),(x',y')) := \left\{
+        \begin{array}{ll}
+            d(x,x') & \mbox{if } y = y'\\
+            +\infty & \mbox{otherwise.}
+        \end{array}
+    \right.
+\end{align*} 
+Hence, we recover the Adversarial classification problem using a Wasserstein-$\infty$ DRO problem. We will see in Chapter~\ref{xxx}, the geometric and topological properties of this set. 
+
 
 \subsection{Game Theory and Adversarial Learning}
 
