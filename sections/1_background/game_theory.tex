@@ -84,5 +84,59 @@ The computation of Nash or Stackelberg equilbria highly depends on the setting o
 For instance, under complete knowledge of utilities and strategies, vanilla optimization problems 
 
 
+\section{Optimal Transport concepts}
+Optimal Transport have gained interest in Machine Learning applications during the past years. Indeed, Optimal Transport has the ability to model many problems as Generative Adversarial Networks~\citep{arjovsky2017wasserstein}, or in Robust Learning~\citep{sinha2017certifying,pydi2019adversarial,xxx}. In particular, it will be a central tool in this thesis with the notion of distributionally robust optimisation introduced in Section~\ref{xxx}. The computation methods for optimal transport problems have also been considerably improved recently.  We recall the main concepts from the Optimal Transport Theory. 
+
+\subsection{Primal Problem}
+Originally introduced by Monge, this Optimal Transport was a problem where the aim was to move some quantity $x$ to some places $y$ while minimizing the total cost of transport.  Let $\ZZ$ be a Polish space. Let $\PP$ and $\QQ$ be two Borel probability distributions over $\ZZ$ and $c:\ZZ^2\to\bar{\RR}_+$ be a non-negative function. Formally, the problem was posed as follows:
+\begin{align*}
+    \inf_{T\mid~T_\sharp\PP = \QQ}\mathbb{E}_{z\sim\PP}\left[c(z,T(z))\right]
+\end{align*}
+where $T$ is measurable mapping. The main problem with the previous problem, is that there may exist no mapping from $\PP$ to $\QQ$ , for instance when $\PP$ is a single dirac and $\QQ$ support contains more than two points. To overcome this issue, Kantorovich proposed to interest in couplings in mappings. Formally couplings between distributions are defined as follows.
+
+
+
+\begin{definition}[Couplings between distributions] 
+    Let $\ZZ$ be a Polish space. Let $\PP$ and $\QQ$ be two Borel probability distributions over $\ZZ$. The set of coupling distributions between $\PP$ and $\QQ$ is defined as:
+    \begin{align*}
+        \Gamma_{\PP,\QQ}:=\left\{\gamma\in\mathcal{M}^1_+(\ZZ^2)\mid~ \Pi_{1,\sharp}\gamma = \PP,~\Pi_{2,\sharp}\gamma = \QQ\right\}
+    \end{align*}
+where $\Pi_{i,\sharp}$ represents the push-forward of the projection on the $i$-th component.
+\end{definition}
+Setting this definition, one can define a well-posed version of the Monge problem, often referred to Kantorovich problem.
+\begin{definition}[Optimal Transport]
+Let $\ZZ$ be a Polish space. Let $c:\ZZ^2\to\bar{\RR}_+$ be a lower semi-continuous non-negative function. Let $\PP$ and $\QQ$ be two  Borel probability distributions over $\ZZ$. The Optimal Transport problem or Wasserstein problem between $\PP$ and $\QQ$ associated with cost function $c$ is defined as:
+\begin{align*}
+    W_c(\PP,\QQ):=\inf_{\gamma\in\Gamma_{\PP,\QQ}}\int c(x,y) d\gamma(x,y) = \inf_{\gamma\in\Gamma_{\PP,\QQ}}\mathbb{E}_{(x,y)\sim\gamma}\left[c(x,y) \right]
+\end{align*} 
+\end{definition}
+A clear introduction to this problem can be found in~\cite{villani2003topics}. In particular, it was proved that the infimum is attained. When $\XX$ is endowed with ground metric $d$, one can endow the space of probability distributions with bounded $p$-moments with a metric named the Wasserstein-$p$ metric defined as:
+\begin{align*}
+    D_p(\PP,\QQ):=\inf_{\gamma\in\Gamma_{\PP,\QQ}}\mathbb{E}_{(x,y)\sim\gamma}\left[d^p(x,y) \right]^{1/p}
+\end{align*}
+With this metric, the space of probability distributions with bounded $p$-moments metrizes the weak topology of measures. When $p=\infty$, the $D_\infty$ be be defined in the limit as:
+\begin{align*}
+    D_\infty(\PP,\QQ):=\inf_{\gamma\in\Gamma_{\PP,\QQ}}\gamma-\esssup_{(x,y)} d(x,y) 
+\end{align*}
+The Wasserstein-$\infty$ metric can be extended to other costs and will be denoted $W_{\infty,c}$.
+\subsection{Main results in Optimal Transport Theory} 
+In this section, we recall two essential results from Optimal Transportation, namely Kantorovich duality and Brenier's Theorem.
+\paragraph{Kantorivch Duality.} A fundammental theorem in Optimal Transportation is the Kantorovich duality theorem as follows:
+
+\begin{thm}[Kantorovich duality]
+    Let $\ZZ$ be a Polish space. Let $c:\ZZ\to\bar{\RR}_+$ be a lower semi-continuous non-negative function. Let $\PP$ and $\QQ$ be two Borel probability distributions over $\ZZ$. Then   the following strong duality theorem holds:
+\begin{align*}
+    W_c(\PP,\QQ)=\sup_{f,g\in C(\ZZ),~f\oplus g\leq c}   \int fd\PP+\int fd\QQ
+\end{align*}
+where for all $x,y\in\ZZ$, $f\oplus g(x,y):=f(x)+g(y)$. 
+\end{thm}
+One can find a proof of this result in~\citep{villani2003topics}. The main arguments are that the dual of continuous functions on  a compact space is the space of Radon measures, and the Rockafellar duality theorem. 
+
+
 % when $u_1$ is concave in $x$ and convex in $y$ as Von-Neumann's Theorem, Sion's Theorem or Fan's Theorem. In particular, in a two-player zero-sum game where the actions space is finite for both players, there always exists a mixed equilibrium.
 % For infinite spaces, the questions of existence of Nash equilibrium is more difficult and need to be treated case by case.
+\paragraph{Brenier's Theorem.} The Brenier's theorem makes a link between the Monge Problem and the Kantorovich problem. It is a major result in Optimal Transport Theory.
+\begin{thm}[Brenier Theorem]
+    TODO
+    
+\end{thm}
