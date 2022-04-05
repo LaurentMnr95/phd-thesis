@@ -113,10 +113,11 @@ defines  a convex function in $x$ as the composition of a linear and a convex fu
     x\mapsto \sum_{i=1}^kw_i\phi'(w_i^\top x+b_i) = \mathbf{W}^\top \phi'(\mathbf{W} x+\mathbf{b})
 \end{align*}
 with $\mathbf{W}\in \mathbb{R}^{k\times d}$ and $\mathbf{b}\in\mathbb{R}^{k}$ are respectively the matrix and vector obtained by the concatenation of, respectively, $w_i^\top$ and $b_i$, and $\phi'$ is applied element-wise.  
-Moreover, assuming $\phi'$ is $L$-Lipschitz, we have that $F_{w,b}$ is  $L\lVert\mathbf{W}\rVert_2^2$-smooth. $\lVert\mathbf{W}\rVert_2$ denotes the spectral norm of $\mathbf{W}$, \ie, the greatest singular value of $\mathbf{W}$ defined as:
-\begin{align*}
-   \lVert\mathbf{W}\rVert_2 :=\max_{x\neq 0} \frac{\lVert \mathbf{W}x\rVert_2}{\lVert x\rVert_2}
-\end{align*}
+Moreover, assuming $\phi'$ is $L$-Lipschitz, we have that $F_{w,b}$ is  $L\lVert\mathbf{W}\rVert_2^2$-smooth. $\lVert\mathbf{W}\rVert_2$ denotes the spectral norm of $\mathbf{W}$.
+% , \ie, the greatest singular value of $\mathbf{W}$ defined as:
+% \begin{align*}
+%    \lVert\mathbf{W}\rVert_2 :=\max_{x\neq 0} \frac{\lVert \mathbf{W}x\rVert_2}{\lVert x\rVert_2}
+% \end{align*}
 The reciprocal also holds: if $\sigma:\RR\to\RR$ is a non-decreasing $L$-Lipschitz function, $\mathbf{W}\in \RR^{k\times d}$ and $b\in \RR^{k}$, there exists a convex $L\lVert\mathbf{W}\rVert_2^2$-smooth function $F_{w,b}$ such that 
 $$\nabla_xF_{w,b}(x) =  \mathbf{W}^\top \sigma(\mathbf{W} x+\mathbf{b}),$$ where $\sigma$ is applied element-wise. The next section shows how this property can be used to implement the building block and training of such layers. 
 

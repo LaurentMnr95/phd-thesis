@@ -70,7 +70,20 @@ where $\Gamma_{i,\varepsilon}$ is defined as :
 \begin{align*}
     \Gamma_{i,\varepsilon}:=\Big\{\QQ_i\mid~\int d\QQ_i=\frac{1}{\numsamples},~\int c_{\varepsilon}((x_i,y_i),\cdot) d\QQ_i=0\Big\}.
 \end{align*}
-More details on this decomposition are given in Appendix~\ref{sec:complements}.
+\begin{prop}
+    Let $\hat{\PP}:=\frac1N\sum_{i=1}^N \delta_{(x_i,y_i)}$. Let $l$ be a loss satisfying Assumption~\ref{ass:loss}. Then we have:
+    \begin{align*}
+    \frac{1}{N}\sum_{i=1}^N\sup_{x,~d(x,x_i)\leq\varepsilon}\mathbb{E}_{\theta \sim \mu}\left[l(\theta,(x,y))\right]=\sum_{i=1}^N\sup_{\QQ_i\in\Gamma_{i,\varepsilon}}\mathbb{E}_{(x,y)\sim \QQ_i,\theta \sim \mu}\left[l(\theta,(x,y))\right]
+    \end{align*}
+    where $\Gamma_{i,\varepsilon}$ is defined as : 
+    \begin{align*}
+        \Gamma_{i,\varepsilon}:=\Big\{\QQ_i\mid~\int d\QQ_i=\frac{1}{N},~\int c_{\varepsilon}((x_i,y_i),\cdot) d\QQ_i=0\Big\}.
+    \end{align*}\end{prop}
+    
+    \begin{proof}
+    This proposition is a direct application of Proposition~\ref{prop:dro_adv} for diracs $\delta_{(x_i,y_i)}$.
+    \end{proof}
+    
 In the following, we regularize the above objective by adding an entropic term to each inner supremum problem. Let $\bm{\alpha}:=(\alpha_i)_{i=1}^\numsamples\in\mathbb{R}_+^\numsamples$ such that for all $i\in\{1,\dots,\numsamples\}$, and let us consider the following optimization problem:
 \begin{equation*}
 \begin{aligned}
@@ -210,8 +223,8 @@ Observe that $\loss\geq 0$, therefore because the $\log$ function is 1-Lipschitz
 \begin{align*}
 \Big| \widehat{\mathcal{R}}^{\bm{\varepsilon},*}_{adv,\bm{\alpha}} - \widehat{\mathcal{R}}^{\bm{\varepsilon},\textbf{m}}_{adv,\bm{\alpha}}\Big |
 \leq 
-\sum_{i=1}^\numsamples\frac{\alpha}{\numsamples}  \sup_{\mu\in \mathcal{M}^+_1(\Theta)}\Big | \frac{1}{m_i}\sum_{j=1}^{m_i}\exp\left(\frac{\mathbb{E}_{\theta \sim \mu}\left[\loss(\theta,u_j^{(i)}))\right]}{\alpha}\right)
-    - \int_{\mathcal{X}\times\mathcal{Y}}\exp\left(\frac{\mathbb{E}_{\theta \sim \mu}\left[\loss(\theta,(x,y))\right]}{\alpha}\right) d\mathbb{U}_{(x_i,y_i)} \Big|.
+\sum_{i=1}^\numsamples\frac{\alpha}{\numsamples}  \sup_{\mu\in \mathcal{M}^+_1(\Theta)}\Big | &\frac{1}{m_i}\sum_{j=1}^{m_i}\exp\left(\frac{\mathbb{E}_{\theta \sim \mu}\left[\loss(\theta,u_j^{(i)}))\right]}{\alpha}\right)\\
+    &- \int_{\mathcal{X}\times\mathcal{Y}}\exp\left(\frac{\mathbb{E}_{\theta \sim \mu}\left[\loss(\theta,(x,y))\right]}{\alpha}\right) d\mathbb{U}_{(x_i,y_i)} \Big|.
 \end{align*}
 Let us now denote for all $i=1,\dots,\numsamples$,
 \begin{align*}
@@ -317,7 +330,8 @@ Similarly, we obtain that
 \end{align*}
 from which follows that
 \begin{align*}
- \Big| \widehat{\mathcal{R}}_{adv,\bm{\alpha}}^{\varepsilon,*} - \widehat{\mathcal{R}}_{adv}^{\varepsilon,*}\Big|&\leq \frac{1}{\numsamples}\sum_{i=1}^\numsamples\sup_{\mu\in\mathcal{M}_1^{+}(\Theta)}\Big|\alpha\log\left(\int_{\mathcal{X}\times\mathcal{Y}}\exp\left(\frac{\mathbb{E}_{\mu}[\loss(\theta,(x,y))]}{\alpha} \right) d\mathbb{U}_{(x_i,y_i)}\right)-\sup_{u\in S^{\varepsilon}_{(x_i,y_i)}}\mathbb{E}_{\mu}[\loss(\theta,u)] \Big|.
+ \Big| \widehat{\mathcal{R}}_{adv,\bm{\alpha}}^{\varepsilon,*} - \widehat{\mathcal{R}}_{adv}^{\varepsilon,*}\Big|&\leq \frac{1}{\numsamples}\sum_{i=1}^\numsamples\sup_{\mu\in\mathcal{M}_1^{+}(\Theta)}\Big|&\alpha\log\left(\int_{\mathcal{X}\times\mathcal{Y}}\exp\left(\frac{\mathbb{E}_{\mu}[\loss(\theta,(x,y))]}{\alpha} \right) d\mathbb{U}_{(x_i,y_i)}\right)\\
+ &-\sup_{u\in S^{\varepsilon}_{(x_i,y_i)}}\mathbb{E}_{\mu}[\loss(\theta,u)] \Big|.
 \end{align*}
 Let $\mu\in\mathcal{M}_1^{+}(\Theta)$ and $i\in\{1,\dots,\numsamples\}$, then we have
 \begin{align*}
@@ -325,7 +339,7 @@ Let $\mu\in\mathcal{M}_1^{+}(\Theta)$ and $i\in\{1,\dots,\numsamples\}$, then we
  &=\Big|\alpha\log\left(\int_{\mathcal{X}\times\mathcal{Y}}\exp\left(\frac{\mathbb{E}_{\mu}[\loss(\theta,(x,y))]-\sup_{u\in S^{\varepsilon}_{(x_i,y_i)}}\mathbb{E}_{\mu}[\loss(\theta,u)]}{\alpha} \right) d\mathbb{U}_{(x_i,y_i)}\right) \Big|  \\
  &=\alpha  \Big| \log\left(\int_{A_{\beta,\mu}^{(x_i,y_i)}}\exp\left(\frac{\mathbb{E}_{\mu}[\loss(\theta,(x,y))]-\sup_{u\in S^{\varepsilon}_{(x_i,y_i)}}\mathbb{E}_{\mu}[\loss(\theta,u)]}{\alpha} \right) d\mathbb{U}_{(x_i,y_i)}\right. \\
  &+ \left.\int_{(A_{\beta,\mu}^{(x_i,y_i)})^{c}}\exp\left(\frac{\mathbb{E}_{\mu}[\loss(\theta,(x,y))]-\sup_{u\in S^{\varepsilon}_{(x_i,y_i)}}\mathbb{E}_{\mu}[\loss(\theta,u)]}{\alpha} \right) d\mathbb{U}_{(x_i,y_i)}\right)  \Big|\\
- &\leq \alpha \Big | \log\left(\exp(-\beta/\alpha)\mathbb{U}_{(x_i,y_i)}\left(A_{\beta,\mu}^{(x_i,y_i)}\right) \right)\Big | \\
+ &\leq \alpha \Big | \log\left(\exp(-\frac\beta\alpha)\mathbb{U}_{(x_i,y_i)}\left(A_{\beta,\mu}^{(x_i,y_i)}\right) \right)\Big | \\
  &+ \alpha  \Big|\log\left(1+ \frac{\exp(\beta/\alpha)}{\mathbb{U}_{(x_i,y_i)}\left(A_{\beta,\mu}^{(x_i,y_i)}\right)}\int_{(A_{\beta,\mu}^{(x_i,y_i)})^{c}}\exp\left(\frac{\mathbb{E}_{\mu}[\loss(\theta,(x,y))]-\sup_{u\in S^{\varepsilon}_{(x_i,y_i)}}\mathbb{E}_{\mu}[\loss(\theta,u)]}{\alpha} \right) d\mathbb{U}_{(x_i,y_i)}\right)  \Big|\\
  &\leq \alpha\log(1/C_\beta)+\beta +\frac{\alpha}{C_\beta}\\
  &\leq 2\alpha\log(1/C_\beta)+\beta
@@ -420,7 +434,7 @@ The main drawback of the above algorithm is that one needs to have access to an 
 
 \subsection{A General Heuristic Algorithm}
 
-So far, our algorithms are not easily practicable in the case of deep learning. Adversarial examples are known to be easily transferrable from one model to another~\citep{tramer2017space,papernot2016transferability}. So we aim at learning diverse models. To this end, and support our theoretical claims, we propose an heuristic algorithm (see Algorithm~\ref{algo:heuristic}) to train a robust mixture of $l$ classifiers.   We alternatively train these classifiers with adversarial examples against the current mixture and update the probabilities of the mixture according to the algorithms we proposed in Section~\ref{sec:proposed-algo}. More details on this algorithm are available in Appendix~\ref{sec:additional-xp}. 
+So far, our algorithms are not easily practicable in the case of deep learning. Adversarial examples are known to be easily transferrable from one model to another~\citep{tramer2017space,papernot2016transferability}. So we aim at learning diverse models. To this end, and support our theoretical claims, we propose an heuristic algorithm (see Algorithm~\ref{algo:heuristic}) to train a robust mixture of $l$ classifiers.   We alternatively train these classifiers with adversarial examples against the current mixture and update the probabilities of the mixture according to the algorithms we proposed in Section~\ref{sec:proposed-algo}. 
 
 
 \begin{algorithm}[h!]

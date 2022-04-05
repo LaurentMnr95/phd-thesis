@@ -30,8 +30,11 @@ then we have for every $\tau$ such that $\lVert \tau \rVert_2 \leq \varepsilon$:
 \end{equation*}
 \end{prop}
 From Proposition~\ref{proposition:tsuzuku}, it is straightforward to compute a robustness certificate for a given point.
-Consequently, in order to build robust neural networks the margin needs to be large and the Lipschitz constant small to get optimal guarantees on the robustness for neural networks.
-
+Consequently, in order to build robust neural networks the margin needs to be large and the Lipschitz constant small to get optimal guarantees on the robustness for neural networks. Beyond adversarial robustness, Lipschitzness is very used in Wasserstein Generative Adversarial Networks. Indeed the discriminator objective writes as a Wasserstein-$1$ distance in its dual form:
+\begin{align*}
+  W_1(\PP,G_\sharp \PP_z) = \sup_{f~1\text{-Lip}}\mathbb{E}_{x\sim\PP}[f(x)] -\mathbb{E}_{z\sim\PP_z}[f(G(z))]
+\end{align*}
+where $\PP_z$ denotes the latent space, and $G$ the generator function. It worth noting that Wasserstein GANs highly improved the stability of training for GANs. 
 \paragraph{Lipschitz Constant of Neural Networks.}  A neural network is a function $f$ defined succession of linear and non-linear activation functions $\sigma$:
 \begin{align*}
   f(x) = \left(A_L\sigma\left(A_{L-1}\dots \sigma\left(A_1x+b_1\right)\dots\right)+b_L\right)
@@ -47,7 +50,9 @@ with $\lVert A\rVert_2$ is the spectral norm of $A$ defined as
 where $\lambda_{max}(A^TA)$ denotes the greatest eigen value of $A^TA$. Note that $\lVert A\rVert_2$ is also the greatest singular value of $A$.  
 Then the Lipschitz constant of $f$ is upperbounded by $\lVert A_1\rVert_2\dots \lVert A_L\rVert_2$. Hence to control the Lipschitz constant of a neural network, it is usual to control the spectral norm of each layer. It could be done either in penalizing this upperbound or imposing a spectral norm equals smaller than $1$ for each layer. 
 
-\subsection{Learning Lipschitz layers}
+\paragraph{Lipschitz Regularization of Neural Networks.} To build more robust neural networks, an emerging technique is to add a regularization $\Omega(f)$ to the classification objective to encourage a smaller Lipschitz constant. 
+
+\subsection{Learning $1$-Lipschitz layers}
 
 Many research proposed methods to build 1-Lipschitz layers in order to boost adversarial robustness. These approaches provide deterministic guarantees for adversarial robustness. One can either normalize the weight matrices by their largest singular values making the layer $1$-Lipschitz, \emph{e.g.}~\citep{yoshida2017spectral,miyato2018spectral,farnia2018generalizable,anil2019sorting} or project the weight matrices on the Stiefel manifold \citep{li2019preventing,trockman2021orthogonalizing,skew2021sahil}.
 
@@ -61,9 +66,11 @@ Also, several works~\cite{anil2019sorting,singla2021householder,huang2021local} 
 
 The BCOP layer (Block Convolution Orthogonal Parameterization) uses an iterative algorithm proposed by \citet{bjorck1971iterative} to orthogonalize a linear transformation. The BCOP layer relies on the following algorithm to orthonormalize a linear operator $M$:
 \begin{align*}
-    xxxx
+ M\times\left(I+\frac12Q+\frac38Q^2+\dots+(-1)^p\begin{pmatrix} n\\k \end{pmatrix}
+Q^p+\dots \right).
 \end{align*}
-To build a ``convolutional layer'' from the BCOP the matrix $M$ can be structured as a convolutional operator is a standard Deep Learning framework as Tensorflow~\citep{abadi2016deep} or PyTorch~\citep{paszke2019pytorch}. TODO DESCRIBE
+with $Q = I-A^TA$ 
+To build a ``convolutional layer'' from the BCOP procedure, the authors proposed to work directly on the kernels of the convolutions, proposing block operations to orthogonalize convolutions.
 
 Two other alternatives, the SOC layer (Skew Orthogonal Convolution) and the Cayley layer, used two different parametrization of the Special Orthogonal Group $SO_n(\RR)$ using skew-symmetric matrices. Indeed, in Riemmanian geometry, the space skew-symmetric matrices is isomorphic to the tangent space of $SO_n(\RR)$ at any point. 
 

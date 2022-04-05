@@ -103,8 +103,34 @@ Let $\ZZ$ be a Polish space. Let $\PP$ be a probability distribubtion over $\ZZ$
 \end{thm}
 This result can be found in special case in~\citep{xxx}. For sake of completeness, we provide a proof of the result. 
 \begin{proof}
-    TODO
+     Let us define:
+     \begin{align*}
+        \Tilde{f}:(z,z')\in\ZZ^2\mapsto f(z')-\infty*\mathbf{1}_{c(z,z')>\varepsilon}\quad. 
+     \end{align*}
+     $\Tilde{f}$ is Borel-measurable, hence upper semi-analytic~\citep[Chapter 7]{bertsekas2004stochastic}. We then deduce that 
+     \begin{align*}
+       z\in\ZZ\mapsto \sup_{z'\in\ZZ} \Tilde{f}(z,z') = \sup_{z'\in \ZZ|~c(z,z')\leq\varepsilon} f(z')
+     \end{align*}
+     is universally measurable, hence justifying the definition of the left-end term in the Theorem. 
+
+     Now let $\QQ$ such that $W_{\infty,c}(\PP,\QQ)\leq \varepsilon$. There exists $\gamma\in\Gamma_{\PP,\QQ}$ such that $c(z,z')\leq \varepsilon$ $\gamma$-almost surely. Then we deduce
+
+     \begin{align*}
+        \mathbb{E}_{z'\sim\QQ}\left[f(z')\right] &= \mathbb{E}_{(z,z')\sim\gamma}\left[f(z')\right]\leq\mathbb{E}_{(z,z')\sim\gamma}\left[\sup_{z'\in \ZZ|~c(z,z')\leq\varepsilon} f(z')\right] \\
+       & \leq\mathbb{E}_{z\sim \PP}\left[\sup_{z'\in \ZZ|~c(z,z')\leq\varepsilon} f(z')\right]
+      \end{align*}
+      Hence we deduce that 
+      \begin{align*}
+        \sup_{\QQ|~W_{\infty,c}(\PP,\QQ)\leq \varepsilon}\mathbb{E}_{z\sim\QQ}\left[f(z)\right] \leq\mathbb{E}_{z\sim\PP}\left[\sup_{z'\in \ZZ|~c(z,z')\leq\varepsilon} f(z')\right]
+      \end{align*}
+     
+    Thanks to~\citet[Proposition 7.50]{bertsekas2004stochastic}, for any $\delta>0$, there exists a universally measurable mapping $T:\ZZ\to\ZZ$ such that $\tilde{f}(z,T(z))\geq \sup_{z'\in\ZZ} \Tilde{f}(z,z') -\delta $ for every $z\in\ZZ$. Defining $\QQ =T_\sharp\PP$, we get that $W_{\infty,c}(\PP,\QQ)\leq \varepsilon$ and that:
+    \begin{align*}
+        \sup_{\QQ|~W_{\infty,c}(\PP,\QQ)\leq \varepsilon}\mathbb{E}_{z\sim\QQ}\left[f(z)\right] \geq\mathbb{E}_{z\sim\PP}\left[\sup_{z'\in \ZZ|~c(z,z')\leq\varepsilon} f(z')\right]-\delta
+    \end{align*}
+Consequently, we deduce the expected result of the Theorem.
 \end{proof}
+    
 
 When the problem is a classification problem (i.e., $\ZZ=\XX\times\YY$ with $\YY = [K]$), one can replace $f$ with  $\loss(f(x),y)$ with $\loss$ a measurable loss function and set the cost $c$ equals to:
 \begin{align*}
@@ -120,7 +146,13 @@ Hence, we recover the Adversarial classification problem using a Wasserstein-$\i
 
 \subsection{Game Theory and Adversarial Learning}
 
-While adversarial classification can be naturally understood as a game between the attacker and the classifier, it has only been very recent that the problem has been studied from a game theoretic perspective.  Adversarial examples have been studied under  the notions of Stackelberg game in~\cite{10.1145/2020408.2020495}, and  zero-sum game in~\cite{7533509,DBLP:journals/corr/abs-1906-02816,bose2021adversarial}. These works considered restricted settings (convex loss, parametric adversaries, etc.) that do not  comply with the nature of the problem. 
+While adversarial classification can be naturally understood as a game between the attacker and the classifier, it has only been very recent that the problem has been studied from a game theoretic perspective. Adversarial examples have been studied under  the notions of Stackelberg game in~\cite{10.1145/2020408.2020495}, and  zero-sum game in~\cite{7533509,DBLP:journals/corr/abs-1906-02816,bose2021adversarial}.
+
+
+In~\citep{bose2021adversarial}, the authors consider a setting with a convex loss function, a convex set of deterministic classifiers and a generative attacker. In this setting the authors show there is no duality gap for the game between the attacker and the learner. However, this setting is limited due to these assumptions. As we will see in Chapter~\ref{chap:calibration}, one can prove that no convex loss can be a good surrogate for the $0/1$ loss in the adversarial setting. Moreover, a generative attacker is weaker than an attacker that can move each point independently.
+
+\cite{pinot2020randomization} proposed to study the adversarial game when the attacker is deterministic and regularized. The authors considers two different regularizations: the first one penalizes the average perturbation for the attacker and the second one penalizes the attacker if he attacks ``too many points''. In this setting,  the authors show that, under mild conditions, the risk for randomized classifiers is stricly smaller than the risk for deterministic classifiers. In particular, in this setting, the authors state the non-existence of Nash Equilibria when the classifier play a deterministic strategy and the attacker is regularized. 
+
 %\textbf{Game Theory.} Some works previously casted the the adversarial risk minimization problem as a two-player game, either using the notion of Stackelberg game~\cite{10.1145/2020408.2020495}, or the concept of zero-sum game~\cite{7533509,DBLP:journals/corr/abs-1906-02816,bose2021adversarial}. These works usually study very restricted versions of the game where the players can be reduced to a convex and compact set a real-valued parameters and where assumptions on the loss function are very strong (e.g. convexity). In that sense, we can prove that when the loss is convex and the set $\Theta$ is convex, the duality gap is zero for deterministic classifiers (see Appendix~\ref{...} for a precise statement).
 % \begin{thm}Let $\PP\in\mathcal{M}^1_+(\mathcal{X}\times\mathcal{Y})$, $\varepsilon>0$ and $\Theta$ a convex set.
 % Let us assume that for all $(x,y)\in\mathcal{X}\times\mathcal{Y}$, $l(\cdot,(x,y))$ is a convex function, for all $\theta\in\Theta$, $l(\theta,\cdot)$ is an upper semi-continuous function and for all $\theta\in\Theta$, $l(\theta,\cdot)\in L^1(\PP)$. Then we have the following:
@@ -132,3 +164,5 @@ While adversarial classification can be naturally understood as a game between t
 % The supremum is always attained. If $\Theta$ is a compact set then, the infimum is also attained.
 % \end{thm}
 However, as we will see in Chapter~\ref{chap:calibration}, one can prove that no convex loss can be a good surrogate for the $0/1$ loss in the adversarial setting~\citep{pmlr-v125-bao20a,pmlr-v97-cranko19a,xxx}, narrowing the scope of this result. ~\cite{pinot2020randomization} studied partly this question for regularized deterministic adversaries, leaving the general setting of  randomized adversaries and  mixed equilibria unanswered, which is the scope of Chapter~\ref{chap:game}.
+
+

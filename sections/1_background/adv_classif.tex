@@ -110,47 +110,13 @@ Defending against adversarial examples is still an open research questions with 
 
 \paragraph{Provable defenses.} A defense is said to be provable if there is a theoretical guarantee to ensure a level of robustness. Formally, a classifier $h$ is said to \emph{certifiably robust at level $\varepsilon$} at input $x$ with label $y$ if there exist no adversarial example of level $\varepsilon$ on $h$ at the point $(x,y)$, i.e. for all $x'$ such that $d(x,x')\leq\varepsilon$, $h(x') = y$. 
 
-\paragraph{Lipschitz property of Neural Networks} 
-% TODO: define f properly
-The Lipschitz constant has seen a growing interest in the last few years in the field of deep learning~\citep{scaman2018lipschitz,fazlyab2019efficient,combettes2020lipschitz,bethune2021many}.
-Indeed, numerous results have shown that neural networks with a small Lipschitz constant exhibit better generalization~\citep{bartlett2017spectrally}, higher robustness to adversarial attacks~\citep{szegedy2014intriguing,farnia2018generalizable,tsuzuku2018lipschitz}, better training stability~\citep{xiao2018dynamical,trockman2021orthogonalizing}, improved Generative Adversarial Networks~\citep{arjovsky2017wasserstein}, etc.
-Formally, we define the Lipschitz constant with respect to the $\ell_2$ norm of a Lipschitz continuous function $f$ as follows:
-\begin{equation*}
-  Lip_{2}{(f)} = \sup_{\substack{x, x' \in \XX \\ x \neq x'}} \frac{\lVert f(x) - f(x') \rVert_2}{\lVert x - x' \rVert_2} \enspace.
-\end{equation*}
 
-Intuitively, if a classifier is Lipschitz, one can bound the impact of a given input variation on the output, hence obtaining guarantees on the adversarial robustness.
-We can formally characterize the robustness of a neural network with respect to its Lipschitz constant with the following proposition:
-\begin{prop}[\citet{tsuzuku2018lipschitz}] \label{proposition:tsuzuku}
-Let $\mathbf{f}$ be an $L$-Lipschitz continuous classifier for the $\ell_2$ norm.
-Let $\varepsilon > 0$, $x \in \XX$ and $y \in \YY$ the label of $x$.
-If at point $x$, the margin $\mathcal{M}_{\mathbf{f}}(x)$ satisfies:
-\begin{equation*}
-  \mathcal{M}_{\mathbf{f}}(x):=\max(0,f_y(x)-\max_{y'\neq y}f_{y'}(x)) > \sqrt{2} L \varepsilon
-\end{equation*}
-then we have for every $\tau$ such that $\lVert \tau \rVert_2 \leq \varepsilon$:
-\begin{equation*}
-  \argmaxB_{k}f_k(x + \tau) = y
-\end{equation*}
-\end{prop}
-From Proposition~\ref{proposition:tsuzuku}, it is straightforward to compute a robustness certificate for a given point.
-Consequently, in order to build robust neural networks the margin needs to be large and the Lipschitz constant small to get optimal guarantees on the robustness for neural networks.
-
-
-Hence, many research proposed methods to build 1-Lipschitz layers in order to boost adversarial robustness. These approaches provide deterministic guarantees for adversarial robustness. One can either normalize the weight matrices by their largest singular values making the layer $1$-Lipschitz, \emph{e.g.}~\citep{yoshida2017spectral,miyato2018spectral,farnia2018generalizable,anil2019sorting} or project the weight matrices on the Stiefel manifold \citep{li2019preventing,trockman2021orthogonalizing,skew2021sahil}.
-The work of \citet{li2019preventing}, \citet{trockman2021orthogonalizing} and \citet{skew2021sahil} (denoted BCOP, Cayley and SOC respectively) are examples of approaches that aims at building orthogonal weights in layers.
-Indeed, their approaches consist of projecting the weights matrices onto an orthogonal space in order to preserve gradient norms and enhance adversarial robustness by guaranteeing low Lipschitz constants. 
-While both works have similar objectives, their execution is different.
-The BCOP layer (Block Convolution Orthogonal Parameterization) uses an iterative algorithm proposed by \citet{bjorck1971iterative} to orthogonalize the linear transform performed by a convolution.
-The SOC layer (Skew Orthogonal Convolutions) uses the property that if $A$ is a skew symmetric matrix then $Q=\exp{A}$ is an orthogonal matrix. To approximate the exponential, the authors proposed to use a finite number of terms in its Taylor series expansion.
-Finally, the method proposed by~\citet{trockman2021orthogonalizing} use the Cayley transform to orthogonalize the weights matrices.
-Given a skew symmetric matrix $A$, the Cayley transform consists in computing the orthogonal matrix $Q = (I - A)^{-1} (I + A)$. Both methods are well adapted to convolutional layers and are able to reach high accuracy levels on CIFAR datasets. Also, several works~\cite{anil2019sorting,singla2021householder,huang2021local} proposed methods leveraging the properties of activation functions to constraints the Lipschitz of Neural Networks. These works are usually useful to help  improving the performance of linear orthogonal layers.
+\paragraph{Empirical defenses.}
 
 
 
 
-
-\paragraph{Evaluation Protocol}
+\paragraph{Evaluation Protocol.}
 
 Unless defense mechanisms are provable and have guarantees, evaluating Adversarial Robustness is a complicated task. Many  defenses introduced in the literature were actually proven to be ``false'' defenses. Indeed, one needs to adapt each attack to the defense. We describe the following common issues. CITE more. 
 
