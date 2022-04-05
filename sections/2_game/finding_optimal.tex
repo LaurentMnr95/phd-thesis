@@ -373,9 +373,9 @@ for $\bm{\lambda}\in\Delta_l: = \{\bm{\lambda}\in\mathbb{R}_+^l~\mathrm{s.t.}~\s
 \end{align*}
 Note that in $\bm{\lambda}$, the objective is convex and smooth. One can  apply the accelerated PGD~\citep{beck2009fast,tseng2008accelerated} which enjoys an optimal convergence rate for first order methods of $\mathcal{O}(T^{-2})$ for $T$ iterations.
 
-\textbf{A First Oracle Algorithm.} Indepedently from  the entropic regularization,we present an oracle-based algorithm inspired from~\citep{sinha2017certifying} and the convergence of projected sub-gradient methods~\citep{boyd2003subgradient}. The computation of the inner supremum problem is usually NP-hard. Let us justify it on a mixture of linear classifiers in binary classification: $f_{\theta_k}(x) = \langle \theta,x\rangle$ for $k\in [L]$ and $\bm{\lambda}=\mathbf{1}_L/L$. Let us consider the $\ell_2$ norm and $x=0$ and $y=1$. Then the problem of attacking $x$ is the following:
+\textbf{A First Oracle Algorithm.} Indepedently from  the entropic regularization,we present an oracle-based algorithm inspired from~\citep{sinha2017certifying} and the convergence of projected sub-gradient methods~\citep{boyd2003subgradient}. The computation of the inner supremum problem is usually NP-hard. Let us justify it on a mixture of linear classifiers in binary classification: $f_{\theta_k,b_k}(x) = \langle \theta,x\rangle+b_k$ for $k\in [L]$ and $\bm{\lambda}=\mathbf{1}_L/L$. Let us consider the $\ell_2$ norm and $x=0$ and $y=1$. Then the problem of attacking $x$ is the following:
 \begin{align*}
-    \sup_{\tau,~\lVert \tau\rVert\leq\varepsilon} \frac{1}{L}\sum_{k=1}^L\mathbf{1}_{\langle \theta_k,x+\tau\rangle\leq0}
+    \sup_{\tau,~\lVert \tau\rVert\leq\varepsilon} \frac{1}{L}\sum_{k=1}^L\mathbf{1}_{\langle \theta_k,x+\tau\rangle+b_k\leq0}
 \end{align*}
 This problem is equivalent to a linear binary classification problem on $\tau$, which is known to be NP-hard. Assuming the existence of a $\delta$-approximate oracle to this supremum, we algorithm is presented in Algorithm~\ref{algo:duchi}. We get the following guarantee for this algorithm. %See proof in Appendix~\ref{prv:algo-oracle}.
 \begin{prop}

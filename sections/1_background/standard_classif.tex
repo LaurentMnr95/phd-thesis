@@ -1,4 +1,4 @@
-\section{Supervised Classification in a Nutshell}
+\section{Supervised Classification}
 A classification task aims at learning a function that assigns a label to a given input. Classification is one of the two main categories of tasks along with regression. One can found classification tasks in Computer Vision, Natural Language Processing, Speech Recognition, etc. In this thesis, most examples will be from Computer Vision and Image Recognition. 
 \subsection{Notations}
 In this section, we formalize the task of classification. First, we define the notions of inputs and labels:
@@ -53,6 +53,8 @@ In this PhD thesis, although the results are general and applicable to every typ
 
 \end{itemize}
 
+
+\paragraph{Neural Networks}
 \subsection{Surrogate losses, consistency and calibration} 
 
 \paragraph{Binary Classification.} In this section, we recall the main results about surrogate losses in binary classification. We assume that $\YY = \{-1,+1\}$. In this case, a classifier is a function $f:\XX\to\RR$ such that an input $x$ is classified as $1$ if $f(x)>0$ and as $-1$ if $f(x)\geq 0$. Then the $0/1$ loss is defined as $\mathbf{1}_{ysign(f(x))\leq0}$. As mentioned earlier, optimizing the risk associated $0/1$ loss is a difficult task, generally an NP-hard problem~\cite{xxx}. We need to properly introduce notions of surrogate losses. 
