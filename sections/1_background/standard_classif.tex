@@ -1,5 +1,5 @@
 \section{Supervised Classification}
-A classification task aims at learning a function that assigns a label to a given input. Classification is one of the two main categories of tasks along with regression. One can found classification tasks in Computer Vision, Natural Language Processing, Speech Recognition, etc. In this thesis, most examples will be from Computer Vision and Image Recognition. 
+A classification task aims at learning a function that assigns a label to a given input. Along with regression, classification is one of the  supervised learning tasks. One can find classification tasks in Computer Vision, Natural Language Processing, Speech Recognition, etc. In this thesis, most examples will be from Computer Vision and Image Recognition. 
 \subsection{Notations}
 In this section, we formalize the task of classification. First, we define the notions of inputs and labels:
 \begin{itemize}
@@ -7,7 +7,7 @@ In this section, we formalize the task of classification. First, we define the n
     \item Each input $x\in \XX$ has to be associated with a label $y$. A label is a descriptor of the input. The set of labels is discrete and we designate it by $\YY:=\{1,\dots,K\}$. $\YY$ is endowed with the trivial metric  $d'(y,y') = \mathbf{1}_{y\neq y'}$. Note that $(\XX\times\YY,d\oplus d')$ is also a proper Polish space.
 \end{itemize}
 
-The purpose of classification is to learn a classifier $h:\XX\to\YY$. It is usual to learn a function $f:\XX\to\RR^K$ such that: $h(x) = \argmaxB_{k\in\YY}f_k(x)$. In a classification problem in machine learning, the data is assumed to be sampled from an unknown probability distribution $\PP$ over $\XX\times\YY$. We will assume from now that all the probability distributions we consider are Borel distributions. For any Polish Space $\mathcal{Z}$, we will denote $\mathcal{B}(\mathcal{Z})$ the Borel $\sigma$-algebra and the set of Borel distributions over $\mathcal{Z}$  will be denoted $\mathcal{M}_+^1(\mathcal{Z})$. We recall that on Polish space, all Borel probability distributions are Radon measures We also recall the notion of \textit{universal measurability}: a set $A\subset \mathcal{Z}$ is said to be universally measurable if it is measurable for every \textit{complete} Borel probability measure.
+The purpose of classification is to learn a classifier $h:\XX\to\YY$. It is usual to learn a function $f:\XX\to\RR^K$ such that: $h(x) = \argmaxB_{k\in\YY}f_k(x)$. In a classification problem in machine learning, the data is assumed to be sampled from an unknown probability distribution $\PP$ over $\XX\times\YY$. We will assume from now that all the probability distributions we consider are Borel distributions. For any Polish Space $\mathcal{Z}$, we will denote $\mathcal{B}(\mathcal{Z})$ the Borel $\sigma$-algebra and the set of Borel distributions over $\mathcal{Z}$  will be denoted $\mathcal{M}_+^1(\mathcal{Z})$. We recall that on Polish space, all Borel probability distributions are Radon measures. We also recall the notion of \textit{universal measurability}: a set $A\subset \mathcal{Z}$ is said to be universally measurable if it is measurable for every \textit{complete} Borel probability measure.
 
 
 
@@ -15,7 +15,7 @@ The purpose of classification is to learn a classifier $h:\XX\to\YY$. It is usua
 \subsection{Classification Task in Supervised Learning}
 
 
-In standard classification, we usually aims at maximizing the accuracy of the classifier, or equivalently, at minimizing the risk associated with the $0/1$ loss defined as follows.
+In standard classification, we usually aim at maximizing the accuracy of the classifier, or equivalently, at minimizing the risk associated with the $0/1$ loss defined as follows.
 
     
 \begin{definition} Let $\PP$ be a Borel probability distribution over $\XX\times\YY$. Let $h:\XX\to\YY$ be a Borel measurable classifier. Then, the risk of $h$ associated with $0/1$ loss (or error of $h$) is defined as:
@@ -28,7 +28,7 @@ The Optimal Bayes risk is defined as the optimal risk over measurable classifier
  \end{align}
 If $f:\XX\to\RR^K$, then the risk of $f$ is defined as $\risk_{\PP}(f):=\PP(\argmaxB_{k\in\YY}f_k(x)\neq y)$
 \end{definition}
-
+TODO: define $\mathcal{F}$ above
 Note that this quantity is well defined when $h$ or $f$ is Borel or universally measurable. The optimal classifier is called the Optimal Bayes  classifier and is defined as $h(x) = \argmaxB_k\PP(y=k\mid x)$. We remark that the disintegration theorem ensures that $x\mapsto \PP(y=k\mid x)$ is indeed Borel measurable. 
 
 In practice, the access to the Optimal Bayes  classifier is not possible because it requires full knowledge of the probability distribution $\PP$ which is not the case in general. Instead, in the supervised learning setting, the learner has access to data points $\{(x_1,y_1),\dots,(x_\numsamples,y_\numsamples)\}$, that constitutes the \emph{training set}. Knowing the Optimal Bayes classifier on training points is not sufficient to generalize on points out of the training set. Hence one need to reduce the search space of measurable functions to a much smaller one, denoted $\mathcal{H}$ in the sequel. The $0/1$ loss is not convex neither continuous, and minimizing directly the 0/1 loss risk  on $\mathcal{H}$ is  NP-hard CITE. We usually minimize a well-chosen surrogate loss function $\loss$. A \textit{loss function} $\loss:\mathbb{R}^K\times\YY\to\mathbb{R}$ is a non negative Borel measurable function. An example of such a loss is the cross entropy loss defined as $\loss(\mathbf{f}(x),y)=-\sum_{i=1}^K \mathbf{1}_{y=i}\log f_i(x)$

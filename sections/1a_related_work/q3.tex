@@ -50,13 +50,36 @@ with $\lVert A\rVert_2$ is the spectral norm of $A$ defined as
 where $\lambda_{max}(A^TA)$ denotes the greatest eigen value of $A^TA$. Note that $\lVert A\rVert_2$ is also the greatest singular value of $A$.  
 Then the Lipschitz constant of $f$ is upperbounded by $\lVert A_1\rVert_2\dots \lVert A_L\rVert_2$. Hence to control the Lipschitz constant of a neural network, it is usual to control the spectral norm of each layer. It could be done either in penalizing this upperbound or imposing a spectral norm equals smaller than $1$ for each layer. 
 
-\paragraph{Lipschitz Regularization of Neural Networks.} To build more robust neural networks, an emerging technique is to add a regularization $\Omega(f)$ to the classification objective to encourage a smaller Lipschitz constant. 
+\paragraph{Lipschitz Regularization of Neural Networks.}  Based on the insight that Lipschitz Neural Networks are more robust to adversarial attacks, researchers have developed several techniques to regularize and constrain the Lipschitz constant of neural networks by adding a regularization $\Omega(f)$ to the classification objective to encourage a smaller Lipschitz constant.
+However the computation of the Lipschitz constant of neural networks has been shown to be NP-hard~\citep{scaman2018lipschitz}.  Most methods therefore tackle the problem by reducing or constraining the Lipschitz constant at the layer level.
+For instance, the work of~\citet{cisse2017parseval,huang2020controllable} and ~\citet{wang2020orthogonal} exploit the orthogonality of the weights matrices to build Lipschitz layers.
+Other approaches~\citep{gouk2021regularisation,jia2017improving,sedghi2018singular,singla2021fantastic,araujo2021lipschitz} proposed to estimate or upper-bound the spectral norm of convolutional and dense layers using for instance the power iteration method~\citep{golub2000eigenvalue}.
+While these methods have shown interesting results in terms of accuracy, empirical robustness and efficiency, they can not provide provable guarantees since the Lipschitz constant of the trained networks remains unknown or vacuous.
+
+
+
+ 
 
 \subsection{Learning $1$-Lipschitz layers}
 
+
+\begin{algorithm}[tb]
+  \caption{Spectral normalization algorithm}
+  \label{algorithm:spectralnorm}
+  \begin{algorithmic}
+    \STATE{Require: \bfseries Matrix $\mathbf{W}$, Nb. Iter. $n$}
+    \STATE{Initialize $u$ and $v$}
+    \STATE{$v \gets \mathbf{W} u / \lVert \mathbf{W} u \rVert_2$}
+    \STATE{$u \gets \mathbf{W}^\top v / \lVert \mathbf{W}^\top v \rVert_2$
+      \rlap{\hspace{0.5cm}\smash{$\left.\begin{array}{@{}c@{}}\\{}\\{}\end{array}\right\}%
+        \begin{tabular}{l}$n$ iterations\end{tabular}$}}}
+    \STATE{$h \gets 2 / \left( \sum_i (\mathbf{W} u \cdot v)_i \right)^2$}
+    \STATE{\textbf{return} $h$}
+  \end{algorithmic}
+  \end{algorithm}
 Many research proposed methods to build 1-Lipschitz layers in order to boost adversarial robustness. These approaches provide deterministic guarantees for adversarial robustness. One can either normalize the weight matrices by their largest singular values making the layer $1$-Lipschitz, \emph{e.g.}~\citep{yoshida2017spectral,miyato2018spectral,farnia2018generalizable,anil2019sorting} or project the weight matrices on the Stiefel manifold \citep{li2019preventing,trockman2021orthogonalizing,skew2021sahil}.
 
-The first natural idea to learn $1$-Lipschitz layers is to normalize the matrices in the forward pass of a Neural Networks : $A_i\leftarrow \frac{A_i}{\lVert A_i\rVert_2}$. This natural idea was exploited by~\citet{miyato2018spectral}. A key difficulty is the computation of the spectral norm $\lVert A_i\rVert_2$. The authors proposed to use the power iteration method to compute the spectral norm (see Algorithm~\ref{xxx}). The number of iterations might be prohibitive, hence the authors proposed to use only one step in the training phase to make it faster. This method effectively approximated well the sprectral norm of the last layer. However, this method present some disadvantages. The spectral normalization has for effect crushing all smaller singular values. A consequence is the gradient vanishing that is very present in this structure. 
+The first natural idea to learn $1$-Lipschitz layers is to normalize the matrices in the forward pass of a Neural Networks : $A_i\leftarrow \frac{A_i}{\lVert A_i\rVert_2}$. This natural idea was exploited by~\citet{miyato2018spectral}. A key difficulty is the computation of the spectral norm $\lVert A_i\rVert_2$. The authors proposed to use the power iteration method to compute the spectral norm (see Algorithm~\ref{algorithm:spectralnorm}). The number of iterations might be prohibitive, hence the authors proposed to use only one step in the training phase to make it faster. This method effectively approximated well the sprectral norm of the last layer. However, this method present some disadvantages. The spectral normalization has for effect crushing all smaller singular values. A consequence is the gradient vanishing that is very present in this structure. 
 
 Also, several works~\cite{anil2019sorting,singla2021householder,huang2021local} proposed methods leveraging the properties of activation functions to constraints the Lipschitz of Neural Networks. These works are usually useful to help  improving the performance of linear orthogonal layers.
 
@@ -66,7 +89,7 @@ Also, several works~\cite{anil2019sorting,singla2021householder,huang2021local} 
 
 The BCOP layer (Block Convolution Orthogonal Parameterization) uses an iterative algorithm proposed by \citet{bjorck1971iterative} to orthogonalize a linear transformation. The BCOP layer relies on the following algorithm to orthonormalize a linear operator $M$:
 \begin{align*}
- M\times\left(I+\frac12Q+\frac38Q^2+\dots+(-1)^p\begin{pmatrix} n\\k \end{pmatrix}
+ M\times\left(I+\frac12Q+\frac38Q^2+\dots+(-1)^p\begin{pmatrix} \frac12\\p \end{pmatrix}
 Q^p+\dots \right).
 \end{align*}
 with $Q = I-A^TA$ 
@@ -88,7 +111,9 @@ The Cayley method proposed by~\citet{trockman2021orthogonalizing} use the Cayley
 \end{align*}
 Like exponential mapping, the Cayley Tranform defines  a surjective mapping of $SO_n(\RR)$ from the space of skew-symmetric matrices. TODO: adaptabiltilty to skew
 
-
+\paragraph{Reshaped Kernel Methods.}
+It has been shown by~\citet{cisse2017parseval} and \citet{tsuzuku2018lipschitz} that the spectral norm of a convolution can be upper-bounded by the norm of a reshaped kernel matrix. Consequently, orthogonalizing directly this matrix upper-bound the spectral norm of the convolution by $1$.
+While this method is more computationally efficient than orthogonalizing the whole convolution, it lacks expressivity as the other singular values of the convolution are certainly too constrained. 
 
 
 
