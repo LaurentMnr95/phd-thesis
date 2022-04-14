@@ -1,3 +1,5 @@
+In this chapter, we present all relevant related works to answer the questions Q1, Q2, and Q3. 
+
 \section{Q1}
 
 % Optimal Transport have gained interest in Machine Learning applications during the past years. Indeed, Optimal Transport has the ability to model many problems as Generative Adversarial Networks~\citep{arjovsky2017wasserstein}, or in Robust Learning~\citep{xxx}. The computation methods for optimal transport problems have also been considerably improved recently.  We recall the main concepts from the Optimal Transport Theory. Originally introduced by Monge, this Optimal Transport was a problem where the aim was to move some quantity $x$ to some places $y$ while minimizing the total cost of transport. Formally, the problem was c
@@ -37,17 +39,17 @@
 % \end{thm}
 % One can find a proof of this result in~\citep{villani2003topics}. The main arguments are that the dual of continuous functions on  a compact space is the space of Radon measures, and the Rockafellar duality theorem. 
 
-\subsection{Adversarial Risk Minimization and Optimal Transport} Let $\PP$ be a distribution over the input-label space $\XX\times\YY$. We recall that the problem of adversarial risk minimization is defined as
+\subsection{Adversarial Risk Minimization and Optimal Transport} Optimal Transport is a key element when studying Adversarial Classification problems. In particular, it was shown byLet $\PP$ be a distribution er the input-label space $\XX\times\YY$. We recall that the problem of adversarial risk minimization is defined as
 \begin{align*}
     \risk_{\varepsilon,\PP}^\star = \inf_{h} \PP_{(x,y)}\left[\exists x'\in B_\varepsilon(x),~h(x')\neq y\right]
 \end{align*}
-A recent line of work draw important links between   $\risk_{\varepsilon,\PP}^\star$ and Optimal Transport problems in the case of binary classification ($\YY=\{-1,+1\}$) the space $\XX$ satisfy a midpoint property, i.e. TODO. It was shown that in this case:
+A recent line of work draw important links between   $\risk_{\varepsilon,\PP}^\star$ and Optimal Transport problems in the case of binary classification ($\YY=\{-1,+1\}$) the space $\XX$ satisfy a midpoint property, i.e. for all $x_1,x_2\in\XX$ there exist $x\in\XX$ such that $d(x,x_1) = d(x,x_2) =\frac{d(x_1,x_2)}{2}$.. It was shown that in this case:
 \begin{align*}
 \risk_{\varepsilon,\PP}^\star = \frac12-\frac12 W_{c_\varepsilon}(\PP,\PP^S)
 \end{align*}
 where $\PP^S := T^S_\sharp \PP$ with $T^S(x,y) = (x,-y)$ and
 \begin{align*}
-    c_\varepsilon\left((x,y),(x',y')\right) = xxx
+    c_\varepsilon\left((x,y),(x',y')\right) = \mathbf{1}_{d(x,x')>2\varepsilon,y\neq y'}
 \end{align*}
 
 Note that $T^S$ only switches the label of pair $(x,y)$. When $\varepsilon=0$, $W_{c_\varepsilon}(\PP,\PP^S)$ equals the total variation distance between $\PP$ and $\PP^S$, which was a result proved in~\citep{xxx}.

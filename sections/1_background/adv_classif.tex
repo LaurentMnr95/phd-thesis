@@ -4,7 +4,7 @@
 In this section, we present the required background about adversarial classification. In the first part, we present formally what is an adversarial attack, then how to craft them in practice. After, we present ways of defending against adversarial examples. Finally, we state the main results about theoretical understanding of adversarial examples. 
 \subsection{What is an adversarial example?}
 
-In classification tasks, an adversarial example is a perturbation of an input that is imperceptible to human senses, but that state-of-the-art classifiers are unable to  classify accurately. In the following of the manuscript we define adversarial attacks as follows.
+In classification tasks, an adversarial example is a perturbation of an input that is imperceptible to humans, but that state-of-the-art classifiers are unable to  classify accurately. In the following of the manuscript we define adversarial attacks as follows.
 
 
 \begin{definition} 
@@ -13,7 +13,7 @@ In classification tasks, an adversarial example is a perturbation of an input th
         h(x')\neq y\quad\text{and}\quad d(x,x')\leq\varepsilon~.
     \end{align*}
 \end{definition}
-This definition is very simple and general. The distance $d$ can refer to either a $l^p$ distance or a perception distance. We can associate to adversarial examples a notion of adversarial risk. The adversarial risk is the worst case risk if each point are optimally attacked at level $\varepsilon$.
+This definition is very simple and general. The distance $d$ can refer to an $\ell^p$ distance, taken as a surrogate to a perception distance. We can associate to adversarial examples a notion of adversarial risk. The adversarial risk is the worst case risk if each point is optimally attacked at level $\varepsilon$.
 \begin{definition}
   Let $\PP$ be a Borel distribution over $\XX \times \YY$. Let $h:\XX\to\YY$ be a classifier. We define the \emph{adversarial risk} of $h$ at level $\varepsilon$ as:
   \begin{align*}
@@ -27,30 +27,32 @@ This definition is very simple and general. The distance $d$ can refer to either
 \end{definition}
 A first property is that the adversarial risk is well defined. While this result seems trivial, it requires advanced arguments from measure theory. 
 \begin{prop}
-  Let $\PP$ be a Borel distribution over $\XX \times \YY$. Let $h:\XX\to\YY$ be a classifier. If $h$ is Borel measurable then $\risk_\varepsilon(h)$ is well defined.
+  Let $\PP$ be a Borel distribution over $\XX \times \YY$. Let $h:\XX\to\YY$ be a classifier. If $h$ is Borel measurable then $(x,y)\mapsto \sup_{x'\in B_\varepsilon(x)}\mathbf{1}_{h(x')\neq y}$ is universally measurable.
 \end{prop}
 \begin{proof}
   TODO
 \end{proof}
 
-Similarly to the standard classification setting, 
+Similarly to the standard classification setting, we define the optimal bayes risk for adversarial classification. 
 
 \begin{definition}
-  Let $\PP$ be a Borel distribution over $\XX \times \YY$. We call \emph{adversarial Optimal Bayes risk}at level $\varepsilon$ , the infimum of adversarial risk at level $\varepsilon$  over the set of Borel measurable classifiers $\mathcal{F}(\XX,\YY)$:
+  Let $\PP$ be a Borel distribution over $\XX \times \YY$. We call \emph{adversarial Optimal Bayes risk} of level $\varepsilon$ , the infimum of adversarial risk of level $\varepsilon$  over the set of Borel measurable classifiers $\mathcal{F}(\XX,\YY)$:
 \begin{align*}
   \risk^\star_\varepsilon:=\inf_{h\in\mathcal{F}(\XX,\YY)} \risk_\varepsilon(h)
 \end{align*}
 
 \end{definition}
 
+Contrarily to the the standard case, the existence of optimal Bayes classifiers for the adversarial risk is a difficult question.
 
-\subsection{Adversarial examples in the wild}
+
+\subsection{Casting Adversarial examples}
 
 The probably most puzzling about adversarial examples is the facility to craft them. Let us consider an attacker that aim at finding an adversarial perturbation $x'$ of an input $x$ for a given classifier $\mathbf{f}$.  In order to craft an adversarial example, typically the cross-entropy, the attacker maximizes the following objective given a differentiable loss $\loss$:
 \begin{align}
     \max_{x'\in\XX\text{ s.t. } d(x,x')\leq \varepsilon}\loss\left(\mathbf{f}(x'), y)\right).
 \end{align}
-To solve the previous optimization problem, many attacks were proposed that we will categorize into two parts: white-box attacks and black-box attacks.
+In this case the attack is said to be \emph{untargeted}, i.e. the classifier aims at evading the label $y$. On the other side, a \emph{targeted attack} aims at perturbing a label $x$ to make it classify to a target label $y$. In this case, the attacker objective writes: $\min_{x'\in\XX\text{ s.t. } d(x,x')\leq \varepsilon}\loss\left(\mathbf{f}(x'), y)\right)$. An attacker may also target at finding the smallest perturbation problem~\citep{moosavi2016deepfool,carlini2017towards}.  Many attacks were proposed that we will categorize into two parts: white-box attacks and black-box attacks.
 \paragraph{White box attacks:} In this setting, the attacker has  full knowledge of the function $\mathbf{f}$ and its parameters. Hence, these attacks often takes advantages of the differentiablity of $\mathcal{f}$ and the loss function $\loss$. Then, such attacks usually takes the gradient $\nabla_x \loss\left(f\left(x^t\right),y\right)$ as ascent direction for crafting adversarial examples.  These attacks are called \emph{gradient based attacks}. The most popular white box attacks are PGD attack~\cite{kurakin2016adversarial,madry2017towards}, FGSM attack~\citep{goodfellow2014explaining}, Carlini\&Wagner attack~\citep{carlini2017towards}, AutoPGD~\citep{Croce2020MinimallyDA}, FAB~\citep{Croce2020MinimallyDA}, etc. As an illustration of the simplicity of crafting adversarial examples, we show hereafter how the desingn of a PGD attack in an $\ell_p$ case.
 \begin{example*}[PGD attack] Let $x_0\in\RR^d$ be an input. The projected gradient descent (PGD)~\cite{kurakin2016adversarial,madry2017towards} of radius~$\varepsilon$, recursively computes
 \begin{align*}
@@ -59,13 +61,7 @@ x^{t+1}=\prod_{B_p(x,\varepsilon)}\left(x^t
 \end{align*}
 where $B_p(x,\varepsilon) = \{ x+\tau \text{~s.t.~} \lVert\tau\rVert_p \leq \epsilon\}$, $\Delta^t=\nabla_x \loss\left(f\left(x^t\right),y\right)$, $\alpha$ is a gradient step size, and $\prod_S$ is the orthogonal projection operator on $S$. Many attacks are extensions of this one as AutoPGD~\citep{Croce2020ReliableEO} and SparsePGD~\citep{tramer2019adversarial}
 \end{example*}
-\paragraph{Black box attacks:} In this setting, the attacker has limited knowledge of the classifier. The attacker does not have have access to the parameters of the classifier, but can query either the predicted logits or the predicted label for a given input $x$. To craft adversarial examples, it was proposed to mimic gradient-based attacks using gradient estimation as the ZOO attack~\citep{xxx} and NES attack~\citep{ilyas2018black,ilyas2019adversarial}. 
-
-
-
-of the attacker has no knowledge on the classifier parameters and a limited access to the classifier, e.g. he can only access logits or predicted class for instance. CITE ZOO, nes. square, yetanother
-
-TO COMPLETE
+\paragraph{Black box attacks:} In this setting, the attacker has limited knowledge of the classifier. The attacker does not have have access to the parameters of the classifier, but can query either the predicted logits or the predicted label for a given input $x$. To craft adversarial examples, it was proposed to mimic gradient-based attacks using gradient estimation as the ZOO attack~\citep{chen2017zoo} and NES attack~\citep{ilyas2018black,ilyas2019adversarial}. Attacks might also be based on other optimization methods such as combinatorial methods~\citep{moon2019parsimonious} or evolutionary computation~\citep{andriushchenko2019square}.
 
 
 
@@ -73,7 +69,10 @@ TO COMPLETE
 
 
 
-\paragraph{Adversarial Examples beyond Image Classification.} Adversarial examples do not only exist in Image Classification, but it is the most striking example as images are perceptually unchanged. We can enumerate, non exhaustively, the following examples of adversarial classification:
+
+
+
+\paragraph{Adversarial Examples beyond Image Classification.} Adversarial examples do not only exist in Image Classification, although it is the most spectacular example as images are perceptually unchanged. We can enumerate, non exhaustively, the following examples of adversarial classification:
 \begin{itemize}
     \item \textbf{Image Segmentation and Object Detection:} \cite{xie2017adversarial} proposed to attack image segmentation and object detection. The goal of such attack is enforce a undesirable detection or segmentation in an image. 
     \item \textbf{Video classification:} Videos are series of images. Adversarial attacks against video classification systems are closed to adversarial examples in standard Image Classification. Adversarial attacks might aim at changing either a bit many frame or a lot only a few frames. For instance,~\cite{}
@@ -111,18 +110,22 @@ Defending against adversarial examples is still an open research questions with 
 \paragraph{Provable defenses.} A defense is said to be provable if there is a theoretical guarantee to ensure a level of robustness. Formally, a classifier $h$ is said to \emph{certifiably robust at level $\varepsilon$} at input $x$ with label $y$ if there exist no adversarial example of level $\varepsilon$ on $h$ at the point $(x,y)$, i.e. for all $x'$ such that $d(x,x')\leq\varepsilon$, $h(x') = y$. 
 
 
-\paragraph{Empirical defenses.}
 
+\paragraph{Empirical defenses.} Defenses against adversarial examples often have no theoretical guarantees and based on training heuristics. The first defense that was proposed is \emph{Adversarial Training}~\citep{goodfellow2014explaining,madry2017towards}. This defense is an heuristic to minimize the adversarial risk. We describe the adversarial training defense in Algorithm~\ref{xxx}. It consists minimization steps and attacks on the classifier to make it more robust. To our knowledge there exists no proof of convergence for this defense. Many other empirical defenses are variants of Adversarial Training as TRADES~\citep{zhang2019theoretically} or MART~\citep{wang2019improving}. For instance, TRADES aims at minimizing the following objective:
+\begin{align*}
+  f\mapsto\mathbb{E}\left[L(f(x),y)+\lambda\times\max_{x'\in B_\varepsilon(x)}L(f(x'),f(x))\right]\quad.
+\end{align*}
+The first term aims at optimizing standard robustness and the second term is a regularization for adversarial robustness. The objective is to better balance the tradeoff between robustness and standard accuracy. Similarly to Adversarial Training, the inner supremum is optimized using PGD algorithm.
+
+Another promising way to defend against adversarial examples is to augment the dataset. For instance,~\cite{carmon2019unlabeled,rebuffi2021fixing} proposed to use unlabeled data to improve Adversarial Training strategies. Other works~\citep{wang2019improving,xxx} proposed to use artificially generated inputs to improve adversarial robustness. 
 
 
 
 \paragraph{Evaluation Protocol.}
 
-Unless defense mechanisms are provable and have guarantees, evaluating Adversarial Robustness is a complicated task. Many  defenses introduced in the literature were actually proven to be ``false'' defenses. Indeed, one needs to adapt each attack to the defense. We describe the following common issues. CITE more. 
+Unless the used defense mechanisms are provable and provide guarantees, evaluating and assessing adversarial robustness is rigorous and meticulous task for empirical defenses. For instance, many papers introduced ``defenses'' that were actually proven to be ``false''~\citep{athalye2018obfuscated,carlini2019evaluating}. Indeed, when proposing a defense, one needs to adapt the attack model to the defense. We describe the following common issues. For instance, when evaluating against randomized classifiers in either white-box or black-box setting, the return output is a random variable, hence the computation of an attack against it needs to be adapted to the non-deterministic nature of the classifier. To do so, \cite{athalye2018obfuscated} proposed to average either the logits or the gradient of the classifier to build a suitable attack against a randomized classifier. This procedure was called Expectation Over Transformation (EOT). A second example is defenses that aims at using non differentiable activation functions as Heaviside functions.~\cite{athalye2017synthesizing} proposed to use BPDA (xxx), i.e. differentiable approximations to circumvent the ``defense''. Black-box attacks are also a way to build efficient attacks in this case. 
 
-For instance, when evaluating against randomized classifiers in either white-box or black-box setting, the return output is a random variable, hence the computation of an attack against it needs to be adapted to the nature of the classifier. To do so, \cite{athalye2018obfuscated} proposed to average either the outputs or the gradient of the classifier to build an efficient attack. This procedure was called Expectation Over Transformation (EOT). 
-
-To answer the need of adversarial examples community to evaluate accurately their models against adversarial examples, \cite{croce2020robustbench} proposed RobustBench as a unified platform for benchmarking adversarial defenses. The platform evaluates models on different attacks (AutoPGD~\citep{Croce2020ReliableEO}, FAB~\citep{Croce2020MinimallyDA}, SquareAttack~\citep{andriushchenko2019square}). The platform  does not propose to evaluate the robustness of randomized classifiers. 
+To answer the need of adversarial examples research community to evaluate accurately their models against adversarial examples, \cite{croce2020robustbench} proposed RobustBench as a unified platform for benchmarking adversarial defenses. The platform evaluates models on different black-box and white-box, targeted and untargeted attacks (AutoPGD~\citep{Croce2020ReliableEO}, FAB~\citep{Croce2020MinimallyDA}, SquareAttack~\citep{andriushchenko2019square}). However, this platform has its limitations:  for instance, it  does not propose to evaluate the robustness of randomized classifiers. 
 
 \paragraph{State-of-the-art in Image Classification}
 
@@ -140,15 +143,19 @@ To evaluate the perfomance of an attack of a classification algorithm, one needs
 \subsection{Theoretical knowledge in Adversarial classification}
 
 
-\paragraph{Curse of dimensionality.} From the seminal paper~\citep{szegedy2014intriguing}, the input dimension has been considered as an argument for inevitability of adversarial attacks. To assess this intuition,~\citet{goodfelleshafahi2018adversarial} proved that for a wide range of distribution $\PP$ on the unit sphere of dimension $d$, and any classifier $h$ it is possible to find an attack on examples $x$ with high probability, exponentially depending on the dimmension $d$ on $\PP$. The arguments relies on isoperimetric inequalities and was extended to log-concave distributions on Riemannian manifolds and uniform distribution over positively curved Riemannian manifolds~\citep{pmlr-v97-dohmatob19a}. 
+\paragraph{Curse of dimensionality.} From the seminal paper on adversarial examples on deep learning systems~\citep{szegedy2014intriguing}, the input dimension has been considered as an argument for inevitability of adversarial attacks. To assess this intuition,~\citet{goodfelleshafahi2018adversarial} proved that for a wide range of distribution $\PP$ on the unit sphere of dimension $d$, and any classifier $h$ it is possible to find an attack on examples $x$ with high probability, exponentially depending on the dimmension $d$ on $\PP$. The arguments relies on isoperimetric inequalities and was extended to log-concave distributions on Riemannian manifolds and uniform distribution over positively curved Riemannian manifolds~\citep{pmlr-v97-dohmatob19a}. 
 
 \citep{simon2019first} also tried to explain the exitence of adversarial examples for neural networks under the light of the high dimensionality of inputs. The authors assumed that neetworks have ReLU activations and that the distributions of weight are Gaussian. Under such hypothesis, they proved that the gradient norm with regards the input is highly dependent on the dimension of the input, then justifying again that the dimensionality of the input is a reason for existence of adversarial examples. 
 
 
 
 
-\paragraph{Generalization Bounds in Adversarial Learning.} Similarly to the standard classification case, research have focused on computing uniform bounds for adversarial classification. These works are often inspired from generalizations of standard tools as VC-dimension~\citep{cullina2018pac} or Rademacher complexity~\citep{yin2019rademacher,khim2018adversarial,awasthi2020adversarial} is the adversarial case. They exhibit generalization bounds that are highly dependent on the dimension of the input. Indeed the Rademacher complexity for classes adapted to the adversarial case add a polynomial term in the dimension $d$ of the input. 
+\paragraph{Generalization Bounds in Adversarial Learning.} Similarly to the standard classification case, research have focused on computing uniform bounds for adversarial classification. These works are often inspired from generalizations of standard tools as VC-dimension~\citep{cullina2018pac} or Rademacher complexity~\citep{yin2019rademacher,khim2018adversarial,awasthi2020adversarial} is the adversarial case. They exhibit generalization bounds that are highly dependent on the dimension of the input. Indeed the Rademacher complexity for classes adapted to the adversarial case add a polynomial term in the dimension $d$ of the input. However, for randomized classifiers, it is difficult to adapt PAC-Bayes bounds to the adversarial setting~\citep{cxx}. Indeed, the proof schemes cannot be used in the adversarial setting. Moreover, there is still misunderstanding in the bias-complexity tradeoff in the adversarial case~\citep{xxx}. 
 
-However, for randomized classifiers, it is difficult to adapt PAC-Bayes bounds to the adversaThere is still misunderstanding in the bias-complexity tradeoff in the adversarial case~\citep{xxx}. 
+\paragraph{Adversarial Bayes Risk.} The adversarial bayes risk has been studied only very recently by researchers.~\cite{xxx} expressed the adversarial risk as an optimal transport problem for a suitable cost. Another approach was to study the adversarial risk from a game theoretic perspective. We will explain in details these contributions in Section~\ref{xxx}. 
 
-\paragraph{Adversarial Bayes Risk.} 
+
+One of the recent contributions is the existence of  optimal classifiers for the adversarial setting.  The problem is not trivial because of the inner supremum and the difficulty to define a suitable topology on the space of measurable functions. The two papers~\citep{xxx} propose two different approaches for proving the existence of Bayes classifiers.~\cite{xxx} proposed a $L^1+TV$ decomposition~\citep{xxx} of the adversarial risk.  To this end, the authors introduced a non-local perimeter satisfying the submodularity property. They got interested in a suitable relaxation of the adversarial with $\nu$ essential supremum where $\nu$ is a well-chosen distribution. This allows to study the problem in $L^\infty(\mathcal{X},\nu)$. The properties of this relaxation are nice (i.e. compactness and semi-continuity) which allows the authors to prove the existence of a minimizer for the relaxed problem. From this solution, the authors build a solution to the the adversarial problem that is Borel-measurable. The authors studied the regularity properties of these minimizers.
+
+TODO: explain other paper
+ 
