@@ -124,16 +124,25 @@ The Wasserstein-$\infty$ metric can be extended to other costs and will be denot
 \end{align*} 
 where $KL$ is the Kullback Leibler Leibler divergence defined as $\KL(\mu||\nu) = \int\log{\frac{d\mu}{d\nu}}d\mu+\int  d\nu - \int d\mu$  if $\mu\ll \nu$, and $+\infty$ otherwise. To solves this problem,~\cite{cuturi2013sinkhorn} proposed to use Sinkhorn iterations which considerably accelerate the computation of an approximate solution to the optimal transport problem.
 
-\paragraph{Kantorivch Duality.} A fundammental theorem in Optimal Transportation is the Kantorovich duality theorem as follows:
+\paragraph{Kantorivch Duality.} A fundammental theorem in Optimal Transportation is the Kantorovich duality theorem as follows.
 
 \begin{thm}[Kantorovich duality]
-    Let $\ZZ$ be a Polish space. Let $c:\ZZ\to\bar{\RR}_+$ be a lower semi-continuous non-negative function. Let $\PP$ and $\QQ$ be two Borel probability distributions over $\ZZ$. Then   the following strong duality theorem holds:
+    Let $\ZZ$ be a Polish space. Let $c:\ZZ^2\to\bar{\RR}_+$ be a lower semi-continuous non-negative function. Let $\PP$ and $\QQ$ be two Borel probability distributions over $\ZZ$. Then   the following strong duality theorem holds:
 \begin{align*}
     W_c(\PP,\QQ)=\sup_{f,g\in C(\ZZ),~f\oplus g\leq c}   \int fd\PP+\int fd\QQ
 \end{align*}
 where for all $x,y\in\ZZ$, $f\oplus g(x,y):=f(x)+g(y)$. 
 \end{thm}
-One can find a proof of this result in~\citep{villani2003topics}. The main arguments are that the dual of continuous functions on  a compact space is the space of Radon measures, and the Rockafellar duality theorem.  
+One can find a proof of this result in~\citep{villani2003topics}. The main arguments are that the dual of continuous functions on  a compact space is the space of Radon measures, and the Rockafellar duality theorem.  We can also mention its entropic regularized version.
+
+
+\begin{thm}[Kantorovich duality]
+    Let $\ZZ$ be a Polish space . Let $c:\ZZ^2\to\bar{\RR}_+$ be a lower semi-continuous non-negative function. Let $\PP$ and $\QQ$ be two Borel probability distributions over $\ZZ$. Then   the following strong duality theorem holds:
+\begin{align*}
+    W_c(\PP,\QQ)=\sup_{f,g\in C(\ZZ)}   \int fd\PP+\int fd\QQ -\varepsilon\left( \int e^{\frac{f(x)+g(y)-c(x,y)}{\varepsilon}}d\mu(x)d\nu(y)-1\right)
+\end{align*}
+where for all $x,y\in\ZZ$, $f\oplus g(x,y):=f(x)+g(y)$. 
+\end{thm}
 
 
 % when $u_1$ is concave in $x$ and convex in $y$ as Von-Neumann's Theorem, Sion's Theorem or Fan's Theorem. In particular, in a two-player zero-sum game where the actions space is finite for both players, there always exists a mixed equilibrium.

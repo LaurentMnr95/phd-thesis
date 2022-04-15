@@ -30,7 +30,15 @@ A first property is that the adversarial risk is well defined. While this result
   Let $\PP$ be a Borel distribution over $\XX \times \YY$. Let $h:\XX\to\YY$ be a classifier. If $h$ is Borel measurable then $(x,y)\mapsto \sup_{x'\in B_\varepsilon(x)}\mathbf{1}_{h(x')\neq y}$ is universally measurable.
 \end{prop}
 \begin{proof}
-  TODO
+  We define $\phi_\varepsilon(x,y,f) = \sup_{x'\in B_\varepsilon(x)}\mathbf{1}_{h(x)\neq y}$.  We have :
+  \begin{align*}
+     \phi_\varepsilon(x,y,f) =  \sup_{(x',y')\in\XX\times\YY}\mathbf{1}_{h(x')\neq y'}-\infty\times \mathbf{1}\{d(x',x)\geq \varepsilon\text{ or }y'\neq y\}
+  \end{align*}
+  Then,
+  \begin{align*}
+      \left((x,y),(x',y')\right)\mapsto\mathbf{1}_{h(x')\neq y'}-\infty\times \mathbf{1}\{d(x',x)\geq \varepsilon\text{ or }y'\neq y\}
+  \end{align*}
+  defines a measurable, hence upper semi-analytic function. Using~\citep[Proposition 7.39, Corollary 7.42]{bertsekas2004stochastic}, we get that for all $f\in\mathcal{F}(\XX)$, $(x,y)\mapsto\phi_\varepsilon(x,y,f)$ is a universally measurable function.
 \end{proof}
 
 Similarly to the standard classification setting, we define the optimal bayes risk for adversarial classification. 
@@ -75,9 +83,9 @@ where $B_p(x,\varepsilon) = \{ x+\tau \text{~s.t.~} \lVert\tau\rVert_p \leq \eps
 \paragraph{Adversarial Examples beyond Image Classification.} Adversarial examples do not only exist in Image Classification, although it is the most spectacular example as images are perceptually unchanged. We can enumerate, non exhaustively, the following examples of adversarial classification:
 \begin{itemize}
     \item \textbf{Image Segmentation and Object Detection:} \cite{xie2017adversarial} proposed to attack image segmentation and object detection. The goal of such attack is enforce a undesirable detection or segmentation in an image. 
-    \item \textbf{Video classification:} Videos are series of images. Adversarial attacks against video classification systems are closed to adversarial examples in standard Image Classification. Adversarial attacks might aim at changing either a bit many frame or a lot only a few frames. For instance,~\cite{}
-    \item \textbf{Audio systems:} Audio systems can be fooled by adding inaudible adversarial noise to an audiofile. 
-    \item \textbf{NLP classification tasks:} Adversaries change some words in a text to make it misclassified. However such examples can also change the meaning of the text and consequently change its classification also humans. Examples of attempts for adversarial examples against NLP systems are
+    \item \textbf{Video classification:} Videos are series of images. Adversarial attacks against video classification systems are closed to adversarial examples in standard Image Classification. Adversarial attacks might aim at changing either a bit many frames~\citep{jiang2019black} or a lot only a few frames~\citep{mu2021sparse}. 
+    \item \textbf{Audio systems:} Audio systems can be fooled by adding inaudible adversarial noise to an audio file~\citep{carlini2018audio}. These attacks raise issues in the massive use of personal vocal assistants~\citep{zhang2019dangerous}. 
+    \item \textbf{NLP classification tasks:} Adversaries change some words in a text to make it misclassified. However such examples can also change the meaning of the text and consequently change its classification also humans. Examples of attempts for adversarial examples against NLP systems can be either TODO
     \item \textbf{Recommender Systems} A recent line of work~\cite{xxx,garcelon2020adversarial} aimed at crafting adversarial attacks against bandit algorithms~\citep{lattimore2018bandit}. The goal of these attacks are to force the learner to chose the wrong arms a linear number of times. While these works are mostly theoretical, their potential use in practical settings might raise issues for businesses in a close future.
 \end{itemize}
 
@@ -107,11 +115,23 @@ where $B_p(x,\varepsilon) = \{ x+\tau \text{~s.t.~} \lVert\tau\rVert_p \leq \eps
 
 Defending against adversarial examples is still an open research questions with few answers to it. One can derive the methods in two categories: empirical defenses and provable defenses.
 
-\paragraph{Provable defenses.} A defense is said to be provable if there is a theoretical guarantee to ensure a level of robustness. Formally, a classifier $h$ is said to \emph{certifiably robust at level $\varepsilon$} at input $x$ with label $y$ if there exist no adversarial example of level $\varepsilon$ on $h$ at the point $(x,y)$, i.e. for all $x'$ such that $d(x,x')\leq\varepsilon$, $h(x') = y$. 
+\paragraph{Provable defenses.} A defense is said to be provable if there is a theoretical guarantee to ensure a level of robustness. Formally, a classifier $h$ is said to \emph{certifiably robust at level $\varepsilon$} at input $x$ with label $y$ if there exist no adversarial example of level $\varepsilon$ on $h$ at the point $(x,y)$, i.e. for all $x'$ such that $d(x,x')\leq\varepsilon$, $h(x') = y$. Researchers have focused on finding ways to certify robustness. The first categories of defenses relies on convex relaxation of layers~\citep{wong2018provable,wong2018scaling,xxx}. It consists to consider a convex outer approximation of the set of activations reachable through a norm-bounded perturbation of an input. In the case of ReLU activation, the robust optimization problem  that minimizes the worst case loss over this outer region writes as a linear program. Another developed method is noise injection to the input~\citep{lecuyer2019certified,KolterRandomizedSmoothing,pinot2019theoretical,salman2019provably}. By adding a noise, the inputs can be seen as distributions. The certificates are derived by determining which classifier would be the most powerful to distinguish two inputs. This idea is closely related to the notions of statistical tests~\citep{KolterRandomizedSmoothing}, information theory~\citep{pinot2019theoretical} and differential privacy~\citep{lecuyer2018certified}. Finally, a last trend to develop provably robust neural networks is to enforce Lipschitzness property~\citep{tsuzuku2018lipschitz}. Many papers hav worked on designing Lipschitz layers~\citep{li2019preventing,trockman2021orthogonalizing,skew2021sahil,xxx} and activations~\citep{anil2019sorting,singla2021householder,huang2021local}.
 
 
+\begin{algorithm}[h!]
+  \SetAlgoLined
+  $T$: number of iterations, Level of attack $\varepsilon$ \\
+   \For{$t=1,\dots,T$}{
+   Let $B_t$ be a batch of data.\\
+  $\Tilde{B}_t\leftarrow$ Attack of level $\varepsilon$ on images in $B_t$ for the  model $f_{\theta_t}$ (using PGD for instance)\\
+  $\theta^t_k\leftarrow$ Update $\theta^{t-1}_k$ with $\Tilde{B}_t$ with a SGD or Adam step
+  }
+   \caption{Adversarial Training algorithm}
+   \label{algo:advtraining}
+\end{algorithm}
+  
 
-\paragraph{Empirical defenses.} Defenses against adversarial examples often have no theoretical guarantees and based on training heuristics. The first defense that was proposed is \emph{Adversarial Training}~\citep{goodfellow2014explaining,madry2017towards}. This defense is an heuristic to minimize the adversarial risk. We describe the adversarial training defense in Algorithm~\ref{xxx}. It consists minimization steps and attacks on the classifier to make it more robust. To our knowledge there exists no proof of convergence for this defense. Many other empirical defenses are variants of Adversarial Training as TRADES~\citep{zhang2019theoretically} or MART~\citep{wang2019improving}. For instance, TRADES aims at minimizing the following objective:
+\paragraph{Empirical defenses.} Defenses against adversarial examples often have no theoretical guarantees and based on training heuristics. The first defense that was proposed is \emph{Adversarial Training}~\citep{goodfellow2014explaining,madry2017towards}. This defense is an heuristic to minimize the adversarial risk. We describe the adversarial training defense in Algorithm~\ref{algo:adv-training} to training a classifier $f_\theta$ parametrized by $\theta$. It consists minimization steps and attacks on the classifier to make it more robust. To our knowledge there exists no proof of convergence for this defense. Many other empirical defenses are variants of Adversarial Training as TRADES~\citep{zhang2019theoretically} or MART~\citep{wang2019improving}. For instance, TRADES aims at minimizing the following objective:
 \begin{align*}
   f\mapsto\mathbb{E}\left[L(f(x),y)+\lambda\times\max_{x'\in B_\varepsilon(x)}L(f(x'),f(x))\right]\quad.
 \end{align*}

@@ -81,7 +81,7 @@ Many research proposed methods to build 1-Lipschitz layers in order to boost adv
 
 The first natural idea to learn $1$-Lipschitz layers is to normalize the matrices in the forward pass of a Neural Networks : $A_i\leftarrow \frac{A_i}{\lVert A_i\rVert_2}$. This natural idea was exploited by~\citet{miyato2018spectral}. A key difficulty is the computation of the spectral norm $\lVert A_i\rVert_2$. The authors proposed to use the power iteration method to compute the spectral norm (see Algorithm~\ref{algorithm:spectralnorm}). The number of iterations might be prohibitive, hence the authors proposed to use only one step in the training phase to make it faster. This method effectively approximated well the sprectral norm of the last layer. However, this method present some disadvantages. The spectral normalization has for effect crushing all smaller singular values. A consequence is the gradient vanishing that is very present in this structure. 
 
-Also, several works~\cite{anil2019sorting,singla2021householder,huang2021local} proposed methods leveraging the properties of activation functions to constraints the Lipschitz of Neural Networks. These works are usually useful to help  improving the performance of linear orthogonal layers.
+Also, several works~\citep{anil2019sorting,singla2021householder,huang2021local} proposed methods leveraging the properties of activation functions to constraints the Lipschitz of Neural Networks. These works are usually useful to help  improving the performance of linear orthogonal layers.
 
 
 
