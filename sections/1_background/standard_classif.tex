@@ -1,5 +1,5 @@
 \section{Supervised Classification}
-A classification task aims at learning a function that assigns a label to a given input. Along with regression, classification is one of the  supervised learning tasks. One can find classification tasks in Computer Vision~\citep{lecun-mnisthandwrittendigit-2010,cifar-10,imagenet_cvpr09}, Natural Language Processing~\citep{xxx}, Speech Recognition~\citep{xxx}, etc. In this thesis, most examples will be from Computer Vision and Image Recognition. 
+A classification task aims at learning a function that assigns a label to a given input. Along with regression, classification is one of the  supervised learning tasks. One can find classification tasks in Computer Vision~\citep{lecun-mnisthandwrittendigit-2010,cifar-10,imagenet_cvpr09}, Natural Language Processing~\citep{vaswani2017attention}, Speech Recognition~\citep{xxx}, etc. In this thesis, most examples will be from Computer Vision and Image Recognition. 
 \subsection{Notations}
 In this section, we formalize the task of classification. First, we define the notions of inputs and labels:
 \begin{itemize}
@@ -54,7 +54,7 @@ where $f_i(x)$ is the probability learnt by the model with input $x$ belonging t
 % \end{itemize}
 
 
-\paragraph{Neural Networks} An popular set of classifiers are Neural Networks. They gained in popularity due to their exceptional performances in Image Recognition~\cite{krizhevsky2012imagenet,he2016deep} or Natural Language Processing for instance~\cite{xxx}. In its simpler form, a neural network is a concatenation of linear operators and non-linear functions (called \emph{activations}). This concatenation are called \emph{layers}. Formally a neural network with $L$ layers writes:
+\paragraph{Neural Networks} An popular set of classifiers are Neural Networks. They gained in popularity due to their exceptional performances in Image Recognition~\cite{krizhevsky2012imagenet,he2016deep} or Natural Language Processing for instance~\cite{vaswani2017attention}. In its simpler form, a neural network is a concatenation of linear operators and non-linear functions (called \emph{activations}). This concatenation are called \emph{layers}. Formally a neural network with $L$ layers writes:
 \begin{align*}
     f(x) = \left(W_L\sigma\left(W_{L-1}\dots \sigma\left(A_1x+b_1\right)\dots\right)+b_L\right)
 \end{align*}

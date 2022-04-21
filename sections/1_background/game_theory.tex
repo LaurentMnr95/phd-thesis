@@ -1,6 +1,6 @@
 \section{Game Theory in a Nutshell}
 
-Game theory studies strategic interactions among agents assuming their actions are rational. It has many applications in social science~\citep{xxx} and more recently in machine learning~\citep{goodfellow2014generative} for instance. In this section, we recall main concepts in game theory that will help us better understanding the problem of adversarial examples. 
+Game theory studies strategic interactions among agents assuming their actions are rational. It has many applications in social science~\citep{moulin1986game} and more recently in machine learning~\citep{goodfellow2014generative} for instance. In this section, we recall main concepts in game theory that will help us better understanding the problem of adversarial examples. 
 
 
 \subsection{Two-player zero-sum games}
@@ -43,21 +43,21 @@ It is a strong duality condition on the function $u_1$, with the additional prop
 
 \subsection{Strong Duality Theorems}
 
-\paragraph{Finite action sets.} In a two-player zero-sum game where the actions space is finite for both players, the rewards can be casted in a matrix $A\in R^{n\times m}$ where $A_{ij} =u_1(x_i,y_j)$. In this case, Von Neumann~\ref{von} proved that there always exists a mixed equilibrium. A mixed strategy of $n$ actions can be embedded in the probability simplex:
+\paragraph{Finite action sets.} In a two-player zero-sum game where the actions space is finite for both players, the rewards can be casted in a matrix $A\in R^{n\times m}$ where $A_{ij} =u_1(x_i,y_j)$. In this case, Von Neumann~\citep{von1937uber} proved that there always exists a mixed equilibrium. A mixed strategy of $n$ actions can be embedded in the probability simplex:
 \begin{align*}
     \Delta_n := \left\{(p_1,\dots,p_n)\in\RR_+^n| \sum_{i=1}^n p_i = 1  \right\}
 \end{align*}
 
-\begin{thm}[Von Neumann's Theorem]
+\begin{thm}[Von Neumann's Theorem~\citep{von1937uber}]
     Let $A\in R^{n\times m}$ then:
     \begin{align*}
         \max_{x\in \Delta_n}\min_{y\in \Delta_m} x^TAy = \min_{y\in \Delta_m}\max_{x\in \Delta_n} x^TAy
     \end{align*}
 \end{thm}
 
-\paragraph{Infinite action sets.} For infinite action sets, Von Neumann's Theorem is usually not sufficient. There are two main extensions with different hypotheses, namely Sion's Theorem and Fan's Theorem.
+\paragraph{Infinite action sets.} For infinite action sets, Von Neumann's Theorem is usually not sufficient. There are two main extensions with different hypotheses, namely Sion's Theorem~\citep{sion1958general} and Fan's Theorem~\citep{fan1953minimax}.
 
-\begin{thm}[Sion's Theorem]
+\begin{thm}[Sion's Theorem~\citep{sion1958general} ]
 Let $X$ be a compact convex set and $Y$ be a convex set of a linear topological space. Let $u:X\times Y\to\RR$ be a function such that for all $y\in Y$, $u(\cdot,y)$ is quasi-concave and upper semi-continuous; and for all $x\in X$, $u(x,\cdot)$ is quasi-convex and lower semi-continuous, then:
 \begin{align*}
     \max_{x\in X}\inf_{y\in Y} u(x,y) = \inf_{y\in Y}\max_{x\in X} u(x,y)
@@ -66,7 +66,7 @@ Moreover, if $Y$ is compact, then the infimum is attained.
 \end{thm}
 
 Note that a function is said to be \emph{quasi-convex} if it lower level sets are convex sets. In particular, convex functions are quasi-convex. 
-\begin{thm}[Fan's Theorem]
+\begin{thm}[Fan's Theorem~\citep{fan1953minimax}]
 Let $X$ be a compact convex set and $Y$ be a convex set (not necessarily topological). Let $u:X\times Y\to\RR$ be a function such that for all $y\in Y$, $u(\cdot,y)$ is concave and upper semi-continuous; and for all $x\in X$, $u(x,\cdot)$ is convex, then:
 \begin{align*}
     \max_{x\in X}\inf_{y\in Y} u(x,y) = \inf_{y\in Y}\max_{x\in X} u(x,y)
@@ -86,7 +86,7 @@ For instance, under complete knowledge of utilities and strategies, vanilla opti
 
 
 \section{Optimal Transport concepts}
-Optimal Transport have gained interest in Machine Learning applications during the past years. Indeed, Optimal Transport has the ability to model many problems as Generative Adversarial Networks~\citep{arjovsky2017wasserstein}, and in Adversarial Learning~\citep{sinha2017certifying,pydi2019adversarial,xxx}. In particular, it will be a central tool in this thesis with the notion of distributionally robust optimisation introduced in Section~\ref{xxx}. The computation methods for optimal transport problems have also been considerably improved recently. Originally introduced by Monge, this Optimal Transport was a problem where the aim was to move some quantity $x$ to some places $y$ while minimizing the total cost of transport.  Let $\ZZ$ be a Polish space. Let $\PP$ and $\QQ$ be two Borel probability distributions over $\ZZ$ and $c:\ZZ^2\to\bar{\RR}_+$ be a non-negative function. Formally, the problem was posed as follows:
+Optimal Transport have gained interest in Machine Learning applications during the past years. Indeed, Optimal Transport has the ability to model many problems as Generative Adversarial Networks~\citep{arjovsky2017wasserstein}, and in Adversarial Learning~\citep{sinha2017certifying,pydi2019adversarial,bhagoji2019lower}. In particular, it will be a central tool in this thesis with the notion of distributionally robust optimisation introduced in Section~\ref{xxx}. The computation methods for optimal transport problems have also been considerably improved recently. Originally introduced by Monge, this Optimal Transport was a problem where the aim was to move some quantity $x$ to some places $y$ while minimizing the total cost of transport.  Let $\ZZ$ be a Polish space. Let $\PP$ and $\QQ$ be two Borel probability distributions over $\ZZ$ and $c:\ZZ^2\to\bar{\RR}_+$ be a non-negative function. Formally, the problem was posed as follows:
 \begin{align*}
     \inf_{T\mid~T_\sharp\PP = \QQ}\mathbb{E}_{z\sim\PP}\left[c(z,T(z))\right]
 \end{align*}
@@ -118,7 +118,7 @@ With this metric, the space of probability distributions with bounded $p$-moment
 \end{align*}
 The Wasserstein-$\infty$ metric can be extended to other costs and will be denoted $W_{\infty,c}$.
 
-\paragraph{Entropic Regularized Optimal Transport.} The computation time of the exact Optimal Transport solution is often prohibitive: it is xxx in the number of samples in the empirical distributions.~\cite{cuturi2013sinkhorn,peyre2019computational} proposed an entropic regularization of Optimal Transport to accelerate the computation, which writes
+\paragraph{Entropic Regularized Optimal Transport.} The computation time of the exact Optimal Transport solution is often prohibitive: the complexity is supercubic in the number of samples in the empirical distributions.~\cite{cuturi2013sinkhorn,peyre2019computational} proposed an entropic regularization of Optimal Transport to accelerate the computation, which writes
 \begin{align*}
     W_c^\varepsilon(\PP,\QQ):=\inf_{\gamma\in\Gamma_{\PP,\QQ}}\int c(x,y) d\gamma(x,y) = \inf_{\gamma\in\Gamma_{\PP,\QQ}}\mathbb{E}_{(x,y)\sim\gamma}\left[c(x,y) \right] +\varepsilon\times KL(\gamma||\PP\otimes \QQ)
 \end{align*} 

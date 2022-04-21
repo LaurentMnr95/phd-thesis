@@ -2,6 +2,50 @@ In this chapter, we present all relevant related works to answer the questions Q
 
 \section{Q1}
 
+While adversarial classification can be naturally understood as a game between the attacker and the classifier, it has only been very recent that the problem has been studied from a game theoretic perspective. Adversarial examples have been studied under  the notions of Stackelberg game in~\cite{10.1145/2020408.2020495}, and  zero-sum game in~\cite{7533509,DBLP:journals/corr/abs-1906-02816,bose2021adversarial}.
+
+
+In~\citep{bose2021adversarial}, the authors consider a setting with a convex loss function $L:\RR^k\times\YY \to\RR$, a convex set of deterministic classifiers $\mathcal{H}$ and a generative attacker $g:\XX\times\YY\times\ZZ\to\XX$ (i.e. a measurable function) such that:
+\begin{align*}
+   d(g(x,y,z),x)\leq\varepsilon 
+\end{align*}
+for all $x,y,z$ and $z$ is sampled from a latent distribution $p_z$. The sets of such functions $g$ is denoted $G_\varepsilon$. In this setting the authors show there is no duality gap for the game between the attacker and the learner:
+\begin{align*}
+    \min_{f\in\mathcal{H}}\max_{g\in G_\varepsilon}\mathbb{E}_{(x,y)\sim\PP,z\sim p_z}\left[L\left(f(g(x,y,z),y\right)\right] =   \max_{g\in G_\varepsilon}  \min_{f\in\mathcal{H}}\mathbb{E}_{(x,y)\sim\PP,z\sim p_z}\left[L\left(f(g(x,y,z),y\right)\right]
+\end{align*} 
+ However, this setting is limited due to the convexityassumptions. As we will see in Chapter~\ref{chap:calibration}, one can prove that no convex loss can be a good surrogate for the $0/1$ loss in the adversarial setting. The goal of the paper is to build a framework to design new zero-shot black-box adversarial attacks from generative attackers. Such an attack is called a \emph{No Box attack}.
+
+\cite{pinot2020randomization} proposed to study the adversarial attacks problem from a game theoretic point of view. The authors proposed to treat the case of binary classification with $0/1$ loss where the classifier can be either allow to deterministically play a continuous function or randomly chose a continuous function. In game theoretic terminology, the classifier can play mixed strategies of continuous functions. On the other side, the attacker is deterministic. Formally, its set of actions is:
+\begin{align*}
+    \mathcal{F}_\varepsilon = \left\{f\in \mathcal{F}(\XX\times\YY,\XX\times\YY)\mid \forall (x,y)\in\XX\times\YY,~\lVert f_1(x,y)-x\rVert\leq \varepsilon\text{ and }f_2(x,y)=y\right\}
+\end{align*}
+In their work, the authors also assume that the attacker suffers a regularization. the first considered regularization penalizes the average perturbation for the attacker:
+\begin{align*}
+    \Omega(f) = \mathbb{E}_{(x,y)\sim\PP}\left[\lVert x- f_1(x,y)\rVert\right]    
+\end{align*}
+The second one penalizes the attacker if he attacks ``too many points'':
+\begin{align*}
+    \Omega(f) = \mathbb{E}_{(x,y)\sim\PP}\left[\mathbf{1}_{x\neq f_1(x,y)}\right]    
+\end{align*}
+Given one of these regularization, the score function for the classifier $h$ and an   attacker $f$, is defined as:
+\begin{align*}
+ \mathbb{E}_\PP\left[L(h(f(x)),y)\right]-\lambda\times\Omega(f)
+\end{align*}
+where $\lambda$ is a non negative constant. In this setting,  the authors show that there do not exist a pure Nash Equilibrium. In particular, the risk for randomized classifiers is stricly smaller than the risk for deterministic classifiers. The question of the nature of equilibria was remained open.
+
+% More recently,~\citet{pydi2021many} got interest in the adversarial game without any regularization where the atta
+%\textbf{Game Theory.} Some works previously casted the the adversarial risk minimization problem as a two-player game, either using the notion of Stackelberg game~\cite{10.1145/2020408.2020495}, or the concept of zero-sum game~\cite{7533509,DBLP:journals/corr/abs-1906-02816,bose2021adversarial}. These works usually study very restricted versions of the game where the players can be reduced to a convex and compact set a real-valued parameters and where assumptions on the loss function are very strong (e.g. convexity). In that sense, we can prove that when the loss is convex and the set $\Theta$ is convex, the duality gap is zero for deterministic classifiers (see Appendix~\ref{...} for a precise statement).
+% \begin{thm}Let $\PP\in\mathcal{M}^1_+(\mathcal{X}\times\mathcal{Y})$, $\varepsilon>0$ and $\Theta$ a convex set.
+% Let us assume that for all $(x,y)\in\mathcal{X}\times\mathcal{Y}$, $l(\cdot,(x,y))$ is a convex function, for all $\theta\in\Theta$, $l(\theta,\cdot)$ is an upper semi-continuous function and for all $\theta\in\Theta$, $l(\theta,\cdot)\in L^1(\PP)$. Then we have the following:
+% \begin{align*}
+% \inf_{\theta\in\Theta} \sup_{\QQ\in \mathcal{A}_{\varepsilon}(\PP)} \mathbb{E}_{ \QQ }\left[l(\theta,(x,y))\right]
+% =
+% \sup_{\QQ\in \mathcal{A}_{\varepsilon}(\PP)}\inf_{\theta\in \Theta}  \mathbb{E}_{\QQ }\left[l(\theta,(x,y))\right]
+% \end{align*}
+% The supremum is always attained. If $\Theta$ is a compact set then, the infimum is also attained.
+% \end{thm}
+% However, as we will see in Chapter~\ref{chap:calibration}, one can prove that no convex loss can be a good surrogate for the $0/1$ loss in the adversarial setting~\citep{pmlr-v125-bao20a,pmlr-v97-cranko19a,xxx}, narrowing the scope of this result. ~\cite{pinot2020randomization} studied partly this question for regularized deterministic adversaries, leaving the general setting of  randomized adversaries and  mixed equilibria unanswered, which is the scope of Chapter~\ref{chap:game}.
+
 % Optimal Transport have gained interest in Machine Learning applications during the past years. Indeed, Optimal Transport has the ability to model many problems as Generative Adversarial Networks~\citep{arjovsky2017wasserstein}, or in Robust Learning~\citep{xxx}. The computation methods for optimal transport problems have also been considerably improved recently.  We recall the main concepts from the Optimal Transport Theory. Originally introduced by Monge, this Optimal Transport was a problem where the aim was to move some quantity $x$ to some places $y$ while minimizing the total cost of transport. Formally, the problem was c
 
 
@@ -39,11 +83,11 @@ In this chapter, we present all relevant related works to answer the questions Q
 % \end{thm}
 % One can find a proof of this result in~\citep{villani2003topics}. The main arguments are that the dual of continuous functions on  a compact space is the space of Radon measures, and the Rockafellar duality theorem. 
 
-\subsection{Adversarial Risk Minimization and Optimal Transport} Optimal Transport is a key element when studying Adversarial Classification problems. In particular, it was shown byLet $\PP$ be a distribution er the input-label space $\XX\times\YY$. We recall that the problem of adversarial risk minimization is defined as
+\subsection{Adversarial Risk Minimization and Optimal Transport} Optimal Transport is a key element when studying Adversarial Classification problems. Let $\PP$ be a distribution on the input-label space $\XX\times\YY$. We recall that the problem of adversarial risk minimization is defined as
 \begin{align*}
     \risk_{\varepsilon,\PP}^\star = \inf_{h} \PP_{(x,y)}\left[\exists x'\in B_\varepsilon(x),~h(x')\neq y\right]
 \end{align*}
-A recent line of work draw important links between   $\risk_{\varepsilon,\PP}^\star$ and Optimal Transport problems in the case of binary classification ($\YY=\{-1,+1\}$) the space $\XX$ satisfy a midpoint property, i.e. for all $x_1,x_2\in\XX$ there exist $x\in\XX$ such that $d(x,x_1) = d(x,x_2) =\frac{d(x_1,x_2)}{2}$. It was shown that in this case:
+A recent line of work~\citep{bhagoji2019lower,pydi2019adversarial,trillos2020adversarial} draw important links between   $\risk_{\varepsilon,\PP}^\star$ and Optimal Transport problems in the case of binary classification ($\YY=\{-1,+1\}$) the space $\XX$ satisfy a midpoint property, i.e. for all $x_1,x_2\in\XX$ there exist $x\in\XX$ such that $d(x,x_1) = d(x,x_2) =\frac{d(x_1,x_2)}{2}$. It was shown that in this case:
 \begin{align*}
 \risk_{\varepsilon,\PP}^\star = \frac12-\frac12 W_{c_\varepsilon}(\PP,\PP^S)
 \end{align*}
@@ -52,12 +96,12 @@ where $\PP^S := T^S_\sharp \PP$ with $T^S(x,y) = (x,-y)$ and
     c_\varepsilon\left((x,y),(x',y')\right) = \mathbf{1}_{d(x,x')>2\varepsilon,y\neq y'}
 \end{align*}
 
-Note that $T^S$ only switches the label of pair $(x,y)$. When $\varepsilon=0$, $W_{c_\varepsilon}(\PP,\PP^S)$ equals the total variation distance between $\PP$ and $\PP^S$, which was a result proved in~\citep{xxx}.
+Note that $T^S$ only switches the label of pair $(x,y)$. When $\varepsilon=0$, $W_{c_\varepsilon}(\PP,\PP^S)$ equals the total variation distance between $\PP$ and $\PP^S$, which was a result proved in~\citep{trillos2020adversarial}.
 While this property does not have practical properties yet, there is a hope that this relation might help at building more robust classifiers to adversarial examples. 
 
 \subsection{Distributionally Robust Optimization}
 
-In this section, we give an introduction to distributionally robust optimization problems. We see these problems are related to adversarial attacks problems. We draw links in this introduction.  Let $\ZZ$ and $\Theta$ be Polish spaces. Let $\PP$ be a Borel probability distribution over $\ZZ$. Let $f:\Theta\times\ZZ\to\RR$ be an upper semi continuous function in its second variable. Let us consider the following problem:
+Another close link between adversarial attacks and Optimal Transport can be made under the light of distributionally robust optimization problems. Let $\ZZ$ and $\Theta$ be Polish spaces. Let $\PP$ be a Borel probability distribution over $\ZZ$. Let $f:\Theta\times\ZZ\to\RR$ be an upper semi continuous function in its second variable. Let us consider the following problem:
 \begin{align}
     \label{eq:min-objective}
     \min_{\theta\in\Theta} \mathbb{E}_{z\sim\PP}\left[f(z)\right] = \min_{\theta\in\Theta} \int f(\theta,z)d\PP(z)
@@ -66,7 +110,7 @@ This problem can typically be a risk minimization problem in Machine Learning wh
 \begin{align*}
     \min_{\theta\in\Theta}\sup_{\QQ\in\mathcal{M}^1_+(\ZZ)\mid~D(\PP,\QQ)\leq \varepsilon}\mathbb{E}_{z\sim\QQ}\left[f(z)\right]
 \end{align*}
-For instance, $D$ be a Kullback-Leibler etc CITE
+For instance, $D$ be a Kullback-Leibler divergence or other $f$-divergences~\citep{duchi2016statistics,namkoong2016stochastic}, total variation distances~\citep{jiang2018risk,rahimian2019identifying} or optimal transport distances~\citep{shafieezadeh2015distributionally,raghunathan2018certified,blanchet2019quantifying}.
 
 In the case of Wasserstein uncertainty sets, let $c:\ZZ\to\bar{\RR}_+$ be a lower semi-continuous non-negative function. Then a  Wasserstein distributionally robust optimization (DRO) problem is defined as follows:
 \begin{align*}
@@ -95,7 +139,7 @@ This problem induces an attack on the distribution $\PP$. Informally, one can in
 This theorem was proved by~\citep{blanchet2019quantifying} using similar arguments to Kantorovich duality. The link with the adversarial attack problem is made clearer with this theorem. Indeed $\mathbb{E}_{z\sim\PP}\left[\sup_{z'\in\ZZ}f(z')-\lambda c(z,z')\right]$ is closed to the adversarial attacks problem. We will make a direct link in the Chapter~\ref{chap:game}. %We next show that the adversarial attack problem is a Wass
 
 
-\paragraph{Adversarial classification as a Wasserstein-$\infty$ DRO problem.} The adversrial attack problem was studied under the light of DRO from a statistical point of view~\citep{xxx}, or to prove that adversarial classification is exactly a Wasserstein-$\infty$ problem with a well-suited cost function~\citep{xxx}. The previous result from~\citep{blanchet2019quantifying} does not directly apply to Wasserstein-$\infty$ distances but can be adapted. The Wasserstein-$\infty$ DRO problem can be understood as follows: each point $x$ of the distribution $\PP$ can be moved to a distribution $\QQ_x$ so that the worst-case ``distance'' $c(x,y)$ is smaller that $\varepsilon$. In general, one can prove the following result that proves that the adversarial classification problem is actually a Wasserstein-$\infty$ DRO problem.
+\paragraph{Adversarial classification as a Wasserstein-$\infty$ DRO problem.} The adversarial attack problem was studied under the light of DRO from a statistical point of view~\citep{raghunathan2018certified}, or to prove that adversarial classification is exactly a Wasserstein-$\infty$ problem with a well-suited cost function~\citep{pydi2019adversarial}. The previous result from~\citep{blanchet2019quantifying} does not directly apply to Wasserstein-$\infty$ distances but can be adapted. The Wasserstein-$\infty$ DRO problem can be understood as follows: each point $x$ of the distribution $\PP$ can be moved to a distribution $\QQ_x$ so that the worst-case ``distance'' $c(x,y)$ is smaller that $\varepsilon$. In general, one can prove the following result that proves that the adversarial classification problem is actually a Wasserstein-$\infty$ DRO problem.
 
 \begin{thm}[Duality for Wasserstein-$\infty$ DRO]
 Let $\ZZ$ be a Polish space. Let $\PP$ be a probability distribubtion over $\ZZ$. Let $c$ be a non-negative lower-semicontinuous function over $\ZZ^2$ and $f:\ZZ\to \RR$ be a Borel measurable function. Then the following strong duality holds
@@ -103,7 +147,7 @@ Let $\ZZ$ be a Polish space. Let $\PP$ be a probability distribubtion over $\ZZ$
         \sup_{\QQ|~W_{\infty,c}(\PP,\QQ)\leq \varepsilon}\mathbb{E}_{z\sim\QQ}\left[f(z)\right] = \mathbb{E}_{z\sim\PP}\left[\sup_{z'\in \ZZ|~c(z,z')\leq\varepsilon} f(z')\right]
     \end{align*}  
 \end{thm}
-This result can be found in special case in~\citep{xxx}. For sake of completeness, we provide a proof of the result. 
+This result can be found in special case in~\citep{pydi2019adversarial}. For sake of completeness, we provide a proof of the result. 
 \begin{proof}
      Let us define:
      \begin{align*}
@@ -145,26 +189,26 @@ When the problem is a classification problem (i.e., $\ZZ=\XX\times\YY$ with $\YY
 \end{align*} 
 Hence, we recover the Adversarial classification problem using a Wasserstein-$\infty$ DRO problem. We will see in Chapter~\ref{xxx}, the geometric and topological properties of this set. 
 
+\paragraph{DRO, Game Theory and Adversarial Attacks.} Recently,~\citet{pydi2021many} got interest in the adversarial binary classification game where the attacker can play a randomized strategy in the $\infty$-Wasserstein ball of radius $\varepsilon$ and the classifier is allowed to play any measurable function. In this case the authors proved the existence of Nash Equilibria, meaning that the classifier can be deterministic and optimal and the attacker requires to be ``randomized''. We will discuss and compare to this work in details after Chapter~\ref{chap:game}.
+% \subsection{Game Theory and Adversarial Learning}
 
-\subsection{Game Theory and Adversarial Learning}
-
-While adversarial classification can be naturally understood as a game between the attacker and the classifier, it has only been very recent that the problem has been studied from a game theoretic perspective. Adversarial examples have been studied under  the notions of Stackelberg game in~\cite{10.1145/2020408.2020495}, and  zero-sum game in~\cite{7533509,DBLP:journals/corr/abs-1906-02816,bose2021adversarial}.
+% While adversarial classification can be naturally understood as a game between the attacker and the classifier, it has only been very recent that the problem has been studied from a game theoretic perspective. Adversarial examples have been studied under  the notions of Stackelberg game in~\cite{10.1145/2020408.2020495}, and  zero-sum game in~\cite{7533509,DBLP:journals/corr/abs-1906-02816,bose2021adversarial}.
 
 
-In~\citep{bose2021adversarial}, the authors consider a setting with a convex loss function, a convex set of deterministic classifiers and a generative attacker. In this setting the authors show there is no duality gap for the game between the attacker and the learner. However, this setting is limited due to these assumptions. As we will see in Chapter~\ref{chap:calibration}, one can prove that no convex loss can be a good surrogate for the $0/1$ loss in the adversarial setting. Moreover, a generative attacker is weaker than an attacker that can move each point independently.
+% In~\citep{bose2021adversarial}, the authors consider a setting with a convex loss function, a convex set of deterministic classifiers and a generative attacker. In this setting the authors show there is no duality gap for the game between the attacker and the learner. However, this setting is limited due to these assumptions. As we will see in Chapter~\ref{chap:calibration}, one can prove that no convex loss can be a good surrogate for the $0/1$ loss in the adversarial setting. Moreover, a generative attacker is weaker than an attacker that can move each point independently.
 
-\cite{pinot2020randomization} proposed to study the adversarial game when the attacker is deterministic and regularized. The authors considers two different regularizations: the first one penalizes the average perturbation for the attacker and the second one penalizes the attacker if he attacks ``too many points''. In this setting,  the authors show that, under mild conditions, the risk for randomized classifiers is stricly smaller than the risk for deterministic classifiers. In particular, in this setting, the authors state the non-existence of Nash Equilibria when the classifier play a deterministic strategy and the attacker is regularized. 
+% \cite{pinot2020randomization} proposed to study the adversarial game when the attacker is deterministic and regularized. The authors considers two different regularizations: the first one penalizes the average perturbation for the attacker and the second one penalizes the attacker if he attacks ``too many points''. In this setting,  the authors show that, under mild conditions, the risk for randomized classifiers is stricly smaller than the risk for deterministic classifiers. In particular, in this setting, the authors state the non-existence of Nash Equilibria when the classifier play a deterministic strategy and the attacker is regularized. 
 
-%\textbf{Game Theory.} Some works previously casted the the adversarial risk minimization problem as a two-player game, either using the notion of Stackelberg game~\cite{10.1145/2020408.2020495}, or the concept of zero-sum game~\cite{7533509,DBLP:journals/corr/abs-1906-02816,bose2021adversarial}. These works usually study very restricted versions of the game where the players can be reduced to a convex and compact set a real-valued parameters and where assumptions on the loss function are very strong (e.g. convexity). In that sense, we can prove that when the loss is convex and the set $\Theta$ is convex, the duality gap is zero for deterministic classifiers (see Appendix~\ref{...} for a precise statement).
-% \begin{thm}Let $\PP\in\mathcal{M}^1_+(\mathcal{X}\times\mathcal{Y})$, $\varepsilon>0$ and $\Theta$ a convex set.
-% Let us assume that for all $(x,y)\in\mathcal{X}\times\mathcal{Y}$, $l(\cdot,(x,y))$ is a convex function, for all $\theta\in\Theta$, $l(\theta,\cdot)$ is an upper semi-continuous function and for all $\theta\in\Theta$, $l(\theta,\cdot)\in L^1(\PP)$. Then we have the following:
-% \begin{align*}
-% \inf_{\theta\in\Theta} \sup_{\QQ\in \mathcal{A}_{\varepsilon}(\PP)} \mathbb{E}_{ \QQ }\left[l(\theta,(x,y))\right]
-% =
-% \sup_{\QQ\in \mathcal{A}_{\varepsilon}(\PP)}\inf_{\theta\in \Theta}  \mathbb{E}_{\QQ }\left[l(\theta,(x,y))\right]
-% \end{align*}
-% The supremum is always attained. If $\Theta$ is a compact set then, the infimum is also attained.
-% \end{thm}
-However, as we will see in Chapter~\ref{chap:calibration}, one can prove that no convex loss can be a good surrogate for the $0/1$ loss in the adversarial setting~\citep{pmlr-v125-bao20a,pmlr-v97-cranko19a,xxx}, narrowing the scope of this result. ~\cite{pinot2020randomization} studied partly this question for regularized deterministic adversaries, leaving the general setting of  randomized adversaries and  mixed equilibria unanswered, which is the scope of Chapter~\ref{chap:game}.
+% %\textbf{Game Theory.} Some works previously casted the the adversarial risk minimization problem as a two-player game, either using the notion of Stackelberg game~\cite{10.1145/2020408.2020495}, or the concept of zero-sum game~\cite{7533509,DBLP:journals/corr/abs-1906-02816,bose2021adversarial}. These works usually study very restricted versions of the game where the players can be reduced to a convex and compact set a real-valued parameters and where assumptions on the loss function are very strong (e.g. convexity). In that sense, we can prove that when the loss is convex and the set $\Theta$ is convex, the duality gap is zero for deterministic classifiers (see Appendix~\ref{...} for a precise statement).
+% % \begin{thm}Let $\PP\in\mathcal{M}^1_+(\mathcal{X}\times\mathcal{Y})$, $\varepsilon>0$ and $\Theta$ a convex set.
+% % Let us assume that for all $(x,y)\in\mathcal{X}\times\mathcal{Y}$, $l(\cdot,(x,y))$ is a convex function, for all $\theta\in\Theta$, $l(\theta,\cdot)$ is an upper semi-continuous function and for all $\theta\in\Theta$, $l(\theta,\cdot)\in L^1(\PP)$. Then we have the following:
+% % \begin{align*}
+% % \inf_{\theta\in\Theta} \sup_{\QQ\in \mathcal{A}_{\varepsilon}(\PP)} \mathbb{E}_{ \QQ }\left[l(\theta,(x,y))\right]
+% % =
+% % \sup_{\QQ\in \mathcal{A}_{\varepsilon}(\PP)}\inf_{\theta\in \Theta}  \mathbb{E}_{\QQ }\left[l(\theta,(x,y))\right]
+% % \end{align*}
+% % The supremum is always attained. If $\Theta$ is a compact set then, the infimum is also attained.
+% % \end{thm}
+% However, as we will see in Chapter~\ref{chap:calibration}, one can prove that no convex loss can be a good surrogate for the $0/1$ loss in the adversarial setting~\citep{pmlr-v125-bao20a,pmlr-v97-cranko19a,xxx}, narrowing the scope of this result. ~\cite{pinot2020randomization} studied partly this question for regularized deterministic adversaries, leaving the general setting of  randomized adversaries and  mixed equilibria unanswered, which is the scope of Chapter~\ref{chap:game}.
 
 
