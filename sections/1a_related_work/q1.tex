@@ -1,6 +1,6 @@
 In this chapter, we present all relevant related works to answer the questions Q1, Q2, and Q3. 
 
-\section{Q1}
+\section{A game theoretic approach }
 
 While adversarial classification can be naturally understood as a game between the attacker and the classifier, it has only been very recent that the problem has been studied from a game theoretic perspective. Adversarial examples have been studied under  the notions of Stackelberg game in~\cite{10.1145/2020408.2020495}, and  zero-sum game in~\cite{7533509,DBLP:journals/corr/abs-1906-02816,bose2021adversarial}.
 
@@ -104,7 +104,7 @@ While this property does not have practical properties yet, there is a hope that
 Another close link between adversarial attacks and Optimal Transport can be made under the light of distributionally robust optimization problems. Let $\ZZ$ and $\Theta$ be Polish spaces. Let $\PP$ be a Borel probability distribution over $\ZZ$. Let $f:\Theta\times\ZZ\to\RR$ be an upper semi continuous function in its second variable. Let us consider the following problem:
 \begin{align}
     \label{eq:min-objective}
-    \min_{\theta\in\Theta} \mathbb{E}_{z\sim\PP}\left[f(z)\right] = \min_{\theta\in\Theta} \int f(\theta,z)d\PP(z)
+    \min_{\theta\in\Theta} \mathbb{E}_{z\sim\PP}\left[f(\theta,z)\right] = \min_{\theta\in\Theta} \int f(\theta,z)d\PP(z)
 \end{align}
 This problem can typically be a risk minimization problem in Machine Learning when $\PP$ is a distribution over input-label pairs and $\Theta$ is a parameter space for the classifier. A distributionally robust optimization (DRO) problem is a problem similar to Equation~\eqref{eq:min-objective}, but the learner aims at being robust to a change in the distribution $\PP$. Typically if $D$ is an uncertainty metric for distribubtions. Formally, the DRO problem is casted as follows:
 \begin{align*}
@@ -151,7 +151,7 @@ This result can be found in special case in~\citep{pydi2019adversarial}. For sak
 \begin{proof}
      Let us define:
      \begin{align*}
-        \Tilde{f}:(z,z')\in\ZZ^2\mapsto f(z')-\infty*\mathbf{1}_{c(z,z')>\varepsilon}\quad. 
+        \Tilde{f}:(z,z')\in\ZZ^2\mapsto f(z')-\infty\times\mathbf{1}_{c(z,z')>\varepsilon}\quad. 
      \end{align*}
      $\Tilde{f}$ is Borel-measurable, hence upper semi-analytic~\citep[Chapter 7]{bertsekas2004stochastic}. We then deduce that 
      \begin{align*}
