@@ -1,0 +1,145 @@
+\section{Calibration in the Adversarial Setting}
+
+The overwhelming majority of machine learning algorithms use convex surrogate losses, since they are the easier to optimize. 
+
+In this section, we will show that these losses are ill-suited for the adversarial setting : a sequence of function can minimize the surrogate risk while performing arbitrarily bad for the $0-1$ loss.
+
+This is due to a pathological phenomenon that appears in the adversarial setting. For example in Figure \ref{fig:my_label}, classifying $Z_1$ and $Z_2$ both as $1$ or both as $-1$ leads to the optimal $0-1$ risk of $\frac{1}{2}$, whereas classifying them differently leads to a risk of $0$. For any convex surrogate loss, the optimal classifier for this distribution would return $0$ on both zones. Even though that returns the same class at the optimum, a minimizing sequence for the $\phi$-risk may keep $Z_1$ and $Z_2$ classified differently while just lowering the values, thus keeping a risk of $0$ for the $0-1$ loss.
+
+This is formalized in the next proposition :
+
+\begin{prop}
+Let $\phi$ be convex, classification-calibrated loss ($\phi'(0) <0$). Then for any $\epsilon > 0$, $\phi$ is not $\epsilon -$adversarially consistent with $l_{0/1}$.
+\end{prop}
+
+\begin{prv*}
+
+Let $\epsilon > 0$. We will construct a distribution $\mathcal{D}$ and a sequence of classifier $h_n$ so that the $\phi$-risk converges toward the optimal, while the $0-1$ loss remains constant at a non-optimal value.
+
+\paragraph{}Let a such that $\epsilon < a < 2 \epsilon$. We define D by :
+\[
+\left\{ \begin{array}{ll}
+\mathbb{P}(Y=1, X=0) = \frac{1}{2} & \\
+\mathbb{P}(Y=-1, X=-a) = \frac{1}{4} & \\
+\mathbb{P}(Y=-1, X=a) = \frac{1}{4} & \\
+\mathbb{P}(X=x, Y=y) = 0 & \mbox{for any other (x,y).} \\
+\end{array} \right.
+\]
+
+Since $\phi$ is classification-calibrated, it is either non-increasing, or it has a minimum, attained on a point $u>0$. Let us consider both cases :
+
+\paragraph{First case : $\phi$ non-increasing}
+
+We define $Z_1 = [-\epsilon, -a + \epsilon]$ and $Z_2 = [a-\epsilon, \epsilon]$, the zones that can be attacked by two points at once.
+Let us then define : 
+\[
+\forall x \in \mathbb{R}, h_n(x) = \left\{ \begin{array}{ll}
+\frac{1}{n} & \mbox{if } x \in Z_1 \\
+-1/n & \mbox{if } x \in Z_2 \\
+1 & \mbox{if }x \in [-a+\epsilon, a-\epsilon] \\
+-1 & \mbox{otherwise} \\
+\end{array} \right.
+\]
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.5]{images/Exemple.png}
+    \caption{The distribution we use as a counter-example. For the $0-1$ loss, there are two optimal classifiers, putting either both $Z_1$ and $Z_2$ to $1$ (and saving point A), or both to $-1$ (saving points B and C). With convex surrogate losses however, the optimal is to bring values in both $Z_1$ and $Z_2$ to zero, which can be done while maintaining opposite signs on $Z_1$ and $Z_2$, and so ensuring the loss of both A and one of B and C for the $0-1$ loss. }
+    \label{fig:my_label}
+\end{figure}
+
+
+Since the central point and the point $x=-a$ are attackable, but not the point $x=a$, we have $\mathbb{E}_{(x,y)\sim \mathcal{D}}\left[ \sup\limits_{z \in \mathcal{B}(x,\epsilon)} l_{0/1}(y,h_n(z))\right] = \frac{3}{4}$, which is worse than the constant classifier h=1, which gives a score of $\frac{1}{2}$. So $h_n$ is not a minimizing sequence for the $0-1$ loss.
+
+Let us now show that $h_n$ is a minimizing sequence for the loss $\phi$ under attack, which will be proof of the non-consistency.
+
+\begin{align*}
+    \mathbb{E}_{(x,y)\sim \mathcal{D}}\left[ \sup\limits_{z \in \mathcal{B}(x,\epsilon)} \phi(y*h_n(z))\right] &= \frac{1}{2} \phi(\frac{-1}{n}) +\frac{1}{4}\phi(\frac{1}{n}) + \frac{1}{4}\phi(\frac{1}{n})\\
+    &=\frac{1}{2}\phi(\frac{-1}{n}) + \frac{1}{2}\phi(\frac{1}{n}) \\
+    &\underset{n\to +\infty}{\longrightarrow}\phi(0)
+\end{align*}
+
+We now need to show that $\phi(0)$ is a lower bound of the optimal adversarial risk for the loss $\phi$.
+Let h be any  classifier. We define :
+\begin{align*}
+b &= \inf\limits_{z \in \left[ -a + \epsilon, a- \epsilon \right]} h(z) \\
+c &= \sup\limits_{z \in \left[ -a - \epsilon, -\epsilon \right]} h(z) \\
+d &= \sup\limits_{z \in \left[\epsilon, a + \epsilon \right]} h(z) \\
+m_i &= \inf\limits_{z \in \mathcal{Z}_i} h(z) \mbox{  for  }i \in \left\{ 1,2\right\} \\
+M_i &= \sup\limits_{z \in \mathcal{Z}_i} h(z) \mbox{  for  }i \in \left\{ 1,2\right\} \\
+m &= \min(m_1,m_2)
+\end{align*}
+
+We then have :
+
+\begin{align*}
+    &\mathbb{E}_{(x,y)\sim \mathcal{D}}\left[ \sup\limits_{z \in \mathcal{B}(x,\epsilon)} \phi(y*h_n(z))\right] \\
+    &= \frac{1}{2} \sup\limits_{ z \in \left[ -\epsilon, \epsilon \right]} \phi(h(z))
+            + \frac{1}{4}\sup\limits_{z \in \left[ -a-\epsilon, -a+\epsilon \right]} \phi(-h(z)) 
+            + \frac{1}{4}\sup\limits_{z \in \left[ a-\epsilon, a+\epsilon \right]} \phi(-h(z)) \\
+    &= \frac{1}{2} \max \left[ \sup\limits_{ z \in \left[ -a+\epsilon, a-\epsilon \right]} \phi(h(z)), \sup\limits_{ z \in \mathcal{Z}_1} \phi(h(z)), \sup\limits_{ z \in \mathcal{Z}_2} \phi(h(z)) \right] \\
+    &+ \frac{1}{4} \max \left[ \sup\limits_{ z \in \left[ -a-\epsilon, -\epsilon \right]} \phi(-h(z)), \sup\limits_{ z \in \mathcal{Z}_1} \phi(-h(z)) \right] \\
+    &+ \frac{1}{4} \max \left[ \sup\limits_{ z \in \left[ \epsilon, a+\epsilon \right]} \phi(-h(z)), \sup\limits_{ z \in \mathcal{Z}_2} \phi(-h(z)) \right] \\
+    &= \frac{1}{2} \max \left[ \phi(b), \phi(m_1), \phi(m_2) \right]
+    + \frac{1}{4} \max \left[ \phi(-M_1), \phi(-c) \right] \\
+    &+ \frac{1}{4} \max \left[ \phi(-M_2), \phi(-c) \right] \\
+    &\geq \frac{1}{2} \max \left[\phi(m_1), \phi(m_2) \right] + \frac{1}{4}\phi(-M_1) + \frac{1}{4}\phi(-M_2) \\
+    &\geq \frac{1}{2} \phi(m) + \frac{1}{4}\phi(-m) + \frac{1}{4}\phi(-m) \\
+    &\geq \phi(0)
+\end{align*}
+
+Hence the result.
+\end{prv*}
+
+
+
+
+\section{Towards Consistency}
+
+\begin{prop}
+Let $\PP$ be a Borel probability distribution over $\mathcal{X}\times\mathcal{Y}$ such that $\mathcal{R}^{\varepsilon}_\PP = 0$. Then, let $\phi$ be a standard classification calibrated margin-based loss. Then $\Tilde{\phi}:(x,y,f)\mapsto\sup_{x'\in B_\varepsilon(x)}\phi(yf(x'))$ is adversarially consistent at level $\varepsilon$.
+\end{prop}
+
+
+
+\begin{prop}
+No convex losses are calibrated
+\end{prop}
+\begin{prv*}
+
+Let $\PP= \frac{1}{2}\left(\delta_{x=x_1,y=1}+\delta_{x=x_2,y=-1}\right)$ such that $\lVert x_1-x_2\rVert<2\varepsilon$. We have:
+$$R_{\phi,\PP}(f) = \frac{1}{2}\left(\sup_{x\in B_\varepsilon(x_1)}\phi(1,f(x))+\sup_{x\in B_\varepsilon(x_2)}\phi(-1,f(x))\right)$$.
+
+Let $a,b$ s.t. $a\neq b$  $\lVert a-x_i\rVert<\varepsilon$ and  $\lVert b-x_i\rVert<\varepsilon$ for $i\in\{1,2\}$ (they exist under mild assumptions on $\mathcal{X}$). We then have: 
+\begin{align*}
+R^*_{\phi,\PP} & \geq \inf_{f} \frac{1}{2}\Big(\max\left(\phi(1,f(a)),\phi(1,f(b))\right)\\
+&+
+\max\left(\phi(-1,f(a)),\phi(-1,f(b))\right)\Big)\\
+&=  \inf_{\alpha,\beta} \frac{1}{2}\left(\max\left(\phi(1,\alpha),\phi(1,\beta)\right)+\max\left(\phi(-1,\alpha)),\phi(-1,\beta)\right)\right)\\
+&:= \inf_{\alpha,\beta} r(\alpha,\beta)
+\end{align*}
+
+Let us show it is actually an equality. Let define $f_n$ as follows:
+\begin{align*}
+    f_n(x) = \left\{
+    \begin{array}{ll}
+        0 & \mbox{si } \lVert x-x_1\rVert >\varepsilon\mbox{ et } \lVert x-x_2\rVert >\varepsilon\\
+        u_n & \mbox{si } \lVert x-x_1\rVert >\varepsilon\mbox{ et } \lVert x-x_2\rVert\leq \varepsilon\\
+        v_n & \mbox{si } \lVert x-x_1\rVert \leq\varepsilon\mbox{ et } \lVert x-x_2\rVert> \varepsilon\\
+        \alpha_n & \mbox{si } \lVert x-x_1\rVert \leq\varepsilon\mbox{ et } \lVert x-x_2\rVert> \varepsilon\\
+        \beta_n & \mbox{si } \lVert x-x_1\rVert \leq\varepsilon\mbox{ et } \lVert x-x_2\rVert> \varepsilon\\
+    \end{array}
+\right.
+\end{align*}
+with $\phi(1,u_n)\to \inf_t \phi(1,t)$, $\phi(-1,v_n)\to \inf_t \phi(-1,t)$ and $r(\alpha_n,\beta_n)\to\inf_{\alpha,\beta} r(\alpha,\beta)$. Then one can check that $$R_{\phi,\PP}(f_n)\to \inf_{\alpha,\beta} r(\alpha,\beta)$$. 
+
+The loss being calibrated for standard classification problems, we have: $u_n>0$ and $v_n<0$ for $n$ sufficiently large. Then we have
+\begin{align*}
+    R_{0/1}(f_n) &= \frac12 \left(\max(\mathbf{1}_{sign(\alpha_n)\leq0},\mathbf{1}_{sign(\beta_n)\leq0})+\max(\mathbf{1}_{sign(\alpha_n)\geq0},\mathbf{1}_{sign(\beta_n)\geq0})\right)\\
+    & =\frac12 \left(\mathbf{1}_{\max(\alpha_n,\beta_n)<0}+\mathbf{1}_{\min(\alpha_n,\beta_n)\geq0}\right)
+\end{align*}
+
+And of course we have: $R_{0/1}^\star=\frac12$
+
+\textbf{Convex case:} $\phi(1,\cdot)$ and $\phi(-1,\cdot)$ are convex hence $(0,0)$ realizes the minimum of $r$ then one could set $(\alpha_n,\beta_n)=(\frac1n,-\frac1n)$ and we have in this case $R_{0/1}(f_n)=1$ for $n$ sufficienlty large. 
+\end{prv*}

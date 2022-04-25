@@ -1,0 +1,41 @@
+% \section{Related Work}
+
+% % \begin{enumerate}
+% %     \item argmin phi loss inclus dans argmin 0/1
+% %     \item attaques optimales de l'un vers lautre
+% %     \item equilibre de nash sur les losses
+% %     \item mettre au propre que minimiser universellement  measurable euqiv minim C0
+% %     \item finir calibration study
+% % \end{enumerate}
+
+
+% \paragraph{Calibration and Consistency.} The $0/1$ loss is both non-continuous and non-convex, and its direct minimization is known to be an NP-hard problem~\cite{xxx}. The concepts of calibration and consistency aim at identifying the proprieties that a loss should satisfy in order to be a good surrogate for the minimization of the $0/1$-loss. The problem of consistency consists in finding loss for which minimizing sequences are also minimizing sequences for the $0/1$ loss for a given distribution on an $(x,y)$ input-label space. In the binary classification setting, when minimizing over the space of all measurable classifiers, the problem has been shown~\citep{bartlett2006convexity,steinwart2007compare} to be equivalent to the calibration problem, that aims minimizing the loss pointwisely for each $x$. Surrogate loss are expected to have nice optimization properties as differentiability and convexity.~\citep{zhang2004statistical,bartlett2006convexity,steinwart2007compare} have shown that a wide class of convex margin losses are calibrated with regards to the $0/1$ loss. 
+
+
+
+
+% \paragraph{Calibration and Consistency in the Adversarial Setting.} The adversarial setting is more complex since an inner supremum is added in the problem. With this inner supremum, it is not possible to reduce the problem to a pointwise minimization problem. Hence results in the non-adversarial setting might not be valid in the adversarial setting and calibration might be sufficient in the adversarial setting.~\citet{bao2020calibrated,awasthi2021calibration,awasthi2021finer} have started studying the problem from the point of view of $\mathcal{H}$-consistency which aims at studying minimization over a set $\mathcal{H}$ of functions instead of the whole set of measurable functions. In our opinion, reaching results for  $\mathcal{H}$-consistency is a challenge even in the non-adversarial setting since the class functions $\mathcal{H}$ might not be rich enough for allowing to reduce the problem to pointwise minimization.
+
+
+
+\section{Related Work and Discussions}
+We now explain the differences between our approach and the one proposed by~\citet{bao2020calibrated,awasthi2021calibration,awasthi2021finer}. The two main differences are the choice of the $0/1$ loss and the studied notion of consistency and calibration.
+\paragraph{Alternative $0/1$ loss}
+An alternative $0/1$ loss would the following: $l_{\leq}(f(x),y)=\mathbf{1}_{yf(x)\leq 0}$. This loss penalizes indecision: i.e. predicting $0$ would lead to a pointwise risk of $1$ for $y=1$ and $y=-1$ while the $0/1$ loss $l_{0/1}$ returns $1$ for $y=1$ and $0$ for $y=-1$. This definition was used by~\citet{bao2020calibrated,awasthi2021calibration,awasthi2021finer} to prove their calibration and consistency results. While~\citet{bartlett2006convexity} was not explicit on the choice for the $0/1$ loss,~\citet{steinwart2007compare} explicitly mentions that the $0/1$ loss is not a margin loss. The use of this loss is not suited for studying consistency and leads to inaccurate results as shown in the following counterexample. On $\mathcal{X}= \RR$, let $\PP$ defined as 
+$\PP = \frac12\left(\delta_{x=0,y=1}+\delta_{x=0,y=-1}\right)$ and $\phi:\mathbb{R}\to\mathbb{R}$ be a margin based loss. The $\phi$-risk minimization problem writes $\inf_{\alpha} \frac{1}{2} (\phi(\alpha)+\phi(-\alpha))$. For any convex functional $\phi$ the optimum is attained for $\alpha=0$. $f_n:x\mapsto 0$ is a minimizing sequence for the $\phi$-risk. However $R_{l_{\leq}}(f_n)=1$ for all $n$ and $R_{l_{\leq}}^*=\frac{1}{2}$. Then we deduce that no convex margin based loss is consistent wrt $l_{\leq}$. Consequently, the $0/1$ loss to be used in adversarial consistency needs to be $l_{0/1,\varepsilon}(x,y,f) = \sup_{x'\in B_\varepsilon(x)} \mathbf{1}_{y\text{sign}(f(x))\leq 0}$, otherwise the obtained results might be innacurate.
+
+
+
+\paragraph{$\mathcal{H}$-consistency and  $\mathcal{H}$-calibration}
+\citet{bao2020calibrated,awasthi2021calibration,awasthi2021finer} proposed to study $\mathcal{H}$-calibration and $\mathcal{H}$-consistency in the adversarial setting, i.e. calibration and consistency when minimizing sequences are in $\mathcal{H}$. However, even in the standard classification setting, the link between both notions in this extended setting is not clear at all since a pointwise minimization of the risk cannot be done. To our knowledge, there is only one research paper~\citep{long2013consistency} that focuses on this notion in standard setting. They do it in the restricted case of realisability, i.e. when the standard optimal risk associated with the $0/1$ loss equals $0$.  We believe that studying  $\mathcal{H}$-consistency and  $\mathcal{H}$-calibration in the adversarial setting is a bit anticipated. For these reasons, we focus only on calibration and consistency on the space of measurable functions $\mathcal{F}(\XX)$. However, note that Theorem~\ref{thm:calibration} can be adapted to $\mathcal{H}$-calibration. We propose, in Appendix~\ref{xxx}, conditions on classes $\mathcal{H}$ so that Theorem~\ref{thm:calibration} still holds.
+
+
+\paragraph{About the Adversarial Bayes Risk and Game Theory.} A recent trend of work has focused on analyzing the adversarial risk from multiple point of views.~\citet{bhagoji2019lower} as well as \citet{pydi2019adversarial,pydi2021many} showed that the adversarial optimal Bayes classifier can be written as optimal transport for a well chosen cost. Another line of work~\citep{pinot2020randomization,meunier2021mixed,pydi2021many} have focused on a game theoretic approach for analyzing the adversarial risk having interest in the nature of equilibria between the classifier and the attacker. Recently, some researchers~\citep{awasthi2021existence,bungert2021geometry} proved encouraging results on the existence of an optimal Bayes classifier in the adversarial setting under mild assumptions.  
+
+% \begin{enumerate}
+%     \item realisable case (ie R =0), 
+%     "uniform smoothing" (or at least of support of the ball smoothing) of consistent loss (for standard problem) should be consistent for the adversarial problem. (it is false, we must replace by esssup with uniform distrib). should work for max of consistent losses.
+
+    
+% \end{enumerate}
+

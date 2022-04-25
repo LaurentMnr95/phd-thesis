@@ -1,0 +1,623 @@
+\onecolumn
+
+\section{Proof of Proposition~\ref{prop:measurable}}
+
+\begin{prop*}
+Let  $\phi:\RR\times \YY\to\RR$ be a measurable function and $\varepsilon\geq0$. For every $f\in\mathcal{F}(\XX)$, $(x,y)\mapsto \phi_\varepsilon(x,y,f)$  and $(x,y)\mapsto l_{0/1,\varepsilon}(x,y,f)$ are universally measurable.
+\end{prop*}
+
+
+\begin{proof}
+Let $\phi:\RR\to \RR_+$ be a continuous function. We define $\phi_\varepsilon(x,y,f) = \sup_{x'\in B_\varepsilon(x)}\phi(yf(x))$. 
+
+We have :
+\begin{align*}
+   \phi_\varepsilon(x,y,f) =  \sup_{(x',y')\in\XX\times\YY}\phi(y'f(x'))-\infty\times \mathbf{1}\{d(x',x)\geq \varepsilon\text{ or }y'\neq y\}
+\end{align*}
+
+We have that 
+\begin{align*}
+    \left((x,y),(x',y')\right)\mapsto\phi(y'f(x'))-\infty\times \mathbf{1}\{d(x',x)\geq \varepsilon\text{ or }y'\neq y\}
+\end{align*}
+defines a measurable, hence upper semi-analytic function. Using~\citep[Proposition 7.39, Corollary 7.42]{bertsekas2004stochastic}, we get that for all $f\in\mathcal{F}(\XX)$, $(x,y)\mapsto\phi_\varepsilon(x,y,f)$ is a universally measurable function.
+\end{proof}
+
+
+
+\section{Proof of Proposition~\ref{prop:calib-equality}}
+
+\begin{prop*}
+Let $\varepsilon>0$. Let $\phi$ be a continuous classification margin loss.  For all $x\in\mathcal{X}$ and $\eta\in[0,1]$,
+\begin{align*}
+    \mathcal{C}^\star_{\phi_\varepsilon}(x,\eta) = \inf_{f\in\mathcal{F}(\XX)}\mathcal{C}_{\phi_\varepsilon}(x,\eta,f) = \inf_{\alpha\in\RR}\eta \phi(\alpha)+(1-\eta)\phi(-\alpha)=\mathcal{C}^\star_\phi(x,\eta)\quad.
+\end{align*}
+The last equality also holds for the $0/1$ loss.
+\end{prop*}
+\begin{proof}
+For any $f\in \mathcal{F}(\XX)$, we have:
+\begin{align*}
+ \mathcal{C}_{\phi_\varepsilon}(x,\eta,f)& = \eta \sup_{x'\in B_\varepsilon(x)}\phi(f(x'))+(1-\eta)\sup_{x'\in B_\varepsilon(x)}\phi(-f(x'))\\
+& \geq \eta \phi(f(x))+(1-\eta)\phi(-f(x))\\
+&\geq \inf_{\alpha\in\RR}\eta \phi(\alpha)+(1-\eta)\phi(-\alpha)\quad.
+\end{align*}
+
+Then we deduce that $ \inf_{f\in\mathcal{F}(\XX)}\mathcal{C}_{\phi_\varepsilon}(x,\eta,f)\geq \inf_{\alpha\in\RR}\eta \phi(\alpha)+(1-\eta)\phi(-\alpha)$. On the other side, let $(\alpha_n)_n$ be a minimizing sequence such that $\eta \phi(\alpha_n)+(1-\eta)\phi(-\alpha_n)\xrightarrow[n\to\infty]{}\inf_{\alpha\in\RR}\eta \phi(\alpha)+(1-\eta)\phi(-\alpha)$. We set $f_n:x\mapsto \alpha_n$ for all $x$. Then we have:
+\begin{align*}
+    \inf_{f\in\mathcal{F}(\XX)}\mathcal{C}_{\phi_\varepsilon}(x,\eta,f) \leq \mathcal{C}_{\phi_\varepsilon}(x,\eta,f_n) = \eta \phi(\alpha_n)+(1-\eta)\phi(-\alpha_n)\xrightarrow[n\to\infty]{} \inf_{\alpha\in\RR}\eta \phi(\alpha)+(1-\eta)\phi(-\alpha).
+\end{align*}
+Then we conclude that:  $\mathcal{C}_{\phi_\varepsilon}^\star(x,\eta) = \inf_{\alpha\in\RR}\eta \phi(\alpha)+(1-\eta)\phi(-\alpha)$.
+\end{proof}
+
+
+\section{Proof of Theorem~\ref{prop:calibrated-loss}}
+\begin{thm*}[Calibration of adversarial losses] 
+
+Let $\phi:\RR\to\RR_+$  be a continuous margin loss and $\varepsilon>0$. Assume that $\phi$ is adversarially uniformly calibrated at level $\varepsilon$, then $\phi$ is uniformly calibrated in the standard classification setting and $0\not\in \argminB_{\alpha\in\bar{\RR}}
+\phi(\alpha)+\phi(-\alpha)$.
+
+If we also add the assumption that $\phi$ is strictly decreasing, the reciprocal holds.
+
+\end{thm*}
+\begin{proof}
+
+Let show that if $0\in\argminB_{\alpha\in\RR} \phi(\alpha)+\phi(-\alpha)$ then $\phi$ is not calibrated for the adversarial problem. For that, let $x\in\mathcal{X}$ and we fix $\eta = \frac12$.  For $n\geq1$, we define $f_n(u) = \frac1n$ for $u\neq x$ and $-\frac{1}{n}$ for $u=x$.  Since $\lvert\mathcal{B}_\varepsilon(x)\rvert\geq 2$, we have
+\begin{align*}
+     \mathcal{C}_{\phi_\varepsilon}(x,\frac12,f_n) = \max\left(\phi(\frac1n),\phi(-\frac1n)\right)\xrightarrow[n\to\infty]{} \phi(0) %= \inf_{\alpha\in\RR}\frac12\left(\phi(\alpha)+\phi(-\alpha)\right)
+\end{align*}
+As, $\phi(0) = \inf_{\alpha\in\RR}\frac12\left(\phi(\alpha)+\phi(-\alpha)\right)$, the above means that $(f_n)_n$ is a minimizing sequence for $\alpha \mapsto \frac12 \left(\phi(\alpha)+\phi(-\alpha)\right)$. 
+Then thanks to Proposition~\ref{prop:calib-equality}, $(f_n)_n$ is also a minimizing sequence for $f \mapsto\mathcal{C}_{\phi_\varepsilon}(x,\frac12,f)$. However, for every integer $n$, we have $\mathcal{C}_{0/1,\varepsilon}(x,\frac12,f_n) =1\neq\frac12$. As  $\inf_{f\in\mathcal{F}(\XX)}\mathcal{C}_{\varepsilon}(x,\frac12,f)=\frac12$, $\phi$ is not calibrated with regards to the $0/1$ loss in the adversarial setting at level $\varepsilon$. We also immediately notice that if $\phi$ is  calibrated with to  $0/1$ loss in the adversarial setting at level $\varepsilon$ then $\phi$ is calibrated in the standard setting. 
+
+% Reciprocally, let us assume that  $\phi$ is calibrated in the standard setting and that if $0\not\in\argminB_\alpha \phi(\alpha)+\phi(-\alpha)$ then $\phi$ is  calibrated with to  $0/1$ loss in the adversarial setting at level $\varepsilon$.
+
+\medskip
+
+Reciprocally, let $\epsilon\in(0,\frac{1}{2})$. Thanks to Theorem~\ref{thm:cal-standard}, $\phi$ is uniformly calibrated in the standard setting, then there exists $\delta>0$, such that for all $x\in\mathcal{X}$, $\eta\in [0,1]$, $f\in \mathcal{F}(\XX)$:
+\begin{align*}
+    \mathcal{C}_\phi(x,\eta,f) - \mathcal{C}_\phi^\star(x,\eta)\leq \delta \implies \mathcal{C}_{0/1}(x,\eta,f) - \mathcal{C}_{0/1}^\star(x,\eta)\leq \epsilon.
+\end{align*}
+
+% We first notice that when $\eta \neq \frac{1}{2}$, the adversarial calibration of $\phi$ ensures that for any minimizing sequence of the $\phi$ calibration function, the standard $0/1$ loss will be uniformly close to the optimal in a neighborhood of the point. This means that the classifier will remain of constant sign÷÷÷:÷÷÷ in that neighborhood, hence the adversarial calibration.
+
+\textbf{Case $\eta\neq \frac12$:} Let $x\in\mathcal{X}$ and $f\in \mathcal{F}(\XX)$ such that: 
+\begin{align*}
+\mathcal{C}_{\phi_\varepsilon}(x,\eta,f) - \mathcal{C}_{\phi_\varepsilon}^\star(x,\eta)
+ = \sup_{u,v\in B_\varepsilon(x)}\eta\phi (f(u))+(1-\eta)\phi (-f(v))-\mathcal{C}_{\phi_\varepsilon}^\star(x,\eta)\leq \delta 
+\end{align*}
+We recall thanks to Proposition~\ref{prop:calib-equality} that for every $u,v\in\XX$ 
+$\mathcal{C}_{\phi_\varepsilon}^\star(u,\eta) =\mathcal{C}_\phi^\star(v,\eta)=\inf_{\alpha\in\RR}\eta \phi(\alpha)+(1-\eta)\phi(-\alpha)$. Then in particular, for all $x'\in B_\varepsilon(x)$, we have:
+\begin{align*}
+    \mathcal{C}_{\phi}(x',\eta,f) - \mathcal{C}_{\phi}^\star(x',\eta)\leq \sup_{u,v\in B_\varepsilon(x)}\eta\phi (f(u))+(1-\eta)\phi (-f(v))-\mathcal{C}_{\phi_\varepsilon}^\star(x,\eta)\leq \delta\quad.
+\end{align*} 
+Then since $\phi$ is calibrated for standard classification, for all $x'\in B_\varepsilon(x)$, $\mathcal{C}(x',\eta,f) - \mathcal{C}^\star(x',\eta)\leq \epsilon$. Since,  $\epsilon<\frac{1}{2}$, we have $\mathcal{C}(x',\eta,f) = \mathcal{C}^\star(x',\eta)$ and then for all $x'\in B_\varepsilon(x)$, $f(x')< 0$  if $\eta<1/2$ or $f(x')\geq0$  if $\eta>1/2$. We then deduce that 
+
+\begin{align*}
+   \mathcal{C}_{\varepsilon}(x,\eta,f) = \eta \sup_{x'\in B_\varepsilon(x)} \mathbf{1}_{f(x')\leq 0 } +(1-\eta) \sup_{x'\in B_\varepsilon(x)} \mathbf{1}_{f(x')> 0 }
+    = \min(\eta,1-\eta)
+    = \mathcal{C}_{\varepsilon}^\star(x,\eta)
+\end{align*}
+
+
+Then we deduce, $\mathcal{C}_{\varepsilon}(x,\eta,f) - \mathcal{C}_{\varepsilon}^\star(x,\eta)\leq \epsilon$
+
+
+
+\textbf{Case $\eta=\frac12$:} This shows us that calibration problems will only arise when $\eta = \frac{1}{2}$, i.e. on points where the Bayes classifier is indecise. For this case, we will reason by contradiction: we can construct a sequence of points $\alpha_n$ and $\beta_n$, whose risk converge to the same optimal value, while one sequence remains close to some positive value, and the other to some negative value. Assume that for all $n$, there exist $f_n\in\mathcal{F}(\XX)$ and $x_n\in\XX$ such that 
+\begin{align*}
+    \mathcal{C}_{\phi_\varepsilon}(x_n,\frac12,f_n) - \mathcal{C}_{\phi_\varepsilon}^\star(x_n,\frac12)\leq \frac1n\text{ and exists $u_n,v_n\in B_\varepsilon(x_n)$},~ f_n(u_n)\times f_n(v_n)\leq 0.
+\end{align*}
+
+Let denote $\alpha_n = f_n(u_n)$ and $\beta_n = f_n(v_n)$. %Up to an extraction of a subsequence, we have $\alpha_n\xrightarrow[n\to\infty]{} \alpha\in \bar{\RR}$ and $\beta_n = f_n(u_n)\xrightarrow[n\to\infty]{} \beta\in \bar{\RR}$. 
+Moreover, we have, thanks to Lemma~\ref{xxx}:
+\begin{align*}
+  0\leq \frac12 \phi(\alpha_n) +  \frac12 \phi(-\alpha_n)- \inf_{\alpha\in\RR}\frac12 \phi(\alpha)+\frac12\phi(-\alpha)\leq \mathcal{C}_{\phi_\varepsilon}(x,\frac12,f_n) - \mathcal{C}_{\phi_\varepsilon}^\star(x,\frac12)\leq \frac1n
+\end{align*}
+Then we deduce that $(\alpha_n)_n$ is a minimizing sequence for  $u\mapsto\frac12\phi(u)+\frac12\phi(-u)$ and similarly $(\beta_n)_n$ is also a minimizing sequence for  $u\mapsto\frac12\phi(u)+\frac12\phi(-u)$ . Now note that there always exist $\alpha, \beta\in \bar{\RR}$ such that, up to an extraction of a subsequence, we have $\alpha_n\xrightarrow[n\to\infty]{} \alpha$ and $\beta_n \xrightarrow[n\to\infty]{} \beta$. Furthermore by continuity of $\phi$ and since $0\not\in\argminB\phi(u)+\phi(-u)$, $\alpha\neq0$ and $\beta\neq 0$. Without loss of generality one can assume that $\alpha<0<\beta$, then for $n$ sufficiently large, $\alpha_n<0<\beta_n$. Moreover have 
+\begin{align*}
+     0&\leq\frac12\max\left(\phi(\alpha_n),\phi(\beta_n)\right)+\frac12\max\left(\phi(-\alpha_n),\phi(-\beta_n)\right)- \mathcal{C}^\star_{\phi_\varepsilon}(x,\frac12)\\
+     &\leq \mathcal{C}_{\phi_\varepsilon}(x,\frac12,f_n) - \mathcal{C}_{\phi_\varepsilon}^\star(x,\frac12)\leq \frac1n
+\end{align*}
+so that we deduce:
+\begin{align}
+\label{eq:limitalphabeta}
+ \frac12\max\left(\phi(\alpha_n),\phi(\beta_n)\right)+\frac12\max\left(\phi(-\alpha_n),\phi(-\beta_n)\right)\longrightarrow \inf_\alpha \frac12\phi(\alpha)+\frac12\phi(-\alpha) 
+\end{align}
+
+Since, for $n$ sufficiently large, $\alpha_n<0<\beta_n$ and $\phi$ is strictly decreasing, $\max\left(\phi(\alpha_n),\phi(\beta_n)\right) = \phi(\alpha_n)$ and $\max\left(\phi(-\alpha_n),\phi(-\beta_n)\right) = \phi(-\beta_n)$. Moreover, there exists $\lambda>0$ such that for $n$ sufficiently large $\phi(\alpha_n) - \phi(\beta_n)\geq \lambda$. Then for $n$ sufficiently large:
+\begin{align*}
+    \frac12\max\left(\phi(\alpha_n),\phi(\beta_n)\right)+\frac12\max\left(\phi(-\alpha_n),\phi(-\beta_n)\right) &= \frac{1}{2} \phi(\alpha_n) +\frac12 \phi(-\beta_n)\\
+    &= \frac{1}{2} \left(\phi(\alpha_n)- \phi(\beta_n)\right)+\frac12 \phi(-\beta_n)+\frac{1}{2}+ \phi(\beta_n)\\
+    &\geq \frac12\lambda +\inf_u \frac12\phi(u)+\frac12\phi(-u)
+\end{align*}
+which lead to a contradiction with Equation~\ref{eq:limitalphabeta}. Then there exists a non zero integer $n_0$ such that for all $f\in\mathcal{F}(\XX)$, $x\in\XX$
+\begin{align*}
+    \mathcal{C}_{\phi_\varepsilon}(x,\frac12,f) - \mathcal{C}_{\phi_\varepsilon}^\star(x,\frac12)\leq \frac{1}{n_0} \implies \forall u,v\in B_\varepsilon(x),~ f(u)\times f(v)> 0.
+\end{align*}
+
+The rightend term is equivalent to: for all $u\in B_\varepsilon(x)$, $f(u)>0$ or for all $u\in B_\varepsilon(x)$, $f(u)<0$.  Then $\mathcal{C}_\varepsilon(x,\eta,f) =\frac12$ and then $\mathcal{C}_\varepsilon(x,\eta,f) = \mathcal{C}_\varepsilon^\star(x,\eta)$
+
+\medskip
+
+Putting all that together, for all $x\in\mathcal{X}$, $\eta\in [0,1]$, $f\in \mathcal{F}(\XX)$:
+\begin{align*}
+    \mathcal{C}_{\phi_\varepsilon}(x,\eta,f) - \mathcal{C}_{\phi_\varepsilon}^\star(x,\eta)\leq \min(\delta,\frac{1}{n_0}) \implies \mathcal{C}_{\varepsilon}(x,\eta,f) - \mathcal{C}_{\varepsilon}^\star(x,\eta)\leq \epsilon.
+\end{align*}
+Then $\phi$ is adversarially uniformly calibrated at level $\varepsilon$
+\end{proof}
+
+
+\section{Proof of Proposition~\ref{prop:calibrated-loss}}
+\begin{prop*}
+Let $\phi$ be shifted odd loss. For every $\varepsilon>0$, $\hat{\phi}$ is adversarially calibrated at level $\varepsilon$.
+\end{prop*}
+\begin{proof}
+Let $\lambda>0$, $\tau>0$ and $\phi$ be a strictly decreasing odd function such that $\Tilde{\phi}$ defined as  $\Tilde{\phi}(\alpha) = \lambda +\phi(\alpha-\tau)$ is non-negative. 
+
+\paragraph{Proving that $0\notin\argminB_{\alpha\in\RR}\frac12\Tilde{\phi}(t)+\frac12 \Tilde{\phi}(-t)$.}${\phi}$ is clearly strictly decreasing and non negative then it admits a limit $l:=-\lim_{t\to+\infty}\Tilde{\phi}(t)\geq0$. Then we have:
+\begin{align*}
+    \lim_{t\to+\infty}\Tilde{\phi}(t) = \lambda+l\quad\text{and}\quad\lim_{t\to-\infty}\Tilde{\phi}(t) = \lambda-l
+\end{align*}
+
+Consequently we have:
+\begin{align*}
+    \lim_{t\to\infty}\frac12\Tilde{\phi}(t)+\frac12 \Tilde{\phi}(-t)= \lambda
+\end{align*}
+
+On the other side $\Tilde{\phi}(0)= \lambda + \phi(-\tau) >\lambda +\phi(0) =\lambda$ since $\tau>0$ and $\phi$ is strictly decreasing. Then $0\notin \argminB\frac12\Tilde{\phi}(t)+\frac12 \Tilde{\phi}(-t)$.
+
+% Let us even  show that $\argminB_t\frac12\Tilde{\phi}(t)+\frac12 \Tilde{\phi}(-t) = \{-\infty,+\infty\}$. We have for all $t$:
+% \begin{align*}
+%     \frac12\Tilde{\phi}(t)+\frac12\Tilde{\phi}(-t) &= \lambda +\frac12 \left(\phi(t-\tau)+\phi(-t-\tau)\right)\\
+%     & = \lambda +\frac12 \left(\phi(t-\tau)-\phi(t+\tau)\right)>\lambda
+% \end{align*}
+% since $t+\tau< t-\tau$ and $\phi$ is strictly decreasing. Hence by continuity of $\phi$ the optimum are attained when $t\to\infty$ or $t\to-\infty$. Then $\argminB_t\frac12\Tilde{\phi}(t)+\frac12 \Tilde{\phi}(-t) = \{-\infty,+\infty\}$.
+
+\paragraph{Proving that $\Tilde{\phi}$ is calibrated for standard classification} Let $\epsilon>0$, $\eta\in[0,1]$, $x\in\mathcal{X}$. If $\eta=\frac12$, it is clear that for all $f\in\mathcal{F}(\XX)$, $\mathcal{C}(x,\frac12,f)= \mathcal{C}^\star(x,\frac12)=\frac12$. Let us now assume that $\eta\neq\frac12$, we have for all $f\in\mathcal{F}(\XX)$:
+
+\begin{align*}
+     \mathcal{C}_{\Tilde{\phi}}(x,\eta,f) &= \lambda + \eta\phi(f(x)-\tau) + (1-\eta)\phi(-f(x)-\tau)\\
+     &= \lambda + (\eta-\frac12)\left(\phi(f(x)-\tau)-\phi(-f(x)-\tau)\right)+\frac12 \left(\phi(f(x)-\tau)+\phi(-f(x)-\tau)\right)
+\end{align*}
+
+
+Let us  show that $\argminB_{t\in\bar{\RR}}\frac12\Tilde{\phi}(t)+\frac12 \Tilde{\phi}(-t) = \{-\infty,+\infty\}$. We have for all $t$:
+\begin{align*}
+    \frac12\Tilde{\phi}(t)+\frac12\Tilde{\phi}(-t) &= \lambda +\frac12 \left(\phi(t-\tau)+\phi(-t-\tau)\right)\\
+    & = \lambda +\frac12 \left(\phi(t-\tau)-\phi(t+\tau)\right)>\lambda
+\end{align*}
+since $t+\tau< t-\tau$ and $\phi$ is strictly decreasing. Hence by continuity of $\phi$ the optimum are attained when $t\to\infty$ or $t\to-\infty$. Then $\argminB_{t\in\bar{\RR}}\frac12\Tilde{\phi}(t)+\frac12 \Tilde{\phi}(-t) = \{-\infty,+\infty\}$.
+
+Without loss of generality, let $\eta>1/2$. $t\mapsto  (\eta-\frac12)\left(\phi(t-\tau)-\phi(-t-\tau)\right)$ is strictly decreasing and $\argminB_{t\in\bar{\RR}}\frac12 \left(\phi(t-\tau)+\phi(-t-\tau)\right) = \{-\infty,+\infty\}$, then we have $ \argminB_{t\in\bar{\RR}} \lambda + (\eta-\frac12)\left(t-\tau)-\phi(-t-\tau)\right)+\frac12 \left(\phi(t-\tau)+\phi(-t-\tau)\right) = \{+\infty\}$. By continuity of $\phi$, we deduce that for $\delta>0$ sufficiently small:
+\begin{align*}
+    \mathcal{C}_{\Tilde{\phi}}(x,\eta,f)-&\mathcal{C}^\star_{\Tilde{\phi}}(x,\eta)\leq\delta\implies f(x)>0
+\end{align*}
+
+The same reasoning holds for $\eta<\frac12$. Then we deduce that $\Tilde{\phi}$ is calibrated for standard classification.
+
+\medskip
+
+Finally we get that  that $\Tilde{\phi}$ is calibrated for adversarial classification for every $\varepsilon>0$.
+\end{proof}
+
+
+
+
+
+\section{Proof of Proposition~\ref{prop:realizable}}
+\begin{lemma}
+\label{lemma:realisable}
+If $\PP$ is $\varepsilon$-realisable then: $\risk^\star_{\phi_\varepsilon,\PP}=\inf_{\alpha\in\RR}\phi(\alpha)$.
+\end{lemma}
+\begin{proof}
+Let $a\in\RR$ be such that $\phi(a)-\inf_{\alpha\in\RR} \phi(\alpha) \leq \epsilon$. $\PP$ being $\varepsilon$-realisable, there exists a measurable function $f$ such that:
+\begin{align*}
+   \risk_{\varepsilon,\PP}(f) = \mathbb{E}_\PP\left[\sup_{x'\in B_\varepsilon(x)} \mathbf{1}_{y\text{sign}(f(x))\leq 0}\right] &=  \PP\left[\exists x'\in B_\varepsilon(x), \text{sign}(f(x'))\neq y\right]\\
+   &\leq \epsilon':= \frac{\epsilon}{\max(1,\phi(-a))}.\\
+\end{align*}
+
+Denoting $p =\PP(y=1)$, $\PP_1 = \PP[\cdot|y=1]$ and $\PP_{-1} = \PP[\cdot|y=-1]$, we have:
+\begin{align*}
+        p\times\PP_1\left[\exists x'\in B_\varepsilon(x), f(x')<0\right]\leq \epsilon'\text{ and }
+                (1-p)\times\PP_{-1}\left[\exists x'\in B_\varepsilon(x), f(x')\geq0\right]\leq \epsilon'.
+\end{align*}
+Let us now define $g$ as:
+\begin{align*}
+     g(x)= \left\{
+    \begin{array}{ll}
+    a\text{ if } f(x)\geq 0\\
+    -a\text{ if } f(x)< 0\\
+  \end{array}
+  \right.
+\end{align*}
+
+We have:
+
+\begin{align*}
+\risk_{\phi_\varepsilon,\PP}(g) &= \EE_\PP\left[\sup_{x'\in B_\varepsilon(x)}\phi(yg(x))\right]\\
+&=p\times\EE_{\PP_1}\left[\sup_{x'\in B_\varepsilon(x)}\phi(g(x))\right] +(1-p)\times\EE_{\PP_{-1}}\left[\sup_{x'\in B_\varepsilon(x)}\phi(-g(x))\right]
+\end{align*}
+We have:
+\begin{align*}
+  p\times\EE_{\PP_1}\left[\sup_{x'\in B_\varepsilon(x)}\phi(g(x))\right]&\leq p\times\EE_{\PP_1}\left[\sup_{x'\in B_\varepsilon(x)}\phi(g(x))\mathbf{1}_{f(x')<0}\right]+p\times\EE_{\PP_1}\left[\sup_{x'\in B_\varepsilon(x)}\phi(g(x))\mathbf{1}_{f(x')\geq 0}\right] \\
+  &=\phi(-a)\times p\times \PP_1\left[\exists x'\in B_\varepsilon(x), f(x')<0\right] + \phi(a)\times p\times\left(1- \PP_1\left[\exists x'\in B_\varepsilon(x), f(x')<0\right]\right)\\
+  &\leq\phi(-a) \epsilon'+p\times\phi(a)\\
+  &\leq p\times\inf_{\alpha\in\RR}\phi(\alpha) + 2\epsilon
+\end{align*}
+
+Similarly we get that:
+\begin{align*}
+(1-p)\times\EE_{\PP_{-1}}\left[\sup_{x'\in B_\varepsilon(x)}\phi(-g(x))\right] \leq(1-p)\times\inf_{\alpha\in\RR}\phi(\alpha)+2\epsilon
+\end{align*}
+
+We get: $\risk_{\phi_\varepsilon,\PP}(g)\leq \inf_{\alpha\in\RR}\phi(\alpha)+4\epsilon$ and, hence $\risk^\star_{\phi_\varepsilon,\PP}=\inf_{\alpha\in\RR}\phi(\alpha)$.
+\end{proof}
+
+
+\begin{prop*}
+
+Let $\varepsilon>0$. Let $\PP$ be an $\varepsilon$-realisable distribution and $\phi$ be a calibrated margin loss in the standard setting. Then $\phi$ is adversarially consistent at level $\varepsilon$. 
+\end{prop*}
+\begin{proof}
+Let $0<\epsilon<1$. Thanks to Theorem~\ref{xxx}, $\phi$ is uniformly calibrated for standard classification, then, there exists $\delta>0$ such that for all $f\in\mathcal{F}(\XX)$ and for all $x$:
+\begin{align*}
+    \phi(yf(x))-\inf_{\alpha\in\RR}\phi(\alpha)\leq \delta \implies \mathbf{1}_{y\text{sign}f(x)\leq 0} = 0
+\end{align*}
+
+Let now $f\in\mathcal{F}(\XX)$ be such that  $\risk_{\phi_\varepsilon,\PP}(f)\leq \risk_{\phi_\varepsilon,\PP}^\star+\delta\epsilon$.Thanks to Lemma~\ref{lemma:realisable},  we have:
+\begin{align*}
+\risk_{\phi_\varepsilon,\PP}(f)- \risk_{\phi_\varepsilon,\PP}^\star = \EE_{\PP}\left[\sup_{x'\in B_\varepsilon(x)}\phi(yf(x))-\inf_{\alpha \in \RR} \phi(\alpha)\right]\leq\delta\epsilon
+\end{align*}
+
+Then by Markov inequality:
+\begin{align*}
+    \PP\left[\sup_{x'\in B_\varepsilon(x)}\phi(yf(x))-\inf \phi\geq\delta\right]\leq\frac{\EE_{\PP}\left[\sup_{x'\in B_\varepsilon(x)}\phi(yf(x))-\inf \phi\right]}{\delta}\leq \epsilon
+\end{align*}
+
+So we have $\PP\left[\forall x'\in B_\varepsilon(x),\phi(yf(x))-\inf \phi\leq\delta\right]\geq1-\epsilon$ and then $\PP\left[\forall x'\in B_\varepsilon(x),\mathbf{1}_{y\text{sign}f(x)\leq 0} = 0\right]\geq1-\epsilon$. Since $\PP$ is $\varepsilon$-realisable, we have $\risk_{\varepsilon,\PP}^\star=0$ and:
+\begin{align*}
+     \risk_{\varepsilon,\PP}(f)- \risk_{\varepsilon,\PP}^\star =  \risk_{\varepsilon,\PP}(f) =\PP\left[\exists x'\in B_\varepsilon(x), \text{sign}(f(x'))\neq y\right]\leq \epsilon
+\end{align*}
+which concludes the proof.
+\end{proof}
+
+
+
+% \section{Proof of Theorem~\ref{xxx}}
+
+% \begin{lemma}
+% \label{lem:min-cal-adv}
+% Let $\varepsilon>0$. Let $\phi$ be a continuous classification margin loss that is calibrated in the standard setting.  Let us first show that for all $x\in\mathcal{X}$ and $\eta\in[0,1]$,
+% \begin{align*}
+%     \mathcal{C}^\star_{\phi_\varepsilon}(x,\eta) = \inf_{f\in\mathcal{F}(\XX)}\mathcal{C}_\phi(x_\varepsilon,\eta,f) = \inf_{\alpha\in\RR}\eta \phi(\alpha)+(1-\eta)\phi(-\alpha)=\mathcal{C}^\star_\phi(x,\eta)\quad.
+% \end{align*}
+% The last equality also holds for the $0/1$ loss.
+% \end{lemma}
+% \begin{proof}
+% For any $f\in \mathcal{F}(\XX)$, we have:
+% \begin{align*}
+%  \mathcal{C}_{\phi_\varepsilon}(x,\eta,f)& = \eta \sup_{x'\in B_\varepsilon(x)}\phi(f(x'))+(1-\eta)\sup_{x'\in B_\varepsilon(x)}\phi(-f(x'))\\
+% & \geq \eta \phi(f(x))+(1-\eta)\phi(-f(x))\\
+% &\geq \inf_{\alpha\in\RR}\eta \phi(\alpha)+(1-\eta)\phi(-\alpha)\quad.
+% \end{align*}
+
+% Then we deduce that $ \inf_{f\in\mathcal{F}(\XX)}\mathcal{C}_{\phi_\varepsilon}(x,\eta,f)\geq \inf_{\alpha\in\RR}\eta \phi(\alpha)+(1-\eta)\phi(-\alpha)$. On the other side, let $(\alpha_n)_n$ be a minimizing sequence such that $\eta \phi(\alpha_n)+(1-\eta)\phi(-\alpha_n)\xrightarrow[n\to\infty]{}\inf_{\alpha\in\RR}\eta \phi(\alpha)+(1-\eta)\phi(-\alpha)$. We set $f_n:x\mapsto \alpha_n$ for all $x$. Then we have:
+% \begin{align*}
+%     \inf_{f\in\mathcal{F}(\XX)}\mathcal{C}_{\phi_\varepsilon}(x,\eta,f) \leq \mathcal{C}_{\phi_\varepsilon}(x,\eta,f_n) = \eta \phi(\alpha_n)+(1-\eta)\phi(-\alpha_n)\xrightarrow[n\to\infty]{} \inf_{\alpha\in\RR}\eta \phi(\alpha)+(1-\eta)\phi(-\alpha).
+% \end{align*}
+% Then we conclude that:  $\mathcal{C}_{\phi_\varepsilon}^\star(x,\eta) = \inf_{\alpha\in\RR}\eta \phi(\alpha)+(1-\eta)\phi(-\alpha)$.
+% \end{proof}
+
+
+
+% \begin{proof}
+
+% Let show that if $0\in\argminB_{\alpha\in\RR} \phi(\alpha)+\phi(-\alpha)$ then $\phi$ is not calibrated for the adversarial problem. For that, let $x\in\mathcal{X}$ and we fix $\eta = \frac12$.  For $n\geq1$, we define $f_n(u) = \frac1n$ for $u\neq x$ and $-\frac{1}{n}$ for $u=x$.  Since $\lvert\mathcal{B}_\varepsilon(x)\rvert\geq 2$, we have
+% \begin{align*}
+%      \mathcal{C}_{\phi_\varepsilon}(x,\frac12,f_n) = \max\left(\phi(\frac1n),\phi(-\frac1n)\right)\xrightarrow[n\to\infty]{} \phi(0) %= \inf_{\alpha\in\RR}\frac12\left(\phi(\alpha)+\phi(-\alpha)\right)
+% \end{align*}
+% As, $\phi(0) = \inf_{\alpha\in\RR}\frac12\left(\phi(\alpha)+\phi(-\alpha)\right)$, the above means that $(f_n)_n$ is a minimizing sequence for $\alpha \mapsto \frac12 \left(\phi(\alpha)+\phi(-\alpha)\right)$. 
+% Then thanks to Lemma~\ref{lem:min-cal-adv}, $(f_n)_n$ is also a minimizing sequence for $f \mapsto\mathcal{C}_{\phi_\varepsilon}(x,\frac12,f)$. However, for every integer $n$, we have $\mathcal{C}_{0/1,\varepsilon}(x,\frac12,f_n) =1\neq\frac12$. As  $\inf_{f\in\mathcal{F}(\XX)}\mathcal{C}_{\varepsilon}(x,\frac12,f)=\frac12$, $\phi$ is not calibrated with regards to the $0/1$ loss in the adversarial setting at level $\varepsilon$. We also immediately notice that if $\phi$ is  calibrated with to  $0/1$ loss in the adversarial setting at level $\varepsilon$ then $\phi$ is calibrated in the standard setting. 
+
+% % Reciprocally, let us assume that  $\phi$ is calibrated in the standard setting and that if $0\not\in\argminB_\alpha \phi(\alpha)+\phi(-\alpha)$ then $\phi$ is  calibrated with to  $0/1$ loss in the adversarial setting at level $\varepsilon$.
+
+
+
+% \end{proof}
+
+% \begin{proof}
+% Let $\epsilon\in(0,\frac{1}{2})$. Thanks to Theorem~\ref{xxx}, $\phi$ is uniformly calibrated in the standard setting, then there exists $\delta>0$, such that for all $x\in\mathcal{X}$, $\eta\in [0,1]$, $f\in \mathcal{F}(\XX)$:
+% \begin{align*}
+%     \mathcal{C}_\phi(x,\eta,f) - \mathcal{C}_\phi^\star(x,\eta)\leq \delta \implies \mathcal{C}_{0/1}(x,\eta,f) - \mathcal{C}_{0/1}^\star(x,\eta)\leq \epsilon.
+% \end{align*}
+
+% We first notice that when $\eta \neq \frac{1}{2}$, the adversarial calibration for the $\phi$-risk ensures that for any minimizing sequence of the $\phi$-risk, the standard $0/1$ loss will be uniformly close to the optimal in a neighborhood of the point. This means that the classifier will remain of constant sign in that neighborhood, hence the adversarial calibration.
+
+% \textbf{Case $\eta\neq \frac12$:} Let $x\in\mathcal{X}$ and $f\in \mathcal{F}(\XX)$ such that: 
+% \begin{align*}
+% \mathcal{C}_{\phi_\varepsilon}(x,\eta,f) - \mathcal{C}_{\phi_\varepsilon}^\star(x,\eta)
+%  = \sup_{u,v\in B_\varepsilon(x)}\eta\phi (f(u))+(1-\eta)\phi (-f(v))-\mathcal{C}_{\phi_\varepsilon}^\star(x,\eta)\leq \delta 
+% \end{align*}
+% We recall thanks to Lemma~\ref{xxx} that for every $u,v\in\XX$ 
+% $\mathcal{C}_{\phi_\varepsilon}^\star(u,\eta) =\mathcal{C}_\phi^\star(v,\eta)=\inf_{\alpha\in\RR}\eta \phi(\alpha)+(1-\eta)\phi(-\alpha)$. Then in particular, for all $x'\in B_\varepsilon(x)$, we have:
+% \begin{align*}
+%     \mathcal{C}_{\phi}(x',\eta,f) - \mathcal{C}_{\phi}^\star(x',\eta)\leq \sup_{u,v\in B_\varepsilon(x)}\eta\phi (f(u))+(1-\eta)\phi (-f(v))-\mathcal{C}_{\phi_\varepsilon}^\star(x,\eta)\leq \delta\quad.
+% \end{align*} 
+% Then since $\phi$ is calibrated for standard classification, for all $x'\in B_\varepsilon(x)$, $\mathcal{C}(x',\eta,f) - \mathcal{C}^\star(x',\eta)\leq \epsilon$. Since,  $\epsilon<\frac{1}{2}$, we have $\mathcal{C}(x',\eta,f) = \mathcal{C}^\star(x',\eta)$ and then for all $x'\in B_\varepsilon(x)$, $f(x')< 0$  if $\eta<1/2$ or $f(x')\geq0$  if $\eta>1/2$. We then deduce that 
+
+% \begin{align*}
+%   \mathcal{C}_{\varepsilon}(x,\eta,f) = \eta \sup_{x'\in B_\varepsilon(x)} \mathbf{1}_{f(x')\leq 0 } +(1-\eta) \sup_{x'\in B_\varepsilon(x)} \mathbf{1}_{f(x')> 0 }
+%     = \min(\eta,1-\eta)
+%     = \mathcal{C}_{\varepsilon}^\star(x,\eta)
+% \end{align*}
+
+
+% Then we deduce, $\mathcal{C}_{\varepsilon}(x,\eta,f) - \mathcal{C}_{\varepsilon}^\star(x,\eta)\leq \epsilon$
+
+
+
+% \textbf{Case $\eta=\frac12$:} This shows us that calibration problems will only arise when $\eta = \frac{1}{2}$, i.e. on points where the Bayes classifier is indecise. For this case, we will reason by contradiction: we can construct a sequence of points $\alpha_n$ and $\beta_n$, whose risk converge to the same optimal value, while one sequence remains close to some positive value, and the other to some negative value. Assume that for all $n$, there exist $f_n\in\mathcal{F}(\XX)$ and $x_n\in\XX$ such that 
+% \begin{align*}
+%     \mathcal{C}_{\phi_\varepsilon}(x_n,\frac12,f_n) - \mathcal{C}_{\phi_\varepsilon}^\star(x_n,\frac12)\leq \frac1n\text{ and exists $u_n,v_n\in B_\varepsilon(x_n)$},~ f_n(u_n)\times f_n(v_n)\leq 0.
+% \end{align*}
+
+% Let denote $\alpha_n = f_n(u_n)$ and $\beta_n = f_n(v_n)$. %Up to an extraction of a subsequence, we have $\alpha_n\xrightarrow[n\to\infty]{} \alpha\in \bar{\RR}$ and $\beta_n = f_n(u_n)\xrightarrow[n\to\infty]{} \beta\in \bar{\RR}$. 
+% Moreover, we have, thanks to Lemma~\ref{xxx}:
+% \begin{align*}
+%   0\leq \frac12 \phi(\alpha_n) +  \frac12 \phi(-\alpha_n)- \inf_{\alpha\in\RR}\frac12 \phi(\alpha)+\frac12\phi(-\alpha)\leq \mathcal{C}_{\phi_\varepsilon}(x,\frac12,f_n) - \mathcal{C}_{\phi_\varepsilon}^\star(x,\frac12)\leq \frac1n
+% \end{align*}
+% Then we deduce that $(\alpha_n)_n$ is a minimizing sequence for  $u\mapsto\frac12\phi(u)+\frac12\phi(-u)$ and similarly $(\beta_n)_n$ is also a minimizing sequence for  $u\mapsto\frac12\phi(u)+\frac12\phi(-u)$ . Now note that there always exist $\alpha, \beta\in \bar{\RR}$ such that, up to an extraction of a subsequence, we have $\alpha_n\xrightarrow[n\to\infty]{} \alpha$ and $\beta_n \xrightarrow[n\to\infty]{} \beta$. Furthermore by continuity of $\phi$ and since $0\not\in\argminB\phi(u)+\phi(-u)$, $\alpha\neq0$ and $\beta\neq 0$. Without loss of generality one can assume that $\alpha<0<\beta$, then for $n$ sufficiently large, $\alpha_n<0<\beta_n$. Moreover have 
+% \begin{align*}
+%      0\leq\frac12\max\left(\phi(\alpha_n),\phi(\beta_n)\right)+\frac12\max\left(\phi(-\alpha_n),\phi(-\beta_n)\right)- \mathcal{C}^\star_{\phi_\varepsilon}(x,\frac12)\leq \mathcal{C}_{\phi_\varepsilon}(x,\frac12,f_n) - \mathcal{C}_{\phi_\varepsilon}^\star(x,\frac12)\leq \frac1n
+% \end{align*}
+% so that we deduce:
+% \begin{align}
+% \label{eq:limitalphabeta}
+%  \frac12\max\left(\phi(\alpha_n),\phi(\beta_n)\right)+\frac12\max\left(\phi(-\alpha_n),\phi(-\beta_n)\right)\longrightarrow \inf_\alpha \frac12\phi(\alpha)+\frac12\phi(-\alpha) 
+% \end{align}
+
+% Since, for $n$ sufficiently large, $\alpha_n<0<\beta_n$ and $\phi$ is strictly decreasing, $\max\left(\phi(\alpha_n),\phi(\beta_n)\right) = \phi(\alpha_n)$ and $\max\left(\phi(-\alpha_n),\phi(-\beta_n)\right) = \phi(-\beta_n)$. Moreover, there exists $\lambda>0$ such that for $n$ sufficiently large $\phi(\alpha_n) - \phi(\beta_n)\geq \lambda$. Then for $n$ sufficiently large:
+% \begin{align*}
+%     \frac12\max\left(\phi(\alpha_n),\phi(\beta_n)\right)+\frac12\max\left(\phi(-\alpha_n),\phi(-\beta_n)\right) &= \frac{1}{2} \phi(\alpha_n) +\frac12 \phi(-\beta_n)\\
+%     &= \frac{1}{2} \left(\phi(\alpha_n)- \phi(\beta_n)\right)+\frac12 \phi(-\beta_n)+\frac{1}{2}+ \phi(\beta_n)\\
+%     &\geq \frac12\lambda +\inf_u \frac12\phi(u)+\frac12\phi(-u)
+% \end{align*}
+% which lead to a contradiction with Equation~\ref{eq:limitalphabeta}. Then there exists a non zero integer $n_0$ such that for all $f\in\mathcal{F}(\XX)$, $x\in\XX$
+% \begin{align*}
+%     \mathcal{C}_{\phi_\varepsilon}(x,\frac12,f) - \mathcal{C}_{\phi_\varepsilon}^\star(x,\frac12)\leq \frac{1}{n_0} \implies \forall u,v\in B_\varepsilon(x),~ f(u)\times f(v)> 0.
+% \end{align*}
+
+% The rightend term is equivalenet to: for all $u\in B_\varepsilon(x)$, $f(u)>0$ or for all $u\in B_\varepsilon(x)$, $f(u)<0$.  Then $\mathcal{C}_\varepsilon(x,\eta,f) =\frac12$ and then $\mathcal{C}_\varepsilon(x,\eta,f) = \mathcal{C}_\varepsilon^\star(x,\eta)$
+
+% \medskip
+
+% Putting all that together, for all $x\in\mathcal{X}$, $\eta\in [0,1]$, $f\in \mathcal{F}(\XX)$:
+% \begin{align*}
+%     \mathcal{C}_{\phi_\varepsilon}(x,\eta,f) - \mathcal{C}_{\phi_\varepsilon}^\star(x,\eta)\leq \min(\delta,\frac{1}{n_0}) \implies \mathcal{C}_{\varepsilon}(x,\eta,f) - \mathcal{C}_{\varepsilon}^\star(x,\eta)\leq \epsilon.
+% \end{align*}
+% Then $\phi$ is adversarially uniformly calibrated at level $\varepsilon$
+% \end{proof}
+
+% \section{Proof of Proposition~\ref{prop:calibrated-loss}}
+
+% \begin{proof}
+% Let $\lambda>0$, $\tau>0$ and $\phi$ be a strictly decreasing odd function such that $\Tilde{\phi}$ defined as  $\Tilde{\phi}(\alpha) = \lambda +\phi(\alpha-\tau)$ is non-negative. 
+
+% \paragraph{Proving that $0\notin\frac12\Tilde{\phi}(t)+\frac12 \Tilde{\phi}(-t)$.}${\phi}$ is clearly strictly decreasing and non negative then it admits a limit $l:=-\lim_{t\to+\infty}\Tilde{\phi}(t)\geq0$. Then we have:
+% \begin{align*}
+%     \lim_{t\to+\infty}\Tilde{\phi}(t) = \lambda+l\quad\text{and}\quad\lim_{t\to-\infty}\Tilde{\phi}(t) = \lambda-l
+% \end{align*}
+
+% Consequently we have:
+% \begin{align*}
+%     \lim_{t\to\infty}\frac12\Tilde{\phi}(t)+\frac12 \Tilde{\phi}(-t)= \lambda
+% \end{align*}
+
+% On the other side $\Tilde{\phi}(0)= \lambda + \phi(-\tau) >\lambda +\phi(0) =\lambda$ since $\tau>0$ and $\phi$ is strictly decreasing. Then $0\notin \argminB\frac12\Tilde{\phi}(t)+\frac12 \Tilde{\phi}(-t)$.
+
+% % Let us even  show that $\argminB_t\frac12\Tilde{\phi}(t)+\frac12 \Tilde{\phi}(-t) = \{-\infty,+\infty\}$. We have for all $t$:
+% % \begin{align*}
+% %     \frac12\Tilde{\phi}(t)+\frac12\Tilde{\phi}(-t) &= \lambda +\frac12 \left(\phi(t-\tau)+\phi(-t-\tau)\right)\\
+% %     & = \lambda +\frac12 \left(\phi(t-\tau)-\phi(t+\tau)\right)>\lambda
+% % \end{align*}
+% % since $t+\tau< t-\tau$ and $\phi$ is strictly decreasing. Hence by continuity of $\phi$ the optimum are attained when $t\to\infty$ or $t\to-\infty$. Then $\argminB_t\frac12\Tilde{\phi}(t)+\frac12 \Tilde{\phi}(-t) = \{-\infty,+\infty\}$.
+
+% \paragraph{Proving that $\Tilde{\phi}$ is calibrated for standard classification} Let $\epsilon>0$, $\eta\in[0,1]$, $x\in\mathcal{X}$. If $\eta=\frac12$, it is clear that for all $f\in\mathcal{F}(\XX)$, $\mathcal{C}(x,\frac12,f)= \mathcal{C}^\star(x,\frac12)=\frac12$. Let us now assume that $\eta\neq\frac12$, we have for all $f\in\mathcal{F}(\XX)$:
+
+% \begin{align*}
+%      \mathcal{C}_{\Tilde{\phi}}(x,\eta,f) &= \lambda + \eta\phi(f(x)-\tau) + (1-\eta)\phi(-f(x)-\tau)\\
+%      &= \lambda + (\eta-\frac12)\left(\phi(f(x)-\tau)-\phi(-f(x)-\tau)\right)+\frac12 \left(\phi(f(x)-\tau)+\phi(-f(x)-\tau)\right)
+% \end{align*}
+
+
+% Let us   show that $\argminB_{t\in\bar{\RR}}\frac12\Tilde{\phi}(t)+\frac12 \Tilde{\phi}(-t) = \{-\infty,+\infty\}$. We have for all $t$:
+% \begin{align*}
+%     \frac12\Tilde{\phi}(t)+\frac12\Tilde{\phi}(-t) &= \lambda +\frac12 \left(\phi(t-\tau)+\phi(-t-\tau)\right)\\
+%     & = \lambda +\frac12 \left(\phi(t-\tau)-\phi(t+\tau)\right)>\lambda
+% \end{align*}
+% since $t+\tau< t-\tau$ and $\phi$ is strictly decreasing. Hence by continuity of $\phi$ the optimum are attained when $t\to\infty$ or $t\to-\infty$. Then $\argminB_{t\in\bar{\RR}}\frac12\Tilde{\phi}(t)+\frac12 \Tilde{\phi}(-t) = \{-\infty,+\infty\}$.
+
+% Without loss of generality, let $\eta>1/2$. $t\mapsto  (\eta-\frac12)\left(\phi(t-\tau)-\phi(-t-\tau)\right)$ is strictly decreasing and $\argminB_{t\in\bar{\RR}}\frac12 \left(\phi(t-\tau)+\phi(-t-\tau)\right) = \{-\infty,+\infty\}$, then we have $ \argminB_{t\in\bar{\RR}} \lambda + (\eta-\frac12)\left(t-\tau)-\phi(-t-\tau)\right)+\frac12 \left(\phi(t-\tau)+\phi(-t-\tau)\right) = \{+\infty\}$. By continuity of $\phi$, we deduce that for $\delta>0$ sufficiently small:
+% \begin{align*}
+%     \mathcal{C}_{\Tilde{\phi}}(x,\eta,f)-&\mathcal{C}^\star_{\Tilde{\phi}}(x,\eta)\leq\delta\implies f(x)>0
+% \end{align*}
+
+% The same reasoning holds for $\eta<\frac12$. Then we deduce that $\Tilde{\phi}$ is calibrated for standard classification.
+
+% \medskip
+
+% Finally we get that  that $\Tilde{\phi}$ is calibrated for adversarial classification for every $\varepsilon>0$.
+% \end{proof}
+
+
+
+
+\section{Proofs of Theorem~\ref{thm:equalityrisk}}
+\begin{lemma}
+\label{lem:equalityriskstandard}
+Let $\QQ$ be a Borel probability distribution over $\XX\times\YY$. Let ${\phi}$ be a $0/1$-like shifted odd loss, then: $\risk_{\phi,\QQ}^\star =\risk_{\QQ}^\star$.
+\end{lemma}
+
+\begin{proof}
+\citet{bartlett2006convexity,steinwart2007compare} proved that: for every margin losses $\phi$,
+\begin{align*}
+    \risk_{\phi,\QQ}^\star = \inf_{f\in\mathcal{F}(X)}\mathbb{E}_{(x,y)\sim\QQ}\left[\phi(yf(x))\right] &= \mathbb{E}_{x\sim\QQ_x}\left[\inf_{\alpha\in\RR}\QQ(y=1|x)\phi(\alpha)+(1-\QQ(y=-1|x))\phi(-\alpha)\right]\\
+    &= \mathbb{E}_{x\sim\QQ_x}\left[\mathcal{C}_\phi^\star(\QQ(y=1|x),x)\right]\\
+\end{align*}
+We also have $ \risk_{\QQ}^\star =\mathbb{E}_{x\sim\QQ_x}\left[\mathcal{C}^\star(\QQ(y=1|x),x)\right] $. Moreover, if $\phi$ is a $0/1$-like shifted odd loss, then: for every $x\in\XX$ and $\eta\in[0,1]$, $\mathcal{C}_\phi^\star(\eta,x) =\min(\eta,1-\eta)=\mathcal{C}^\star(\eta,x)$. We can then conclude that  $\risk_{\phi,\QQ}^\star =\risk_{\QQ}^\star$.
+\end{proof}
+
+
+
+\begin{thm*}
+Let us assume that $\XX$ be a Polish space satisfying the midpoint property. Let $\varepsilon\geq 0$. Let $\PP$ be a Borel probability distribution over $\XX\times\YY$. Let ${\phi}$ be a $0/1$-like shifted odd loss. Then, we have:
+\begin{align*}
+    \risk^\star_{{\phi}_\varepsilon,\PP} = \risk^\star_{\varepsilon,\PP}
+\end{align*}
+\end{thm*}
+
+\begin{proof}
+Let $\epsilon>0$ and $\PP$ be a distribution. Let $f$ such that $\risk_{\varepsilon,\PP}(f) \leq \risk_{\varepsilon,\PP}^\star +\epsilon$. Let $a>0$ such that $\phi(a)\geq 1-\epsilon$ and $\phi(-a)\leq\epsilon$. We define $g$ as: 
+\begin{align*}
+     g(x)= \left\{
+    \begin{array}{ll}
+    a&\text{ if } f(x)\geq 0\\
+    -a&\text{ if } f(x)< 0\\
+  \end{array}
+  \right.
+\end{align*}
+We have $\phi(yg(x)) = \phi(a) \mathbf{1}_{y sign(f(x))\leq 0}+  \phi(-a) \mathbf{1}_{y sign(f(x))>0}$. Then
+
+\begin{align*}
+  \risk_{\phi_\varepsilon,\PP}(g) & = \EE_\PP\left[\sup_{x'\in B_\varepsilon(x)}\phi(yg(x))\right]\\
+  & = \EE_\PP\left[\sup_{x'\in B_\varepsilon(x)}\phi(a) \mathbf{1}_{y sign(f(x'))\leq 0}+  \phi(-a) \mathbf{1}_{y sign(f(x'))>0}\right]\\
+  &\leq  \EE_\PP\left[\sup_{x'\in B_\varepsilon(x)}\mathbf{1}_{y sign(f(x'))\leq 0}\right]+\phi(-a)\\
+  &\leq \risk_{\varepsilon,\PP}^\star + 2\epsilon\quad.
+\end{align*}
+
+Then we have $\risk_{\phi_\varepsilon,\PP}^\star\leq \risk_{\varepsilon,\PP}^\star$.
+On the other side, we have: 
+
+\begin{align*}
+ \risk_{\phi_\varepsilon,\PP}^\star & \geq \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)}  \inf_{f\in\mathcal{F}(\XX)} \risk_{\phi,\QQ}(f) = \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)}  \risk_{\phi,\QQ}^\star\\
+  \\ &= \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)}  \risk_{\QQ}^\star= \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)}\inf_{f\in\mathcal{F}(\XX)} \risk_{\QQ}(f)  \\
+  & =  \inf_{f\in\mathcal{F}(\XX)} \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)}\risk_{\QQ}(f) = \risk_{\varepsilon,\PP}^\star \\
+\end{align*}
+The last equality is a consequence of Theorem~\ref{thm:xxx}. Then finally we get that $\risk_{\phi_\varepsilon,\PP}^\star=  \risk_{\varepsilon,\PP}^\star$.
+
+\end{proof}
+
+\section{Proof of Corollaries~\ref{coro:nash} and~\ref{coro:optattacks}}
+\begin{coro*}[Strong duality for $\phi$] 
+Let $\varepsilon\geq 0$. Let $\PP$ be a Borel probability distribution over $\XX\times\YY$. Let ${\phi}$ be a $0/1$-like shifted odd loss. Then, we have:
+\begin{align*}
+    \inf_{f\in\mathcal{F}(\XX)}\sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)} \risk_{\phi,\QQ}(f) =    \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)} \inf_{f\in\mathcal{F}(\XX)} \risk_{\phi,\QQ}(f)
+\end{align*}
+Moreover the supremum is attained.
+\end{coro*}
+\begin{coro*}[Optimal attacks]
+Let us assume that $\XX$ be a Polish space satisfying the midpoint property. Let $\varepsilon\geq 0$ and $\PP$ be a Borel probability distribution over $\XX\times\YY$. Let ${\phi}$ be a $0/1$-like shifted odd loss and $\QQ\in\mathcal{A}_\varepsilon(\PP)$.  $\QQ$ is an optimal attack for the loss $\phi$  if and only if it is an optimal attack for the $0/1$ loss.
+\end{coro*}
+
+
+\begin{proof}
+We have:
+\begin{align*}
+     \inf_{f\in\mathcal{F}(\XX)}\sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)} \risk_{\phi,\QQ}(f) &= \risk_{\phi_\varepsilon,\PP}^\star = \risk_{\varepsilon,\PP}^\star&\quad\text{by Theorem~\ref{thm:equalityrisk}} \\
+     &=\inf_{f\in\mathcal{F}(\XX)}\sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)} \risk_{\QQ}(f) = \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)} \inf_{f\in\mathcal{F}(\XX)}\risk_{\QQ}(f)&\quad\text{by Theorem~\ref{xxx}}\\
+     &=\sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)} \risk^\star_{\QQ}(f) = \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)} \risk^\star_{\phi,\QQ}(f)&\quad\text{by Lemma~\ref{lem:equalityriskstandard}}\\
+    & =  \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)}\inf_{f\in\mathcal{F}(\XX)} \risk_{\phi,\QQ}(f)\\
+\end{align*}
+$\QQ\mapsto\risk_{\phi,\QQ}(f)$ is continuous for the weak topology of measures. The infimum of continuous functions is upper semi-continuous , then  $\QQ\mapsto\inf_{f\in\mathcal{F}(\XX)}\risk_{\phi,\QQ}(f) =\inf_{f\in\mathcal{F}(\XX)}\risk_{\QQ}(f)  $ is  upper semi-continuous for the weak topology of measures. Moreover, $\mathcal{A}_\varepsilon(\PP)$ is compact for the weak topology of measures~\citep{meunier2021mixed}, then $\QQ\mapsto\inf_{f\in\mathcal{F}(\XX)}\risk_{\phi,\QQ}(f)$ admits a maximum over  $\mathcal{A}_\varepsilon(\PP)$. And  $\QQ$ is an optimal attack for the loss $\phi$  if and only if it is an optimal attack for the $0/1$ loss.
+\end{proof}
+
+\section{About $\mathcal{H}$-calibration.}
+
+Let us  define more precisely the notion of $\mathcal{H}$-calibration.
+
+\begin{defn}[$\mathcal{H}$-calibration function]
+Let $\mathcal{H}\subset \mathcal{F}(\mathcal{X})$. Let $L$ be a loss function. We also define the optimal $\mathcal{H}$-calibration function:
+\begin{align*}
+        \mathcal{C}^\star_{L,\mathcal{H}}(x,\eta):=\inf_{f\in\mathcal{H}}\mathcal{C}_L(x,\eta,f)
+\end{align*}
+
+\end{defn}
+
+
+
+\begin{defn}[$\mathcal{H}$-calibration]
+Let $\mathcal{H}\subset \mathcal{F}(\mathcal{X})$. Let $\mathcal{H}\subset \mathcal{F}(\mathcal{X})$. Let $L_1$ and $L_2$ be two loss functions. We say that $L_2$ is \emph{$\mathcal{H}$-calibrated} with regards to $L_1$ if for every $\epsilon>0$,  for all $\eta\in[0,1]$, $x\in\mathcal{X}$, there exists $ \delta>0$ for every $f\in\mathcal{H}$: 
+\begin{align*}
+    \mathcal{C}_{L_2}(x,\eta,f)- &\mathcal{C}^\star_{L_2,\mathcal{H}}(x,\eta)\leq\delta\implies\mathcal{C}_{L_1}(x,\eta,f)- \mathcal{C}^\star_{L_1,\mathcal{H}}(x,\eta)\leq \epsilon\quad.
+\end{align*}
+Furthermore, we say that $L_2$ is \emph{uniformly $\mathcal{H}$-calibrated} with regards to $L_1$ if for every $\epsilon>0$, there exists $ \delta>0$, for all $\eta\in[0,1]$, $x\in\mathcal{X}$, for every $f\in\mathcal{H}$: 
+\begin{align*}
+    \mathcal{C}_{L_2}(x,\eta,f)- \mathcal{C}^\star_{L_2,\mathcal{H}}(x,\eta)\leq\delta\implies\mathcal{C}_{L_1}(x,\eta,f)- \mathcal{C}^\star_{L_1,\mathcal{H}}(x,\eta)\leq \epsilon\quad.
+\end{align*}
+\end{defn}
+
+
+
+
+\begin{prop*}
+Let $\mathcal{H}\subset \mathcal{F}(\mathcal{X})$. Let us assume that $\mathcal{H}$ contains all constant functions. Let $\varepsilon>0$ and $\phi$ be a continuous classification margin loss.  For all $x\in\mathcal{X}$ and $\eta\in[0,1]$, we have
+\begin{align*}
+    \mathcal{C}^\star_{\phi_\varepsilon,\mathcal{H}}(x,\eta)=\mathcal{C}^\star_{\phi,\mathcal{H}}(x,\eta) =\inf_{\alpha\in\RR}\eta \phi(\alpha)+(1-\eta)\phi(-\alpha)= \mathcal{C}^\star_{\phi_\varepsilon}(x,\eta)=\mathcal{C}^\star_{\phi}(x,\eta)\quad.
+\end{align*}
+The last equality also holds for the adversarial $0/1$ loss.
+\end{prop*}
+\begin{proof}
+The proof is exactly the same that Proposition~\ref{prop:calib-equality} since we used a constant function to prove the equality.
+\end{proof}
+
+
+\begin{prop*}
+Let $\mathcal{H}\subset \mathcal{F}(\mathcal{X})$. Let us assume that $\mathcal{H}$ contains all constant functions. Let $\phi$ be a continuous classification margin loss.  $\phi$ is uniformly $\mathcal{H}$-calibrated for standard classification if and only if  $\phi$ is uniformly calibrated for standard classification. It also holds for non-uniform calibration.
+\end{prop*}
+\begin{proof}
+Let us assume that $\phi$ is a continuous classification margin loss and that $\phi$ is uniformly calibrated. Let $\epsilon>0$. There exists $\delta>0$ such that, for all $\eta\in[0,1]$, $x\in\mathcal{X}$ and $f\in\mathcal{F}(\XX)$:
+\begin{align*}
+    \mathcal{C}_{\phi}(x,\eta,f)- \mathcal{C}^\star_{\phi}(x,\eta)\leq\delta\implies\mathcal{C}(x,\eta,f)- \mathcal{C}^\star(x,\eta)\leq \epsilon\quad.
+\end{align*}
+
+Let $\eta\in[0,1]$, $x\in\mathcal{X}$ and $f\in\mathcal{H}$ such that $ \mathcal{C}_{\phi}(x,\eta,f)- \mathcal{C}^\star_{\phi,\mathcal{H}}(x,\eta)\leq\delta$. Thanks to the previous proposition, $\mathcal{C}^\star_{\phi,\mathcal{H}}(x,\eta)=\mathcal{C}^\star_{\phi}(x,\eta)$, and $f\in\mathcal{F}(\XX)$, then $\mathcal{C}_{\phi}(x,\eta,f)- \mathcal{C}^\star_{\phi}(x,\eta)\leq\delta$ and  then:
+\begin{align*}
+    \mathcal{C}(x,\eta,f)- \mathcal{C}^\star_{\mathcal{H}}(x,\eta) =  \mathcal{C}(x,\eta,f)- \mathcal{C}^\star(x,\eta) \leq\epsilon
+\end{align*}
+Then $\phi$ is uniformly $\mathcal{H}$-calibrated in standard classification.
+
+Reciprocally, let us assume that $\phi$ is a continuous classification margin loss and that $\phi$ is uniformly $\mathcal{H}$-calibrated. Let $\epsilon>0$. There exists $\delta>0$ such that, for all $\eta\in[0,1]$, $x\in\mathcal{X}$ and $f\in\mathcal{H}$:
+\begin{align*}
+    \mathcal{C}_{\phi}(x,\eta,f)- \mathcal{C}^\star_{\phi,\mathcal{H}}(x,\eta)\leq\delta\implies\mathcal{C}(x,\eta,f)- \mathcal{C}^\star_\mathcal{H}(x,\eta)\leq \epsilon\quad.
+\end{align*}
+
+
+Let $\eta\in[0,1]$, $x\in\mathcal{X}$ and $f\in\mathcal{H}$ such that $ \mathcal{C}_{\phi}(x,\eta,f)- \mathcal{C}^\star_{\phi,\mathcal{H}}(x,\eta)\leq\delta$.  $\mathcal{C}_{\phi}(x,\eta,f) = \eta\phi(f(x))+(1-\eta)\phi(-f(x))$. Let $\Tilde{f}:u\mapsto f(x)$ for all $u\in\mathcal{X}$, then $\Tilde{f}\in\mathcal{H}$ since $\Tilde{f}$ is constant, $\mathcal{C}_{\phi}(x,\eta,f) = \mathcal{C}_{\phi}(x,\eta,\Tilde{f})$ and $\mathcal{C}(x,\eta,f) = \mathcal{C}(x,\eta,\Tilde{f})$. Thanks to the previous proposition, $\mathcal{C}^\star_{\phi,\mathcal{H}}(x,\eta)=\mathcal{C}^\star_{\phi}(x,\eta)$. Then: $ \mathcal{C}_{\phi}(x,\eta,\Tilde{f})-\mathcal{C}^\star_{\phi,\mathcal{H}}(x,\eta)\leq \delta$ and then:
+\begin{align*}
+    \mathcal{C}(x,\eta,f)-\mathcal{C}^\star_{\phi,\mathcal{H}}(x,\eta) =  \mathcal{C}(x,\eta,\Tilde{f})-\mathcal{C}^\star_{\phi}(x,\eta) \leq \epsilon
+\end{align*}
+Then $\phi$ is uniformly calibrated in standard classification.
+\end{proof}
+
+
+
+\begin{prop*}[Necessary conditions for $\mathcal{H}$-Calibration of adversarial losses] 
+ Let $\varepsilon>0$. Let $\mathcal{H}\subset \mathcal{F}(\mathcal{X})$. Let us assume that $\mathcal{H}$ contains all constant functions and that there exists $x\in\XX$ and $(f_n)_n\in\mathcal{H}^\mathbb{N}$ such that $f_n(u)\to 0$ for all $ u\in B_\varepsilon(x)$ and for all $n\in\mathbb{N}$, $\sup_{u\in B_\varepsilon(x)} f_n(u)>0$ and  $\inf_{u\in B_\varepsilon(x)} f_n(u)<0$ 
+Let $\phi$  be a continuous margin loss .  If $\phi$ is adversarially uniformly $\mathcal{H}$-calibrated at level $\varepsilon$, then $\phi$ is uniformly calibrated in the standard classification setting and $0\not\in \argminB_{\alpha\in\bar{\RR}}
+\frac12\phi(\alpha)+\frac12\phi(-\alpha)$. 
+
+\end{prop*}
+
+
+\begin{prop*}[Sufficient conditions for $\mathcal{H}$-Calibration of adversarial losses]
+Let $\mathcal{H}\subset \mathcal{F}(\mathcal{X})$. Let us assume that $\mathcal{H}$ contains all constant functions.
+Let $\phi$  be a continuous strictly decreasing margin loss and $\varepsilon>0$. If $\phi$ is calibrated in the standard classification setting and $0\not\in \argminB_{\alpha\in\bar{\RR}}
+\frac12\phi(\alpha)+\frac12\phi(-\alpha)$, then $\phi$ is adversarially uniformly $\mathcal{H}$-calibrated at level $\varepsilon$.
+
+\begin{proof}
+The proof is identical to the reciprocal of Theorem~\ref{thm:calibration}
+\end{proof}
+
+
+\end{prop*}
+
+\begin{example}
+\end{example}
