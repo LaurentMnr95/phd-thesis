@@ -83,7 +83,9 @@ where $\lambda$ is a non negative constant. In this setting,  the authors show t
 % \end{thm}
 % One can find a proof of this result in~\citep{villani2003topics}. The main arguments are that the dual of continuous functions on  a compact space is the space of Radon measures, and the Rockafellar duality theorem. 
 
-\subsection{Adversarial Risk Minimization and Optimal Transport} Optimal Transport is a key element when studying Adversarial Classification problems. Let $\PP$ be a distribution on the input-label space $\XX\times\YY$. We recall that the problem of adversarial risk minimization is defined as
+\subsection{Adversarial Risk Minimization and Optimal Transport} 
+\label{sec:otadv}
+Optimal Transport is a key element when studying Adversarial Classification problems. Let $\PP$ be a distribution on the input-label space $\XX\times\YY$. We recall that the problem of adversarial risk minimization is defined as
 \begin{align*}
     \risk_{\varepsilon,\PP}^\star = \inf_{h} \PP_{(x,y)}\left[\exists x'\in B_\varepsilon(x),~h(x')\neq y\right]
 \end{align*}
@@ -100,7 +102,7 @@ Note that $T^S$ only switches the label of pair $(x,y)$. When $\varepsilon=0$, $
 While this property does not have practical properties yet, there is a hope that this relation might help at building more robust classifiers to adversarial examples. 
 
 \subsection{Distributionally Robust Optimization}
-
+\label{sec:dro}
 Another close link between adversarial attacks and Optimal Transport can be made under the light of distributionally robust optimization problems. Let $\ZZ$ and $\Theta$ be Polish spaces. Let $\PP$ be a Borel probability distribution over $\ZZ$. Let $f:\Theta\times\ZZ\to\RR$ be an upper semi continuous function in its second variable. Let us consider the following problem:
 \begin{align}
     \label{eq:min-objective}
@@ -187,7 +189,7 @@ When the problem is a classification problem (i.e., $\ZZ=\XX\times\YY$ with $\YY
         \end{array}
     \right.
 \end{align*} 
-Hence, we recover the Adversarial classification problem using a Wasserstein-$\infty$ DRO problem. We will see in Chapter~\ref{xxx}, the geometric and topological properties of this set. 
+Hence, we recover the Adversarial classification problem using a Wasserstein-$\infty$ DRO problem. We will see in Chapter~\ref{chap:game}, the geometric and topological properties of this set. 
 
 \paragraph{DRO, Game Theory and Adversarial Attacks.} Recently,~\citet{pydi2021many} got interest in the adversarial binary classification game where the attacker can play a randomized strategy in the $\infty$-Wasserstein ball of radius $\varepsilon$ and the classifier is allowed to play any measurable function. In this case the authors proved the existence of Nash Equilibria, meaning that the classifier can be deterministic and optimal and the attacker requires to be ``randomized''. We will discuss and compare to this work in details after Chapter~\ref{chap:game}.
 % \subsection{Game Theory and Adversarial Learning}
