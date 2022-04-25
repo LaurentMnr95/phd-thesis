@@ -3,13 +3,13 @@ A classification task aims at learning a function that assigns a label to a give
 \subsection{Notations}
 In this section, we formalize the task of classification. First, we define the notions of inputs and labels:
 \begin{itemize}
-    \item Consider an input space $\XX$, typically images. We assume this space is endowed with an arbitrary metric $d$ possibly a perception distance or any $\ell_p$ norm. In the following of the manuscript, unless it is specified, $(\XX,d)$ will be a \textit{proper} (i.e. closed balls are compact) \textit{Polish} (i.e. completely separable) metric space. Note that for any norm $\lVert\cdot\rVert$,  $(\mathbb{R}^d,\lVert\cdot\rVert)$ is a proper Polish metric space.
+    \item Consider an input space $\XX$, typically images. We assume this space is endowed with an arbitrary metric $d$, possibly a perception distance or any $\ell_p$ norm. In the following of the manuscript, unless it is specified, $(\XX,d)$ will be a \textit{proper} (i.e. closed balls are compact) \textit{Polish} (i.e. completely separable) metric space. Note that for any norm $\lVert\cdot\rVert$,  $(\mathbb{R}^d,\lVert\cdot\rVert)$ is a proper Polish metric space.
     \item Each input $x\in \XX$ has to be associated with a label $y$. A label is a descriptor of the input. The set of labels is discrete and we designate it by $\YY:=\{1,\dots,K\}$. $\YY$ is endowed with the trivial metric  $d'(y,y') = \mathbf{1}_{y\neq y'}$. Note that $(\XX\times\YY,d\oplus d')$ is also a proper Polish space.
 \end{itemize}
 
 The purpose of classification is to learn a classifier $h:\XX\to\YY$. It is usual to learn a function $f:\XX\to\RR^K$ such that: $h(x) = \argmaxB_{k\in\YY}f_k(x)$. In a classification problem in machine learning, the data is assumed to be sampled from an unknown probability distribution $\PP$ over $\XX\times\YY$. We will assume from now that all the probability distributions we consider are Borel distributions. For any Polish Space $\mathcal{Z}$, we will denote $\mathcal{B}(\mathcal{Z})$ the Borel $\sigma$-algebra and the set of Borel distributions over $\mathcal{Z}$  will be denoted $\mathcal{M}_+^1(\mathcal{Z})$. We recall that on Polish space, all Borel probability distributions are Radon measures. We also recall the notion of \textit{universal measurability}: a set $A\subset \mathcal{Z}$ is said to be universally measurable if it is measurable for every \textit{complete} Borel probability measure. 
 
-When $\ZZ$ and $\ZZ'$ are two measurable spaces endowed with their Borel $\sigma$-algebra (unless specified), we will denote $\mathcal{F}(\ZZ,\ZZ')$ the space of measurable functions from $\ZZ$ to $\ZZ'$. Without loss of generality, when $\ZZ'=\RR$, we will simply denote: $\mathcal{F}(\ZZ):=\mathcal{F}(\ZZ,\ZZ')$ 
+When $\ZZ$ and $\ZZ'$ are two measurable spaces endowed with their Borel $\sigma$-algebra (unless specified), we will denote $\mathcal{F}(\ZZ,\ZZ')$ the space of measurable functions from $\ZZ$ to $\ZZ'$. Without loss of generality, when $\ZZ'=\RR$, we will simply denote: $\mathcal{F}(\ZZ):=\mathcal{F}(\ZZ,\ZZ')$.
 
 
 
@@ -33,7 +33,7 @@ If $f:\XX\to\RR^K$, then the risk of $f$ is defined as $\risk_{\PP}(f):=\PP(\arg
 TODO:  note that the loss tis not indexed when talking about bayes risk
 Note that this quantity is well defined when $h$ or $f$ is Borel or universally measurable. The optimal classifier is called the /emph{Optimal Bayes  classifier} and is defined as $h^\star(x) = \argmaxB_k\PP(y=k\mid x)$. We remark that the disintegration theorem ensures that $x\mapsto \PP(y=k\mid x)$ is indeed Borel measurable. 
 
-In practice, the access to the Optimal Bayes  classifier is not possible because it requires full knowledge of the probability distribution $\PP$ which is not the case in general. Instead, in the supervised learning setting, the learner has access to data points $\{(x_1,y_1),\dots,(x_\numsamples,y_\numsamples)\}$, that constitutes the \emph{training set}. Knowing the Optimal Bayes classifier on training points is not sufficient to generalize on points out of the training set. Hence one needs to reduce the search space of measurable functions to a much smaller one, denoted $\mathcal{H}$ in the sequel. The $0/1$ loss is not convex neither continuous, and minimizing directly the 0/1 loss risk  on $\mathcal{H}$ is  NP-hard CITE. We usually minimize a well-chosen surrogate loss function $\loss$. A \textit{loss function} $\loss:\mathbb{R}^K\times\YY\to\mathbb{R}$ is a non negative Borel measurable function. An example of such a loss is the cross entropy loss defined as $\loss(f(x),y)=-\sum_{i=1}^K \mathbf{1}_{y=i}\log f_i(x)$
+In practice, the access to the Optimal Bayes  classifier is not possible because it requires full knowledge of the probability distribution $\PP$ which is not the case in general. Instead, in the supervised learning setting, the learner has access to data points $\{(x_1,y_1),\dots,(x_\numsamples,y_\numsamples)\}$, that constitutes the \emph{training set}. Knowing the Optimal Bayes classifier on training points is not sufficient to generalize on points out of the training set. Hence one needs to reduce the search space of measurable functions to a much smaller one, denoted $\mathcal{H}$ in the sequel. The $0/1$ loss is not convex neither continuous, and minimizing directly the 0/1 loss risk  on $\mathcal{H}$ might be NP-hard even for simple set of hypotheses as linear classifiers. We usually minimize a well-chosen surrogate loss function $\loss$. A \textit{loss function} $\loss:\mathbb{R}^K\times\YY\to\mathbb{R}$ is a non negative Borel measurable function. An example of such a loss is the cross entropy loss defined as $\loss(f(x),y)=-\sum_{i=1}^K \mathbf{1}_{y=i}\log f_i(x)$
 where $f_i(x)$ is the probability learnt by the model with input $x$ belonging to the class $i$. Hence the objective is to minimize the empirical risk associated with $\mathcal{H}$ using the loss $\loss$  defined as:
 \begin{align*}
 \riskemp_{\loss}(f):= \frac{1}{\numsamples}\sum_{i=1}^\numsamples \loss(f(x_i),y_i).
@@ -54,19 +54,19 @@ where $f_i(x)$ is the probability learnt by the model with input $x$ belonging t
 % \end{itemize}
 
 
-\paragraph{Neural Networks} An popular set of classifiers are Neural Networks. They gained in popularity due to their exceptional performances in Image Recognition~\cite{krizhevsky2012imagenet,he2016deep} or Natural Language Processing for instance~\cite{vaswani2017attention}. In its simpler form, a neural network is a concatenation of linear operators and non-linear functions (called \emph{activations}). This concatenation are called \emph{layers}. Formally a neural network with $L$ layers writes:
+\paragraph{Neural Networks} A popular set of classifiers are Neural Networks. They gained in popularity due to their exceptional performances in Image Recognition~\cite{krizhevsky2012imagenet,he2016deep} or Natural Language Processing for instance~\cite{vaswani2017attention}. In its simpler form, a neural network is a concatenation of linear operators and non-linear functions (called \emph{activations}). This concatenation are called \emph{layers}. Formally a neural network with $L$ layers writes:
 \begin{align*}
     f(x) = \left(W_L\sigma\left(W_{L-1}\dots \sigma\left(A_1x+b_1\right)\dots\right)+b_L\right)
 \end{align*}
 where $W_i$ are called the weight matrices and $b_i$ the biases. In the case of image recognition, the weights may have a special structure of convolution: such networks are called \emph{Convolutional Networks}. We illustrate a convolutional layer in Figure~\ref{xxx}.
 
-To train neural networks, the backpropagation is a standard algorithm based on the chain rule. This algorithm is subject to gradient vanishing, or gradient explosion issues. To circumvent these problems, many tricks were proposed as  Dropout~\citep{srivastava2014dropout}, Batch Normalization~\citep{ioffe2015batch} or the use of Residual Layers~\citep{he2016deep}. More, despite their popularity, it is difficult to understand the outstanding performances of neural networks.
+To train neural networks, the backpropagation is a standard algorithm based on the chain rule. This algorithm is subject to gradient vanishing, or gradient explosion issues. To circumvent these problems, many tricks were proposed as  using ReLU-like activation functions~\citep{xxx}, Dropout~\citep{srivastava2014dropout}, Batch Normalization~\citep{ioffe2015batch} or the use of Residual Layers~\citep{he2016deep}. More, despite their popularity, it is difficult to understand the outstanding performances of neural networks.
 
 
 
 \subsection{Surrogate losses, consistency and calibration} 
 
-\paragraph{Binary Classification.} In this section, we recall the main results about surrogate losses in binary classification. We assume that $\YY = \{-1,+1\}$. In this case, a classifier is a measurable function $f:\XX\to\RR$ such that an input $x$ is classified as $1$ if $f(x)>0$ and as $-1$ if $f(x)\geq 0$. Then the $0/1$ loss is defined as $\mathbf{1}_{ysign(f(x))\leq0}$. As mentioned earlier, optimizing the risk associated with the $0/1$ loss is a difficult task. We need to properly introduce notions of surrogate losses. 
+\paragraph{Binary Classification.} In this section, we recall the main results about surrogate losses in binary classification. We assume that $\YY = \{-1,+1\}$. In this case, a classifier is a measurable function $f:\XX\to\RR$ such that an input $x$ is classified as $1$ if $f(x)>0$ and as $-1$ if $f(x)\leq 0$. Then the $0/1$ loss is defined as $\mathbf{1}_{y\times sign(f(x))\leq0}$. As mentioned earlier, optimizing the risk associated with the $0/1$ loss is a difficult task. We need to properly introduce notions of surrogate losses. 
 
 A margin loss is a loss $\loss$ such that there exist a measurable function $\phi:\RR\to\RR_+$, satisfying, $\loss(x,y,f) =\phi(yf(x))$. The risk associated with a margin loss $\phi$ is then $\risk_{\phi,\PP}(f):=\mathbb{E}_\PP\left[\phi(yf(x))\right]$. A loss $\phi$ is said to be \emph{classification-consistent} if every minimizing sequence for the risk associated with the $\phi$ loss is also a minimizing sequence for the risk associated with the $0/1$-loss. In other words, for a given $\PP\in\mathcal{M}_1^+(\XX\times\YY)$, $\phi$ is classification-consistent for $\PP$ if for all sequences $(f_n)_{n\in\mathbb{N}}$ of measurable functions:
 \begin{align}
@@ -118,8 +118,7 @@ As mentioned earlier, the learner has access to training points  $\{(x_1,y_1),\d
     \hat{f}_\numsamples = \argminB_{f\in\mathcal{H}}\riskemp_{\loss}(f)= \argminB_{f\in\mathcal{H}}\frac{1}{\numsamples}\sum_{i=1}^\numsamples \loss(f(x_i),y_i).
 \end{align*}
 
-Since the learning procedure takes into account 
-
+Since the learning procedure takes into account a finite number of samples and a set $\mathcal{H}$ of hypotheses, one need to control the risk of the classifier $\hat{f}_\numsamples$.
 
 \paragraph*{Risk Decomposition and bias-complexity tradeoff.} The excess risk of a classifier is defined as the difference between the risk and the optimal risk: $\risk_\loss(f_n) - \risk_\loss^\star$. The excess risk can be decomposed as follows:
 \begin{align*}

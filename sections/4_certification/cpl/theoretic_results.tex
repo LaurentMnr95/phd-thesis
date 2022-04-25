@@ -2,9 +2,9 @@
 \label{section:global_framework}
 
 
-The continuous time interpretation of Definition~\ref{def:flow} allows us to better investigate the robustness properties and assess how a difference of the initial values (the inputs) impacts the inference flow of the model. Let us consider two continuous flows $x_t$ and $z_t$ associated with $F_t$ but differing in their respective initial values $x_0$ and $z_0$. Our goal is to characterize the time evolution of $\lVert x_t-z_t \rVert$ by studying its  time derivative. We recall that  every matrix $M\in\RR^{d\times d}$ can be uniquely decomposed as the sum of a symmetric and skew-symmetric matrix $M = S(M) + A(M)$. By applying this decomposition to the Jacobian matrix $\nabla_x F_t(x)$ of $F_t$, we can show that the time derivative of $\lVert x_t-z_t \rVert$ only involves the symmetric part  $S(\nabla_x F_t(x))$ (see Appendix~\ref{proof:continuous-lip} for details). 
+The continuous time interpretation allows us to better investigate the robustness properties and assess how a difference of the initial values (the inputs) impacts the inference flow of the model. Let us consider two continuous flows $x_t$ and $z_t$ associated with $F_t$ but differing in their respective initial values $x_0$ and $z_0$. Our goal is to characterize the time evolution of $\lVert x_t-z_t \rVert$ by studying its  time derivative. We recall that  every matrix $M\in\RR^{d\times d}$ can be uniquely decomposed as the sum of a symmetric and skew-symmetric matrix $M = S(M) + A(M)$. By applying this decomposition to the Jacobian matrix $\nabla_x F_t(x)$ of $F_t$, we can show that the time derivative of $\lVert x_t-z_t \rVert^2$ only involves the symmetric part  $S(\nabla_x F_t(x))$. 
 
-For two symmetric matrices $S_1,S_2\in\RR^{d\times d}$,  we denote $S_1\preceq S_2$ if, for all $x\in\RR^d$, $\langle x,(S_2-S_1)x\rangle\geq 0$. By focusing on the symmetric part of the Jacobian matrix we can show in Appendix~\ref{proof:continuous-lip} the following proposition.
+For two symmetric matrices $S_1,S_2\in\RR^{d\times d}$,  we denote $S_1\preceq S_2$ if, for all $x\in\RR^d$, $\langle x,(S_2-S_1)x\rangle\geq 0$. By focusing on the symmetric part of the Jacobian matrix we can show the following proposition.
 \begin{prop}
 \label{prop:continuous-lip}
 Let $(F_{t})_{t\in[0,T]}$ be a family of differentiable  functions almost everywhere on $\RR^d$.
@@ -16,7 +16,34 @@ for all $x\in\RR^d$, and $t\in [ 0,T]$. Then the flow associated with $F_t$ sati
 \end{align*}
 \end{prop}
 
-The symmetric part plays even a more important role since one can show that a function whose Jacobian is always skew-symmetric is actually linear (see Appendix~\ref{sup:skew} for more details). However, constraining $S(\nabla_x F_{t}(x))$ in the general case is technically difficult and a solution resorts to a more intuitive parametrization of  $F_t$ as the sum of two functions $F_{1,t}$ and $F_{2,t}$ whose Jacobian matrix are respectively symmetric  and skew-symmetric.  Thus, such a parametrization enforces $F_{2,t}$  to be linear and skew-symmetric. For the choice of $F_{1,t}$, we propose to rely on potential functions: a function  $F_{1,t}:\RR^d \to \RR^d$ derives from a simpler family of scalar valued function in $\RR^d$, called the \emph{potential}, via the gradient operation. Moreover, since the Hessian of the potential is symmetric, the Jacobian for $F_{1,t}$ is then also symmetric.  If we had the convex property to this potential, its Hessian has positive eigenvalues. Therefore we introduce the following corollary. See proof in Appendix~\ref{proof:conv-skew} 
+
+\begin{proof}
+  Consider the time derivative of the square difference between the two flows $x_t$ and $z_t$ associated with the function $F_t$ and following the definition~\ref{def:flow}: 
+  \begin{align*}
+    \frac{d}{dt} \lVert x_t-z_t\rVert_2^2 & = 2 \big\langle x_t-z_t,\frac{d}{dt}( x_t-z_t)\big\rangle\\
+      &=2 \big\langle x_t-z_t,F_{\theta_{t}}(x_{t})-F_{\theta_{t}}(z_{t})\big\rangle \\
+      &=  2 \big\langle x_t-z_t,\int_0^1\nabla_xF_{\theta_{t}}(x_{t}+s(z_t-z_t))(x_t-z_t)ds\big\rangle\textrm{, by Taylor-Lagrange formula}\\ 
+      &=  2 \int_0^1\big\langle x_t-z_t,\nabla_xF_{\theta_{t}}(x_{t}+s(z_t-z_t))(x_t-z_t)\big\rangle ds\\
+       &=  2 \int_0^1\big\langle x_t-z_t,S(\nabla_xF_{\theta_{t}}(x_{t}+s(z_t-z_t)))(x_t-z_t)\big\rangle ds
+  \end{align*}
+  In the last step, we used that for every skew-symmetric matrix $A$ and vector $x$, $\lVert x,Ax\rVert = 0$.
+  Since $\mu_tI\preceq S(\nabla_xF_{\theta_{t}}(x_{t}+s(z_t-y_t)))\preceq  \lambda_tI$, we get
+  \begin{align*}
+   2\mu_t \lVert x_t-z_t\rVert_2^2 \leq \frac{d}{dt} \lVert x_t-z_t\rVert_2^2 \leq 2\lambda_t \lVert x_t-z_t\rVert_2^2
+  \end{align*}
+  Then by Gronwall Lemma, we have
+  \begin{align*}
+    \lVert x_0-y_0 \rVert e^{\int_0^t\mu_s ds}\leq \lVert x_t-y_t \rVert\leq \lVert x_0-y_0 \rVert e^{ \int_0^t\lambda_s ds}
+  \end{align*}
+  which concludes the proof.
+  \end{proof}
+
+The symmetric part plays even a more important role since one can show that a twice differentiable function whose Jacobian is always skew-symmetric is actually linear. Indeed, let $F:=(F_1,\dots,F_d):\RR^d\to\RR^d$ be a twice differentiable function such that $\nabla F(x)$ is skew-symmetric for all $x\in\RR^d$. Then we have for all $i,j,k$:
+\begin{align*}
+    \partial_i\partial_j F_k =  -\partial_i\partial_k F_j =-\partial_k\partial_i F_j = \partial_k\partial_j F_i = \partial_j\partial_k F_i = -\partial_j\partial_i F_k = -\partial_i\partial_j F_k
+\end{align*}
+So we have $\partial_i\partial_j F_k =0$ and then $F$ is linear: there exists a skew-symmetric matrix $A$ such that $F(x)=Ax$.
+Moreover, constraining $S(\nabla_x F_{t}(x))$ in the general case is technically difficult and a solution resorts to a more intuitive parametrization of  $F_t$ as the sum of two functions $F_{1,t}$ and $F_{2,t}$ whose Jacobian matrix are respectively symmetric  and skew-symmetric.  Thus, such a parametrization enforces $F_{2,t}$  to be linear and skew-symmetric. For the choice of $F_{1,t}$, we propose to rely on potential functions: a function  $F_{1,t}:\RR^d \to \RR^d$ derives from a simpler family of scalar valued function in $\RR^d$, called the \emph{potential}, via the gradient operation. Moreover, since the Hessian of the potential is symmetric, the Jacobian for $F_{1,t}$ is then also symmetric.  If we had the convex property to this potential, its Hessian has positive eigenvalues. Therefore we introduce the following corollary. 
 
 \begin{corollary} 
 \label{cor:conv-skew}Let $(f_{t})_{t\in[0,T]}$ be a family of convex differentiable functions on $\RR^d$ and $(A_t)_{t\in[0,T]}$ a family of skew symmetric matrices. Let us define 
@@ -26,6 +53,12 @@ then the flow associated with $F_t$ satisfies for all initial conditions $x_0$ a
 \lVert x_t-z_t \rVert\leq \lVert x_0-z_0 \rVert
 \end{align*}
 \end{corollary}
+\begin{proof}
+
+  For all $t,x$, we have $F_t(x) = -\nabla_x f_{t}(x)+A_t x$ ~ so~
+  $\nabla_x F_t(x) = -\nabla_x^2 f_{t}(x)+A_t$. Then $S(\nabla_x F_t(x)) =-\nabla_x^2 f_{t}(x)$. Since $f$ is convex, we have $\nabla_x^2 f_{t}(x)\succeq 0$. So by application of Proposition~\ref{prop:continuous-lip}, we deduce $\lVert x_t-y_t \rVert\leq \lVert x_0-y_0 \rVert$ for all trajectories starting from $x_0$ and $y_0$.
+\end{proof}
+
 
 This simple property suggests that if we could parameterize $F_t$  with convex potentials, it would be less sensitive to input perturbations and therefore more robust to adversarial examples. We also remark that the skew symmetric part is then norm-preserving.
 However, the discretization of such flow is challenging in order to maintain this property of stability. 
@@ -39,7 +72,7 @@ x_{t+1} = x_t+ F_t(x_t)
 \end{align*}
 However, if $A_t\neq 0$, this discretized system might not satisfy $\lVert x_t-z_t\rVert\leq\lVert x_0-z_0\rVert$. Indeed, consider the simple example where $f_t=0$. We then have:
 \begin{align*}
-\lVert x_{t+1}-z_{t+1}\rVert - \lVert x_{t}-z_{t}\rVert =\lVert A_t\left(x_{t}-z_{t}\right)\rVert.
+\lVert x_{t+1}-z_{t+1}\rVert^2 - \lVert x_{t}-z_{t}\rVert^2 =\lVert A_t\left(x_{t}-z_{t}\right)\rVert^2.
 \end{align*}
 Thus explicit Euler scheme cannot guarantee Lipschitzness when $A_t\neq 0$. To overcome this difficulty, the discretization step can be split in two parts, one for $\nabla_x f_t$ and one for $A_t$: 
 \begin{align*}
@@ -65,10 +98,43 @@ Let $t\in\{1,\cdots,T\}$ Let us assume that $f_{t}$ is $L_t$-smooth. We  define 
 Consider now two trajectories $x_t$ and $z_t$ with initial points $x_0=x$ and $z_0=z$ respectively,  if $0\leq h_t\leq \frac{2}{L_t}$,  then 
 $$\lVert x_{t+\frac12}-z_{t+\frac12}\rVert_2\leq \lVert x_t-z_t\rVert_2$$
 \end{prop}
+\begin{proof}
+  With $c_t = \lVert x_t -z_t\rVert_2^2$, we can write:
+  \begin{align*}
+     c_{t+\frac12} - c_t = &-2 h_t \big\langle x_t - z_t, \nabla_xF_{\theta_{t}}(x_t) - \nabla_xF_{\theta_{t}}(z_t)  \big\rangle+ h_t^2 \lVert \nabla_xF_{\theta_{t}}(z_t) - \nabla_xF_{\theta_{t}}(z_t)\rVert_2^2
+  \end{align*}
+  This equality allows us to derive the equivalence between  $c_{t+1} \leq c_t$ and: 
+  \begin{align*}
+     \frac{h_t}{2}
+     \lVert  \nabla F_{\theta_{t}}(x_t) - \nabla F_{\theta_{t}}(z_t)\rVert_2^2
+     \leq
+     \langle x_t -z_t, \nabla F_{\theta_{t}}(z_t) - \nabla F_{\theta_{t}}(z_t) \rangle 
+  \end{align*}
+  Moreover, assuming that $F_{\theta_t}$ being  that:
+  \begin{align*}
+     \frac{1}{L_t} &\lVert \nabla_xF_{\theta_{t}}(x_t) - \nabla_xF_{\theta_{t}}(z_t)\rVert_2^2 
+     \leq\big\langle x_t -z_t, \nabla_xF_{\theta_{t}}(x_t) - \nabla_xF_{\theta_{t}}(z_t) \big\rangle
+  \end{align*}
+  We can see with this last inequality that if we enforce  $h_t \leq \frac{2}{L_t}$, we get $c_{t+\frac12} \leq c_t$ which concludes the proof.
+  \end{proof}
+  
+
+
 In Section~\ref{sec:param}, we describe how to parametrize a neural network layer to implement such a discretization step by leveraging the recent work on Input Convex Neural Networks~\cite{amos2017input}. 
 
 \begin{rmq}
-Another solution relies on the implicit Euler scheme: $ x_{t+\frac12} = x_{t}-\nabla_xf_{t}(x_{t+\frac12})$. We show in Appendix~\ref{sup:implicit} that this strategy defines a $1$-Lipschitz flow without further assumption on $f_t$ than convexity. We propose an implementation. However preliminary experiments did not show competitive results and the training time is prohibitive. We leave this solution for future work. 
+Another solution relies on the implicit Euler scheme: $ x_{t+\frac12} = x_{t}-\nabla_xf_{t}(x_{t+\frac12})$. Let us remark that $x_{t+\frac12}$ is uniquely defined as:
+\begin{align*}
+ x_{t+\frac12} =\argminB_{x\in\RR^d} \frac 12\lVert x-x_t\rVert^2+ f_t(x)  
+\end{align*}
+We recognized here the proximal operator of $f_t$ that is uniquely defined since $f_t$ is convex. Moreover we have for two trajectories $x_t$ and $z_t$:
+\begin{align*}
+   \lVert x_t-z_t\rVert^2_2& =  \lVert x_{t+\frac12}-z_{t+\frac12} +\nabla_xf_{t}(x_{t+\frac12})-\nabla_xf_{t}(z_{t+\frac12}) \rVert^2_2 \\
+   &=  \lVert x_{t+\frac12}-z_{t+\frac12}\rVert^2 + 2\langle x_t-z_t,\nabla_xf_{t}(x_{t+\frac12})-\nabla_xf_{t}(z_{t+\frac12})\rangle \\
+   &+\lVert\nabla_xf_{t}(x_{t+\frac12})-\nabla_xf_{t}(z_{t+\frac12}) \rVert^2_2 \\
+   &\geq  \lVert x_{t+\frac12}-z_{t+\frac12}\rVert^2 
+\end{align*}
+where the last inequality is deduced from the convexity of $f_t$. So, without any further assumption on $f_t$, the discretized implicit convex potential flow is $1$-Lipschitz. Then, this strategy defines a $1$-Lipschitz flow without further assumption on $f_t$ than convexity. To compute such a layer, one could solve the proximal operator strongly convex-minimization optimization problem. However, This strategy is not computationally efficient and not scalable and preliminary experiments did not show competitive results and the training time is prohibitive. We leave this solution for future work. 
 
 \end{rmq}
 \subsection{Discretization scheme for $A_t$}
@@ -101,7 +167,7 @@ This step is therefore clearly norm preserving but the matrix exponentiation is 
 \section{Parametrizing Convex Potentials Layers}
 \label{sec:param}
 
-As presented in the previous section, parametrizing the skew symmetric updates has been extensively studied by~\citet{trockman2021orthogonalizing,skew2021sahil}. In this paper we focus on  the parametrization of symmetric update with the convex potentials proposed in~\ref{prop:discrete_convex_potentials}. For that purpose, the Input Convex Neural Network (ICNN) \citep{amos2017input} provide a relevant starting point that we will extend. 
+As presented in the previous section, parametrizing the skew symmetric updates has been extensively studied by~\citet{trockman2021orthogonalizing,skew2021sahil}. In this chapter, we focus on  the parametrization of symmetric update with the convex potentials proposed in~\ref{prop:discrete_convex_potentials}. For that purpose, the Input Convex Neural Network (ICNN) \citep{amos2017input} provide a relevant starting point that we will extend. 
 
 \subsection{Gradient of ICNN}
 We use $1$-layer ICNN~\citep{amos2017input} to define an efficient computation of Convex Potentials Flows. For any vectors $w_1,\dots w_k\in\mathbb{R}^d$, and bias terms  $b_1,\dots,b_k\in \mathbb{R}$, and for $\phi$ a convex function,  the potential $F$ defined as:
@@ -143,7 +209,7 @@ In order to build a $1$-Lipschitz Residual Network, all operations need to be pr
 \paragraph{Reducing dimensionsionality.} Dimensionality reduction is another essential operation in neural networks. On one hand, its  goal is to  reduce the number of parameters and thus the amount of computation required to build the network. On the other hand it allows the model to progressively map the input space on the output dimension, which corresponds in many cases to the number of different labels $K$. 
 In this context, several operations exist:
 pooling layers are used to extract information present in a region of the feature map generated by a convolution layer. One can easily adapt pooling layers (\emph{e.g.} max and average) to make them $1$-Lipschitz~\citep{bartlett2017spectrally}.
-Finally, a simple method to reduce the dimension is the product with a non-square matrix. In this paper, we simply implement it as  the truncation of the output. This obviously maintains the Lipschitz constant.
+Finally, a simple method to reduce the dimension is the product with a non-square matrix. We simply implement it as  the truncation of the output. This obviously maintains the Lipschitz constant.
 
 
 \begin{algorithm}[tb]
