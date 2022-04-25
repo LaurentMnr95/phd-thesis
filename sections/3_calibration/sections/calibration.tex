@@ -7,7 +7,7 @@ In this section,  we study the calibration of adversarial margin losses with reg
 One of our main contributions is to find necessary and sufficient conditions for calibration in the adversarial setting. \textcolor{black}{In a nutshell, we identify that for studying calibration it is central to understand  the case where there might be indecesions for classifiers (i.e. $\eta=1/2$)}. Indeed in this case, either labelling positevely or negatively the input $x$ would lead the same loss for $x$. Next result provides a necessary conditions for calibration. 
 
 \begin{thm}[Necessary conditions for Calibration] 
-\label{thm:calibration}
+\label{thm:calibration-nec}
 Let $\phi$  be a continuous margin loss and $\varepsilon>0$. If $\phi$ is adversarially  calibrated at level $\varepsilon$, then $\phi$ is  calibrated in the standard classification setting and $0\not\in \argminB_{\alpha\in\bar{\RR}}
 \frac12\phi(\alpha)+\frac12\phi(-\alpha)$. 
 \end{thm}
@@ -34,8 +34,8 @@ It turns out that, given an additional assumption, this condition is actually su
 
 
 \begin{thm}[Sufficient conditions for Calibration] 
-\label{thm:calibration}
-Let $\phi$  be a continuous margin loss and $\varepsilon>0$. If $\phi$ is strictly decreasing in a neighbourhood of $0$ and calibrated in the standard classification setting and $0\not\in \argminB_{\alpha\in\bar{\RR}}
+\label{thm:calibration-suf}
+Let $\phi$  be a continuous margin loss and $\varepsilon>0$. If $\phi$ is strictly decreasing in a neighbourhood of $0$ and calibrated in the standard setting and $0\not\in \argminB_{\alpha\in\bar{\RR}}
 \frac12\phi(\alpha)+\frac12\phi(-\alpha)$, then $\phi$ is adversarially uniformly calibrated at level $\varepsilon$.
 \end{thm}
 
@@ -78,7 +78,7 @@ Let $\phi$  be a continuous margin loss and $\varepsilon>0$. If $\phi$ is strict
     \end{align*}
     
     Let denote $\alpha_n = f_n(u_n)$ and $\beta_n = f_n(v_n)$. %Up to an extraction of a subsequence, we have $\alpha_n\xrightarrow[n\to\infty]{} \alpha\in \bar{\RR}$ and $\beta_n = f_n(u_n)\xrightarrow[n\to\infty]{} \beta\in \bar{\RR}$. 
-    Moreover, we have, thanks to Lemma~\ref{xxx}:
+    Moreover, we have, thanks to Proposition~\ref{prop:calib-equality}:
     \begin{align*}
       0\leq \frac12 \phi(\alpha_n) +  \frac12 \phi(-\alpha_n)- \inf_{\alpha\in\RR}\frac12 \phi(\alpha)+\frac12\phi(-\alpha)\leq \mathcal{C}_{\phi_\varepsilon}(x,\frac12,f_n) - \mathcal{C}_{\phi_\varepsilon}^\star(x,\frac12)\leq \frac1n
     \end{align*}
@@ -138,14 +138,14 @@ For the reciprocal, the additional assumption of strict decreasing of $\phi$ in 
 
 \subsection{Negative results}
 
-Thanks to Theorem~\ref{thm:calibration}, we can present two notable corollaries dismissing two important classes of surrogate losses in the standard setting. The first class of losses are convex margin losses. This losses are maybe the most widely used in modern day machine learning as they comprise the logistic loss or the margin loss that are the building block of most classification algorithms. %\textcolor{blue}{[CITE Pytorch or else]}
+Thanks to Theorem~\ref{thm:calibration-nec}, we can present two notable corollaries dismissing two important classes of surrogate losses in the standard setting. The first class of losses are convex margin losses. This losses are maybe the most widely used in modern day machine learning as they comprise the logistic loss or the margin loss that are the building block of most classification algorithms. %\textcolor{blue}{[CITE Pytorch or else]}
 
 \begin{coro} Let $\varepsilon>0$. Then no convex margin loss can be adversarially calibrated at level $\epsilon$.
 \end{coro} 
 %$\phi$ a convex margin loss. Then, $\phi$ is not adversarially calibrated at level $\varepsilon$. 
 
 
-Given Theorem~\ref{thm:calibration}, this result is trivial : a convex loss satisfies $\frac12\phi(\alpha)+\frac12\phi(-\alpha)\geq \phi(0)$, hence $0\in \argminB_{\alpha\in\RR}
+Given Theorem~\ref{thm:calibration-nec}, this result is trivial : a convex loss satisfies $\frac12\phi(\alpha)+\frac12\phi(-\alpha)\geq \phi(0)$, hence $0\in \argminB_{\alpha\in\RR}
 \phi(\alpha)+\phi(-\alpha)$.  Then, $\phi$ is not adversarially calibrated at level $\varepsilon$. This result seems counter-intuitive and highlights the difficulty of optimizing and understanding the adversarial risk. Since  convex losses are not calibrated, one may hope to rely on  famous non convex losses such as that sigmoid and ramp losses. But, unfortunately, such losses are not neither calibrated.
 
 
@@ -154,12 +154,12 @@ Given Theorem~\ref{thm:calibration}, this result is trivial : a convex loss sati
 \begin{coro} Let $\varepsilon>0$. Let $\lambda\in \RR$ and \textcolor{black}{$\psi$} be a lower-bounded odd function such that for all $\alpha\in\RR$, $\psi>-\lambda$. We define $\psi$ as  $\phi(\alpha) = \lambda +\psi(\alpha)$. Then $\phi$ is not adversarially calibrated at level $\varepsilon$.
 \end{coro}
 Indeed, $\frac12{\phi}(\alpha)+\frac12{\phi}(-\alpha) =  \lambda$, so that $ \argminB_{\alpha\in\RR}
-\frac12\phi(\alpha)+\frac12\phi(-\alpha) = \RR$. Thanks to Theorem~\ref{thm:calibration}, $\phi$ is not adversarially calibrated at level $\varepsilon$.
+\frac12\phi(\alpha)+\frac12\phi(-\alpha) = \RR$. Thanks to Theorem~\ref{thm:calibration-nec}, $\phi$ is not adversarially calibrated at level $\varepsilon$.
 
 
 \subsection{Positive results}
 
-Theorem~\ref{thm:calibration} also gives sufficient conditions for $\phi$ to be adversarially calibrated. Inspired by this result, we devise a class of margin losses that are indeed calibrated in the adversarial settings. We call this class shifted odd losses and we define it as follows.
+Theorem~\ref{thm:calibration-suf} also gives sufficient conditions for $\phi$ to be adversarially calibrated. Inspired by this result, we devise a class of margin losses that are indeed calibrated in the adversarial settings. We call this class shifted odd losses and we define it as follows.
 \begin{definition}[Shifted odd losses]
 \label{def:shifted}
 We say that $\phi$ is a \emph{shifted odd margin loss} if there exists $\lambda\geq0$, $\tau>0$, and a continuous lower bounded strictly decreasing odd function \textcolor{black}{$\psi$} in a neighbourhood of $0$ such that for all $\alpha\in\RR$, $\psi(\alpha)\geq -\lambda$ and $\phi(\alpha) = \lambda+\psi(\alpha-\tau)$. 
@@ -231,6 +231,10 @@ Let $\phi$ be a shifted odd margin loss. For every $\varepsilon>0$, ${\phi}$ is 
     
     Finally we get that  that $\Tilde{\phi}$ is calibrated for adversarial classification for every $\varepsilon>0$.
 \end{proof}
+
+
+
+
     
     
 
@@ -247,3 +251,75 @@ Let $\phi$ be a shifted odd margin loss. For every $\varepsilon>0$, ${\phi}$ is 
 
 
 
+
+\subsection{About $\mathcal{H}$-calibration}
+\label{sec:hcal}
+Our results naturally extends to $\mathcal{H}$-calibration. With mild assumptions on $\mathcal{H}$, it is possible to recover all the results made on calibration on $\mathcal{F}(\XX)$. First, it worth noting that, if $\mathcal{H}$ contains all constant functions, then the notion of $\mathcal{H}$-calibration and uniform $\mathcal{H}$-calibration are equivalent in the standard setting.
+
+
+
+
+\begin{prop*}
+Let $\mathcal{H}\subset \mathcal{F}(\mathcal{X})$. Let us assume that $\mathcal{H}$ contains all constant functions. Let $\phi$ be a continuous classification margin loss.  $\phi$ is uniformly $\mathcal{H}$-calibrated for standard classification if and only if  $\phi$ is uniformly calibrated for standard classification. It also holds for non-uniform calibration.
+\end{prop*}
+\begin{proof}
+Let us assume that $\phi$ is a continuous classification margin loss and that $\phi$ is uniformly calibrated. Let $\epsilon>0$. There exists $\delta>0$ such that, for all $\eta\in[0,1]$, $x\in\mathcal{X}$ and $f\in\mathcal{F}(\XX)$:
+\begin{align*}
+    \mathcal{C}_{\phi}(x,\eta,f)- \mathcal{C}^\star_{\phi}(x,\eta)\leq\delta\implies\mathcal{C}(x,\eta,f)- \mathcal{C}^\star(x,\eta)\leq \epsilon\quad.
+\end{align*}
+
+Let $\eta\in[0,1]$, $x\in\mathcal{X}$ and $f\in\mathcal{H}$ such that $ \mathcal{C}_{\phi}(x,\eta,f)- \mathcal{C}^\star_{\phi,\mathcal{H}}(x,\eta)\leq\delta$. Thanks to the previous proposition, $\mathcal{C}^\star_{\phi,\mathcal{H}}(x,\eta)=\mathcal{C}^\star_{\phi}(x,\eta)$, and $f\in\mathcal{F}(\XX)$, then $\mathcal{C}_{\phi}(x,\eta,f)- \mathcal{C}^\star_{\phi}(x,\eta)\leq\delta$ and  then:
+\begin{align*}
+    \mathcal{C}(x,\eta,f)- \mathcal{C}^\star_{\mathcal{H}}(x,\eta) =  \mathcal{C}(x,\eta,f)- \mathcal{C}^\star(x,\eta) \leq\epsilon
+\end{align*}
+Then $\phi$ is uniformly $\mathcal{H}$-calibrated in standard classification.
+
+Reciprocally, let us assume that $\phi$ is a continuous classification margin loss and that $\phi$ is uniformly $\mathcal{H}$-calibrated. Let $\epsilon>0$. There exists $\delta>0$ such that, for all $\eta\in[0,1]$, $x\in\mathcal{X}$ and $f\in\mathcal{H}$:
+\begin{align*}
+    \mathcal{C}_{\phi}(x,\eta,f)- \mathcal{C}^\star_{\phi,\mathcal{H}}(x,\eta)\leq\delta\implies\mathcal{C}(x,\eta,f)- \mathcal{C}^\star_\mathcal{H}(x,\eta)\leq \epsilon\quad.
+\end{align*}
+
+
+Let $\eta\in[0,1]$, $x\in\mathcal{X}$ and $f\in\mathcal{H}$ such that $ \mathcal{C}_{\phi}(x,\eta,f)- \mathcal{C}^\star_{\phi,\mathcal{H}}(x,\eta)\leq\delta$.  $\mathcal{C}_{\phi}(x,\eta,f) = \eta\phi(f(x))+(1-\eta)\phi(-f(x))$. Let $\Tilde{f}:u\mapsto f(x)$ for all $u\in\mathcal{X}$, then $\Tilde{f}\in\mathcal{H}$ since $\Tilde{f}$ is constant, $\mathcal{C}_{\phi}(x,\eta,f) = \mathcal{C}_{\phi}(x,\eta,\Tilde{f})$ and $\mathcal{C}(x,\eta,f) = \mathcal{C}(x,\eta,\Tilde{f})$. Thanks to the previous proposition, $\mathcal{C}^\star_{\phi,\mathcal{H}}(x,\eta)=\mathcal{C}^\star_{\phi}(x,\eta)$. Then: $ \mathcal{C}_{\phi}(x,\eta,\Tilde{f})-\mathcal{C}^\star_{\phi,\mathcal{H}}(x,\eta)\leq \delta$ and then:
+\begin{align*}
+    \mathcal{C}(x,\eta,f)-\mathcal{C}^\star_{\phi,\mathcal{H}}(x,\eta) =  \mathcal{C}(x,\eta,\Tilde{f})-\mathcal{C}^\star_{\phi}(x,\eta) \leq \epsilon
+\end{align*}
+Then $\phi$ is uniformly calibrated in standard classification.
+\end{proof}
+
+
+
+
+Proposition~\ref{prop:calib-equality} also naturally extends naturally to $\mathcal{H}$-calibration as long as $\mathcal{H}$ contains all constant functions. 
+
+
+\begin{prop*}
+Let $\mathcal{H}\subset \mathcal{F}(\mathcal{X})$. Let us assume that $\mathcal{H}$ contains all constant functions. Let $\varepsilon>0$ and $\phi$ be a continuous classification margin loss.  For all $x\in\mathcal{X}$ and $\eta\in[0,1]$, we have
+\begin{align*}
+    \mathcal{C}^\star_{\phi_\varepsilon,\mathcal{H}}(x,\eta)=\mathcal{C}^\star_{\phi,\mathcal{H}}(x,\eta) =\inf_{\alpha\in\RR}\eta \phi(\alpha)+(1-\eta)\phi(-\alpha)= \mathcal{C}^\star_{\phi_\varepsilon}(x,\eta)=\mathcal{C}^\star_{\phi}(x,\eta)\quad.
+\end{align*}
+The last equality also holds for the adversarial $0/1$ loss.
+\end{prop*}
+The proof is exactly the same that Proposition~\ref{prop:calib-equality} since we used a constant function to prove the equality. We then get the necessary and sufficient conditions as follows.
+
+
+
+\begin{prop*}[Necessary conditions for $\mathcal{H}$-Calibration of adversarial losses] 
+Let $\varepsilon>0$. Let $\mathcal{H}\subset \mathcal{F}(\mathcal{X})$. Let us assume that $\mathcal{H}$ contains all constant functions and that there exists $x\in\XX$ and $(f_n)_n\in\mathcal{H}^\mathbb{N}$ such that $f_n(u)\to 0$ for all $ u\in B_\varepsilon(x)$ and for all $n\in\mathbb{N}$, $\sup_{u\in B_\varepsilon(x)} f_n(u)>0$ and  $\inf_{u\in B_\varepsilon(x)} f_n(u)<0$ 
+Let $\phi$  be a continuous margin loss .  If $\phi$ is adversarially uniformly $\mathcal{H}$-calibrated at level $\varepsilon$, then $\phi$ is uniformly calibrated in the standard classification setting and $0\not\in \argminB_{\alpha\in\bar{\RR}}
+\frac12\phi(\alpha)+\frac12\phi(-\alpha)$. 
+
+\end{prop*}
+
+
+TODO
+
+\begin{prop*}[Sufficient conditions for $\mathcal{H}$-Calibration of adversarial losses]
+Let $\mathcal{H}\subset \mathcal{F}(\mathcal{X})$. Let us assume that $\mathcal{H}$ contains all constant functions.
+Let $\phi$  be a continuous strictly decreasing margin loss and $\varepsilon>0$. If $\phi$ is calibrated in the standard classification setting and $0\not\in \argminB_{\alpha\in\bar{\RR}}
+\frac12\phi(\alpha)+\frac12\phi(-\alpha)$, then $\phi$ is adversarially uniformly $\mathcal{H}$-calibrated at level $\varepsilon$.
+
+
+\end{prop*}
+
+The proof is identical to the reciprocal of Theorem~\ref{thm:calibration}. TODO

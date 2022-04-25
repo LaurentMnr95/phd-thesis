@@ -1,6 +1,6 @@
 \section{Towards Adversarial Consistency}
 \label{sec:consistency}
-In this section, we focus our study on the problem of adversarial consistency. In a first part, taking inspiration from~\citet{long2013consistency,awasthi2021calibration}, we study the $\varepsilon$-realisable case, i.e. the case where the adversarial risk at level $\varepsilon$ equals zero. In a second part, we analyze the behaviour of the shifted losses defined in Section~\ref{xxx}, above.
+In this section, we focus our study on the problem of adversarial consistency. In a first part, taking inspiration from~\citet{long2013consistency,awasthi2021calibration}, we study the $\varepsilon$-realisable case, i.e. the case where the adversarial risk at level $\varepsilon$ equals zero. In a second part, we analyze the behaviour of a candidate class of losses.
 
 
 
@@ -73,7 +73,7 @@ We get: $\risk_{\phi_\varepsilon,\PP}(g)\leq \inf_{\alpha\in\RR}\phi(\alpha)+4\e
 
 We are now set to prove the result of consistency in the realisable case.
 \begin{proof}
-Let $0<\epsilon<1$. Thanks to Theorem~\ref{xxx}, $\phi$ is uniformly calibrated for standard classification, then, there exists $\delta>0$ such that for all $f\in\mathcal{F}(\XX)$ and for all $x$:
+Let $0<\epsilon<1$. Thanks to Theorem~\ref{thm:cal-standard}, $\phi$ is uniformly calibrated for standard classification, then, there exists $\delta>0$ such that for all $f\in\mathcal{F}(\XX)$ and for all $x$:
 \begin{align*}
     \phi(yf(x))-\inf_{\alpha\in\RR}\phi(\alpha)\leq \delta \implies \mathbf{1}_{y\text{sign}f(x)\leq 0} = 0
 \end{align*}
@@ -202,7 +202,7 @@ In particular, we note that this property holds true for the standard risk. To p
       \\ &= \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)}  \risk_{\QQ}^\star= \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)}\inf_{f\in\mathcal{F}(\XX)} \risk_{\QQ}(f)  \\
       & =  \inf_{f\in\mathcal{F}(\XX)} \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)}\risk_{\QQ}(f) = \risk_{\varepsilon,\PP}^\star \\
     \end{align*}
-    The last equality is a consequence of Theorem~\ref{thm:xxx}. Then finally we get that $\risk_{\phi_\varepsilon,\PP}^\star=  \risk_{\varepsilon,\PP}^\star$.
+Then finally we get that $\risk_{\phi_\varepsilon,\PP}^\star=  \risk_{\varepsilon,\PP}^\star$.
     
     \end{proof}
 
