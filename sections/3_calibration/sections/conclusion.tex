@@ -1,6 +1,8 @@
-\section{Conclusion}
-In this paper, we set some solid theoretical foundations for the study of adversarial consistency. We highlighted the importance of the definition of the $0/1$ loss, as well as the nuance between calibration and consistency that is specific to the adversarial setting.
+\section{Discussions and Open Questions}
+In this chapter, we set some solid theoretical foundations for the study of adversarial consistency. We highlighted the importance of the definition of the $0/1$ loss, as well as the nuance between calibration and consistency that is specific to the adversarial setting. Furthermore, we solved the calibration problem, by giving a necessary and sufficient condition for decreasing, continuous margin losses to be adversarially calibrated. Since this is a necessary condition for consistency, an important consequence of this result is that no convex margin loss can be consistent. This rules out most of the commonly used surrogates, and spurs the need for new families of consistent, yet easily optimisable families of losses.
 
-Furthermore, we solved the calibration problem, by giving a necessary and sufficient condition for decreasing, continuous margin losses to be adversarially calibrated. Since this is a necessary condition for consistency, an important consequence of this result is that no convex margin loss can be consistent. This rules out most of the commonly used surrogates, and spurs the need for new families of consistent, yet easily optimisable families of losses.
+\paragraph*{Consistency of $0/1$-like shifted margin losses.} In Section~\ref{sec:consis-gen}, we introduced candidates losses for consistency. While these losses might lead to promising results, there is still a gap to prove the consistency of these losses. This question is left as further work. TO ADD STH
 
-We provide a first insights into which losses may be consistent, by showing that translations of odd loss functions are calibrated.
+
+
+\paragraph*{Necessary and sufficients conditions for consistency.} While we provided necessary and sufficient conditions for calibration in the adversarial setting, it is a difficult and open question to solve the problem of consistency. One may ask if the conditions we found for calibration might be necessary or sufficient for consistency. While there is an intuition that the notion of calibration is much weaker than consistency, we did not prove this. It would be challenging to find a counter-example for a loss that is calibrated but not consistent in the adversarial setting.

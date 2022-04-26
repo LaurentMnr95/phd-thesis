@@ -1,4 +1,4 @@
-\section{Q2}
+\section{Surrogate losses in the Adversarial Setting}
 \label{sec:rw-q2}
 To account for the possibility of an adversary manipulating the inputs at test time, we need to revisit the standard risk minimization problem by penalizing any classification model that might change its decision when the point of interest is slightly changed. Essentially, this is done by replacing the standard (pointwise) $0/1$ loss with an adversarial version that mimics its behavior locally but also penalizes any error in a given region around the point on which it is evaluated.
 
@@ -22,7 +22,7 @@ This difficulty is illustrated in the literature, where articles published in hi
 
 \subsection{Notions of Calibration and Consistency}
 
-The $0/1$-loss is both non-continuous and non-convex, and its direct minimization is known to be an NP-hard~\cite{xxx} problem. The concepts of calibration and consistency aim at identifying the properties that a loss must satisfy in order to be a good surrogate for the minimization of the $0/1$-loss. In this section, we define these two concepts and explain the difference between them. First of all, we need to give a general definition of a loss function.
+The $0/1$-loss is both non-continuous and non-convex, and its direct minimization is a difficult problem. The concepts of calibration and consistency aim at identifying the properties that a loss must satisfy in order to be a good surrogate for the minimization of the $0/1$-loss. In this section, we define these two concepts and explain the difference between them. First of all, we need to give a general definition of a loss function.
 
 \begin{definition}[Loss function] A loss function is a function $L:\mathcal{X}\times\mathcal{Y}\times \mathcal{F}(\mathcal{X})\to \mathbb{R}$ such that $L(\cdot,\cdot,f)$ is a Borel measurable for all $f\in\mathcal{F}(\mathcal{X})$. 
 \end{definition}

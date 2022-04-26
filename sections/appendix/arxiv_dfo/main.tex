@@ -1,0 +1,835 @@
+\chapter{Black-box adversarial attacks: tiling and evolution strategies}
+
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+
+\newcommand{\nico}[1]{{\color{blue} #1}}
+
+\def\fixme#1{\textcolor{red}{[#1]}\marginpar{\hspace*{-5pt}\textcolor{red}{FIXME}}}
+
+%\iclrfinalcopy % Uncomment for camera-ready version, but NOT for submission.
+
+We introduce a new black-box attack achieving state of the art performances. Our approach is based on a new objective function, borrowing ideas from $\ell_\infty$-white box attacks, and particularly designed to fit derivative-free optimization requirements. It only requires to have access to the logits of the classifier without any other information which is a more realistic scenario.  Not only we introduce a new objective function, we extend previous works on black box adversarial attacks to a larger spectrum of evolution strategies and other derivative-free optimization methods. We also highlight a new intriguing property that deep neural networks are not robust to single shot tiled attacks. Our models achieve, with a budget limited to $10,000$ queries, results up to $99.2\%$ of success rate against InceptionV3 classifier  with $630$  queries to the network on average in the untargeted attacks setting, which is an improvement by $90$ queries of  the current state of the art. In the targeted setting, we are able to reach, with a limited budget of $100,000$, $100\%$ of success rate with a budget of $6,662$ queries on average, i.e. we need $800$ queries less than the current state of the art.
+%We propose a tiling method combined with state of the art derivative-free optimization methods for improving the efficiency of black-box adversarial attacks and compare many derivative-free optimization methods. This combination outperforms the state of the art.
+
+
+
+
+\section{Introduction}
+%\nico{my 2 cents: the paper looks very good, technically solid and overall very clear (adn the results are very good). I particularly liked, starting from the experiments section "NNs are not robust to tiled random noise" and then the message that this works particularly well with DFO. I think it would be great to add more clearly these elements in the intro/abstract because they are very simple and would make the reader curious (and also this would make the intro a bit more precise)}
+
+Despite their success, deep learning algorithms have shown vulnerability to adversarial attacks~\citep{biggio2013evasion,Szegedy2013IntriguingPO}, \textit{i.e.} small imperceptible perturbations of the inputs, that lead the networks to misclassify the generated adversarial examples. Since their discovery, adversarial attacks and defenses have become one of the hottest research topics in the machine learning community as serious  security issues are raised in many critical fields. They also question our understanding of deep learning behaviors. Although some advances have been made to explain theoretically~\citep{Moosavi2016Robustnessofaclassifier,sinha2017certifying,KolterRandomizedSmoothing,pinot2019theoretical} and experimentally~\citep{goodfellow2014explaining,Xie2017MitigatingAE,meng2017magnet,Samangouei2018DefenseGAN,araujo2019robust} adversarial attacks, the phenomenon remains misunderstood and there is still a gap to come up with principled guarantees on the robustness of neural networks against maliciously crafted attacks. Designing new and stronger attacks helps building better defenses, hence the motivation of our work.%\nico{The reader may believe your working on guarantees against adversarial attacks at this point. Maybe focus more on what are good/bad attacks? Or maybe that better attacks can help build better defenses, so it is important to work on them?}
+
+First attacks were generated in a setting where the attacker knows all the information of the network (architecture and parameters). In this \textit{white box} setting, the main idea is to perturb the input in the direction of the gradient of the loss w.r.t. the input~\citep{goodfellow2014explaining,kurakin2016adversarial,carlini2017towards,moosavi2016deepfool}.  This case is unrealistic because the attacker has only limited access to the network in practice. For instance, web services that propose commercial recognition systems such as Amazon or Google are backed by pretrained neural networks. A user can \textit{query} this system by sending an  image  to classify. For such a query, the user only has access to the inference results of the classifier which might be either the label, probabilities or logits. Such a setting is coined in the literature as the \textit{black box} setting. It is more realistic but also more challenging  from the attacker's standpoint.
+%And as so, it has stimulated a large body of literature in the very recent years. 
+
+%This is what we call the black box setting. This is a new line of research on the adversarial attacks topic. This is a more challenging setting for both attackers and defenders since it is more realistic.
+
+As a consequence, several works proposed black box attacks by just querying the inference results of a given classifier. A natural way consists in exploiting the transferability of an adversarial attack, based on the idea that if an example fools a classifier, it is more likely that it fools another one~\citep{papernot2016transferability}. In this case, a white box attack is crafted on a fully known classifier.~\cite{Papernot2017PBA} exploited this property to derive practical black box attacks. Another approach within the black box setting consists in estimating the gradient of the loss by querying the classifier~\citep{chen2017zoo,ilyas2018black,ilyas2018prior}. For these attacks, the PGD attack~\citep{kurakin2016adversarial,madry2018towards} algorithm is used and the gradient is replaced by its estimation. %\nico{Not sure I agree -- white box vs black box is not a matter of technique but of what the attacker has access to. Is there any reason to use a specific terminology for these approaches?}
+
+In this paper, we propose efficient black box adversarial attacks using stochastic derivative free optimization (DFO) methods with only access to the logits of the classifier. By efficient, we mean that our model requires a limited number of queries while outperforming the state of the art in terms of attack success rate. At the very core of our approach is a new objective function particularly designed to suit classical derivative free optimization.   We also highlight a new intriguing property that deep neural networks are not robust to single shot tiled attacks.  It leverages results and ideas from $\ell_\infty$-attacks. We also explore a large spectrum of evolution strategies and other derivative-free optimization methods thanks to the Nevergrad framework~\citep{nevergrad}. 
+
+%we beat the state of art while we require a limited In this paper, we explore a large spectrum of evolutionary strategies for crafting $\ell_\infty$-attacks. We also highlight that convolutional neural networks are not robust against tiled random noise. By combining the tiling trick and  derivative free optimization methods, we are able to build adversarial attacks that reaches state of the art level in terms of number of queries and success rate of the attack.
+
+\paragraph{Outline of the paper.} We present in Section~\ref{rw} the related work on adversarial attacks. Section~\ref{methods} presents the core of our approach. We introduce a new generic objective function and discuss two practical instantiations leading to a discrete and a continuous optimization problems. We then give more details on the best performing derivative-free optimization methods, and provide some insights on our models and optimization strategies. Section~\ref{expe} is dedicated to a thorough experimental analysis, where we show we reach state of the art performances by comparing our models with the most powerful black-box approaches on both targeted and untargeted attacks. We also assess our models against the most efficient so far defense strategy based on adversarial training. We finally conclude our paper in Section~\ref{sec:conc}. 
+%    \item We  present our attack methodology in Section~\ref{methods}. We present a discrete and a continuous search space (Section \ref{top}) for adversarial attacks, and present the best of our methods in Section \ref{es} and discuss the state of the art in DFO, specifically in our context, in Section \ref{hypo}.%We first present a discrete and continuous framework in which we can apply the derivative free optimization methods, and then give a brief overview of existing methods in derivative.
+ %   \item Finally, in Section~\ref{expe}, we present experimental results.
+%\end{enumerate}
+
+%\begin{enumerate}
+%    \item We will first present the existing black box attacks and their methodology.  
+%    \item We will present our method based on stochastic derivative free optimisation and a tiling method. 
+%    \item We present a large spectrum of experiments describing the results of our methods. We will show that we reach the state of the art in most cases.
+%\end{enumerate}
+
+
+\section{Related work}
+\label{rw}
+
+
+%\subsection{Adversarial attacks}
+
+Adversarial attacks have a long standing history in the machine learning community. Early works appeared in the mid 2000's where the authors were concerned about Spam classification~\citep{biggio2009evade}. % worked on spam attacks and defenses before proposing to adapt the same setting to image classification~\citep{biggio2013evasion}.
+~\cite{Szegedy2013IntriguingPO} revives this research topic by highlighting that deep convolutional networks can be easily fooled. Many adversarial attacks against deep neural networks have been proposed since then. One can distinguish two classes of attacks: white box and black box attacks. In the white box setting, the adversary is supposed to have full knowledge of the network (architecture and parameters), while in the black box one, the adversary only has limited access to the network: she does not know the architecture, and can only query the network and gets labels, logits or probabilities from her queries.   An attack is said to have \textit{suceeded} (we also talk about Attack Success Rate), if the input was originally well classified and the generated example is classified to the targeted label.
+
+The white box setting attracted more attention even if it is the more unrealistic between the two. The attacks are crafted by by back-propagating the gradient of the loss function w.r.t. the input. The problem writes as a non-convex optimization procedure that either constraints the perturbation or aims at minimizing its norm. Among the most popular ones, one can cite FGSM~\citep{goodfellow2014explaining}, PGD~\citep{kurakin2016adversarial,madry2018towards}, Deepfool~\citep{moosavi2016deepfool}, JSMA~\citep{Papernot2016TheLO}, Carlini\&Wagner attack~\citep{carlini2017towards} and EAD~\citep{chen2018ead}. 
+
+The black box setting is more realistic, but also more challenging. Two strategies emerged in the literature to craft attacks within this setting: transferability from a substitute network, and gradient estimation algorithms. Transferability has been pointed out by~\cite{Papernot2017PBA}. It  consists in generating a white-box adversarial example on a fully known substitute neural network, i.e. a network trained on the same classification task.  This crafted adversarial example can be \textit{transferred} to the targeted unknown network. Leveraging this property,~\cite{moosavi2017universal} proposed an algorithm to craft a single adversarial attack that is the same for all examples and all networks. Despite the popularity of these methods, gradient estimation algorithms outperform transferability methods. \cite{chen2017zoo} proposed a variant of the powerful white-box attack introduced in~\citep{carlini2017towards}, based on  gradient estimation with finite differences. This method achieves good results  in practice but requires a high number of queries to the network. To reduce the number of queries, \cite{ilyas2018black}  proposed to rely rather on Natural Evolution Strategies (NES). These derivative-free optimization approaches consist in estimating the parametric distribution of the minima of a given objective function. This amounts for most of NES algorithms to perform a natural gradient descent in the space of distributions~\citep{ollivier17igo}. %In the same paper, the authors proposed a method to craft adversarial examples with only access to the predicted labels.  The NES attack has been improved in~\citep{ilyas2018black}:  they exploit the correlations between gradients between two iteration steps of the NES attack and also the correlations of two close pixels in the image input. 
+In~\citep{aldujaili2019bit}, the authors propose to rather estimate the sign of the gradient instead of estimating the its magnitude suing zeroth-order optimization techniques. They show further how to reduce the search space from exponential to linear. The achieved results were state of the art at the publication date.  In~\cite{liu2019signsgd}, the authors introduced a zeroth-order version of the signSGD algorithm, studied its convergence properties and showed its efficiency in crafting adversarial black-box attacks. The results are promising but fail to beat the state of the art. In~\cite{tu2019autozoom}, the authors introduce the AutoZOOM framework combining gradient estimation and an auto-encoder trained offline with unlabeled data. The idea is appealing but requires training an auto-encoder with an available dataset, which an additional effort for the attacker. Besides, this may be unrealistic for several use cases.
+More recently,~\cite{moon19aparsimonous} proposed a method based on discrete and combinatorial optimization where the perturbations are pushed towards the corners of the $\ell_\infty$ ball. This method is to the best of our knowledge the state of the art in the black box setting in terms of queries budget and success rate. We will focus in our experiments on this method and show how our approaches achieve better results. %\nico{I think it would be good to define "success rate". Maybe early on in the related work you can say that there are two dimensions along which attacks are evaluated? complexity/number of queries and success rate and define those?}
+
+Several defense strategies have been proposed to diminish the impact of adversarial attacks on networks accuracies. A basic workaround, introduced in ~\citep{goodfellow2014explaining}, is to augment the learning set with adversarial attacks examples. Such an approach is called adversarial training in the literature. It helps recovering some accuracy but fails to fully defend the network, and lacks theoretical guarantees, in particular principled certificates. Defenses based on randomization at inference time were also proposed~\citep{lecuyer2018certified,KolterRandomizedSmoothing,pinot2019theoretical}. These methods are grounded theoretically, but the guarantees cannot ensure full protection against adversarial examples. The question of defenses and attacks is still widely open since our understanding of this phenomenon is still in its infancy. We evaluate our approach against adversarial training, the most powerful defense method so far.
+%So far, the problem of adversarial examples is still deeply misunderstood and there exist no convincing arguments or defenses against them.
+
+% \subsection{Derivative-free optimization methods}\label{dfo}
+% \nico{After reading the beginning of the next section: this subsection is unclear because it is part of the related works but actually talks about what you did; maybe you can clarify or postpone the various DFO algorithms you tried to the "method" section?}
+%  Derivative-free optimization methods are aimed at optimizing an objective function without access to the gradient.
+%  There exists a large and wide literature around derivative free optimisation. In this setting, one algorithm aims to minimize some function $f$ on some space $\mathcal{X}$. The only thing that could be done by this algorithm is to query for some points $x$ the value of $f(x)$. As evaluating $f$ can be computationally expensive, the purpose of DFO methods is to get a good approximation of the optima using a moderate number of queries. 
+% %The first ideas that were developed was finite differences algorithm where gradients are approximated. These methods ensure convergences but in practice they require a large number of queries to the networks. Evolution strategies and population based algorithms were proposed to get a smaller number of queries. Some of these algorithms can be interpreted as a natural gradient descent.
+% %
+% %
+% % The Nevergrad library gather a large bunch of stochastic derivative free optimizers that fit for crafting black box adversarial attacks. 
+% %
+% %TODO COMPLETE A BIT THAT
+% % In the black-box context, we can not use the full knowledge of the model and weights of the neural network to be attacked. We can just try a candidate attack and get a result, in terms of logits of classes.
+% % We use the open source Nevergrad platform of derivative-free optimization for our experiments~\citep{nevergrad}. It includes the following families of optimization algorithms. 
+% %  One-shot optimization methods, which use a number of computation units equal to the budget - all candidates are evaluated simultaneously:
+% %   random, Halton \& Hammersley search~\citep{halton60,hammersley}, latin hypercube sampling~\citep{mckay}, and variants of these.
+% We tested several evolution strategies~\citep{rechenberg73,Beyer:bookES}: the simple $(1+1)$-algorithm~\citep{opo1,opo2}, Covariance Matrix Adaptation (CMA~\citep{HAN}).
+% For these methods, the underlying algorithm is to iteratively update some distribution $P_\theta$ defined on $\mathcal{X}$. Roughly speaking, the current  distribution $\mathbb{P}_\theta$ represents the current belief of the localization of the optimas of the goal function.  The parameters are updated using objective function values at different points.
+% It turns out that this family of algorithms, than can be reinterpreted as natural evolution strategies, perform best. The two best performing methods will be detailed in Section \ref{es}; we refer to references above for other tested methods.
+% % 	Some evolution strategies~\citep{rechenberg73} are included as well: the simple $(1+1)$-algorithm, Covariance Matrix Adaptation (CMA~\citep{HAN}), and other non-elitist $(\mu,\lambda)$-methods\citep{Beyer:bookES}.
+
+% We include tools from mathematical programming, namely Cobyla~\citep{cobyla}, Powell~\citep{powell} as modified in PyOpt~\citep{pyopt}, Sequential Quadratic Programming (SQP~\citep{artelyssqp}). These methods use various approximators of the objective functions.
+
+% Last, we included more specific methods:
+% Nelder-Mead~\citep{NM}, a well known pattern search method, 
+% Particle Swarm Optimization (PSO)~\citep{pso,rotinv4}, Bayesian Optimization\cite{ego,BO}, and
+% Differential Evolution (DE) in various flavors~\citep{de} including rotationally invariant or almost invariant versions~\citep{crde}.
+% % was considered but also suffers from a long initialization phase.
+
+\section{Methods}
+\label{methods}
+\subsection{General framework}
+Let us consider a classification task $\mathcal{X} \mapsto \left[K\right]$ where $\mathcal{X}\subseteq\mathbb{R}^d$ is the input space and $\left[K\right]=\{1,...,K\}$ is the corresponding label set. 
+Let $f:\RR^d\to\RR^K$ be a classifier (a feed forward neural network in our paper) from an input space $\mathcal{X}$ returning the logits of each label in $\left[K\right]$ such that the predicted label for a given input is $\arg\max_{i\in\left[K\right]}f_i(x)$. The aim of $||.||_\infty$-bounded untargeted adversarial attacks is, for some input $x$ with label $y$, to find a perturbation $\tau$ such that $\arg\max_{i\in\left[K\right]}f_i(x)\neq y$. Classically, $||.||_\infty$-bounded untargeted adversarial attacks aims at optimizing the following objective:
+\begin{equation}
+    \max_{\tau : ||\tau||_\infty\leq \epsilon}L(f(x+\tau),y)\label{adv_pb}
+\end{equation}
+
+where $L$ is a loss function (typically the cross entropy) and $y$ the true label. For targeted attacks, the attacker targets a label $y_t$ by maximizing $-L(f(x+\tau),y_t)$. With access to the gradients of the network, gradient descent methods have proved their efficiency~\citep{kurakin2016adversarial,madry2018towards}. So far, the outline of most black box attacks was to estimate the gradient using either finite differences or natural evolution strategies. Here using evolutionary strategies heuristics, we do not want to take care of the gradient estimation problem.
+
+
+
+
+\subsection{Two optimization problems}\label{top}
+In some DFO approaches, the default search space is $\mathbb{R}^d$. In the $\ell_\infty$ bounded adversarial attacks setting, the search space is $B_\infty(\epsilon)=\{\tau:||\tau||_\infty\leq\epsilon\}$.  It requires to adapt the problem in Eq~\ref{adv_pb}. Two variants are proposed in the sequel leading to continuous and discretized versions of the problem.
+
+\textbf{The continuous problem.} As in~\cite{carlini2017towards}, we use the hyperbolic tangent transformation to restate our problem since $B_\infty(\epsilon)= \epsilon\tanh{(\mathbb{R}^d)}$. This leads to a continuous search space on which evolutionary strategies apply. Hence our optimization problem writes:
+\begin{equation}
+    \max_{\tau\in \RR^d}L(f(x+\epsilon\tanh(\tau)),y).\label{eqcont}
+\end{equation}
+We will call this problem $\operatorname{DFO}_c-\operatorname{optimizer}$ where $\operatorname{optimizer}$ is the used black box derivative free optimization strategy.
+
+\textbf{The discretized problem.} \cite{moon19aparsimonous} pointed out that PGD attacks~\citep{kurakin2016adversarial,madry2018towards} are mainly located on the corners of the $\ell_\infty$-ball. They consider optimizing the following
+\begin{equation}
+    \max_{\tau\in \{-\epsilon,+\epsilon\}^d}L(f(x+\tau),y).\label{eqtoto}
+\end{equation}
+%There exist many DFO methods; however some specificities of the problem at hand can help us for choosing.
+The author in~\citep{moon19aparsimonous} proposed a purely discrete combinatorial optimization to solve this problem (Eq.~\ref{eqtoto}). 
+As in \cite{ZophLe2017}, we here consider how to automatically convert an algorithm designed for continuous optimization to discrete optimization. To make the problem in Eq.~\ref{eqtoto} compliant with our evolutionary strategies setting, we rewrite our problem by considering a stochastic function $f(x+\epsilon\tau)$ where, for all $i$, $\tau_i\in\{-1,+1\}$ and $\mathbb{P}(\tau_i=1)=\operatorname{Softmax}(a_i,b_i)=\frac{e^{a_i}}{e^{a_i}+e^{b_i}}$. Hence our problem amounts to find the best parameters $a_i$ and $b_i$ that optimize:
+\begin{equation}
+\label{eq:dis}
+    \min_{a,b} \mathbb{E}_{\tau\sim\mathbb{P}_{a,b}}(L(f(x+\epsilon\tau),y)
+\end{equation}
+We then rely on evolutionary strategies to find the parameters $a$ and $b$. As the optima are deterministic, the optimal values for $a$ and $b$ are at infinity. Some ES algorithms are well suited to such setting as will be discussed in the sequel. We will call this problem $\operatorname{DFO}_d-\operatorname{optimizer}$ where $\operatorname{optimizer}$ is the used black box derivative free optimization strategy for $a$ and $b$. In this case, one could reduce the problem to one variale $a_i$ with $\mathbb{P}(\tau_i=1)=\frac{1}{1+e^{-a_i}}$, but experimentally the results are comparable, so we concentrate on Problem~\ref{eq:dis}. %Thus the optimization strategy for $a$ and $b$ should fit high dimensional problem, optimisation of a stochastic functions, on convergence at infinity.
+
+
+% \todo{remove en dessous?}
+%Many optimization algorithms are designed for continuous variables.
+% Eq. \ref{eqtoto} has discretized the problem at hand.
+% As in \cite{nas}, we here consider how to automatically convert an algorithm designed for noisy continuous optimization to discrete or mixed (noisy or noise-free) optimization.
+% Let us consider a variable with 3 (discrete) possible values $a$, $b$, $c$.
+% A vector $x\in\R^3$ can be stochastically converted to such a discrete choice by choosing
+% $a$, $b$ or $c$ with probability
+% $P(a)=\exp(x_1)/\sum_i \exp(x_i)$,
+% $P(b)=\exp(x_2)/\sum_i \exp(x_i)$,
+% $P(c)=\exp(x_3)/\sum_i \exp(x_i)$ respectively. 
+% This is a softmax transformation.
+% Using this transformation, we can convert a (possibly noisy) objective function $f$ with $k$ continuous variables and $m$ discrete variables with $a_1,\dots,a_m$ possible values respectively, into a purely continuous objective function $f_c$ with $k+\sum_{i=1}^m a_i$ continuous variables.
+% The obtained problem is noisy, but has variance converging to zero in the neighborhood of the optimum. The optimum is at infinity.
+% This transformation, in the case of Eq. \ref{eqtoto}, boils down to
+% $$\max_\theta \E_{\tau\sim P_\theta}(l(x+\tau))$$
+% where $P(\tau_i)=SoftMax(a_i,b_i)$ is a probability distribution parametrized by two real variables $a_i$ and $b_i$, i.e. we have multiplied the problem dimensionality by 2.
+% For smoothing the problem without adding stochasticity in the objective function we might also do
+% \begin{equation}
+%     \max_{x \in \R^d}l(f(x+\epsilon\tanh(x)),y).\label{eqcont}
+% \end{equation}
+
+
+%\subsubsection{Optima at infinity}
+%\url{https://arxiv.org/pdf/1206.1208.pdf}
+
+\subsection{Derivative-free optimization methods}
+\label{dfo}
+% \nico{After reading the beginning of the next section: this subsection is unclear because it is part of the related works but actually talks about what you did; maybe you can clarify or postpone the various DFO algorithms you tried to the "method" section?}
+
+ Derivative-free optimization methods are aimed at optimizing an objective function without access to the gradient.
+ There exists a large and wide literature around derivative free optimisation. In this setting, one algorithm aims to minimize some function $f$ on some space $\mathcal{X}$. The only thing that could be done by this algorithm is to query for some points $x$ the value of $f(x)$. As evaluating $f$ can be computationally expensive, the purpose of DFO methods is to get a good approximation of the optima using a moderate number of queries. 
+%The first ideas that were developed was finite differences algorithm where gradients are approximated. These methods ensure convergences but in practice they require a large number of queries to the networks. Evolution strategies and population based algorithms were proposed to get a smaller number of queries. Some of these algorithms can be interpreted as a natural gradient descent.
+%
+%
+% The Nevergrad library gather a large bunch of stochastic derivative free optimizers that fit for crafting black box adversarial attacks. 
+%
+%TODO COMPLETE A BIT THAT
+% In the black-box context, we can not use the full knowledge of the model and weights of the neural network to be attacked. We can just try a candidate attack and get a result, in terms of logits of classes.
+% We use the open source Nevergrad platform of derivative-free optimization for our experiments~\citep{nevergrad}. It includes the following families of optimization algorithms. 
+%  One-shot optimization methods, which use a number of computation units equal to the budget - all candidates are evaluated simultaneously:
+%   random, Halton \& Hammersley search~\citep{halton60,hammersley}, latin hypercube sampling~\citep{mckay}, and variants of these.
+We tested several evolution strategies~\citep{rechenberg73,Beyer:bookES}: the simple $(1+1)$-algorithm~\citep{opo1,opo2}, Covariance Matrix Adaptation (CMA~\citep{HAN}).
+For these methods, the underlying algorithm is to iteratively update some distribution $P_\theta$ defined on $\mathcal{X}$. Roughly speaking, the current  distribution $\mathbb{P}_\theta$ represents the current belief of the localization of the optimas of the goal function.  The parameters are updated using objective function values at different points.
+It turns out that this family of algorithms, than can be reinterpreted as natural evolution strategies, perform best. The two best performing methods will be detailed in Section \ref{es}; we refer to references above for other tested methods.
+% 	Some evolution strategies~\citep{rechenberg73} are included as well: the simple $(1+1)$-algorithm, Covariance Matrix Adaptation (CMA~\citep{HAN}), and other non-elitist $(\mu,\lambda)$-methods\citep{Beyer:bookES}.
+
+%We include tools from mathematical programming, namely Cobyla~\citep{cobyla}, Powell~\citep{powell} as modified in PyOpt~\citep{pyopt}, Sequential Quadratic Programming (SQP~\citep{artelyssqp}). These methods use various approximators of the objective functions.
+
+%Last, we included more specific methods:
+%Nelder-Mead~\citep{NM}, a well known pattern search method, 
+%Particle Swarm Optimization (PSO)~\citep{pso,rotinv4}, Bayesian Optimization~\citep{ego,BO}, and
+%Differential Evolution (DE) in various flavors~\citep{de} including rotationally invariant or almost invariant versions~\citep{crde}.
+% was considered but also suffers from a long initialization phase.
+
+\subsubsection{Our best performing methods: evolution strategies}\label{es}
+%\subsubsection{Diagonal-CMA}
+\paragraph{The $(1+1)$-ES algorithm.}
+The $(1+1)$-evolution strategy with one-fifth rule~\citep{opo1,opo2} is a simple but effective derivative-free optimization algorithm (in supplementary material, Alg. \ref{opo}). Compared to random search, this algorithm moves the center of the Gaussian sampling according to the best candidate and adapts its scale by taking into account their frequency. \cite{cauchy} proposed the use of Cauchy distributions instead of classical Gaussian sampling. This favors large steps, and improves the results in case of (possibly partial) separability of the problem, i.e. when it is meaningful to perform large steps in some directions and very moderate ones in the other directions. 
+
+% \begin{algorithm}
+% \caption{\label{opo}The $(1+1)$ evolution strategy.}
+% \begin{algorithmic}
+% \REQUIRE Function $f:\R^d\rightarrow\R$ to minimize%, number of steps $N$, population size $\lambda$
+% \STATE $m\leftarrow 0$, $C\leftarrow \boldsymbol{I}_d$
+% \FOR{$t=1 ...n$}
+% \STATE (Generate candidates)
+% \STATE Generate $m' \sim m+\sigma X$ where $X$ is sampled from a Cauchy or Gaussian distribution.
+% \IF{$f(m')\leq f(m)$}
+% \STATE{$m\leftarrow m'$, $\sigma\leftarrow 2\sigma$}
+% \ELSE
+% \STATE{$\sigma\leftarrow 2^{-\frac14}\sigma$}
+% \ENDIF
+% \ENDFOR
+% \end{algorithmic}
+% \end{algorithm}
+
+
+\paragraph{CMA-ES algorithm.}
+The Covariance Matrix Adaptation Evolution Strategy~\citep{HAN} combines
+evolution strategies~\citep{Beyer:bookES}, Cumulative Step-Size Adaptation~\citep{csalinear}, and a specific method for adaptating the covariance matrix. %It is now well known that this algorithm belongs to a large family of natural gradient approaches, see for instance~\citep{ollivier17igo}.
+An outline is provided in supplementary material, Alg.~\ref{cmaalg}. CMA-ES is an effective and robust algorithm, but it becomes catastrophically slow in high dimension due to the expensive computation of the square root of the matrix. As a workaround, \cite{diagcma} propose to  approximate the covariance matrix by a diagonal one. This leads to a computational cost linear in the dimension, rather than the original quadratic one. %The original case is, in addition, complicated by a significant number of function evaluations before learning the covariance matrix.
+
+
+\textbf{Link with Natural Evolution Strategy (NES) attacks.} Both (1+1)-ES and CMA-ES can be seen as an instantiation of a natural  evolution strategy (see for instance~\cite{ollivier17igo,wierstra2014natural}). A natural evolution strategy consists in estimating iteratively the distribution of the optima. For most NES approaches, a fortiori CMA-ES, the iterative estimation consists in a second-order gradient descent (also known as natural gradient) in the space of distributions (e.g. Gaussians). (1+1)-ES can also be seen as a NES, where  the covariance matrix is restricted to be proportional to the identity. Note however that from an algorithmic perspective, both CME-ES and (1+1)-ES optimize the quantile of the objective function.%  In both approaches, the objective is to estimate some parameters of the distribution of the minima: the mean for the (1+1)-ES and the mean and covariance in CMA-ES.% update the underlying search distribution to optimize a black box function. ~\cite{ollivier17igo} and~\cite{wierstra2014natural} analysed these algorithms in the sense of natural gradient optimization. CMA-ES~\citep{ollivier17igo}  aims to optimze the quantiles of the functions whereas NES directly tries to optimize the function. 
+
+\subsubsection{Hypotheses for DFO methods in the adversarial attacks context}\label{hypo}
+The state of the art in DFO and intuition suggest the followings.
+ Using $\operatorname{softmax}$ for exploring only points in the corner (Eq. \ref{eqtoto}) is better for moderate budget, as corners are known to be good adversarial candidates; however, for high precision attacks (with small $\tau$) a smooth continuous precision (Eq \ref{eqcont}) is more relevant.
+ With or without $\operatorname{softmax}$, the optimum is at infinity~\footnote{i.e. the optima of the ball constrained problem~\ref{adv_pb}, would be close to the boundary or on the boundary of the $\ell_\infty$ ball.  In that case, the optimum of the continuous problem~\ref{eqcont} will be at $\infty$ or “close” to it. On the discrete case~\ref{eq:dis} it is easy to see that the optimum is when $a_i$ or $b_i \rightarrow \infty$.}, which is in favor of methods having fast step-size adaptation or samplings with heavy-tail distributions. With an optimum at infinity,~\citep{csalinear} has shown how fast is the adaptation of the step-size when using cumulative step-size adaptation (as in CMA-ES), as opposed to slower rates for most methods. Cauchy sampling~\citep{cauchy} in the $(1+1)$-ES is known for favoring fast changes; this is consistent with the superiority of Cauchy sampling in our setting compared to Gaussian sampling. 
+
+Newuoa, Powell, SQP, Bayesian Optimization, Bayesian optimization are present in Nevergrad but they have an expensive (budget consumption linear is linear w.r.t. the dimension) initial sampling stage which is not possible in our high-dimensional / moderate budget context. 
+%\fixme{Even in the noisy case (i.e. with softmax transformation) noise is moderate and variance goes to zero near the optimum, hence methods specifically robust to noise (such as population control\cite{beyerhellwignoise}) are not particularly relevant.}
+ The targeted case needs more precision and favors algorithms such as Diagonal CMA-ES which adapt a step-size per coordinate whereas the untargeted case is more in favor of fast random exploration such as the $(1+1)$-ES.
+ Compared to Diagonal-CMA, CMA with full covariance might be too slow; given a number of queries (rather than a time budget) it is however optimal for high precision.
+
+% We will see that all these assumptions hold true in our experiments. 
+
+\subsection{The tiling trick}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{sections/appendix/arxiv_dfo/images/tile_noise.pdf} \\
+    \caption{Illustration of the tiling trick: the same noise is applied on small tile squares.}
+    \label{rand}
+\end{figure}
+\cite{ilyas2018prior} suggested to tile the attack to lower the number of queries necessary to fool the network. Concretely, they observe that the gradient coordinates are correlated for close pixels in the images, so they suggested to add the same noise for small square tiles in the image (see Fig. \ref{rand}). We exploit the same trick since it reduces the dimensionality of the search space, and makes hence evolutionary strategies suited to the problem at hand. Besides breaking the curse of dimensionality, tiling leads surprisingly to a new property that we discovered during our experiments. At a given tiling scale, convolutional neural networks are not robust to random noise. Section~\ref{ahyes} is devoted to this intriguing property. Interestingly enough, initializing our optimization algorithms with a tiled noise at the appropriate scale drastically speeds up the convergence, leading to a reduced number of queries.
+
+%This reduces the dimensionality of the noise space and hence makes evolutionary strategies applicable since they suffer  to scale with the dimensionality of the input space. Moreover we experimentally show that the classifiers are not robust to tiled random noise injection (see Fig. \ref{til}). Since evolution strategies first steps are in general close to random noise addition, the tiling trick  helps to reduce the queries budget. We exploit the same trick in our attacks.
+%TODO \url{https://openreview.net/pdf?id=BkMiWhR5K7}
+%\todo{Jam: renforcer notre apport/ Done}
+
+\section{Experiments}
+\label{expe}
+\subsection{General setting and implementation details}
+We compare our approach to the ``bandits'' method~\citep{ilyas2018prior} and the parsimonious attack~\citep{moon19aparsimonous}. The latter (parsimonious attack) is, to the best of our knowledge, the state of the art in the black-box setting from the literature; bandits method is also considered in our benchmark given its ties to our models. We reproduced the results from~\citep{moon19aparsimonous} in our setting for fair comparison. As explained in section~\ref{top}, our attacks can be interpreted as $\ell_\infty$ ones. We use the large-scale ImageNet dataset~\citep{imagenet_cvpr09}. As usually done in most frameworks, we quantify our success in terms of attack success rate, median queries and average queries. Here, the number of queries refers to the number of requests to the output logits of a classifier for a given image. For the success rate, we only consider the images that were correctly classified by our model. We use InceptionV3~\citep{szegedy2017inception} , VGG16~\citep{simonyan2014very} with batch normalization (VGG16bn) and ResNet50~\citep{he2016deep}  architectures to measure the performance of our algorithm on the ImageNet dataset. These models reach accuracy close to the the state of the art with around $75-80\%$ for the Top-1 accuracy and $95\%$ for the Top-5 accuracy. We use pretrained models from PyTorch~\citep{paszke2017automatic}. All images are normalized to $\left[0,1\right]$. Results on VGG16bn and ResNet50 are deferred in supplementary material~\ref{other_archi}. The  images to be attacked are selected at random.
+
+We first show that convolutional networks are not robust to tiled random  noise, and more surprisingly that there exists an optimal tile size that is the same for all architectures and noise intensities. Then, we evaluate our methods on both targeted and untargeted objectives. We considered the following losses: the cross entropy $L(f(x),y)=-\log(\mathbb{P}(y|x))$ and a loss inspired from the ``Carlini\&Wagner'' attack: $L(f(x),y)=-\mathbb{P}(y|x)+\max_{y'\neq y}\mathbb{P}(y'|x)$ where $\mathbb{P}(y|x)=\left[\operatorname{Softmax}(f(x))\right]_y$, the probability for the classifier to classify the input $x$ to label $y$. The results for the second loss are deferred in supplementary material~\ref{cwsec}. For all our attacks, we use the Nevergrad~\citep{nevergrad} implementation of evolution strategies. We did not change the default parameters of the optimization strategies.
+
+%\subsection{Ablation study}
+
+\subsection{Convolutional neural networks are not robust to tiled  random noise}\label{ahyes}
+
+\begin{figure}
+\centering
+
+\includegraphics[width=.45\textwidth]{sections/appendix/arxiv_dfo/images/randnoise_inception.pdf}
+\includegraphics[width=.45\textwidth]{sections/appendix/arxiv_dfo/images/rand_005.pdf}    
+
+% \includegraphics[width=.3\textwidth]{Master-Template-ICLR2019/images/randnoise_resnet.pdf}
+% \includegraphics[width=.3\textwidth]{Master-Template-ICLR2019/images/randnoise_vgg.pdf}
+\caption{\label{til}Success rate of a single shot random attacks on ImageNet vs. the number of tiles used to craft the attack. On the left, attacks are plotted against InceptionV3 classifier with different noise intensities ($\epsilon\in\{0.01,0.03,0.05,0.1\}$). On the right, $\epsilon$ is fixed to $0.05$ and the single shot attack is evaluated on InceptionV3, ResNet50 and VGG16bn.}
+\end{figure}
+
+In this section, we highlight that neural neural networks are not robust to $\ell_\infty$ tiled random noise. A noise on an image is said to be tiled if the added noise on the image is the same on small squares of pixels (see Figure~\ref{til}). In practice, we divide our image in equally sized tiles.  For each tile, we add to the image a randomly chosen constant noise: $+\epsilon$ with probability $\frac12$ and $-\epsilon$ with probability $\frac12$, uniformly on the tile. The tile trick has been introduced in\cite{ilyas2018black} for dimensionality reduction. Here we exhibit a new behavior that we discovered during our experiments. As shown in Fig. \ref{rand} for reasonable noise intensity ($\epsilon=0.05$), the success rate of a one shot randomly tiled attack is quite high. This fact is observed on many  neural network architectures. We compared the number of tiles since the images input size are not the same for all architectures ($299\times299\times3$ for InceptionV3 and $224\times 224\times3$ for VGG16bn and ResNet50).  The optimal number of tiles (in the sense of attack success rate) is, surprisingly, independent from the architecture and the noise intensity. We also note that the InceptionV3 architecture is more robust to random tiled noise than VGG16bn and ResNet50 architectures. InceptionV3 blocks are parallel convolutions with different filter sizes that are concatenated. Using different filter sizes may attenuate the effect of the tiled noise since some convolution sizes might be less sensitive. We test this with a single random attack with various numbers of tiles (cf. Figure \ref{rand}, \ref{til}). We plotted additional graphs in  supplementary material~\ref{tilsup}.
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=.23\textwidth]{{Master-Template-ICLR2019/images/rand_001.pdf}}
+%     \includegraphics[width=.23\textwidth]{Master-Template-ICLR2019/images/rand_003.pdf}
+%     \includegraphics[width=.23\textwidth]{Master-Template-ICLR2019/images/rand_005.pdf}    
+%     \includegraphics[width=.23\textwidth]{Master-Template-ICLR2019/images/rand_01.pdf}    
+%     \caption{X-axis: number of tiles. Y-axis: attack success rate with one single random try. The bound on the $\ell^\infty$ norm of the attack is $0.01$, $0.03$, $0.05$ and $0.1$ respectively.}
+%     \label{rand2}
+% \end{figure}
+
+
+
+\subsection{Untargeted adversarial attacks}
+\label{unt_sota}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.44\textwidth]{{sections/appendix/arxiv_dfo/images/untargeted_cum.pdf}}
+    \includegraphics[width=.44\textwidth]{sections/appendix/arxiv_dfo/images/targeted_cum.pdf}
+    \caption{The cumulative success rate in terms the number of queries for the number of queries required for attacks on ImageNet with $\epsilon = 0.05$ in the untargeted (left) and targeted setting (right). The number of queries (x-axis) is plotted with a logarithmic scale.}
+    \label{cum}
+\end{figure}
+
+
+\begin{table}[t]
+\caption{Comparison of our method with the parsimonious and bandits attacks in the untargeted setting on ImageNet on InceptionV3 pretrained network for $\epsilon=0.05$ and $10,000$ as budget limit.}
+\label{untargeted_comp}
+\begin{center}
+\begin{tabular}{cc|cc|c}
+\textbf{Method} & \textbf{\# of tiles} &  \textbf{Average queries} &\textbf{ Median queries }& \textbf{Success rate} \\
+ \hline
+Parsimonious & - & 702 &222& 98.4\% \\
+\hline
+Bandits & 30 & 1007 & 269& 95.3\% \\
+Bandits & 50 & 995 & 249& 95.1\% \\
+
+\hline
+$\operatorname{DFO}_c-\operatorname{Cauchy (1+1)-ES}$ &30&	466& 60	&95.2\%\\
+$\operatorname{DFO}_c-\operatorname{Cauchy (1+1)-ES}$&50&	510&	63	&97.3\% \\
+\hline
+$\operatorname{DFO}_c-\operatorname{DiagonalCMA}$ &30&	533	&189&	97.2\%\\
+$\operatorname{DFO}_c-\operatorname{DiagonalCMA}$ &50&	623	&191&	98.7\%\\
+\hline
+$\operatorname{DFO}_c-\operatorname{CMA}$ & 30&	589	&232	&98.9\%\\
+$\operatorname{DFO}_c-\operatorname{CMA}$ & 50&	630	&259&	{\bf{99.2\%}} \\
+\hline
+$\operatorname{DFO}_d-\operatorname{DiagonalCMA}$  & 30 &  {\bf{424}} & {\bf{20}}& 97.7\%\\
+
+$\operatorname{DFO}_d-\operatorname{DiagonalCMA}$  & 50 & 485 & 38 & 97.4\%\\
+\end{tabular}
+\end{center}
+\end{table}
+
+
+
+We first evaluate our attacks in the untargeted setting. The aim is to change the predicted label of the classifier. Following~\citep{moon19aparsimonous,ilyas2018prior}, we use $10,000$ images that are initially correctly classified and we limit the budget to $10,000$ queries. We experimented with 30 and 50 tiles on the images. Only the best performing methods are reported in Table ~\ref{untargeted_comp}.
+We compare our results with~\citep{moon19aparsimonous} and~\citep{ilyas2018prior} on InceptionV3 (cf. Table ~\ref{untargeted_comp}). We also plotted the cumulative success rate in terms of required budget in Figure~\ref{cum}. We also evaluated our attacks for smaller noise in supplementary material~\ref{smaller}. We achieve results outperforming or at least equal to  the state of the art in all cases. More remarkably, We improve by far the number of necessary queries to fool the classifiers. The tiling trick partially explains why the average and the median number of queries are low. Indeed, the first queries of our evolution strategies is in general close to random search and hence, according to the observation of Figs ~\ref{rand}-\ref{til}, the first steps are more likely to fool the network, which explains why the queries budget remains low. This Discrete strategies reach better median numbers of queries - which is consistent as we directly search on the limits of the $\ell_\infty$-ball; however, given the restricted search space (only corners of the search space are considered), the success rate is lower and on average the number of queries increases due to hard cases. 
+
+% \begin{table}[t]
+% \caption{Comparison of our method with the parsimonious and bandits attacks in the untargeted setting on InceptionV3 pretrained network for $\epsilon=0.05$ and $10,000$ as budget limit. Cont refers to using Eq. \ref{eqcont}, whereas Dis refers to using the discrete counterpart Eq. \ref{eqtoto}.}
+% \label{untargeted_comp}
+% \begin{center}
+% \begin{tabular}{cc|cc|c}
+% \textbf{Method} & \textbf{\# of tiles} &  \textbf{Average queries} &\textbf{ Median queries }& \textbf{Success rate} \\
+%  \hline
+% Parsimonious & - & 722 &237& 98.5\% \\
+
+% Bandits & - & 1107 & 298& 95.1\% \\
+% \hline
+% cont Cauchy (1+1)-ES &30&	466& 60	&95.2\%\\
+% cont Cauchy (1+1)-ES &50&	510&	63	&97.3\% \\
+% \hline
+% cont DiagonalCMA &30&	533	&189&	97.2\%\\
+% cont DiagonalCMA &50&	623	&191&	98.7\%\\
+% \hline
+% cont CMA & 30&	589	&232	&98.9\%\\
+% cont CMA & 50&	630	&259&	99.2\%\\
+% \hline
+% dis DiagonalCMA & 30 & 424& 20& 97.7\%\\
+
+% dis DiagonalCMA & 50 & 485 & 38 & 97.4\%\\
+% \end{tabular}
+% \end{center}
+% \end{table}
+
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=.45\textwidth]{{Master-Template-ICLR2019/images/untargeted_cum.pdf}}
+%     \includegraphics[width=.45\textwidth]{Master-Template-ICLR2019/images/targeted_cum.pdf}
+%     \caption{The cumulative success rate in terms the number of queries for the number of queries required for attacks on ImageNet with $\epsilon = 0.05$ in the untargeted (left) and targeted setting (right). The number of queries (x-axis) is plotted with a logarithmic scale.}
+%     \label{cum}
+% \end{figure}
+
+% \subsubsection{Untargeted attacks against other architectures}
+
+% We also evaluated our method on different  neural networks architectures. For each network we randomly selected $10,000$ images that were correctly classified. We limit our budget to $10,000$ queries and set the number of tiles to 50. Results with other parameters are deferred to the supplementary material. We achieve a success attack rate up to $100\%$ on every classifier with a budget as low as 8 median queries for the VGG16bn for instance (see Table~\ref{untargeted_archi}). One should notice  that the performances are lower on InceptionV3 as it is also reported for the bandit methods in~\citep{ilyas2018prior}. This possibly due to the fact that the tiling trick is less relevant on the Inception network than on the other networks (see Fig.~\ref{rand2}).
+
+
+
+
+% \begin{table}[t]
+% \caption{Comparison of our method on InceptionV3 (I), ResNet50 (R) and VGG16bn (V) for $\epsilon=0.05$ and $10,000$ as budget limit. Cont refers to using Eq. \ref{eqcont}, whereas Dis refers to using the discrete counterpart Eq. \ref{eqtoto}.}
+% \label{untargeted_archi}
+% \begin{center}
+% \begin{tabular}{cc|ccc|ccc|ccc}
+% \textbf{Method} &\textbf{Tile size}&\multicolumn{3}{c|}{\textbf{Avg queries}}&\multicolumn{3}{c|}{\textbf{Med. queries}}&\multicolumn{3}{c}{\textbf{Succ. Rate}}\\
+% \hline
+%  & & I & R & V &  I & R & V&  I & R & V\\
+%  \hline
+%  cont Cauchy (1+1)-ES &30 & 466&163&86 & 60&19&8 & 95.2\%&99.6\%&100\% \\
+
+% cont Cauchy (1+1)-ES & 50 & 510&218&67& 63&32&4& 97.3\% &99.6\%&99.7\%\\
+% \hline
+% cont DiagonalCMA & 30 &533&263&174& 189&95&55 & 97.2\%&99.0\%&99.9\%\\
+% cont DiagonalCMA & 50 & 623&373&227& 191&121&71 & 98.7\%&99.9\%&100\%\\
+
+% \hline
+% cont CMA & 30 &588&256&176& 232&138&72& 98.9\%&99.9\%&99.9\%\\
+% cont CMA & 50 & 630&270&219& 259&143&107 & 99.2\%&100\%&99.9\%\\
+
+% \hline
+% dis DiagonalCMA & 50 & 485&617&345& 38& 62&6& 97.4\%&99.2\%&99.6\%\\
+% dis DiagonalCMA & 30 & 424&417&211& 20&20&2& 97.7\%&98.8\%&99.5\%\\
+% \end{tabular}
+% \end{center}
+% \end{table}
+
+
+% \subsubsection{With smaller noise intensities}
+
+% We evaluated our method on smaller noise intensities ($\epsilon\in\{0.01,0.03,0.05\}$) in the untargeted setting on ImageNet dataset. In this framework, we also picked up randomly $10,000$ images and limited our budget to $10,000$ queries. We compared to the bandits mehtod~\citep{ilyas2018prior} and to the parsimonious attack~\citep{moon19aparsimonous} on InceptionV3 network. We limited our experiments to a number of tiles of 50. We report our results in Table~\ref{untargeted_epsilon}. We remark our attacks reach state of the art for $\epsilon=0.03$ and $\epsilon=0.05$ both in terms of success rate and queries budget. For $\epsilon=0.01$, we reach results comparable to the state of the art.
+
+% \begin{table}[t]
+% \caption{Results of our method compared to the parsimonious and bandit attacks in the untargeted setting on InceptionV3 pretrained network for $\epsilon=0.05$ and a maximum of $10,000$ queries. } 
+% \label{untargeted_epsilon}
+% \begin{center}
+% \begin{tabular}{c|cc|cc|c}
+% \textbf{$\epsilon$} &\textbf{Method }&\textbf{ \# of tiles} &  \textbf{Avg. queries} & \textbf{Med. queries} & \textbf{Success rate} \\
+%  \hline
+% \multirow{5}{*}{$0.05$}&Parsimonious & - & 722 &237& 98.5\% \\
+% &Bandits & - & 1107 & 298& 95.1\%  \\
+% \cdashline{2-6}
+% &cont Cauchy (1+1)-ES &50&	510&	63	&97.3\% \\
+% &cont DiagonalCMA &50&	623	&191&	98.7\%\\
+% &cont CMA & 50&	630	&259&	99.2\%\\
+% &dis DiagonalCMA & 50 & 485 & 38 & 97.4\%\\
+
+% \hline
+% \multirow{5}{*}{$0.03$}&Parsimonious & - & 1129 &420&  95.9\% \\
+% &Bandits & - & 1382& 520&91.3\%  \\
+% \cdashline{2-6}
+
+% &cont Cauchy (1+1)-ES & 50 & 846&	203	&93,2\% \\
+% &cont DiagonalCMA & 50 & 971&	429&	96,5\%\\
+% &cont CMA &50& 911&	404&	96.7\%\\
+
+% &dis DiagonalCMA & 50 &799&	293&	94,1\% \\
+
+% \hline
+% \multirow{5}{*}{$0.01$}&Parsimonious & - & 2141 &1249& 81.3\% \\
+% &Bandits & - &2318&1374& 72.4\% \\
+% \cdashline{2-6}
+
+% &cont Cauchy (1+1)-ES & 50 & 1668&	751&	72,1\% \\
+% &cont DiagonalCMA & 50 & 1958 &1175 & 79.2\%\\
+% &cont CMA & 50 & 1921 & 1107 & 80.4\%\\
+% &dis DiagonalCMA & 50 & 1188&849&71,3\%\\
+
+% \hline
+
+% \end{tabular}
+% \end{center}
+% \end{table}
+
+
+
+
+\subsection{Targeted adversarial attacks}
+
+We also evaluate our methods in the targeted case on ImageNet dataset. We selected $1,000$ images, correctly classified. Since the targeted task is harder than the untargeted case, we set the maximum budget to $100,000$ queries, and  $\epsilon=0.05$. We uniformly chose the target class among the incorrect ones. We evaluated our attacks in comparison with the bandits methods~\citep{ilyas2018prior} and the parsimonious attack~\citep{moon19aparsimonous} on InceptionV3 classifier. We also plotted the cumulative success rate in terms of required budget in Figure~\ref{cum}. CMA-ES beats the state of the art on all criteria. DiagonalCMA-ES obtains acceptable results but is less powerful that CMA-ES in this specific case. The classical CMA optimizer is more precise, even if the run time is much longer. Cauchy $(1+1)$-ES and discretized optimization reach good results, but when the task is more complicated they do not reach as good results as the state of the art in black box targeted attacks.
+\begin{table}[t]
+\caption{Comparison of our method with the parsimonious and bandits attacks in the targeted setting on ImageNet  on InceptionV3 pretrained network for $\epsilon=0.05$ and $100,000$ as budget limit.}
+\label{targeted_comp}
+\begin{center}
+\begin{tabular}{cc|cc|c}
+\textbf{Method} &\textbf{ \# of tiles }& \textbf{ Average queries} & \textbf{Median queries} & \textbf{Success rate}\\
+ \hline
+Parsimonious & - & 7184 &5116& 100\% \\
+Bandits &50 &  25341&18053&92.5\% \\
+\hline
+$\operatorname{DFO}_c-\operatorname{Cauchy (1+1)-ES}$ &50 & 9789 & 6049& 83.2\% \\
+$\operatorname{DFO}_c-\operatorname{Diagonal CMA}$& 50 & 6768& {\bf{3797}} & 94.0\%\\
+$\operatorname{DFO}_c-\operatorname{CMA}$& 50 & {\bf{6662}} &4692& {\bf{100\%}}\\
+\hline
+$\operatorname{DFO}_d-\operatorname{Diagonal CMA}$ & 50 & 8957 & 4619 & 64.2\%\\
+\end{tabular}
+\end{center}
+\end{table}
+
+\subsection{Untargeted attacks against an adversarially trained network}
+
+In this section, we experiment our attacks against a defended network by adversarial training~\citep{goodfellow2014explaining}. Since adversarial training is computationally expensive, we restricted ourselves to the CIFAR10 dataset~\citep{krizhevsky2009cifar} for this experiment. Image size is $32\times32\times3$. We adversarially trained a WideResNet28x10~\citep{ZagoruykoK16} with PGD $\ell_\infty$ attacks~\citep{kurakin2016adversarial,madry2018towards} of norm $8/256$ and $10$ steps of size $2/256$. In this setting, we randomly selected $1,000$ images, and  limited the budget to $20,000$ queries. We ran PGD $\ell_\infty$ attacks~\citep{kurakin2016adversarial,madry2018towards} of norm $8/256$ and $20$ steps of size $1/256$ against our network, and achieved a success rate up to $36\%$, which is the the state of the art in the white box setting. We also compared our method to the Parsimonious and bandit attacks. Results are reported in Appendix~\ref{at_comp}. On this task, the parsimonious attack method is slightly better than our best approach.%Our attacks perform a slightly less than the white box PGD attack, but we still fool  results on an adversarially trained network.
+
+% \begin{table}[t]
+% \caption{Adversarial attacks against an adversarially trained WideResnet28x10 network on CIFAR10 dataset for $\epsilon=0.03125$ and $20,000$ as budget limit.}
+% \label{at_comp}
+% \begin{center}
+% \begin{tabular}{cc|cc|c}
+% \textbf{Method }& \textbf{\# of tiles} & \textbf{ Average queries} &\textbf{ Median queries} &\textbf{ Success rate}\\
+%  \hline
+% PGD (not black-box)& - & 20 &20& 36\% \\
+% \hline
+% $\operatorname{DFO}_c-\operatorname{Cauchy (1+1)-ES}$&10& 429& {\bf{60}} &29.5\%\\
+% $\operatorname{DFO}_c-\operatorname{Cauchy (1+1)-ES}$ &20 &902&93& 31.5\%\\
+% $\operatorname{DFO}_c-\operatorname{Cauchy (1+1)-ES}$&32 &1866& 764& 33.8\%\\
+% \hdashline
+% $\operatorname{DFO}_c-\operatorname{Diagonal CMA}$ &10&396& 85 &31.5\%\\
+% $\operatorname{DFO}_c-\operatorname{Diagonal CMA}$&20 &624& 151& 32.3\% \\
+% $\operatorname{DFO}_c-\operatorname{Diagonal CMA}$& 32 &1379 &860& 34.7\%\\
+% \hdashline
+% $\operatorname{DFO}_c-\operatorname{CMA}$ &10& {\bf{392}} & 87&32.2\%\\
+% $\operatorname{DFO}_c-\operatorname{CMA}$&20 &694& 189& 33.5\% \\
+% $\operatorname{DFO}_c-\operatorname{CMA}$& 32 &1467 &990& {\bf{35.7\%}}\\
+% \end{tabular}
+% \end{center}
+% \end{table}
+% ImageNet results: 10000 images, vgg 16n, top1-acc accuracy 0.73.
+% TO ADD: resnet inception
+% CIFAR
+% \begin{tabular}{|c|c|c|c|c|} 
+%   \hline
+%     $\epsilon$ & Tile size & Method & Failure rate & Queries (Av/Med)\\
+%     \hline
+%     0.05& 20 & DiagCMA & 0.67\% & 209/1 \\
+%     \hline
+%     0.05& 20 & CMA &0.65\% & 290/2 \\
+%     \hline
+%     0.05& 20 & Bandits &5.31\% & 269/24 \\
+%     \hline
+%     0.05& 50 & Bandits &5.01\%  & 381/44 \\
+%     \hline
+% \end{tabular}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Conclusion}
+\label{sec:conc}
+In this paper, we proposed a new framework for crafting black box adversarial attacks based on derivative free optimization. Because of the high dimensionality and the characteristics of the problem (see Section~\ref{hypo}), not all optimization strategies give satisfying results. However, combined with the tiling trick, evolutionary strategies such as CMA, DiagonalCMA and  Cauchy (1+1)-ES beats the current state of the art in both targeted and untargeted settings.  In particular, $\operatorname{DFO}_c-\operatorname{CMA}$ improves the state of the art in terms of success rate in almost all settings. We also validated the robustness of our attack against an adversarially trained network. Future work will be devoted to better understanding the intriguing property of the effect that a neural network is not robust to a one shot randomly tiled attack.
+
+% We show the effectiveness of tiled noise and CMA, Diagonal-CMA or Cauchy-$(1+1)$-ES for black-box adversarial attacks. Basically, CMA performs best if the computational cost is not an issue; the Cauchy-$(1+1)$-ES is faster than Diagonal-CMA which is faster than CMA, but top performance is for CMA if we neglect the computational cost and just compare numbers of queries and success rates. In all these methods do not use estimates of the gradient. Results are demonstrated on a wide range of networks and several noise tolerance levels. Results are obtained both by optimizing the attack in a continuous setting (Eq. \ref{eqcont}) and in a discrete setting (Eq. \ref{eqtoto}).
+% Section \ref{ahyes} suggests a better robustness of methods combining parallel convolutional blocks; this suggests a direction for defense against adversarial attacks.
+
+
+
+
+
+
+
+%\subsubsection*{Acknowledgments}
+
+%Use unnumbered third level headings for the acknowledgments. All acknowledgments, including those to funding agencies, go at the end of the paper.
+
+\begin{subappendices}
+    
+
+\section{Algorithms}
+\subsection{The (1+1)-ES algorithm}
+\begin{algorithm}
+\caption{\label{opo}The $(1+1)$ Evolution Strategy.}
+\begin{algorithmic}
+\REQUIRE Function $f:\RR^d\to\RR$ to minimize%, number of steps $N$, population size $\lambda$
+\STATE $m\leftarrow 0$, $C\leftarrow \boldsymbol{I}_d$, $\sigma\leftarrow 1$
+\FOR{$t=1 ...n$}
+\STATE (Generate candidates)
+\STATE Generate $m' \sim m+\sigma X$ where $X$ is sampled from a Cauchy or Gaussian distribution.
+\IF{$f(m')\leq f(m)$}
+\STATE{$m\leftarrow m'$, $\sigma\leftarrow 2\sigma$}
+\ELSE
+\STATE{$\sigma\leftarrow 2^{-\frac14}\sigma$}
+\ENDIF
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{CMA-ES algorithm}
+\begin{algorithm}
+\caption{\label{cmaalg}CMA-ES algorithm. The $T$ subscript denotes transposition.}
+\begin{algorithmic}
+\REQUIRE Function $f:\RR^d\to\RR$ to minimize, parameters $b$, $c$, $w_1>\dots,w_\mu>0$, $p_c$ and others as in e.g. \citep{HAN}.%, number of steps $N$, population size $\lambda$
+\STATE $m\leftarrow 0$, $C\leftarrow \boldsymbol{I}_d$, $\sigma\leftarrow 1$
+\FOR{$t=1 ...n$}
+%\STATE (Generate candidates)
+\STATE Generate $x_1,...,x_\lambda \sim m + \sigma \mathcal{N}(0,C)$.
+\STATE Define $x'_{i}$ the $i^{th}$ best of the $x_i$.
+%\STATE Cumulation for the covariance, i.e. increase $p_c$ if $p_c<1.5\sqrt{dimension}$ and the $\mu$ best points are far enough from $m$
+\STATE{Update the cumulation for $C$: $p_c\leftarrow\mbox{ cumulation of }p_c$, overall direction of progress.}
+\STATE Update the covariance matrix:
+$$C\leftarrow (1-c)\underbrace{C}_{inertia}+\frac cb \underbrace{(p_c\times p_c^T)}_{\mbox{overall direction}} +c(1-\frac 1b)\sum_{i=1}^\mu w_i\underbrace{\frac{x'_i-m}\sigma\times \frac{(x'_i-m)^T}\sigma}_{\mbox{``covariance'' of the $\frac1\sigma x'_i$}}$$
+\STATE Update mean:% candidates)
+$$m\leftarrow \sum_{i=1}^\mu w_i x_{i:\lambda}$$
+\STATE Update $\sigma$ by cumulative step-size adaptation~\citep{csalinear}.
+%$$\sigma\leftarrow \sigma \times \exp(\frac cd ( || ) ).$$ too complicated
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+\newpage
+\section{Additional plots for the tiling trick}
+\label{tilsup}
+\begin{figure}[htb]
+\centering
+\includegraphics[width=.3\textwidth]{sections/appendix/arxiv_dfo/images/randnoise_inception.pdf}
+\includegraphics[width=.3\textwidth]{sections/appendix/arxiv_dfo/images/randnoise_resnet.pdf}
+\includegraphics[width=.3\textwidth]{sections/appendix/arxiv_dfo/images/randnoise_vgg.pdf}\\
+\caption{\label{til1}Random attack success rate against InceptionV3 (left), ResNet50 (center), VGG16bn (right) for different noise intensities. We just randomly draw one tiled attack and check if it is successful.}
+\end{figure}
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=.23\textwidth]{sections/appendix/arxiv_dfo/images/rand_001.pdf}
+\includegraphics[width=.23\textwidth]{sections/appendix/arxiv_dfo/images/rand_003.pdf}
+\includegraphics[width=.23\textwidth]{sections/appendix/arxiv_dfo/images/rand_005.pdf}
+\includegraphics[width=.23\textwidth]{sections/appendix/arxiv_dfo/images/rand_01.pdf}\\
+\caption{\label{til2}Random attack success rate for different noise intensities $\epsilon\in\{0.01,0.03,0.05,0.1\}$ (from right to left) against different architectures. We just randomly draw one tiled attack and check if it is successful.}
+\end{figure}
+
+\section{Results with ``Carlini\&Wagner'' loss}
+\label{cwsec}
+In this section, we follow the same experimental setup as in Section~\ref{unt_sota}, but we built our attacks with the ``Carlini\&Wagner'' loss instead of the cross entropy. We remark the results are comparable and similar.
+
+\begin{table}[htb]
+\caption{Comparison of our method with``Carlini\&Wagner'' loss versus the parsimonious and bandits attacks in the untargeted setting on InceptionV3 pretrained network for $\epsilon=0.05$ and $10,000$ as budget limit. }
+\label{untargeted_cw}
+\begin{center}
+\begin{tabular}{cc|cc|c}
+\textbf{Method} & \textbf{\# of tiles} &  \textbf{Average queries} &\textbf{ Median queries }& \textbf{Success rate} \\
+\hline
+$\operatorname{DFO}_c-\operatorname{Cauchy (1+1)-ES}$ & 30&353	&57	&97.2\%\\
+$\operatorname{DFO}_c-\operatorname{Cauchy (1+1)-ES}$ &50&\textbf{347}&	63&	98.8\%\\
+
+\hline
+
+$\operatorname{DFO}_c-\operatorname{DiagonalCMA}$ & 30&	483	&167&	98.8\%\\
+$\operatorname{DFO}_c-\operatorname{DiagonalCMA}$  & 50&	528	&181&	99.2\%\\
+
+
+\hline
+$\operatorname{DFO}_c-\operatorname{CMA}$ & 30&	475	&225&	99.2\%\\
+$\operatorname{DFO}_c-\operatorname{CMA}$ & 50&	491	&246	&\textbf{99.4\%}\\
+
+\hline
+$\operatorname{DFO}_d-\operatorname{DiagonalCMA}$  &30&	482 &	\textbf{27}&	98.0\%\\
+$\operatorname{DFO}_d-\operatorname{DiagonalCMA}$  &50&	510& 37	&	98.0\%\\
+\end{tabular}
+\end{center}
+\end{table}
+
+
+
+\newpage
+\section{Untargeted attacks with smaller noise intensities}
+\label{smaller}
+We evaluated our method on smaller noise intensities ($\epsilon\in\{0.01,0.03,0.05\}$) in the untargeted setting on ImageNet dataset. In this framework, we also picked up randomly $10,000$ images and limited our budget to $10,000$ queries. We compared to the bandits method~\citep{ilyas2018prior} and to the parsimonious attack~\citep{moon19aparsimonous} on InceptionV3 network. We limited our experiments to a number of tiles of 50. We report our results in Table~\ref{untargeted_epsilon}. We remark our attacks reach state of the art for $\epsilon=0.03$ and $\epsilon=0.05$ both in terms of success rate and queries budget. For $\epsilon=0.01$, we reach results comparable to the state of the art.
+
+\begin{table}[htb]
+\caption{Results of our method compared to the parsimonious and bandit attacks in the untargeted setting on InceptionV3 pretrained network for different values of noise intensities $\epsilon\in\{0.01,0.03,0.05\}$ and a maximum of $10,000$ queries. } 
+\label{untargeted_epsilon}
+\begin{center}
+\begin{tabular}{c|cc|cc|c}
+\textbf{$\epsilon$} &\textbf{Method }&\textbf{ \# of tiles} &  \textbf{Avg. queries} & \textbf{Med. queries} & \textbf{Success rate} \\
+ \hline
+\multirow{5}{*}{$0.05$}&Parsimonious & - & 722 &237& 98.5\% \\
+% \cdashline{2-6}
+&Bandits & 50 & 995 & 249& 95.1\% \\
+% \cdashline{2-6}
+&$\operatorname{DFO}_c-\operatorname{Cauchy (1+1)-ES}$ &50&	510&	63	&97.3\% \\
+&$\operatorname{DFO}_c-\operatorname{DiagonalCMA}$  &50&	623	&191&	98.7\%\\
+&$\operatorname{DFO}_c-\operatorname{CMA}$  & 50&	630	&259&	\textbf{99.2\%}\\
+&$\operatorname{DFO}_d-\operatorname{DiagonalCMA}$  & 50 & \textbf{485} & \textbf{38} & 97.4\%\\
+
+\hline
+\multirow{5}{*}{$0.03$}&Parsimonious & - & 1104 &392&  95.7\% \\
+% \cdashline{2-6}
+
+&Bandits & 50 & 1376& 466&92.7\%  \\
+% \cdashline{2-6}
+
+&$\operatorname{DFO}_c-\operatorname{Cauchy (1+1)-ES}$ & 50 & 846&	\textbf{203}	&93,2\% \\
+&$\operatorname{DFO}_c-\operatorname{DiagonalCMA}$ & 50 & 971&	429&	96,5\%\\
+&$\operatorname{DFO}_c-\operatorname{CMA}$ &50& 911&	404&	\textbf{96.7\%}\\
+
+&$\operatorname{DFO}_d-\operatorname{DiagonalCMA}$  & 50 &\textbf{799}&	293&	94,1\% \\
+
+\hline
+\multirow{5}{*}{$0.01$}&Parsimonious & - & 2104 &1174& 80.3\% \\
+% \cdashline{2-6}
+&Bandits & 50 &2018&992& 72.9\% \\
+% \cdashline{2-6}
+
+&$\operatorname{DFO}_c-\operatorname{Cauchy (1+1)-ES}$& 50 & 1668&	\textbf{751}&	72,1\% \\
+&$\operatorname{DFO}_c-\operatorname{DiagonalCMA}$ & 50 & 1958 &1175 & 79.2\%\\
+&$\operatorname{DFO}_c-\operatorname{CMA}$& 50 & 1921 & 1107 & \textbf{80.4\%}\\
+&$\operatorname{DFO}_d-\operatorname{DiagonalCMA}$ & 50 & \textbf{1188} &849&71,3\%\\
+
+\hline
+
+\end{tabular}
+\end{center}
+\end{table}
+
+
+\newpage
+
+% \section{Table for attacks against adversarially tranined network}
+% \begin{table}[htb]
+% \caption{Adversarial attacks against an adversarially trained WideResnet28x10 network on CIFAR10 dataset for $\epsilon=0.03125$ and $20,000$ as budget limit.}
+% \label{at_comp}
+% \begin{center}
+% \begin{tabular}{cc|cc|c}
+% \textbf{Method }& \textbf{\# of tiles} & \textbf{ Average queries} &\textbf{ Median queries} &\textbf{ Success rate}\\
+%  \hline
+% PGD (not black-box)& - & 20 &20& 36\% \\
+% \hline
+% $\operatorname{DFO}_c-\operatorname{Cauchy (1+1)-ES}$&10& 429& {\bf{60}} &29.5\%\\
+% $\operatorname{DFO}_c-\operatorname{Cauchy (1+1)-ES}$ &20 &902&93& 31.5\%\\
+% $\operatorname{DFO}_c-\operatorname{Cauchy (1+1)-ES}$&32 &1866& 764& 33.8\%\\
+% \hdashline
+% $\operatorname{DFO}_c-\operatorname{Diagonal CMA}$ &10&396& 85 &31.5\%\\
+% $\operatorname{DFO}_c-\operatorname{Diagonal CMA}$&20 &624& 151& 32.3\% \\
+% $\operatorname{DFO}_c-\operatorname{Diagonal CMA}$& 32 &1379 &860& 34.7\%\\
+% \hdashline
+% $\operatorname{DFO}_c-\operatorname{CMA}$ &10& {\bf{392}} & 87&32.2\%\\
+% $\operatorname{DFO}_c-\operatorname{CMA}$&20 &694& 189& 33.5\% \\
+% $\operatorname{DFO}_c-\operatorname{CMA}$& 32 &1467 &990& {\bf{35.7\%}}\\
+% \end{tabular}
+% \end{center}
+% \end{table}
+
+% \newpage
+\section{Untargeted attacks against other architectures}
+\label{other_archi}
+
+We also evaluated our method on different  neural networks architectures. For each network we randomly selected $10,000$ images that were correctly classified. We limit our budget to $10,000$ queries and set the number of tiles to 50. 
+We achieve a success attack rate up to $100\%$ on every classifier with a budget as low as 8 median queries for the VGG16bn for instance (see Table~\ref{untargeted_archi}). One should notice  that the performances are lower on InceptionV3 as it is also reported for the bandit methods in~\citep{ilyas2018prior}. This possibly due to the fact that the tiling trick is less relevant on the Inception network than on the other networks (see Fig.~\ref{til}).
+
+
+
+
+\begin{table}[htb]
+\caption{Comparison of our method on the ImageNet dataset with InceptionV3 (I), ResNet50 (R) and VGG16bn (V) for $\epsilon=0.05$ and $10,000$ as budget limit.}
+\label{untargeted_archi}
+\begin{center}
+\begin{tabular}{cc|ccc|ccc|ccc}
+\textbf{Method} &\textbf{Tile size}&\multicolumn{3}{c|}{\textbf{Avg queries}}&\multicolumn{3}{c|}{\textbf{Med. queries}}&\multicolumn{3}{c}{\textbf{Succ. Rate}}\\
+\hline
+ & & I & R & V &  I & R & V&  I & R & V\\
+ \hline
+$\operatorname{DFO}_c-\operatorname{Cauchy (1+1)-ES }$ &30 & 466&\textbf{163}&86 & 60&\textbf{19}&8 & 95.2\%&99.6\%&\textbf{100\% }\\
+
+$\operatorname{DFO}_c-\operatorname{Cauchy (1+1)-ES }$ & 50 & 510&218&\textbf{67}& 63&32&4& 97.3\% &99.6\%&99.7\%\\
+\hline
+$\operatorname{DFO}_c-\operatorname{DiagonalCMA}$& 30 &533&263&174& 189&95&55 & 97.2\%&99.0\%&99.9\%\\
+$\operatorname{DFO}_c-\operatorname{DiagonalCMA}$ & 50 & 623&373&227& 191&121&71 & 98.7\%&99.9\%&\textbf{100\%}\\
+
+\hline
+$\operatorname{DFO}_c-\operatorname{CMA}$& 30 &588&256&176& 232&138&72& 98.9\%&99.9\%&99.9\%\\
+$\operatorname{DFO}_c-\operatorname{CMA}$ & 50 & 630&270&219& 259&143&107 & \textbf{99.2\%}&\textbf{100\%}&99.9\%\\
+
+\hline
+$\operatorname{DFO}_d-\operatorname{DiagonalCMA}$& 50 & 485&617&345& 38& 62&6& 97.4\%&99.2\%&99.6\%\\
+$\operatorname{DFO}_d-\operatorname{DiagonalCMA}$ & 30 & \textbf{424}&417&211& \textbf{20}&20&\textbf{2}& 97.7\%&98.8\%&99.5\%\\
+\end{tabular}
+\end{center}
+\end{table}
+
+
+\newpage
+
+
+\section{Table for attacks against adversarially tranined network}
+\begin{table}[htb]
+\caption{Adversarial attacks against an adversarially trained WideResnet28x10 network on CIFAR10 dataset for $\epsilon=0.03125$ and $20,000$ as budget limit.}
+\label{at_comp}
+\begin{center}
+\begin{tabular}{cc|cc|c}
+\textbf{Method }& \textbf{\# of tiles} & \textbf{ Average queries} &\textbf{ Median queries} &\textbf{ Success rate}\\
+ \hline
+PGD (not black-box)& - & 20 &20& 36\% \\
+\hline
+
+Parsimonious&-&1130 & 450&\bf{42\%}\\
+\hline
+Bandits&10& 1429& {530} &29.1\%\\
+ Bandits&20 &1802&798& 33.8\%\\
+Bandits&32 &1993& 812& 34.8\%\\
+\hline
+$\operatorname{DFO}_c-\operatorname{Cauchy (1+1)-ES}$&10& 429& {\bf{60}} &29.5\%\\
+$\operatorname{DFO}_c-\operatorname{Cauchy (1+1)-ES}$& 20&902 & 93  &30.5\%\\
+$\operatorname{DFO}_c-\operatorname{Cauchy (1+1)-ES}$&32 &1865 &764 & 31.7\%\\
+% \hdashline
+$\operatorname{DFO}_c-\operatorname{Diagonal CMA}$ &10&395 &85&30.5\%\\
+$\operatorname{DFO}_c-\operatorname{Diagonal CMA}$&20 &624& 151& 31.3\% \\
+$\operatorname{DFO}_c-\operatorname{Diagonal CMA}$& 32 &1379 &860& 34.7\%\\
+% \hdashline
+$\operatorname{DFO}_c-\operatorname{CMA}$ &10& {\bf{363}} & 156&30.4\%\\
+$\operatorname{DFO}_c-\operatorname{CMA}$&20 &1676&740& 40.2\% \\
+$\operatorname{DFO}_c-\operatorname{CMA}$& 32 &2311 &1191& 40.2\%\\
+\end{tabular}
+\end{center}
+\end{table}
+
+\newpage
+
+
+\section{Failing methods}
+
+In this section, we compare our attacks to other optimization strategies. We run our experiments in the same setup as in Section~\ref{unt_sota}. Results are reported in Table~\ref{untargeted_fail}. DE and Normal (1+1)-ES performs poorly, probably because these optimization strategies converge slower when the optima are at ``infinity''.  We reformulate this sentence accordingly in the updated version of the paper. Finally, as the initialization of Powell is linear with the dimension and with less variance, it performs poorer than simple random search. Newuoa, SQP and Cobyla algorithms have also been tried on a smaller number images (we did not report the results), but their initialization is also linear in the dimension, so they reach very poor results too.
+
+\begin{table}[htb]
+\caption{Comparison with other DFO optimization strategies in the untargeted setting on ImageNet dataset InceptionV3 pretrained network for $\epsilon=0.05$ and $10,000$ as budget limit.}
+\label{untargeted_fail}
+\begin{center}
+\begin{tabular}{cc|cc|c}
+\textbf{Method} & \textbf{\# of tiles} &  \textbf{Average queries} &\textbf{ Median queries }& \textbf{Success rate} \\
+ \hline
+
+$\operatorname{DFO}_c-\operatorname{Cauchy (1+1)-ES }$ &30&	466& 60	&95.2\%\\
+$\operatorname{DFO}_c-\operatorname{Cauchy (1+1)-ES }$ &50&	510&	63	&97.3\% \\
+\hline
+$\operatorname{DFO}_c-\operatorname{DiagonalCMA}$ &30&	533	&189&	97.2\%\\
+$\operatorname{DFO}_c-\operatorname{DiagonalCMA}$ &50&	623	&191&	98.7\%\\
+\hline
+
+$\operatorname{DFO}_c-\operatorname{CMA}$& 30&	589	&232	&98.9\%\\
+$\operatorname{DFO}_c-\operatorname{CMA}$ & 50&	630	&259&	99.2\%\\
+
+\hline
+
+$\operatorname{DFO}_c-\operatorname{DE}$ & 30&756&159&78.8\%\\
+$\operatorname{DFO}_c-\operatorname{DE}$ & 50&699&149	&76.0\%\\
+\hline
+
+$\operatorname{DFO}_c-\operatorname{Normal(1+1)-ES}$ &30&	581&	45	&87.6\%\\
+$\operatorname{DFO}_c-\operatorname{Normal(1+1)-ES}$ &50&661&66&92.8\%\\
+\hline
+
+$\operatorname{DFO}_c-\operatorname{RandomSearch}$  &30&	568	&6	&37.9\%\\
+$\operatorname{DFO}_c-\operatorname{RandomSearch}$ &50&	527	&5&	38.2\%\\
+\hline
+$\operatorname{DFO}_c-\operatorname{Powell}$ &30&	4889&	5332&	14.4\%\\
+$\operatorname{DFO}_c-\operatorname{Powell}$ &50&	4578	&4076&	7.3\%\\
+
+
+
+\end{tabular}
+\end{center}
+\end{table}
+
+\end{subappendices}

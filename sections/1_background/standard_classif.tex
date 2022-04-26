@@ -1,5 +1,5 @@
 \section{Supervised Classification}
-A classification task aims at learning a function that assigns a label to a given input. Along with regression, classification is one of the  supervised learning tasks. One can find classification tasks in Computer Vision~\citep{lecun-mnisthandwrittendigit-2010,cifar-10,imagenet_cvpr09}, Natural Language Processing~\citep{vaswani2017attention}, Speech Recognition~\citep{xxx}, etc. In this thesis, most examples will be from Computer Vision and Image Recognition. 
+A classification task aims at learning a function that assigns a label to a given input. Along with regression, classification is one of the  supervised learning tasks. One can find classification tasks in Computer Vision~\citep{lecun-mnisthandwrittendigit-2010,cifar-10,imagenet_cvpr09}, Natural Language Processing~\citep{vaswani2017attention}, Speech Recognition~\citep{dong2018speech}, etc. In this thesis, most examples will be from Computer Vision and Image Recognition. 
 \subsection{Notations}
 In this section, we formalize the task of classification. First, we define the notions of inputs and labels:
 \begin{itemize}
@@ -60,7 +60,7 @@ where $f_i(x)$ is the probability learnt by the model with input $x$ belonging t
 \end{align*}
 where $W_i$ are called the weight matrices and $b_i$ the biases. In the case of image recognition, the weights may have a special structure of convolution: such networks are called \emph{Convolutional Networks}. We illustrate a convolutional layer in Figure~\ref{xxx}.
 
-To train neural networks, the backpropagation is a standard algorithm based on the chain rule. This algorithm is subject to gradient vanishing, or gradient explosion issues. To circumvent these problems, many tricks were proposed as  using ReLU-like activation functions~\citep{xxx}, Dropout~\citep{srivastava2014dropout}, Batch Normalization~\citep{ioffe2015batch} or the use of Residual Layers~\citep{he2016deep}. More, despite their popularity, it is difficult to understand the outstanding performances of neural networks.
+To train neural networks, the backpropagation is a standard algorithm based on the chain rule. This algorithm is subject to gradient vanishing, or gradient explosion issues. To circumvent these problems, many tricks were proposed as  using ReLU-like activation functions~\citep{xu2015empirical,ramachandran2017searching}, Dropout~\citep{srivastava2014dropout}, Batch Normalization~\citep{ioffe2015batch} or the use of Residual Layers~\citep{he2016deep}. More, despite their popularity, it is difficult to understand the outstanding performances of neural networks.
 
 
 
@@ -161,7 +161,7 @@ where $e_\PP(h)=\mathbb{E}_{z\sim\PP}\left[h(z)\right]$ and $e_S(h)=\frac1\numsa
 \end{align*}
 
 
-Rademacher complexity along with VC-dimension~\citep{vapnik1998} are the main tools for deriving generalization bounds. The two concepts are linked and one can upperbound the Rademacher complexity with the VC dimension.  
+Rademacher complexity along with VC-dimension~\citep{vapnik1998} are the main tools for deriving generalization bounds. The two concepts are linked and one can upperbound the Rademacher complexity with the VC dimension.  Another tool is TODO
 
 
 

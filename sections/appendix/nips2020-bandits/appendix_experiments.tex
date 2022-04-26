@@ -64,6 +64,8 @@ Stationary CACE \expfour &     $993, 673.24$ &  $988, 463.56$ &   $934, 304.23$ 
 % Fig.~\ref{fig:cost_all_algs_attack_all_ctx} shows the total cost for all the attacks (that is to say including CC \lints and CC$20$ \lints compared to Fig~\ref{fig:costs_plot} (Right)). This figure shows that even though the total cost of attacks is linear for the synthetic and Jester dataset, it seems that for MovieLens the attacker achieves their goal with a logarithmic total. Therefore, despite the fact that the estimate of $\theta_{a^\dagger}$ can be polluted by attacked samples, it seems that \lints can still pick up $a^{\dagger}$ as being optimal for this particular instance.
 
 \begin{figure}[ht]
+    \label{fig:regret_all_algs_attack_all_ctx}
+
    \begin{minipage}{0.25\linewidth}
         \centering
         \includegraphics[width=0.85\linewidth]{sections/appendix/nips2020-bandits/images/regret_cost_attacks_context/simulations/legend.pdf}
@@ -84,7 +86,6 @@ Stationary CACE \expfour &     $993, 673.24$ &  $988, 463.56$ &   $934, 304.23$ 
     \includegraphics[width=0.85\linewidth]{sections/appendix/nips2020-bandits/images/regret_cost_attacks_context/movielens/standalone.pdf}
     % \caption{MovieLens}
     \end{minipage}
-    \label{fig:regret_all_algs_attack_all_ctx}
 \end{figure}
 
 Fig.~\ref{fig:regret_all_algs_attack_all_ctx} shows the regret for all the attacks. This figure shows that even though the total cost of attacks is linear for algorithms like \lints in the synthetic dataset, the regret is linear. More generally, we observe that the regret is linear for all attacked algorithms on all datasets.

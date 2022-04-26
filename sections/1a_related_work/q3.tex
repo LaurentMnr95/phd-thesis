@@ -1,6 +1,6 @@
-\section{Q3}
+\section{Robustness and Lipchitzness}
 
-We recall a classifier $h$ is \emph{certifiably robust at level $\varepsilon$} at input $x$ with label $y$ if there exist a property depending on $h$, $x$, $y$ and $\varepsilon$ that implies that for all $x'$ such that $d(x,x')\leq\varepsilon$, $h(x') = y$.
+In this section, we have interest in the deep link that exist between adversarial examples and Lipschitzness. Indeed, a Lipschitz function is a function that do not vary a lot when varying its input and a classifier is robust if a small perturbation do not change the prediction. Formally, we recall a classifier $h$ is \emph{certifiably robust at level $\varepsilon$} at input $x$ with label $y$ if there exist a property depending on $h$, $x$, $y$ and $\varepsilon$ that implies that for all $x'$ such that $d(x,x')\leq\varepsilon$, $h(x') = y$. We first recall a property linking  Lipschitzness to Robustness. Then, we present the existing methods for building Lipschitz Neural Networks. 
 
 
 
@@ -9,7 +9,7 @@ We recall a classifier $h$ is \emph{certifiably robust at level $\varepsilon$} a
 
 
 The Lipschitz constant has seen a growing interest in the last few years in the field of deep learning~\citep{scaman2018lipschitz,fazlyab2019efficient,combettes2020lipschitz,bethune2021many}.
-Indeed, numerous results have shown that neural networks with a small Lipschitz constant exhibit better generalization~\citep{bartlett2017spectrally}, higher robustness to adversarial attacks~\citep{szegedy2014intriguing,farnia2018generalizable,tsuzuku2018lipschitz}, better training stability~\citep{xiao2018dynamical,trockman2021orthogonalizing}, improved Generative Adversarial Networks~\citep{arjovsky2017wasserstein}, etc.
+Indeed, numerous results have shown that neural networks with a small Lipschitz constant exhibit better generalization~\citep{bartlett2017spectrally}, higher robustness to adversarial attacks~\citep{Szegedy2013IntriguingPO,farnia2018generalizable,tsuzuku2018lipschitz}, better training stability~\citep{xiao2018dynamical,trockman2021orthogonalizing}, improved Generative Adversarial Networks~\citep{arjovsky2017wasserstein}, etc.
 Formally, we define the Lipschitz constant with respect to the $\ell_2$ norm of a Lipschitz continuous function $f$ as follows:
 \begin{equation*}
   Lip_{2}{(f)} = \sup_{\substack{x, x' \in \XX \\ x \neq x'}} \frac{\lVert f(x) - f(x') \rVert_2}{\lVert x - x' \rVert_2} \enspace.
@@ -53,7 +53,7 @@ Then the Lipschitz constant of $f$ is upperbounded by $\lVert A_1\rVert_2\dots \
 \paragraph{Lipschitz Regularization of Neural Networks.}  Based on the insight that Lipschitz Neural Networks are more robust to adversarial attacks, researchers have developed several techniques to regularize and constrain the Lipschitz constant of neural networks by adding a regularization $\Omega(f)$ to the classification objective to encourage a smaller Lipschitz constant.
 However the computation of the Lipschitz constant of neural networks has been shown to be NP-hard~\citep{scaman2018lipschitz}.  Most methods therefore tackle the problem by reducing or constraining the Lipschitz constant at the layer level.
 For instance, the work of~\citet{cisse2017parseval,huang2020controllable} and ~\citet{wang2020orthogonal} exploit the orthogonality of the weights matrices to build Lipschitz layers.
-Other approaches~\citep{gouk2021regularisation,jia2017improving,sedghi2018singular,singla2021fantastic,araujo2021lipschitz} proposed to estimate or upper-bound the spectral norm of convolutional and dense layers using for instance the power iteration method~\citep{golub2000eigenvalue}.
+Other approaches~\citep{gouk2018regularisation,jia2017improving,sedghi2018singular,singla2021fantastic,araujo2021lipschitz} proposed to estimate or upper-bound the spectral norm of convolutional and dense layers using for instance the power iteration method~\citep{golub2000eigenvalue}.
 While these methods have shown interesting results in terms of accuracy, empirical robustness and efficiency, they can not provide provable guarantees since the Lipschitz constant of the trained networks remains unknown or vacuous.
 
 

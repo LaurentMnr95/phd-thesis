@@ -1,5 +1,5 @@
 % !TEX root = main.tex
-\section{Preliminaries}\label{sec:preliminaries}
+\section{Preliminaries}\label{sec:preliminaries_band}
 We consider the standard contextual linear bandit setting with $K\in \mathbb{N}$ arms. At each time $t$, the agent observes a context $x_{t}\in\mathbb{R}^{d}$, selects an action $a_{t}\in \llbracket 1, K\rrbracket$ and observes a reward: $r_{t,a_{t}} = \langle \theta_{a_{t}}, x_{t}\rangle + \eta_{a_{t}}^{t}$ where for each arm $a$, $\theta_{a}\in \mathbb{R}^{d}$ is a feature vector and $\eta_{a_{t}}^{t}$ is a conditionally independent zero-mean, $\sigma^{2}$-subgaussian noise.  \changee{The contexts are assumed to be sampled \textit{stochastically} except in App.~\ref{app:adversarial_rewards}.} \cmmnt{We also make the following assumptions on the contexts and parameter vectors.}
 \begin{assump}\label{assumption1}
 There exist $L>0$ and $\mathcal{D}\subset \mathbb{R}^{d}$, such that for all $t$, $x_{t}\in\mathcal{D}$ and, $\forall x\in\mathcal{D},\forall a\in\llbracket 1, K\rrbracket,~ \|x\|_{2} \leq L \text{ and } \langle \theta_{a}, x\rangle \in (0,1]$. In addition, we assume that there exists $S>0$ such that $\|\theta_{a}\|_{2}\leq S$ for all arms $a$.

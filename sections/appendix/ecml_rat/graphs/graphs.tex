@@ -1,0 +1,33 @@
+\begin{tikzpicture}[scale=0.5]
+    \begin{groupplot}[group style={
+                        group name=myplot,
+                        group size= 2 by 1},
+                        grid style=dashed,
+                        ymajorgrids=true]
+       
+    \nextgroupplot[stack plots=y,area style,ytick={0,5000,1000},ymin=0,ymax=10000,xmin=0.3,xmax=16.63,axis x line*=bottom, axis y line*=left,xtick={2,14},xticklabels={\Large $\epsilon'=\epsilon\phantom{\sqrt{d}}$, \Large $\epsilon'=\epsilon\times\sqrt{d}$},xtick style={draw=none}]
+        \addplot table [x=eps,y=linf_ball] {sections/appendix/ecml_rat/graphs/data/ball_l2_base.dat}\closedcycle;
+        \addplot table [x=eps,y=callote] {sections/appendix/ecml_rat/graphs/data/ball_l2_base.dat}\closedcycle;
+        \addplot table [x=eps,y=outside] {sections/appendix/ecml_rat/graphs/data/ball_l2_base.dat}\closedcycle;
+
+    \nextgroupplot[stack plots=y,area style,ytick={0,5000,1000},ymin=0,ymax=10000,xmin=0.3,xmax=16.63,axis x line*=bottom, axis y line*=left,xtick={2,14},xticklabels={\Large $\epsilon'=\epsilon\phantom{\sqrt{d}}$, \Large $\epsilon'=\epsilon\times\sqrt{d}$},xtick style={draw=none}]
+        \addplot table [x=eps,y=linf_ball] {sections/appendix/ecml_rat/graphs/data/ball_l2_at.dat}\closedcycle;
+        \addplot table [x=eps,y=callote] {sections/appendix/ecml_rat/graphs/data/ball_l2_at.dat}\closedcycle;
+        \addplot table [x=eps,y=outside] {sections/appendix/ecml_rat/graphs/data/ball_l2_at.dat}\closedcycle;
+
+    \end{groupplot}
+% \matrix[
+%     matrix of nodes,
+%     anchor=north,
+%     inner sep=0.2em,
+%   ]at(11,-1.5)
+%   {
+%     \ref{plots:plot1} & \small R.N.\cite{pinot2019theoretical} & [5pt]
+%     \ref{plots:plot2} & \small RAT (our approach) & [5pt]
+%     \ref{plots:plot3} & \small LeRAT (our approach)\\};
+\end{tikzpicture}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
