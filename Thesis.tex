@@ -1,0 +1,345 @@
+\pdfobjcompresslevel 0
+\documentclass{mimosis}
+
+\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{algorithmic}
+%\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{comment}
+\usepackage{metalogo}
+\usepackage{enumerate}
+\usepackage{mathtools,amssymb,amsmath} 
+\usepackage{physics}
+\usepackage{makecell}
+\usepackage{makeidx}
+\usepackage{isomath}
+\usepackage[framemethod=TikZ]{mdframed}
+\usepackage{enumitem}
+\usepackage{relsize}
+\usepackage{minitoc}
+\usepackage{caption}
+\usepackage{tcolorbox}
+\usepackage{bm}
+
+%\usepackage[pdftex]{graphicx}
+\allowdisplaybreaks
+
+
+\usepackage{amsfonts}
+\usepackage{xspace}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{pgfplots}
+\usepackage{pdfpages}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat=newest}
+\usepackage{dsfont}
+
+
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{L}[1]{>{\arraybackslash}p{#1}}
+
+\newcommand{\textred}[1]{\textcolor{red}{#1}}
+\newcommand{\rem}[1]{{\color{red}\sout{#1}}}
+\newcommand{\add}[1]{{\color{green}#1}}
+\newcommand{\replace}[2]{\rem{#1}\add{#2}}
+\newcommand{\com}[1]{{\color{gray}\footnotesize ({\it #1})}}
+\newcommand{\Omit}[1]{}
+
+\newcommand{\cmark}{\ding{51}}
+\newcommand{\xmark}{\ding{55}}
+
+
+
+\setkomafont{disposition}{\color{black}\bfseries}
+\definecolor{PSLBlue}{RGB}{47,68,134}
+\definecolor{grund}{RGB}{238,241,251}          
+\definecolor{schrift}{RGB}{0,73,114}
+\definecolor{newnavy}{RGB}{0,46,73}
+\definecolor{rahmen}{RGB}{0,73,114}
+ 
+\surroundwithmdframed[
+   topline=false,
+   rightline=false,
+   bottomline=false,
+   leftline=false,
+   skipabove=\medskipamount,
+   skipbelow=\medskipamount,
+   backgroundcolor=grund,
+]{proof}
+
+
+\def\table{\def\figurename{Table}\figure}
+\let\endtable\endfigure
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+% Table setup
+%%%%%%%%%%%%%%%%
+\renewcommand{\arraystretch}{1.2}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Some of my favourite personal adjustments
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% These are the adjustments that I consider necessary for typesetting
+% a nice thesis. However, they are *not* included in the template, as
+% I do not want to force you to use them.
+
+% This ensures that I am able to typeset bold font in table while still aligning the numbers
+% correctly.
+\usepackage{etoolbox}
+\usepackage[binary-units=true]{siunitx}
+\DeclareSIUnit\px{px}
+
+\sisetup{%
+  detect-all           = true,
+  detect-family        = true,
+  detect-mode          = true,
+  detect-shape         = true,
+  detect-weight        = true,
+  detect-inline-weight = math,
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Hyperlinks & bookmarks
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\usepackage[%
+  colorlinks = true,
+  citecolor  = PSLBlue,
+  linkcolor  = PSLBlue,
+  urlcolor   = blue,
+  unicode,
+  ]{hyperref}
+
+
+
+% \renewcommand*{\backref}[1]{}
+% \renewcommand*{\backrefalt}[4]{%
+%     \ifcase #1 (Not cited.)%
+%     \or        (Cited on page~#2.)%
+%     \else      (Cited on pages~#2.)%
+%     \fi}
+
+
+\usepackage{bookmark}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Bibliography
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% I like the bibliography to be extremely plain, showing only a numeric
+% identifier and citing everything in simple brackets. The first names,
+% if present, will be initialized. DOIs and URLs will be preserved.
+
+% \usepackage[%
+%   autocite     = plain,
+%   backend      = biber,
+%   doi          = false,
+%   url          = true,
+%   giveninits   = true,
+%   hyperref     = true,
+%   maxbibnames  = 200,
+%   maxcitenames = 200,
+%   sortcites    = true,
+%   style        = numeric,
+%   backref,
+%   backrefstyle = none,
+%   hyperref,
+%   ]{biblatex}
+\usepackage{natbib}
+ 
+% \input{bibliography-mimosis}
+% \addbibresource{biblio.bib}
+
+
+\input{preamble.tex}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Fonts
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ifxetexorluatex
+  \setmainfont{Minion Pro}
+\else
+  \usepackage[lf]{ebgaramond}
+  \usepackage[oldstyle,scale=0.7]{sourcecodepro}
+  \singlespacing
+\fi
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Acronyms
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\newacronym[description={Empirical Risk Minimization}]{ERM}{ERM}{Empirical Risk Minimization}
+\newacronym[description={Projected Gradient Decent}]{PGD}{PGD}{Projected Gradient Descent}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Glossary
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newglossaryentry{Integers}{%
+  name        = {$\mathbb{N}$},
+  description = {The set of natural integers},
+  sort        = {Natural Integers},
+}
+\newglossaryentry{Real numbers}{%
+  name        = {$\mathbb{R}$},
+  description = {The set of real numbers},
+  sort        = {Real numbers},
+}
+
+
+\makeindex
+\makeglossaries
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Operators and commands
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Incipit
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{xxx}
+\subtitle{xxx}
+\author{Laurent Meunier}
+
+\begin{document}
+ 
+
+\frontmatter
+\input{sections/remerciements}
+\input{sections/abstract}
+\input{sections/abstract_fr}
+
+
+
+
+\dominitoc
+\tableofcontents
+
+ \renewcommand\listfigurename{List of Figures and Tables}
+ \listoffigures
+ 
+%----------------------------------------------------------------------------------------
+%	SYMBOLS
+%----------------------------------------------------------------------------------------
+%\begin{comment}
+ 
+% \chapter*{Notations and Symbols}
+% \markboth{Notations and Symbols}{Notations and Symbols}
+
+% We use bold lower-case to denote vectors and functions with multidimensional outputs and standard lower-case to denote scalars and real-value functions. Depending on the context, we either use calligraphic font or upper-case to denote ensembles -- most of the times calligraphic, sometimes upper-case to denote sub-sets or elements of a set of sets. 
+
+% \section*{Algebra}
+% \begin{tabular}{lll} % Include a list of Symbols (a three column table)
+% $\mathbb{R}$  & Set of real numbers & \\
+% $\mathbb{N}$ & Set of natural integers & \\
+% $\mathbb{R}^d$ & Set of $d$-dimensional real-valued vectors & \\
+% $\mathcal{M}_{d \times d'} (\R)$ & Set of $d \times d'$ real-valued matrices \\
+% $I_d$ & $d \times d$ identity matrix \\
+% $[a]$ & Set of integers between $1$ and $a$ & $[a] \equaldef \{1, \ldots, a \}$ \\
+% $\Simplex(K)$ & $K$ dimensional simplex & $\Simplex(K) \equaldef \{ \vectorsym{z} \in \R^K ~\st~ \norm{\vectorsym{z}}_1 =1 \}$ \\
+% $\| \vectorsym{v} \|_{p}$ & $\ell_p$-norm of $\vectorsym{v} \in \mathbb{R}^d$ for $p \in [1,+\infty)$ & $ \norm{\vectorsym{v}}_p = \left(\sum_{i = 1}^d \abs{\vectorsym{v}_i}^p \right)^{1/p}$ \\
+% $\| \vectorsym{v} \|_{\infty}$ & Infinite norm of $\vectorsym{v} \in \mathbb{R}^d$ & $\| \vectorsym{v} \|_{\infty} = \max_{i \in [d]} ( |\vectorsym{v}_i|) $ \\ 
+% $\norm{\vectorsym{v}}_{M}$ & Mahalanobis norm of $\vectorsym{v} \in \mathbb{R}^d$ with $M \in \mathcal{M}_{d \times d}(\mathbb{R})$  & $\norm{\vectorsym{v}}_{M} = \sqrt{ \vectorsym{v}^\intercal M \vectorsym{v}}$\\
+% $B_p(\vectorsym{v} ,\alpha)$  & $\ell_p$ ball with center $\vectorsym{v} \in \R^d$ and radius $\alpha \geq 0$ & $\{\vectorsym{u} ~\st~ \norm{\vectorsym{u} -\vectorsym{v}}_p \leq \alpha \}$ \\
+% $B_p(\alpha)$  & $\ell_p$ ball with center $0$ and radius $\alpha \geq 0$ & $\{\vectorsym{u} ~\st~ \norm{\vectorsym{u}}_p \leq \alpha \}$ \\
+% $\Vol(B)$ & Volume of the sub-space $B \subset \R^d$
+% \end{tabular}
+% \section*{Probability}
+% \begin{tabular}{lll} 
+% $\mathcal{A}\left(\mathcal{Z}\right)$ & $\sigma$-algebra of an arbitrary space $\mathcal{Z}$ \\
+% $\mathcal{P}\left(\mathcal{Z} \right)$ & Set of probability distribution over $(\mathcal{A}\left(\mathcal{Z}\right),\mathcal{Z})$ \\
+% $\mathcal{F}_{\mathcal{Z} \times \mathcal{Z}' }$ & Set of measurable functions from $\mathcal{Z}$ to $\mathcal{Z}'$ \\
+% $\vectorsym{\psi} \# \rho$ & Push-forward of $\rho \in \mathcal{P}\left(\mathcal{Z} \right)$ by $\vectorsym{\psi} \in \mathcal{F}_{\mathcal{Z} \times \mathcal{Z}' }$ \\
+% $\expect[.]$ & Expectation of a random event \\
+% $\proba[.]$ & Probability of a random event \\
+% $\mathcal{N}(. , .)$ & Gaussian distribution \\
+% $\text{Lap}(.,.)$ & Laplace distribution \\
+% $\Phi$ & cdf of the standard Gaussian distribution $\mathcal{N}(0,1)$\\ 
+% \end{tabular}
+
+% \section*{Classification and Learning theory}
+% \begin{tabular}{lll} 
+% $\inputspace$ & Input space \\
+% $d$ & Dimension of the input space \\
+% $\outputspace$ & Output space \\
+% $K$ & Number of classes \\
+% $\groundDistrib$ & Ground-truth distribution \\
+% $\fullSample$ & Training sample \\
+% $\Hypothesisspace$ & Hypothesis space \\ 
+% $\loss$ & Loss function \\
+% \end{tabular}
+
+% \section*{Functions}
+% \begin{tabular}{lll}
+%      $\1\{.\}$ & Indicator function of an event & $\1\{A\} = 1$ if $A$ is true, $0$ otherwise  \\
+%      $\sign(x)$ & Sign function applied on $x$ & $\sign(x)= 1$ if $x>0$, $-1$ if $x<0$ and $0$ if $x=0$ \\
+% \end{tabular}
+
+ 
+% %----------------------------------------------------------------------------------------
+% %	ABBREVIATIONS
+% %----------------------------------------------------------------------------------------
+% %\begin{comment}
+% \chapter*{Abbreviations}
+% \markboth{Abbreviations}{Abbreviations}
+
+% \begin{tabular}{ll} 
+% \emph{\textbf{a}.\textbf{k}.\textbf{a}.} & \textbf{a}lso \textbf{k}nown \textbf{a}s\\
+% \textbf{cdf} & \textbf{c}umulative \textbf{d}ensity \textbf{f}unction \\
+% \textbf{C \& W} & \textbf{C}arlini and \textbf{W}agner (attack)\\
+% \emph{\textbf{e}.\textbf{g}.} & \emph{\textbf{e}xempli \textbf{g}ratia} \\
+% \textbf{Eq.} & \textbf{Eq}uation \\
+% \textbf{ERM} & \textbf{E}mpirical \textbf{R}isk \textbf{M}inimization\\
+% \textbf{FGM} & \textbf{F}ast \textbf{G}radient \textbf{M}ethod (attack)\\
+% \emph{\textbf{i}.\textbf{e}.} & \emph{\textbf{i}d \textbf{e}st} \\
+% \emph{\textbf{i}.\textbf{i}.\textbf{d}.} & \textbf{i}dentically and \textbf{i}ndependently \textbf{d}istributed \\
+% \textbf{PGD} & \textbf{P}rojected \textbf{G}radient \textbf{D}escent (attack)\\
+% \textbf{resp.} & \textbf{resp}ectively \\
+% \emph{\textbf{s}.\textbf{t}.} & \textbf{s}uch \textbf{t}hat \\
+% \textbf{SRM} & \textbf{S}tructural \textbf{R}isk \textbf{M}inimization \\  
+% \textbf{std} & \textbf{st}andard \textbf{d}eviation \\
+% \textbf{w}.\textbf{r}.\textbf{t}. & \textbf{w}ith \textbf{r}espect \textbf{t}o 
+% \end{tabular}
+
+
+
+\dominitoc
+\tableofcontents
+\mainmatter
+\input{sections/intro}
+\input{sections/1_background/_background}
+\input{sections/1a_related_work/_rw}
+\input{sections/2_game/_game}
+\input{sections/3_calibration/_calibration}
+\input{sections/4_certification/_certification}
+\input{sections/conclusion} 
+\appendix
+% \input{sections/appendix/_appendix}
+
+  %\include{Sources/AppendixResume}
+
+
+
+\bookmarksetup{startatroot}
+\backmatter
+
+
+\bibliography{biblio}
+\bibliographystyle{plainnat}
+
+\end{document}

@@ -49,9 +49,9 @@ Another type of vulnerability in Machine Learning is model failure. A malicious 
     \item \textbf{Evasion attacks~\citep{biggio2013evasion,Szegedy2013IntriguingPO}}: small imperceptible perturbations at inference time. We will refer them to \emph{``adversarial attacks''}.
 \end{itemize}
     
-Known and gaining interest in academia, these threats are not very known by most of the companies~\cite{kumar2020adversarial}. More importantly, such vulnerabilities  hinder the use of state of the art models in critical systems (autonomous vehicles, healthcare, etc.). In the manuscript we will focus on adversarial attacks.  We introduce this threat more in details in the next paragraph.
+Known and gaining interest in academia, these threats are not very known by most of the companies~\citep{kumar2020adversarial}. More importantly, such vulnerabilities  hinder the use of state of the art models in critical systems (autonomous vehicles, healthcare, etc.). In the manuscript we will focus on adversarial attacks.  We introduce this threat more in details in the next paragraph.
 
-\begin{tcolorbox}[title=References to adversarial examples in European Commission in law proposal on Artificial Intelligence systems]
+\begin{tcolorbox}[colback=grund,colframe=rahmen,title=References to adversarial examples in European Commission in law proposal on Artificial Intelligence systems]
 \label{ref:adversarial_law}
 As part of the introduction: \textit{``Cybersecurity plays a crucial role in ensuring that AI systems are resilient against attempts to alter their use, behaviour, performance or compromise their security properties by malicious third parties exploiting the system’s vulnerabilities. Cyberattacks against AI systems can leverage AI specific assets, such as training data sets (e.g. data poisoning) or trained models (e.g. adversarial attacks), or exploit vulnerabilities in the AI system’s digital assets or the underlying ICT infrastructure. To ensure a level of cybersecurity appropriate to the risks, suitable measures should therefore be taken by the providers of high-risk AI systems, also taking into account as appropriate the underlying ICT infrastructure.''}
 
@@ -103,7 +103,7 @@ This problem is called Empirical Risk Minimization (ERM). The theory of this pro
     \caption{Bias-Variance tradeoff. A model with low complexity will have a low variance but an high bias. A model with high complexity will have a low bias but an high variance.}
     \label{fig:tradeoff_bias_accuracy}
 \end{figure}
-\begin{tcolorbox}
+\begin{tcolorbox}[colback=grund,colframe=rahmen]
 The presence of adversaries in classification questions the knowledge we have in standard statistical learning. Indeed most standard results do not hold in presence of adversaries, hence, opening a new research area dedicated to studying and understanding the classification problem in presence of adversarial attacks, and more importantly, deepens our understanding of  machine learning/deep learning in high dimensional regimes.
 \end{tcolorbox}
 
@@ -141,7 +141,7 @@ We will first introduce in Chapter~\ref{chap:background} the necessary  backgrou
 
 A line of research, following~\cite{pinot2020randomization}, to understand adversarial classification is to rely on game theory. In Chapter~\ref{chap:game},  we will build on this approach and define precisely the motivations for both the attacker and the classifier. We will cast it naturally as a zero sum game. We will in particular, study the problem  of the existence of equilibria. More precisely, we will answer the following open question.
 \medskip
-\begin{tcolorbox}[title=Question 1]
+\begin{tcolorbox}[colback=grund,colframe=rahmen,title=Question 1]
 \textbf{What is the nature of equilibria in the adversarial examples game?}
 \end{tcolorbox}
 \medskip
@@ -155,7 +155,7 @@ This work \textbf{Mixed Nash Equilibria in the Adversarial Examples Game} was pu
 \subsection{Loss Consistency in Classification in Presence of an Adversary}
 In standard classification, consistency with regards to $0/1$ loss is a desired property for the surrogate loss $\loss$ used to train the model. In short, a loss $\loss$ is said to be consistent if for every probability distribution, a sequence of classifiers $(f_n)$ that minimizes the risk associated with the loss $\loss$, it also minimizes the $0/1$ loss risk. Usually, in standard classification, the problem is simplified thanks to the notion of calibration. We will see that the question of consistency in the adversarial problem is much harder. 
 \medskip
-\begin{tcolorbox}[title=Question 2]
+\begin{tcolorbox}[colback=grund,colframe=rahmen,title=Question 2]
 \textbf{Which losses are consistent with regards to the $0/1$ loss in the adversarial classification setting?}
 \end{tcolorbox}
 \medskip
@@ -164,7 +164,7 @@ We tackle this question by showing that usual convex losses are not calibrated f
 
 The last problem we deal with in this manuscript is the implementation of robust certifiable models. In short, a classifier is said to be certifiable at an input $x$ at level $\varepsilon$ if one can ensure there exist no adversarial examples in the ball of radius $\varepsilon$. This problem is challenging since it is far from trivial to come up with non vacuous bounds that are exploitable in practice.
 \medskip
-\begin{tcolorbox}[title=Question 3]
+\begin{tcolorbox}[colback=grund,colframe=rahmen,title=Question 3]
 \textbf{How to efficiently implement certifiable models with non-vacuous guarantees?}
 \end{tcolorbox}
 \medskip

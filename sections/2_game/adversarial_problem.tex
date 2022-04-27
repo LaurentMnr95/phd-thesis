@@ -69,7 +69,11 @@ Then for all $\mu\in\mathcal{M}^1_+(\Theta)$, $\QQ\mapsto\int \loss(\theta,(x,y)
  \begin{align*}
      \int vd\QQ = \lim_n \int v_nd\QQ =\lim_n \lim_k\int v_nd\QQ_k\leq \liminf_k \int vd\QQ_k
  \end{align*}
- Then $\QQ\mapsto\int vd\QQ$ is lower semi-continuous and then $\QQ\mapsto\int \loss(\theta,(x,y))d\mu(\theta)d\QQ(x,y)$ is upper semi-continuous for weak topology of measures. 
+ Then $\QQ\mapsto\int vd\QQ$ is lower semi-continuous and then 
+ \begin{align*}
+    \QQ\mapsto\int \loss(\theta,(x,y))d\mu(\theta)d\QQ(x,y)
+ \end{align*}
+  is upper semi-continuous for weak topology of measures. 
  \end{proof}
 
 
@@ -202,12 +206,22 @@ The supremum is attained. Moreover $\QQ^*\in \mathcal{A}_{\varepsilon}(\PP)$ is 
 \end{prop}
 
 \begin{proof}
-Let $\mu\in\mathcal{M}^1_+(\Theta)$. Let $\Tilde{f}:((x,y),(x',y'))\mapsto \mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(x,y))\right]-c_\varepsilon((x,y),(x',y'))$. $\Tilde{f}$ is upper-semi continuous, hence upper semi-analytic. Then, by upper semi continuity of $\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,\cdot)\right]$ on the compact $\{(x',y')\mid~d(x,x')\leq\varepsilon,y=y'\}$ and~\citep[Proposition 7.50]{bertsekas2004stochastic}, there exists a universally measurable mapping $T$ such that $\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,T(x,y))\right]=\sup_{(x',y'),~d(x,x')\leq\varepsilon,y=y'}\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(x,y))\right]$.  Let $\QQ = T_{\sharp}\PP$, then $\QQ\in\mathcal{A}_\varepsilon(\PP)$. And then $$\mathbb{E}_{(x,y)\sim\PP}\left[\sup_{(x',y'),~d(x,x')\leq\varepsilon,y=y'}\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(x',y'))\right]\right]\leq \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)}\mathbb{E}_{(x,y)\sim\QQ}\left[\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(x,y))\right]\right]$$.
+Let $\mu\in\mathcal{M}^1_+(\Theta)$. Let us define $\Tilde{f}$ as
+\begin{align*}
+    \Tilde{f}:((x,y),(x',y'))\mapsto \mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(x,y))\right]-c_\varepsilon((x,y),(x',y'))\quad. 
+\end{align*}
+ $\Tilde{f}$ is upper-semi continuous, hence upper semi-analytic. Then, by upper semi continuity of $\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,\cdot)\right]$ on the compact $\{(x',y')\mid~d(x,x')\leq\varepsilon,y=y'\}$ and~\citep[Proposition 7.50]{bertsekas2004stochastic}, there exists a universally measurable mapping $T$ such that $\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,T(x,y))\right]=\sup_{(x',y'),~d(x,x')\leq\varepsilon,y=y'}\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(x,y))\right]$.  Let $\QQ = T_{\sharp}\PP$, then $\QQ\in\mathcal{A}_\varepsilon(\PP)$. And then 
+ \begin{align*}
+      \mathbb{E}_{(x,y)\sim\PP}&\left[\sup_{(x',y'),~d(x,x')\leq\varepsilon,y=y'}\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(x',y'))\right]\right]\\
+      &\leq \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)}\mathbb{E}_{(x,y)\sim\QQ}\left[\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(x,y))\right]\right]\quad.
+\end{align*}
+
 
 Reciprocally, let $\QQ\in\mathcal{A}_\varepsilon(\PP)$. There exists $\gamma\in\mathcal{M}^1_+((\XX\times\YY)^2)$, such that $d(x,x')\leq\varepsilon$ and $y=y'$ $\gamma$-almost surely, and, $\Pi_{1\sharp}\gamma=\PP$ and  $\Pi_{2\sharp}\gamma=\QQ$. Then:
 $\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(x',y'))\right]\leq\sup_{(u,v),~d(x,u)\leq\varepsilon,y=v}\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(u,v))\right]$ $\gamma$-almost surely. Then, we deduce that:
 \begin{align*}
-    \mathbb{E}_{(x',y')\sim\QQ}\left[\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(x',y'))\right]\right]& =     \mathbb{E}_{(x,y,x',y')\sim\gamma}\left[\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(x',y'))\right]\right] \\
+    \mathbb{E}_{(x',y')\sim\QQ}&\left[\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(x',y'))\right]\right]\\
+    & =     \mathbb{E}_{(x,y,x',y')\sim\gamma}\left[\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(x',y'))\right]\right] \\
     &\leq\mathbb{E}_{(x,y,x',y')\sim\gamma}\left[\sup_{(u,v),~d(x,u)\leq\varepsilon,y=v}\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(u,v))\right]\right]\\
     &\leq\mathbb{E}_{(x,y)\sim\PP}\left[\sup_{(u,v),~d(x,u)\leq\varepsilon,y=v}\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(u,v))\right]\right]
 \end{align*}

@@ -54,16 +54,20 @@ Let $\phi$  be a continuous margin loss and $\varepsilon>0$. If $\phi$ is strict
     \mathcal{C}_{\phi_\varepsilon}(x,\eta,f) - \mathcal{C}_{\phi_\varepsilon}^\star(x,\eta)
      = \sup_{u,v\in B_\varepsilon(x)}\eta\phi (f(u))+(1-\eta)\phi (-f(v))-\mathcal{C}_{\phi_\varepsilon}^\star(x,\eta)\leq \delta 
     \end{align*}
-    We recall thanks to Proposition~\ref{prop:calib-equality} that for every $u,v\in\XX$ 
-    $\mathcal{C}_{\phi_\varepsilon}^\star(u,\eta) =\mathcal{C}_\phi^\star(v,\eta)=\inf_{\alpha\in\RR}\eta \phi(\alpha)+(1-\eta)\phi(-\alpha)$. Then in particular, for all $x'\in B_\varepsilon(x)$, we have:
+    We recall thanks to Proposition~\ref{prop:calib-equality} that for every $u,v\in\XX$,
+\begin{align*}
+    \mathcal{C}_{\phi_\varepsilon}^\star(u,\eta) =\mathcal{C}_\phi^\star(v,\eta)=\inf_{\alpha\in\RR}\eta \phi(\alpha)+(1-\eta)\phi(-\alpha)\quad.  
+\end{align*}
+ Then in particular, for all $x'\in B_\varepsilon(x)$, we have:
     \begin{align*}
-        \mathcal{C}_{\phi}(x',\eta,f) - \mathcal{C}_{\phi}^\star(x',\eta)\leq \sup_{u,v\in B_\varepsilon(x)}\eta\phi (f(u))+(1-\eta)\phi (-f(v))-\mathcal{C}_{\phi_\varepsilon}^\star(x,\eta)\leq \delta\quad.
+        \mathcal{C}_{\phi}(x',\eta,f) - \mathcal{C}_{\phi}^\star(x',\eta)&\leq \sup_{u,v\in B_\varepsilon(x)}\eta\phi (f(u))+(1-\eta)\phi (-f(v))-\mathcal{C}_{\phi_\varepsilon}^\star(x,\eta)\\
+        &\leq \delta\quad.
     \end{align*} 
     Then since $\phi$ is calibrated for standard classification, for all $x'\in B_\varepsilon(x)$, $\mathcal{C}(x',\eta,f) - \mathcal{C}^\star(x',\eta)\leq \epsilon$. Since,  $\epsilon<\frac{1}{2}$, we have $\mathcal{C}(x',\eta,f) = \mathcal{C}^\star(x',\eta)$ and then for all $x'\in B_\varepsilon(x)$, $f(x')< 0$  if $\eta<1/2$ or $f(x')\geq0$  if $\eta>1/2$. We then deduce that 
     
     \begin{align*}
-       \mathcal{C}_{\varepsilon}(x,\eta,f) = \eta \sup_{x'\in B_\varepsilon(x)} \mathbf{1}_{f(x')\leq 0 } +(1-\eta) \sup_{x'\in B_\varepsilon(x)} \mathbf{1}_{f(x')> 0 }
-        = \min(\eta,1-\eta)
+       \mathcal{C}_{\varepsilon}(x,\eta,f)& = \eta \sup_{x'\in B_\varepsilon(x)} \mathbf{1}_{f(x')\leq 0 } +(1-\eta) \sup_{x'\in B_\varepsilon(x)} \mathbf{1}_{f(x')> 0 }\\
+       & = \min(\eta,1-\eta)
         = \mathcal{C}_{\varepsilon}^\star(x,\eta)
     \end{align*}
     
@@ -80,7 +84,8 @@ Let $\phi$  be a continuous margin loss and $\varepsilon>0$. If $\phi$ is strict
     Let denote $\alpha_n = f_n(u_n)$ and $\beta_n = f_n(v_n)$. %Up to an extraction of a subsequence, we have $\alpha_n\xrightarrow[n\to\infty]{} \alpha\in \bar{\RR}$ and $\beta_n = f_n(u_n)\xrightarrow[n\to\infty]{} \beta\in \bar{\RR}$. 
     Moreover, we have, thanks to Proposition~\ref{prop:calib-equality}:
     \begin{align*}
-      0\leq \frac12 \phi(\alpha_n) +  \frac12 \phi(-\alpha_n)- \inf_{\alpha\in\RR}\frac12 \phi(\alpha)+\frac12\phi(-\alpha)\leq \mathcal{C}_{\phi_\varepsilon}(x,\frac12,f_n) - \mathcal{C}_{\phi_\varepsilon}^\star(x,\frac12)\leq \frac1n
+      0\leq \frac12 \phi(\alpha_n) +  \frac12 \phi(-\alpha_n)- \inf_{\alpha\in\RR}\frac12 \phi(\alpha)+\frac12\phi(-\alpha)&\leq \mathcal{C}_{\phi_\varepsilon}(x,\frac12,f_n) - \mathcal{C}_{\phi_\varepsilon}^\star(x,\frac12)\\
+      &\leq \frac1n
     \end{align*}
     Then we deduce that $(\alpha_n)_n$ is a minimizing sequence for  $u\mapsto\frac12\phi(u)+\frac12\phi(-u)$ and similarly $(\beta_n)_n$ is also a minimizing sequence for  $u\mapsto\frac12\phi(u)+\frac12\phi(-u)$ . Now note that there always exist $\alpha, \beta\in \bar{\RR}$ such that, up to an extraction of a subsequence, we have $\alpha_n\xrightarrow[n\to\infty]{} \alpha$ and $\beta_n \xrightarrow[n\to\infty]{} \beta$. Furthermore by continuity of $\phi$ and since $0\not\in\argminB\phi(u)+\phi(-u)$, $\alpha\neq0$ and $\beta\neq 0$. Without loss of generality one can assume that $\alpha<0<\beta$, then for $n$ sufficiently large, $\alpha_n<0<\beta_n$. Moreover have 
     \begin{align*}
@@ -209,7 +214,8 @@ Let $\phi$ be a shifted odd margin loss. For every $\varepsilon>0$, ${\phi}$ is 
     
     \begin{align*}
          \mathcal{C}_{\Tilde{\phi}}(x,\eta,f) &= \lambda + \eta\phi(f(x)-\tau) + (1-\eta)\phi(-f(x)-\tau)\\
-         &= \lambda + (\eta-\frac12)\left(\phi(f(x)-\tau)-\phi(-f(x)-\tau)\right)+\frac12 \left(\phi(f(x)-\tau)+\phi(-f(x)-\tau)\right)
+         &= \lambda + (\eta-\frac12)\left(\phi(f(x)-\tau)-\phi(-f(x)-\tau)\right)\\
+         &+\frac12 \left(\phi(f(x)-\tau)+\phi(-f(x)-\tau)\right)
     \end{align*}
     
     
@@ -220,7 +226,16 @@ Let $\phi$ be a shifted odd margin loss. For every $\varepsilon>0$, ${\phi}$ is 
     \end{align*}
     since $t+\tau< t-\tau$ and $\phi$ is strictly decreasing. Hence by continuity of $\phi$ the optimum are attained when $t\to\infty$ or $t\to-\infty$. Then $\argminB_{t\in\bar{\RR}}\frac12\Tilde{\phi}(t)+\frac12 \Tilde{\phi}(-t) = \{-\infty,+\infty\}$.
     
-    Without loss of generality, let $\eta>1/2$. $t\mapsto  (\eta-\frac12)\left(\phi(t-\tau)-\phi(-t-\tau)\right)$ is strictly decreasing and $\argminB_{t\in\bar{\RR}}\frac12 \left(\phi(t-\tau)+\phi(-t-\tau)\right) = \{-\infty,+\infty\}$, then we have $ \argminB_{t\in\bar{\RR}} \lambda + (\eta-\frac12)\left(t-\tau)-\phi(-t-\tau)\right)+\frac12 \left(\phi(t-\tau)+\phi(-t-\tau)\right) = \{+\infty\}$. By continuity of $\phi$, we deduce that for $\delta>0$ sufficiently small:
+    Without loss of generality, let $\eta>1/2$, then
+    \begin{align*}
+        t\mapsto  (\eta-\frac12)\left(\phi(t-\tau)-\phi(-t-\tau)\right)
+    \end{align*}
+    is strictly decreasing and 
+        $\argminB_{t\in\bar{\RR}}\frac12 \left(\phi(t-\tau)+\phi(-t-\tau)\right) = \{-\infty,+\infty\}$, then we have 
+    \begin{align*}
+        \argminB_{t\in\bar{\RR}} \lambda + (\eta-\frac12)\left(t-\tau)-\phi(-t-\tau)\right)+\frac12 \left(\phi(t-\tau)+\phi(-t-\tau)\right) = \{+\infty\}\quad.
+    \end{align*}
+     By continuity of $\phi$, we deduce that for $\delta>0$ sufficiently small:
     \begin{align*}
         \mathcal{C}_{\Tilde{\phi}}(x,\eta,f)-&\mathcal{C}^\star_{\Tilde{\phi}}(x,\eta)\leq\delta\implies f(x)>0
     \end{align*}

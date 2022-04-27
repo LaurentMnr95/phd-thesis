@@ -1,0 +1,34 @@
+\chapter*{Abstract}
+This thesis investigates the problem of classification in presence of advesarial attacks. An adversarial attack is a small and humanly imperceptible perturbation of input designed to fool start-of-the-art machine learning classifiers. In particular, deep learning systems, used in safety critical AI systems as self-driving cars are at stake with the eventuality of such attacks. What is even more striking is the ease to create such adversarial examples and the difficulty to defend against them while keeping a high level of accuracy. Robustness to adversarial perturbations is a still misunderstood field in academics. In this thesis, we aim at understanding better the nature of the adversarial attacks problem from a theoretical perspective.
+
+\begin{center}
+    Can we find a principled way to defend against adversarial examples?
+\end{center}
+
+
+In a first part, we tackle the problem of adversarial examples from a game theoretic point of view. We
+study the open question of the existence of mixed
+Nash equilibria in the zero-sum game formed by
+the attacker and the classifier. To that extent, we consider a randomized classifier and we introduce a more general attacker that can move each point randomly in the vinicity of original points. While previous
+game theoretic approaches usually allow only one player to use randomized strategies, we show the necessity of considering randomization for both the classifier and
+the attacker. We demonstrate that this game has
+no duality gap, meaning that it always admits approximate Nash equilibria. We also provide the
+first optimization algorithms to learn a mixture of
+a finite number of classifiers that approximately
+realizes the value of this game, i.e. procedures to
+build an optimally robust randomized classifier.
+
+
+
+
+
+In a second part, we study the problem of surrogate losses in the adversarial examples case. In classification, the goal is to maximize the accuracy, but in practice, the accuracy is not efficiently optimizable. Instead, it is usual to minimize a convex and continuous loss that satisfy what is called the \emph{consistency property}. In the adversarial case, we tackle this problem and show that a wide range of usually consistent losses cannot be consistent. In particular, convex losses are not good  surrogate losses for the adversarial attack problem.  Finally, we pave a way towards designing a class of consistent losses, but this question is partially treated and left as further work.
+
+In a final section, we study the robustness of neural networks from a dynamical system perspective. Residual Networks can indeed be interepreted as a discretization of a first order parametric differential equation. By studying this system, we provide a generic method to build 1-Lipschitz Neural Networks and show that some previous approaches are special cases of this framework. We extend this reasoning and show that ResNet flows derived from convex potentials define 1-Lipschitz transformations, that lead us to define the Convex Potential Layer (CPL). 
+
+%  Besides security issues, this shows how
+% little we know about the worst-case behaviors of models the industry uses daily. Accordingly, it
+% became increasingly important for the machine learning community to understand the nature
+% of this failure mode to mitigate the attacks. One can always build trivial classiers that will not
+% change decision under adversarial manipulation – e.g. constant classers– but this comes at odds
+% with standard accuracy of the model. This raises several questions. Among them, we tackle the

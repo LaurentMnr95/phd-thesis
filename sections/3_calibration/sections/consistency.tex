@@ -33,8 +33,11 @@ Let $a\in\RR$ be such that $\phi(a)-\inf_{\alpha\in\RR} \phi(\alpha) \leq \epsil
 
 Denoting $p =\PP(y=1)$, $\PP_1 = \PP[\cdot|y=1]$ and $\PP_{-1} = \PP[\cdot|y=-1]$, we have:
 \begin{align*}
-        p\times\PP_1\left[\exists x'\in B_\varepsilon(x), f(x')<0\right]\leq \epsilon'\text{ and }
-                (1-p)\times\PP_{-1}\left[\exists x'\in B_\varepsilon(x), f(x')\geq0\right]\leq \epsilon'.
+        p\times\PP_1\left[\exists x'\in B_\varepsilon(x), f(x')<0\right]\leq \epsilon'
+\end{align*}
+and
+\begin{align*}
+    (1-p)\times\PP_{-1}\left[\exists x'\in B_\varepsilon(x), f(x')\geq0\right]\leq \epsilon'\quad.
 \end{align*}
 Let us now define $g$ as:
 \begin{align*}
@@ -54,7 +57,9 @@ We have:
 \end{align*}
 We have:
 \begin{align*}
-    p\times\EE_{\PP_1}\left[\sup_{x'\in B_\varepsilon(x)}\phi(g(x))\right]&\leq p\times\EE_{\PP_1}\left[\sup_{x'\in B_\varepsilon(x)}\phi(g(x))\mathbf{1}_{f(x')<0}\right]+p\times\EE_{\PP_1}\left[\sup_{x'\in B_\varepsilon(x)}\phi(g(x))\mathbf{1}_{f(x')\geq 0}\right] \\
+    p&\times\EE_{\PP_1}\left[\sup_{x'\in B_\varepsilon(x)}\phi(g(x))\right]
+    \\
+    &\leq p\times\EE_{\PP_1}\left[\sup_{x'\in B_\varepsilon(x)}\phi(g(x))\mathbf{1}_{f(x')<0}\right]+p\times\EE_{\PP_1}\left[\sup_{x'\in B_\varepsilon(x)}\phi(g(x))\mathbf{1}_{f(x')\geq 0}\right] \\
     &=\phi(-a)\times p\times \PP_1\left[\exists x'\in B_\varepsilon(x), f(x')<0\right] \\
     &+ \phi(a)\times p\times\left(1- \PP_1\left[\exists x'\in B_\varepsilon(x), f(x')<0\right]\right)\\
     &\leq\phi(-a) \epsilon'+p\times\phi(a)\\
@@ -78,7 +83,7 @@ Let $0<\epsilon<1$. Thanks to Theorem~\ref{thm:cal-standard}, $\phi$ is uniforml
     \phi(yf(x))-\inf_{\alpha\in\RR}\phi(\alpha)\leq \delta \implies \mathbf{1}_{y\text{sign}f(x)\leq 0} = 0
 \end{align*}
 
-Let now $f\in\mathcal{F}(\XX)$ be such that  $\risk_{\phi_\varepsilon,\PP}(f)\leq \risk_{\phi_\varepsilon,\PP}^\star+\delta\epsilon$.Thanks to Lemma~\ref{lemma:realisable},  we have:
+Let now $f\in\mathcal{F}(\XX)$ be such that  $\risk_{\phi_\varepsilon,\PP}(f)\leq \risk_{\phi_\varepsilon,\PP}^\star+\delta\epsilon$. Thanks to Lemma~\ref{lemma:realisable},  we have:
 \begin{align*}
 \risk_{\phi_\varepsilon,\PP}(f)- \risk_{\phi_\varepsilon,\PP}^\star = \EE_{\PP}\left[\sup_{x'\in B_\varepsilon(x)}\phi(yf(x))-\inf_{\alpha \in \RR} \phi(\alpha)\right]\leq\delta\epsilon
 \end{align*}
@@ -88,7 +93,11 @@ Then by Markov inequality:
     \PP\left[\sup_{x'\in B_\varepsilon(x)}\phi(yf(x))-\inf \phi\geq\delta\right]\leq\frac{\EE_{\PP}\left[\sup_{x'\in B_\varepsilon(x)}\phi(yf(x))-\inf \phi\right]}{\delta}\leq \epsilon
 \end{align*}
 
-So we have $\PP\left[\forall x'\in B_\varepsilon(x),\phi(yf(x))-\inf \phi\leq\delta\right]\geq1-\epsilon$ and then $\PP\left[\forall x'\in B_\varepsilon(x),\mathbf{1}_{y\text{sign}f(x)\leq 0} = 0\right]\geq1-\epsilon$. Since $\PP$ is $\varepsilon$-realisable, we have $\risk_{\varepsilon,\PP}^\star=0$ and:
+So we have $\PP\left[\forall x'\in B_\varepsilon(x),\phi(yf(x))-\inf \phi\leq\delta\right]\geq1-\epsilon$ and then 
+\begin{align*}
+    \PP\left[\forall x'\in B_\varepsilon(x),\mathbf{1}_{y\text{sign}f(x)\leq 0} = 0\right]\geq1-\epsilon\quad.
+\end{align*}
+ Since $\PP$ is $\varepsilon$-realisable, we have $\risk_{\varepsilon,\PP}^\star=0$ and:
 \begin{align*}
         \risk_{\varepsilon,\PP}(f)- \risk_{\varepsilon,\PP}^\star =  \risk_{\varepsilon,\PP}(f) =\PP\left[\exists x'\in B_\varepsilon(x), \text{sign}(f(x'))\neq y\right]\leq \epsilon
 \end{align*}
@@ -167,7 +176,8 @@ In particular, we note that this property holds true for the standard risk. To p
     \begin{proof}
     \citet{bartlett2006convexity,steinwart2007compare} proved that: for every margin losses $\phi$,
     \begin{align*}
-        \risk_{\phi,\QQ}^\star = \inf_{f\in\mathcal{F}(X)}\mathbb{E}_{(x,y)\sim\QQ}\left[\phi(yf(x))\right] &= \mathbb{E}_{x\sim\QQ_x}\left[\inf_{\alpha\in\RR}\QQ(y=1|x)\phi(\alpha)+(1-\QQ(y=-1|x))\phi(-\alpha)\right]\\
+        \risk_{\phi,\QQ}^\star &= \inf_{f\in\mathcal{F}(X)}\mathbb{E}_{(x,y)\sim\QQ}\left[\phi(yf(x))\right] 
+        \\&= \mathbb{E}_{x\sim\QQ_x}\left[\inf_{\alpha\in\RR}\QQ(y=1|x)\phi(\alpha)+(1-\QQ(y=-1|x))\phi(-\alpha)\right]\\
         &= \mathbb{E}_{x\sim\QQ_x}\left[\mathcal{C}_\phi^\star(\QQ(y=1|x),x)\right]\\
     \end{align*}
     We also have $ \risk_{\QQ}^\star =\mathbb{E}_{x\sim\QQ_x}\left[\mathcal{C}^\star(\QQ(y=1|x),x)\right] $. Moreover, if $\phi$ is a $0/1$-like shifted odd loss, then: for every $x\in\XX$ and $\eta\in[0,1]$, $\mathcal{C}_\phi^\star(\eta,x) =\min(\eta,1-\eta)=\mathcal{C}^\star(\eta,x)$. We can then conclude that  $\risk_{\phi,\QQ}^\star =\risk_{\QQ}^\star$.
