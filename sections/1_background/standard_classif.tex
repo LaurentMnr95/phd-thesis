@@ -30,7 +30,6 @@ The Optimal Bayes risk is defined as the optimal risk over measurable classifier
  \end{align}
 If $f:\XX\to\RR^K$, then the risk of $f$ is defined as $\risk_{\PP}(f):=\PP(\argmaxB_{k\in\YY}f_k(x)\neq y)$
 \end{definition}
-TODO:  note that the loss tis not indexed when talking about bayes risk
 Note that this quantity is well defined when $h$ or $f$ is Borel or universally measurable. The optimal classifier is called the /emph{Optimal Bayes  classifier} and is defined as $h^\star(x) = \argmaxB_k\PP(y=k\mid x)$. We remark that the disintegration theorem ensures that $x\mapsto \PP(y=k\mid x)$ is indeed Borel measurable. 
 
 In practice, the access to the Optimal Bayes  classifier is not possible because it requires full knowledge of the probability distribution $\PP$ which is not the case in general. Instead, in the supervised learning setting, the learner has access to data points $\{(x_1,y_1),\dots,(x_\numsamples,y_\numsamples)\}$, that constitutes the \emph{training set}. Knowing the Optimal Bayes classifier on training points is not sufficient to generalize on points out of the training set. Hence one needs to reduce the search space of measurable functions to a much smaller one, denoted $\mathcal{H}$ in the sequel. The $0/1$ loss is not convex neither continuous, and minimizing directly the 0/1 loss risk  on $\mathcal{H}$ might be NP-hard even for simple set of hypotheses as linear classifiers. We usually minimize a well-chosen surrogate loss function $\loss$. A \textit{loss function} $\loss:\mathbb{R}^K\times\YY\to\mathbb{R}$ is a non negative Borel measurable function. An example of such a loss is the cross entropy loss defined as $\loss(f(x),y)=-\sum_{i=1}^K \mathbf{1}_{y=i}\log f_i(x)$
@@ -54,11 +53,18 @@ where $f_i(x)$ is the probability learnt by the model with input $x$ belonging t
 % \end{itemize}
 
 
-\paragraph{Neural Networks} A popular set of classifiers are Neural Networks. They gained in popularity due to their exceptional performances in Image Recognition~\cite{krizhevsky2012imagenet,he2016deep} or Natural Language Processing for instance~\cite{vaswani2017attention}. In its simpler form, a neural network is a concatenation of linear operators and non-linear functions (called \emph{activations}). This concatenation are called \emph{layers}. Formally a neural network with $L$ layers writes:
+\paragraph{Neural Networks} A popular set of classifiers are Neural Networks. They gained in popularity due to their exceptional performances in Image Recognition~\citep{krizhevsky2012imagenet,he2016deep} or Natural Language Processing for instance~\citep{vaswani2017attention}. In its simpler form, a neural network is a concatenation of linear operators and non-linear functions (called \emph{activations}). This concatenation are called \emph{layers}. Formally a neural network with $L$ layers writes:
 \begin{align*}
     f(x) = \left(W_L\sigma\left(W_{L-1}\dots \sigma\left(A_1x+b_1\right)\dots\right)+b_L\right)
 \end{align*}
-where $W_i$ are called the weight matrices and $b_i$ the biases. In the case of image recognition, the weights may have a special structure of convolution: such networks are called \emph{Convolutional Networks}. We illustrate a convolutional layer in Figure~\ref{xxx}.
+where $W_i$ are called the weight matrices and $b_i$ the biases. In the case of image recognition, the weights may have a special structure of convolution: such networks are called \emph{Convolutional Networks}. We illustrate a convolutional layer in Figure~\ref{fig:convnet}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{Images/conv_net.jpeg}
+    \caption{Illustration of a convolutional neural network: stacking convolutional operators and non-linear activation functions.}
+    \label{fig:convnet}
+\end{figure}
 
 To train neural networks, the backpropagation is a standard algorithm based on the chain rule. This algorithm is subject to gradient vanishing, or gradient explosion issues. To circumvent these problems, many tricks were proposed as  using ReLU-like activation functions~\citep{xu2015empirical,ramachandran2017searching}, Dropout~\citep{srivastava2014dropout}, Batch Normalization~\citep{ioffe2015batch} or the use of Residual Layers~\citep{he2016deep}. More, despite their popularity, it is difficult to understand the outstanding performances of neural networks.
 
@@ -77,10 +83,10 @@ A margin loss is a loss $\loss$ such that there exist a measurable function $\ph
 \begin{align*}
     \eta\phi(\alpha)+(1-\eta)\phi(-\alpha)-\min_{\beta\in\RR}\left[ \eta\phi(\beta)+(1-\eta)\phi(-\beta)\right]\leq \delta\implies sign\left((\eta-\frac12)\alpha\right)=1
 \end{align*}
-We remark the notion of calibration is basically a pointwise notion of consistency with $\eta$ corresponding to $\PP(y=1|x)$.~\cite{zhang2004statistical,bartlett2006convexity,steinwart2007compare} proved the equivalence of the two notions in the case of standard-binary classification. In particular they show that a wide range of convex margin losses are actually classification-consistent: if $\phi$ is convex and differentiable at $0$, then $\phi$ is calibrated if and only if $\phi'(0)<0$.
+We remark the notion of calibration is basically a pointwise notion of consistency with $\eta$ corresponding to $\PP(y=1|x)$.~\citet{zhang2004statistical,bartlett2006convexity,steinwart2007compare} proved the equivalence of the two notions in the case of standard-binary classification. In particular they show that a wide range of convex margin losses are actually classification-consistent: if $\phi$ is convex and differentiable at $0$, then $\phi$ is calibrated if and only if $\phi'(0)<0$.
 
 
-The problem of consistency have been investagated in the case of multi-label classification by~\cite{zhang2004multi}. The results can be similarily derived and it was show that large range of convex functions are actually consistent for classification problems.
+The problem of consistency have been investagated in the case of multi-label classification by~\citet{zhang2004multi}. The results can be similarily derived and it was show that large range of convex functions are actually consistent for classification problems.
 
 % We say that a loss $L_2$ is said to be consistent with respect to a loss $L_1$ if consistency holds for every distribution $\PP$. 
 
@@ -144,12 +150,12 @@ The convergence of regularized least squares regression has been largely studied
     \lvert\riskemp(\hat{f}_\numsamples) - \risk(\hat{f}_\numsamples)\rvert\leq\sup_{f\in\mathcal{H}}    \lvert\riskemp(f) - \risk(f)\rvert
 \end{align*}
 
-The convergence of the right-end term is referred as uniform convergence or PAC-learning~\citep{valiant1984theory}. It can be bounded either with high probability or in expectation (i.e. $L^1$ convergence). We remark the speed of convergence depends on the complexity of $\mathcal{H}$: more complex $\mathcal{H}$ is, the slower the convergence will be, hence exhibiting again a tradeoff on the expressivity of $\mathcal{H}$. There have been a  lot of research that proposed tools to study this convergence. Now, we recall a fundamental tool, namely the Rademacher complexity.
+The convergence of the right-end term is referred as uniform convergence or Provably Approximately correct (PAC) learning~\citep{valiant1984theory}. It can be bounded either with high probability or in expectation (i.e. $L^1$ convergence). We remark the speed of convergence depends on the complexity of $\mathcal{H}$: more complex $\mathcal{H}$ is, the slower the convergence will be, hence exhibiting again a tradeoff on the expressivity of $\mathcal{H}$. There have been a  lot of research that proposed tools to study this convergence. Now, we recall a fundamental tool, namely the Rademacher complexity.
 
 
-The Rademacher complexity was introduced by~\cite{bartlett2002rademacher} to study the problem of uniform convergence. Given a set of functions~$\mathcal{H}$, and observations $S=\{z_1,\dots,z_\numsamples\}$ from a distribution $\PP$, the empirical Rademacher complexity is defined as:
+The Rademacher complexity was introduced by~\cite{bartlett2002rademacher} to study the problem of uniform convergence. Given a set of functions~$\mathcal{H}$, and a set of observations $S=\{z_1,\dots,z_\numsamples\}$ from a distribution $\PP$, the empirical Rademacher complexity is defined as:
 \begin{align*}
-    \widehat{Rad}_S(\mathcal{H}):=\frac2\numsamples\mathbb{E}_{\mathbf{\sigma}}\left[\sup_{h\in\mathcal{H}}\lvert\sum_{i=1}^\numsamples\sigma_i h(z_i)\rvert\right]
+    \widehat{Rad}_S(\mathcal{H}):=\frac2\numsamples\mathbb{E}_{\sigma}\left[\sup_{h\in\mathcal{H}}\lvert\sum_{i=1}^\numsamples\sigma_i h(z_i)\rvert\right]
 \end{align*}
 where $\sigma_i$ are independent samples from Rademacher law: $P[\sigma_i =+1] = P[\sigma_i =-1]=\frac12$. When $\mathcal{H}$ is not too complex (for instance, finite set or linear classifiers), one can bound the Rademacher complexity  by $O(n^{-1/2})$. The Rademacher complexity upperbounds the uniform risk error as follows:
 \begin{align*}
@@ -161,7 +167,7 @@ where $e_\PP(h)=\mathbb{E}_{z\sim\PP}\left[h(z)\right]$ and $e_S(h)=\frac1\numsa
 \end{align*}
 
 
-Rademacher complexity along with VC-dimension~\citep{vapnik1998} are the main tools for deriving generalization bounds. The two concepts are linked and one can upperbound the Rademacher complexity with the VC dimension.  Another tool is TODO
+Rademacher complexity along with VC-dimension~\citep{vapnik1998} are the main tools for deriving generalization bounds. The two concepts are linked and one can upperbound the Rademacher complexity with the VC dimension.
 
 
 

@@ -53,7 +53,7 @@ Let $(x_n,y_n)_n$ be a sequence of $\XX\times\YY$ converging to $(x,y)\in\XX\tim
    &\leq  \liminf_{n\to\infty}  \int M-\loss(\theta,(x_n,y_n))d\mu(\theta) 
 \end{align*}
 
-Then we deduce that: $\int M- \loss(\theta,\cdot)d\mu(\theta)$ is lower semi-continuous and then $\int \loss(\theta,\cdot)d\mu(\theta)$ is upper-semi continuous.
+ We deduce that: $\int M- \loss(\theta,\cdot)d\mu(\theta)$ is lower semi-continuous and then $\int \loss(\theta,\cdot)d\mu(\theta)$ is upper-semi continuous.
 \end{proof}
 
 
@@ -86,9 +86,10 @@ Then for all $\mu\in\mathcal{M}^1_+(\Theta)$, $(x,y)\mapsto \sup_{(x',y'),d(x,x'
 \begin{proof}
 Let $\phi :(x,y)\mapsto \sup_{(x',y'),d(x,x')\leq\varepsilon,y=y'} \int \loss(\theta,(x',y'))d\mu(\theta)$. Then for $u\in\bar{\mathbb{R}}$:
 \begin{align*}
-\left\{\phi(x,y)>u\right\}=\text{Proj}_1\left\{((x,y),(x',y'))\mid\int \loss(\theta,(x',y'))d\mu(\theta)-c_\varepsilon((x,y),(x',y'))>u\right\}
+&\left\{\phi(x,y)>u\right\}\\
+&=\text{Proj}_1\left\{((x,y),(x',y'))\mid\int \loss(\theta,(x',y'))d\mu(\theta)-c_\varepsilon((x,y),(x',y'))>u\right\}
 \end{align*}
-By Lemma~\ref{lem:usc2}: $((x,y),(x',y'))\mapsto \int \loss(\theta,(x',y'))d\mu(\theta)-c_\varepsilon((x,y),(x',y'))$ is upper-semicontinuous hence Borel measurable. So its level sets are Borel sets, and by~\citep[Proposition 7.39]{bertsekas2004stochastic}, the projection of a Borel set is analytic. And then $\left\{\phi(x,y)>u\right\}$ universally measurable thanks to~\citep[Corollary 7.42.1]{bertsekas2004stochastic}. We deduce that $\phi$ is universally measurable.
+By Lemma~\ref{lem:usc2}: $((x,y),(x',y'))\mapsto \int \loss(\theta,(x',y'))d\mu(\theta)-c_\varepsilon((x,y),(x',y'))$ is upper-semicontinuous hence Borel measurable. So its level sets are Borel sets, and by~\citet[Proposition 7.39]{bertsekas2004stochastic}, the projection of a Borel set is analytic. And then $\left\{\phi(x,y)>u\right\}$ universally measurable thanks to~\citet[Corollary 7.42.1]{bertsekas2004stochastic}. We deduce that $\phi$ is universally measurable.
 \end{proof}
 
 

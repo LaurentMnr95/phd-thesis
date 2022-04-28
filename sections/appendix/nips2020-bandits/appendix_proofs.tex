@@ -1,6 +1,6 @@
 % !TEX root = main.tex
 
-\section{Proofs}
+\section{Appendix: Proofs}
 In this appendix, we present the proofs of different theoretical results presented in the paper.
 \subsection{Proof of Proposition \ref{prop:reward_attack}}\label{app:proof_prop_rewd_attack}
 
@@ -138,6 +138,10 @@ Then\changebr{,} the regret is lower-bounded in expectation by:
 \begin{align*}
     \mathbb{E}(R_{T}) &= \mathbb{E}\left(\sum_{t=1}^{T} \mathds{1}_{\{x_{t}\in V\}}\big( \left\langle x_{t}, \theta_{a^{\dagger}_{\star}(x_{t})} - \theta_{a_{t}}\right\rangle\big)\right) \geq \mu m(T) \min_{x\in V} \max_{a\neq a^{\dagger}_\star(x)} \langle \theta_{a^{\dagger}_{\star}(x)} - \theta_{a}, x\rangle
 \end{align*}
-where $m(T)$ is the expected number of times $t\leq T$ such that condition \eqref{eq:feasibilty_condition} is not met. \changebr{\linucb guarantees that}  $\mathbb{E}(R_{T}) \leq \mathcal{O}(\sqrt{T})$ for every $T$. Hence, $m(T) \leq \mathcal{O}\left(\frac{\sqrt{T}}{\mu\min_{x\in V}\max_{a\neq a^{\dagger}_\star(x)} \langle \theta_{a^{\dagger}_{\star}(x)} - \theta_{a}, x\rangle}\right)$. This means that, in an unattacked problem, condition \eqref{eq:feasibilty_condition} is met $T - \mathcal{O}(\sqrt{T})$ times. On the other hand, when the algorithm is attacked the regret of \linucb is not sub-linear as the confidence bound for the target arm is not valid anymore. Hence we cannot provide the same type of guarantees for the attacked problem.
+where $m(T)$ is the expected number of times $t\leq T$ such that condition \eqref{eq:feasibilty_condition} is not met. \changebr{\linucb guarantees that}  $\mathbb{E}(R_{T}) \leq \mathcal{O}(\sqrt{T})$ for every $T$. Hence, 
+\begin{align*}
+    m(T) \leq \mathcal{O}\left(\frac{\sqrt{T}}{\mu\min_{x\in V}\max_{a\neq a^{\dagger}_\star(x)} \langle \theta_{a^{\dagger}_{\star}(x)} - \theta_{a}, x\rangle}\right)
+\end{align*}
+This means that, in an unattacked problem, condition \eqref{eq:feasibilty_condition} is met $T - \mathcal{O}(\sqrt{T})$ times. On the other hand, when the algorithm is attacked the regret of \linucb is not sub-linear as the confidence bound for the target arm is not valid anymore. Hence we cannot provide the same type of guarantees for the attacked problem.
 
 

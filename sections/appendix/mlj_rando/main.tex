@@ -1,0 +1,834 @@
+
+
+
+
+
+
+
+
+% \DeclareMathOperator*{m }{m}
+% \newcommand{\mathcal{M}}{\mathcal{M}}
+% \DeclareMathOperator{\lossclass}{\loss\hspace{-0.1cm}\textsubscript{$\mathcal{M}$}}
+
+
+% \DeclareMathOperator*{\risk}{\mathcal{R}}
+% \DeclareMathOperator*{\widehat{\risk}}{\mathcal{R}_{\mathcal{S}}}
+% \DeclareMathOperator*{\risk_\varepsilon}{\mathcal{R}^{adv}}
+% \DeclareMathOperator*{\widehat{\risk}_\numsamples}{\mathcal{R}^{adv}_\fullSample}
+% \DeclareMathOperator*{\risk^{>0}_\varepsilon}{\mathcal{R}^{adv}_{>0}}
+
+
+
+% \newcommand{\mathbb{E}}{\mathbb{E}}
+% \newcommand{\PP}{\mathbb{P}}
+% \DeclareMathOperator*{\dist}{dist}
+% \DeclareMathOperator*{\ext}{ext}
+% \DeclareMathOperator*{\sign}{sign}
+% \newcommand{Rad}{\mathfrak{R}}
+% \DeclareMathOperator*{\diam}{diam}
+
+\newcommand{\perturb}{{\tau}}
+\newcommand{\integer}{\mathbb{N}}
+\newcommand{\inputdim}{d}
+\newcommand{\numclasses}{K}
+\newcommand{\hypothesis}{{h}}
+\newcommand{\fullSample}{\mathcal{S}}
+\newcommand{\equationspace}{\thinspace}
+\newcommand{\CandidateClass}{\Bar{\mathcal{H}}}
+\newcommand{\Qone}{\textbf{Q1}}
+\newcommand{\Qtwo}{\textbf{Q2}}
+\newcommand{\zerooneloss}{\loss_{0/1}}
+\newcommand{\zo}{0/1}
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+\newcommand{\hypothesisbinary}{h}
+\newcommand{\comp}{~\mathsf{c}}
+\renewcommand{\th}{\textsuperscript{\textup{th}}\xspace}
+
+
+
+
+
+\newcommand{\etal}{\emph{et al.}}
+\newcommand{\iid}{\emph{i.i.d.}}
+\newcommand{\ltwo}{\ell_2}
+\newcommand{\linf}{\ell_\infty}
+
+
+\newcommand\yann[1]{{\color{red} #1}}
+% Any additional packages needed should be include
+\chapter{On the Robustness of Randomized Classifiers to Adversarial Examples}
+
+
+This paper investigates the theory of robustness against adversarial attacks. We focus on randomized classifiers (\emph{i.e.} classifiers that output random variables) and provide a thorough analysis of their behavior through the lens of statistical learning theory and information theory. 
+To this aim, we introduce a new notion of robustness for randomized classifiers, enforcing local Lipschitzness using probability metrics.
+Equipped with this definition,  we make two  new contributions. The first one consists in devising a new upper bound on the adversarial generalization gap of randomized classifiers. More precisely, we devise bounds on the generalization gap and the adversarial gap (\emph{i.e.} the gap between the risk and the worst-case risk under attack) of randomized classifiers.  
+The second contribution presents a yet simple but efficient noise injection method to design robust randomized classifiers. We show that our results are applicable to a wide range of machine learning models under mild hypotheses. We further corroborate our findings with experimental results using deep neural networks on standard image datasets, namely CIFAR-10 and CIFAR-100. All robust models we trained can simultaneously achieve state-of-the-art accuracy (over $0.82$ clean accuracy on CIFAR-10) and enjoy \emph{guaranteed} robust accuracy bounds ($0.45$ against $\ell_2$ adversaries with magnitude $0.5$ on CIFAR-10).
+
+%%================================%%
+%% Sample for structured abstract %%
+%%================================%%
+
+% \abstract{\textbf{Purpose:} The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.
+% 
+% \textbf{Methods:} The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.
+% 
+% \textbf{Results:} The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.
+% 
+% \textbf{Conclusion:} The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.}
+
+
+%%\pacs[JEL Classification]{D8, H51}
+
+%%\pacs[MSC Classification]{35A01, 65L10, 65L12, 65L20, 65L70}
+
+\section{Introduction}
+\label{section::Introduction}
+In the last few years, there has been a growing concern on adversarial example attacks in machine learning. An adversarial attack refers to a small (humanly imperceptible) change of an input specifically designed to fool a machine learning model. These attacks have recently come to light thanks to works by~\cite{biggio2013evasion} and~\cite{Szegedy2013IntriguingPO} studying deep neural networks for image classification, although it was an existing topic in spam filter analysis~\citep{dalvi2004adversarial,lowd2005adversarial,globerson2006nightmare}.
+The vulnerability of state-of-the-art classifiers to these attacks has genuine security implications especially for deep neural networks used in AI-driven technologies such as self-driving cars, as repetitively demonstrated by~\cite{sharif2016accessorize,sitawarin2018darts} and \cite{selfdrivingattack2020}. Besides security issues, this shows how little we know about the worst-case behaviors of models the industry uses daily. It is essential for the community to understand the very nature of this phenomenon in order to mitigate the threat.
+
+Accordingly, a large body of works has been trying to design new models that would be less vulnerable to the adversarial setting~\citep{goodfellow2014explaining,metzen2017detecting,Xie2017MitigatingAE,hu2019new,NIPS2019_9070} but most of them were proven (in time) to offer only limited protection against more sophisticated attacks~\citep{carlini2017adversarial,he2017adversarial,obfuscated-gradients,croce2020reliable,tramer2020adaptive}. Among the defense strategies, randomization has proven effective in some contexts~\citep{Xie2017MitigatingAE,pruningDefenseICLR2018,Xuang2018,rakin2018parametricnoiseinjection}. Albeit these significant efforts, randomization techniques lack theoretical arguments. In this paper, we generalize the prior results from~\cite{pinot2019theoretical} by studying a general class of randomized classifiers, including randomized neural networks, for which we demonstrate adversarial robustness guarantees and analyze their generalization properties.
+
+\subsection{Supervised learning for image classification} 
+
+Let us consider the supervised classification problem with an input space $\XX$ and an output space $\YY$. In the following, w.l.o.g. we will consider $\XX \subset [-1,1]^d$ to be a set of images, and $\YY:= \{1,\dots,K\}$ a set of labels describing them. The goal of a supervised machine learning algorithm is to design classifier that maps any image $x  \in \XX$ to a label $y \in \YY$. To do so, the learner has access to a \emph{training sample} of $n$ image-label pairs $\fullSample:=\{({x_1},y_1),\dots ,({x_n},y_n)\}$. Each training pair $({x_i},y_i)$ is assumed to be drawn \emph{i.i.d.} from a ground-truth distribution $\PP$. To build a classifier, the usual strategy is to select a hypothesis function $\hypothesis: \mathcal{X} \rightarrow \mathcal{Y}$ from a pre-defined hypothesis class $\mathcal{H}$ to minimize the \emph{risk} with respect to $\PP$. This risk minimization problem writes  
+\begin{equation}
+\label{eq:Initialproblem}
+\inf_{\hypothesis \in \mathcal{H}} \risk(\hypothesis)  := \mathbb{E}_{(x ,y) \sim \PP}\left[ \zerooneloss\left(\hypothesis(x ), y\right)\right] \equationspace,
+\end{equation}
+where $\zerooneloss$, the $\zo$ loss, outputs $1$ when $\hypothesis(x ) \neq y$, and zero otherwise. 
+
+In practice, the learner does not have access to the ground-truth distribution; hence it cannot estimate the risk $\risk(\hypothesis)$. To find an approximate solution for Problem~\eqref{eq:Initialproblem}, a learning algorithm solves the \emph{empirical risk minimization} problem instead. In this case, we simply replace the risk by its empirical counterpart over the training sample $\fullSample:=\{({x_1},y_1),\dots ,({x_n},y_n)\}$. The empirical risk minimization problem writes
+\begin{equation}
+\inf_{\hypothesis \in \mathcal{H}} \widehat{\risk}(\hypothesis) := \frac1n \sum_{i=1}^{n} \zerooneloss\left(\hypothesis({x_i}), y_i\right)\equationspace.\label{eq:EmpInitialproblem}
+\end{equation}
+Then, to evaluate how far the selected hypothesis is from the optimum, one wants to upper bound the difference between the risk and the empirical risk of any $\hypothesis \in \mathcal{H}$. This difference is known as the \emph{generalization gap}. 
+
+\subsection{Classification in the presence of an adversary}
+Given a hypothesis $\hypothesis \in \mathcal{H}$ and a sample $(x ,y) \sim \PP$, the goal of an adversary is to find a perturbation ${\tau} \in \XX$ such that the following assertions \emph{both} hold. First, the perturbation is imperceptible to humans. This means that a human cannot visually distinguish the standard example $x $ from the \emph{adversarial example} $x  + \perturb$. Second, the perturbation modifies $x $ enough to make the classifier misclassify. More formally, the adversary seeks a perturbation ${\tau} \in \XX$ such that $\hypothesis(x +{\tau}) \neq y$.
+
+Although the notion of imperceptible modification is very natural for humans, it is genuinely hard to formalize. Despite these difficulties, in the image classification setting, a sufficient condition to ensure that the attack will remain undetected is to constrain the perturbation ${\tau}$ to have a small $\ell_p$ norm. This means that for any $p \in [1,\infty]$, there exists a threshold $\varepsilon > 0$ for which any perturbation $\perturb$ is imperceptible as soon as $\norm{\perturb}_p \leq \varepsilon$. The literature on adversarial attacks for image classification usually uses either an $\ell_\infty$ norm akin~\cite{madry2017towards} or an $\ell_2$ norm akin~\cite{carlini2017adversarial} as a surrogate for imperceptibility. Other authors such as~\cite{chen2018ead} and  \cite{papernot2016distillation} also used an $\ell_1$ norm or an $\ell_0$ semi-norm.
+
+To account for adversaries possibly manipulating the input images, one needs to revisit the standard risk minimization by incorporating the adversary in the problem. The goal becomes to minimize the \emph{worst-case} risk under $\varepsilon$-bounded manipulations. We call this problem the \emph{adversarial risk minimization}. It writes
+\begin{equation}
+\inf_{\hypothesis \in \mathcal{H}} \risk_\varepsilon(\hypothesis) := \mathbb{E}_{(x ,y)\sim \mathcal{D}}\left[  \sup_{ \perturb \in B_p(\varepsilon)}\zerooneloss\left(\hypothesis(x  + {\tau}), y\right)\right]\equationspace, \label{eq:Advproblem}
+\end{equation}
+where $B_p(\varepsilon) :=\{ \tau \in \XX \mid\norm{\perturb}_p \leq \varepsilon\}$. In this new formulation, the adversary focuses on optimizing the inner maximization, while the learner tries to get the best hypothesis from $\mathcal{H}$ ``under attack’’. By analogy with the standard setting, given $n$ training examples $\mathcal{S}:=\{({x_1},y_1),\dots ,({x_n},y_n)\}$, we want to find an approximate solution to the adversarial risk minimization by studying its empirical counterpart, the \emph{empirical adversarial risk minimization}. This optimization problem writes
+\begin{equation}
+\inf_{\hypothesis \in \mathcal{H}} \widehat{\risk}_\numsamples(\hypothesis) := \frac1n\sum_{i=1}^{n} \sup_{\perturb \in B_p(\varepsilon)}\zerooneloss\left(\hypothesis({x_i} + {\tau}), y_i\right)\equationspace. \label{eq:EmpAdvproblem}
+\end{equation}
+In the presence of an adversary, two major issues appear in the empirical risk minimization. First, as recently pointed out by \cite{madry2017towards}, the adversarial generalization error (\emph{i.e.} the gap between the empirical adversarial risk and the adversarial risk) can be much larger than in the standard setting. Indeed, the adversary makes the problem dependent on the dimension of $\XX$. Hence, in high-dimension (\emph{e.g.} for images) one needs much more samples to classify correctly as pointed out by~\cite{schmidt2018adversarially} as well as \cite{simon2019first}. Moreover, finding an approximate solution to the adversarial risk minimization is not always sufficient. Indeed, recent works by~\cite{tsipras2018robustness} and \cite{zhang2019theoretically} g ave theoretical evidence that training a robust model may lead to an increase of its standard risk. Hence finding a good approximation for Problem~\eqref{eq:Advproblem} may lead to a poor solution for Problem~\eqref{eq:Initialproblem}. Accordingly, it is natural to wonder whether we can \textbf{\emph{find a class of models $\boldsymbol{\mathcal{H}}$ for which we can control both the standard and adversarial risks?}}
+
+In this paper, we provide answers to the above question by conducting an in depth analysis of a special class of models called randomized classifiers, \emph{i.e.} classifiers that output random variables instead of labels. Our main contributions summarize as follows. 
+
+\subsection{Contributions}
+\label{sec:contrib}
+
+Our first contribution consists in studying randomized classifiers. By analogy with the deterministic case, we define a notion of robustness for randomized classifiers. This definition amounts to making the classifier locally Lipschitz with respect to the $\ell_p$ norm on $\XX$, and a probability metric on $\YY$ (\emph{e.g.} the total variation distance or the Renyi divergence). More precisely, if we denote $D$ the probability metric at hand, a randomized classifier $m $ is called $(\varepsilon, \alpha)$-robust \wrt~$D$ if for any $x ,x ' \in \mathcal{X}$
+$$ \norm{x  - x '}_p \leq \varepsilon \implies D(m (x ),m (x ')) \leq \alpha.$$
+Denoting $\mathcal{M}_D(\varepsilon,\alpha)$ the class of randomized classifiers that respect this local Lipschitz condition, we present the following results. 
+\begin{enumerate}
+    \item If $D$ is either the total variation distance or the Renyi divergence, we show that for any $m  \in \mathcal{M}_D(\varepsilon,\alpha)$, we can upper-bound the gap between the risk and the adversarial risk of $m $. Notably, if $D$ is the total variation distance, for any $m  \in \mathcal{M}_D(\varepsilon,\alpha)$ we have $ \risk_\varepsilon(m) - \risk(m ) \leq \alpha$. Hence, $\alpha$ controls the maximal trade-off between robust and standard accuracy for locally Lipschitz randomized classifier. We demonstrate similar results when $D$ is the Renyi divergence showing that $\risk_\varepsilon(m) - \risk(m ) \leq 1- O\left(e^{-\alpha}\right)$. This means that, for the class of locally Lipschitz randomized classifiers, solving the risk minimization problem, \ie~Problem~\eqref{eq:Initialproblem}, gives an approximate solution to the adversarial risk minimization problem, \ie~Problem~\eqref{eq:Advproblem}, up to an additive factor that depends on the robustness parameter $\alpha$. 
+    
+    \item We devise an upper-bound on the generalization gap of any $m $ in $\mathcal{M}_D(\varepsilon,\alpha)$. In particular, when $D$ is the total variation distance, we demonstrate that for any $m  \in \mathcal{M}_D(\varepsilon,\alpha)$ we have $$\risk(m ) - \widehat{\risk}(m ) \leq O\left(\sqrt{\frac{N \times K}{n}}\right) + \alpha,$$ where $N$ is the external $\varepsilon$-covering number of the input samples. This means that, when $N/n \underset{n \rightarrow \infty}{\rightarrow} 0$, solving the empirical risk minimization problem, \ie~Problem~\eqref{eq:EmpInitialproblem}, on $\mathcal{M}_D(\varepsilon,\alpha)$ provides an approximate solution to the risk minimization problem, \ie~Problem~\eqref{eq:Initialproblem}. Since we can also bound the gap between the adversarial and the standard risk, we can combine the two results to bound the adversarial generalization gap on $\mathcal{M}_D(\varepsilon,\alpha)$. Note however, that this result relies on a strong assumption on $\XX$ that does not always avoid dimensionality issues. The problem of finding a subclass of $\mathcal{M}_D(\varepsilon,\alpha)$ that provides tighter generalization bounds is an open question.
+\end{enumerate}
+
+For our second contribution, we present a practical way to design this class $\mathcal{M}(\varepsilon,\alpha)$ by using a simple yet efficient noise injection scheme. This allows us to build randomized classifiers from state-of-the-art machine learning models, including deep neural networks. More precisely our contribution is as follows.
+
+\begin{enumerate}
+    \item Based on information-theoretic properties of the total variation distance and the Renyi divergence (\eg~the data processing inequality) we design a noise injection scheme to turn a state-of-the-art machine learning model into a robust randomized classifier. More formally, Let us denote $\Phi$ the c.d.f. of a standard Gaussian distribution. Let us consider $\hypothesis$ a deterministic hypothesis, we show that the randomized classifier $m : x  \mapsto \hypothesis\left(x +n\right)$ with $n\sim\mathcal{N}(0, \sigma^2 I_d)$ is both $(\alpha_2, \frac{(\alpha_2)^2}{2 \sigma})$-robust \wrt~the Renyi divergence and $(\alpha_2,\ 2 \Phi\left( \frac{\alpha_2}{2 \sigma} \right) - 1)$-robust \wrt~the total variation distance. Our results on randomized classifiers are applicable to a wide range of machine learning models including deep neural networks.
+    
+    \item We further corroborate our theoretical results with experiments using deep neural networks on standard image datasets, namely CIFAR-10 and CIFAR-100~\citep{krizhevsky2009learning}. These models can simultaneously provide accurate prediction (over $0.82$ clean accuracy on CIFAR-10) and reasonable robustness against $\ell_2$ adversarial examples ($0.45$ against $\ell_2$ adversaries with magnitude $0.5$ on CIFAR-10). 
+\end{enumerate}
+
+
+\section{Related Work}
+\label{section::RW}
+
+
+Contrary to other notions such as training corruption, \aka~poisoning attacks~\citep{kearns1993learning,kearns1994toward}, the theoretical study of adversarial robustness is still in its infancy. So far, empirical observations tend to show that 1) adversarial examples on state-of-the-art models are hard to mitigate and 2) robust training methods give poor generalization performances. Some recent works started to study the problem through the lens of learning theory either to understand the links between robustness and accuracy or to provide bounds on the generalization gap of current learning procedures in the adversarial setting.
+
+\subsection{Accuracy vs robustness trade-off}
+\label{sec:AccRobTradeoff}
+ 
+A first line of research~\citep{su2018robustness,10.5555/3327546.3327734,tsipras2018robustness} suggests that designing robust models might be inconsistent with standard accuracy. These works argue with experiments and toy examples that robust and standard classification are two concurrent problems. Following this line, \cite{zhang2019theoretically} observed that the adversarial risk of any hypothesis $\hypothesis$ decomposes as follows,
+\begin{equation}
+\risk_\varepsilon(\hypothesis) =  \risk(\hypothesis) +  \risk^{>0}_\varepsilon(\hypothesis),
+\label{eq:decomposition}
+\end{equation} 
+where $\risk^{>0}_\varepsilon(m)$ is the amount of risk that the adversary gets with \emph{non-null} perturbations. Looking at Equation~\eqref{eq:decomposition}, we realize that minimizing the adversarial risk is not enough to control standard accuracy, as one could only optimize over the second term. This indicates that adversarial risk minimization, \ie~Problem~\eqref{eq:Advproblem}, is harder to solve than the standard risk minimization, \ie~Problem~\eqref{eq:Initialproblem}. 
+
+While this indicates that both goals maybe difficult be achieve simultaneously, Equation~\eqref{eq:decomposition}, along with the empirical studies from the literature  do not highlight any fundamental trade-off between robustness and accuracy. Moreover, no upper-bound on $\risk^{>0}_\varepsilon(\hypothesis)$ has been demonstrated yet. Hence the questions whether this trade-off exists and can be controlled remain open. In this paper, we provide a rigorous answer to these questions by identifying classes $\mathcal{M}_D(\varepsilon,\alpha)$ of randomized classifiers for which we can upper bound the trade-off term $\risk^{>0}_\varepsilon(m  )$ for any $m  \in \mathcal{M}_D(\varepsilon,\alpha)$. Hence, we can control the maximum loss of accuracy that the model can suffer in the adversarial setting. It also challenges the intuitions developed by previous works~\citep{su2018robustness,10.5555/3327546.3327734,tsipras2018robustness} and argues in favor of using randomized mechanisms as a defense against adversarial attacks.
+
+\subsection{Studying adversarial generalization}
+
+To further compare the hardness of the two problems, a recent line of research began to explore the notion of adversarial generalization gap. In this line, \cite{schmidt2018adversarially} presented some first intuitions by studying a simplified binary classification framework where $\PP$ is a mixture of multi-dimensional Gaussian distributions. In this framework the authors show that without attacks,  we only need $O(1)$ training samples to have a small generalization gap.
+But against an $\linf$ adversary, we need $O(\sqrt{d})$ training samples instead. In the discussion of their work, the authors present the problem of obtaining similar results without making any assumption about the distribution as an open problem. 
+
+
+This issue was recently studied using the Rademacher complexity by \cite{khim2018adversarial,yin2019rademacher} and \cite{awasthi2020adversarial}. These papers relate the adversarial generalization error of linear classifiers and one-hidden layer neural networks with the dimension of the problem. They show that the adversarial generalization depends on the dimension of the problem. At a first glance, the difficulty of adversarial generalization seems to contradict previous conclusions on the link between robustness and generalization presented by~\cite{xu2012robustness}. But, as we will discuss in the sequel, these results assume that the input space $\mathcal{X}$ can be partitioned in $O(1)$ sub-space in which the classification function has small variations. This assumption may not always hold when dealing with high dimensional input spaces (\eg~images) and very sophisticated classification algorithms (\eg~deep neural networks).
+
+Going further, it should be noted that the generalization gap
+measures only the difference between empirical and theoretical risks. In practice, the empirical adversarial risk is hard to estimate, since we cannot compute the exact solution to the inner maximization problem. The following question therefore remains open: even if we can set up a learning procedure with a controlled generalization gap, can we give guarantees on the standard and adversarial risks? In this paper, we start answering this question by providing techniques that provably offer both small standard risk and reasonable robustness against adversarial examples (see Section~\ref{sec:contrib} for more details).
+
+\subsection{Defense against adversarial examples based on noise injection}
+
+Injecting noise into algorithms to improve train time robustness has been used for ages in detection and signal processing tasks~\citep{ZozoA99,ChapR04,MitaK98,grandvalet1997noise}. It has also been extensively studied in several machine learning and optimization fields, \eg~robust optimization~\citep{ben2009robust} and data augmentation techniques~\citep{Perez2017TheEO}. Concurrently to our work, noise injection techniques have been adopted by the adversarial defense community under the \emph{randomized smoothing} name. The idea of provable defense through noise injection was first proposed by \cite{lecuyer2019certified} and refined by \cite{li2019certified,KolterRandomizedSmoothing,salman2019provably} and \cite{yang2020randomized}. The rational behind randomized smoothing is very simple: smooth $\hypothesis$ \emph{after training} by convolution with a Gaussian measure to build a more stable classifier. Our work belongs to the same line of research, but the nature of our results is different. Randomized smoothing is an ensemble method that builds a deterministic classifier by smoothing a pre-trained model with a Gaussian kernel. This scheme requires to compute a Monte-Carlo estimation of the smoothed classifier; hence requiring many rounds of evaluations to output a deterministic label. Our method is based on randomization and only requires one evaluation round for inferring a label, making the prediction randomized and computationally efficient. While randomized smoothing focuses on the construction of certified defenses, we study the generalization properties of randomized mechanisms both in the standard and the adversarial setting. Our analysis presents the fundamental properties of randomized defenses, including (but not limited to) randomized smoothing (c.f. Section~\ref{sec:modepreservationendRS}).
+
+\section{Definition of Risk and Robustness for Randomized classifiers}
+\label{section::RiskforRandomClassifiers}
+In this work, the goal is to analyze how randomized classifiers can solve the problem of classification in the presence of an adversary. Let us start by defining what we mean by randomized classifiers.
+
+\begin{rmq}[Note on measurability]
+Trough the paper, we assume every spaces $\mathcal{Z}$ to be associated with a $\sigma$-algebra denoted $\mathcal{A}\left( \mathcal{Z}\right)$. Furthermore, we denote $\mathcal{M}^+_1\left(\mathcal{Z} \right)$ the set of probability distributions defined on the measurable space $\left(\mathcal{Z},\mathcal{A}\left(\mathcal{Z}\right)\right)$. In the following, for simplicity, we  refer to $\mathcal{A}\left(\mathcal{Z}\right)$ only when necessary.
+\end{rmq}
+
+
+\begin{definition}[Probabilistic mapping]
+\label{def::ProbMapping}
+Let $\mathcal{Z}$ and $\mathcal{Z}'$ be two arbitrary spaces. A \emph{probabilistic mapping} from $\mathcal{Z}$ to $\mathcal{Z}'$ is a mapping $m : \mathcal{Z} \rightarrow \mathcal{M}^+_1\left(\mathcal{Z}' \right)$, where $ \mathcal{M}^+_1\left(\mathcal{Z}' \right)$ is the space of probability measures on $\mathcal{Z}'$. 
+When $\mathcal{Z} = \XX$ and $\mathcal{Z}' =\mathcal{Y}$, $m $ is called a \emph{randomized classifier}. To get a numerical answer for an input $x $, we sample $\hat{y} \sim m ( x  )$.
+\end{definition}
+
+Any mapping can be considered as a probabilistic mapping, whether it explicitly considers randomization or not. In fact, any deterministic classifier can be considered as a randomized one, since it can be characterized by a Dirac measure. Accordingly, the definition of a randomized classifier is fully general and equally consider classifiers with or without randomization scheme.
+
+\subsection{Risk and adversarial risk for randomized classifiers}
+
+To analyze this new hypothesis class, we can adapt the concepts of risk and adversarial risk for a randomized classifier. The loss function we use is the natural extension of the $\zo$ loss to the randomized regime. Given a randomized classifier $m $ and a sample $(x ,y) \sim \PP$ it writes
+\begin{align}
+    \zerooneloss(m (x ),y) := \mathbb{E}_{\hat{y} \sim m (x )}  \left[ \mathds{1} \left\{\hat{y} \neq y\right\}\right] .
+\end{align}
+This loss function evaluates the probability of misclassification of $m $ on a data sample $(x ,y) \sim \PP$. Accordingly, the risk of $m $ with respect to $\PP$ writes
+\begin{align}
+\risk(m ) &:=  \mathbb{E}_{(x ,y)\sim \PP}\left[ \zerooneloss(m ( x ),y)   \right].
+\end{align}
+Finally, given $m $ and $(x ,y) \sim \PP$, the adversary seeks a perturbation $\perturb \in  B_p(\varepsilon)$ that maximizes the expected error of the classifier on $x $ (\emph{i.e.} $\mathbb{E}_{\hat{y} \sim m (x  + \perturb)}  \left[ \mathds{1} \left\{\hat{y} \neq y\right\}\right]$). Therefore, the adversarial risk of $m $ under $\varepsilon$-bounded perturbations writes
+\begin{align}
+\risk_\varepsilon(m) &:= \mathbb{E}_{(x ,y)\sim \PP}\left[ \sup_{  \perturb \in B_p(\varepsilon)} \zerooneloss(m (x  + \perturb),y)  \right].
+\end{align}
+By analogy with the deterministic setting, we denote 
+\begin{align}
+    \widehat{\risk}\left( m  \right) := \frac1n\sum_{i=1}^n \zerooneloss \left(m (x _i), y_i\right) \text{, and } \\
+    \widehat{\risk}_\numsamples \left( m  \right):= \frac1n\sum_{i=1}^n \sup_{\perturb \in B_p(\varepsilon)}\zerooneloss \left(m ({x_i} + \perturb), y_i\right),
+\end{align} the empirical risks of $m $ for a given training sample $\mathcal{S}:=\{ ({x_1},y_1), \dots , ({x_n},y_n) \}$.
+
+
+\subsection{Robustness for  randomized classifiers} 
+We could define the notion of robustness for a randomized classifier depending on whether it misclassifies any test sample $(x ,y) \sim \PP$. But in practice, neither the adversary nor the model provider have access to the ground-truth distribution $\PP$. Furthermore, in real-world scenarios, one wants to check before its deployment that the model is robust. Therefore, it is required for the classifier to be stable on the regions of the space where it already classifies correctly. Formally a (deterministic) classifier $c: \XX \rightarrow \mathcal{Y}$ is called \emph{robust} if for any $(x , y) \sim \PP$ such that $c(x ) = y$, and  for any $\perturb \in \XX $ one has  
+\begin{equation}
+    \norm{ \perturb }_p \leq \varepsilon \implies c(x ) = c(x  + \perturb ). 
+\end{equation}
+By analogy with this, we define robustness for a randomized classifier below.
+\begin{definition}[Robustness for a randomized classifier]
+A randomized classifier $m : \XX \rightarrow \mathcal{M}^+_1(\mathcal{Y})$ is called $(\varepsilon,\alpha)$-\emph{robust} w.r.t. $D$ if for any $x , \perturb \in \XX$, one has
+\begin{align*}
+ \norm{\perturb}_p \leq \varepsilon \implies D\left(m (x )  ,  m (x  + \perturb)\right) \leq \alpha \equationspace.   
+\end{align*}
+Where $D$ is a metric/divergence between two probability measures. Given such a metric/divergence $D$, we denote $\mathcal{M}_{D}(\varepsilon,\alpha)$ the set of all randomized classifiers that are $(\varepsilon,\alpha)$-\emph{robust} w.r.t. ~$D$.
+\end{definition}
+
+Note that we did not add the constraint that $m $ classifies well on $(x ,y) \sim \PP$, since it is already encompassed in the probability distribution itself. If the two probabilities $m (x )$ and $m (x  + \perturb)$ are close, and if $m (x )$ outputs $y$ with high probability, then it will be the same for $m (x  + \perturb)$. This formulation naturally raises the question of the choice of the metric $D$. Any choice of metric/divergence will instantiate a notion of adversarial robustness, and it should be carefully selected. In the present work, we focus our study on the total variation distance and the Renyi divergence. The question whether these metrics/divergences are more appropriate than others remains open but these two divergences are sufficiently general to cover a wide range of other definitions (see Appendix~\ref{appendix::discussion} for more details). Furthermore, these notions of distance comply with both a theoretical analysis (Section~\ref{section::GeneralizationBoundAdvGap}) and practical considerations (Section~\ref{section::Experiments}). 
+
+
+\subsection{Divergence and probability metrics}
+\label{section::Preliminaries}
+
+Let us now recall the definition of total variation distance and Renyi divergence. Let $\mathcal{Z}$ be an arbitrary space, and $\rho$, $\rho'$ be two measures in $\mathcal{M}^+_1(\mathcal{Z})$\footnote{Recall from Definition~\ref{def::ProbMapping} that $\mathcal{M}^+_1(\mathcal{Z})$ is the set of probability measures on $\mathcal{Z}$}. 
+The \emph{total variation distance} between $\rho$ and $\rho' $ is
+\begin{align} 
+D_{TV}\left(\rho  , \rho' \right) := \sup\limits_{Z \subset \mathcal{A} (\mathcal{Z})} \vert \rho (Z) - \rho' (Z) \vert \enspace,
+\end{align}
+where $\mathcal{A}(\mathcal{Z})$ is the $\sigma$-algebra associated with the set of measures $\mathcal{M}^+_1(\mathcal{Z})$.
+The total variation distance is one of the most commonly used probability metrics. It admits several very simple interpretations, and is a very useful tool in many mathematical fields such as probability theory, Bayesian statistics or optimal transport~\citep{villani2003topics,robert2007bayesian,peyre2019computational}. In optimal transport, it can be rewritten as the solution of the Monge-Kantorovich problem with the cost function $\text{cost}({z},{z}') =\mathds{1}\left\{ {z}\neq {z}'\right\}$,
+\begin{equation}
+    D_{TV}(\rho  , \rho' ) = \inf\int_{\mathcal{Z}^{2}}\mathds{1}\left\{ {z} \neq {z}'\right\} d\pi({z},{z}') \enspace,
+\end{equation} 
+where the infimum is taken over all joint probability measures $\pi$ in $\mathcal{M}^+_1\left( \mathcal{Z}\times\mathcal{Z} \right)$ with marginals $\rho$ and $\rho' $. According to this interpretation, it seems quite natural to consider the total variation distance as a relaxation of the trivial distance on $[0,1]$ (for deterministic classifiers). 
+
+Let us now suppose that $\rho$ and $\rho'$ admit probability density functions $g$ and $g'$ according to a third measure $\nu$. Then the \emph{Renyi divergence of order $\beta$} between $\rho$ and $\rho'$ writes
+\begin{align}
+D_{\beta}\left(\rho  , \rho' \right):=\cfrac{1}{\beta -1}\log \int_{\mathcal{Y}} g' (y)  \left(\cfrac{g(y)}{g' (y)}\right)^{\beta} d\nu(y)\enspace.
+\end{align}
+The Renyi divergence~\citep{renyi1961} is a generalized divergence defined for any $\beta$ on the interval $[1,\infty]$.  It equals the Kullback-Leibler divergence when $\beta \rightarrow 1$, and the maximum divergence when $\beta \rightarrow \infty$. It also has the property of being non-decreasing with respect to $\beta$. This divergence is very common in machine learning and Information theory~\citep{6832827}, especially in its Kullback-Leibler form as it is widely used as the loss function, \ie~cross entropy, of classification algorithms. In the remaining, we denote $\mathcal{M}_{\beta}\left(\varepsilon,\alpha\right)$ the set of $(\varepsilon,\alpha)$-robust classifiers w.r.t. $D_{\beta}$.
+
+Let us now give some properties of these divergences that will be useful for our analysis. First we recall the probability preservation property of the Renyi divergence, first presented by~\cite{langlois2014gghlite}.
+\begin{prop}[\cite{langlois2014gghlite}] 
+\label{prop::renyi}
+Let $\rho$ and $\rho' $ be two measures in $\mathcal{M}^+_1(\mathcal{Z})$. Then for any $Z \in \mathcal{A}(\mathcal{Z})$, the following holds, 
+\begin{equation*}
+  \rho(Z)\leq \left(\exp\left(D_{\beta}(\rho  , \rho' )\right) \rho' (Z)\right)^{\frac{\beta -1}{\beta}}.
+\end{equation*}
+\end{prop}
+Now thanks to previous works by~\cite{5605338} and~\cite{Vajda1970}, we also get the following results relating the total variation distance and the Renyi divergence. 
+
+
+\begin{prop}[Inequality between total variation and Renyi divergence]
+\label{prop:Inequality-TV-Renyi}
+Let $\rho$ and $\rho' $ be two measures in $\mathcal{M}^+_1(\mathcal{Z})$, and $\beta\geq1$. Then the following holds,
+$$D_{TV}(\rho  , \rho' ) \leq \min \left(\frac{3}{2}\left(\sqrt{1 + \frac{4 D_{\beta}(\rho  , \rho' )}{9}} - 1\right)^{1/2} ,\  \frac{\exp\left(D_{\beta}(\rho  , \rho' ) +1 \right) -1}{\exp \left(D_{\beta}(\rho  , \rho' ) +1 \right) +1} \right).$$
+\end{prop}
+
+\begin{proof}
+Thanks to~\cite{5605338}, one has 
+\begin{align*}
+    & D_{1}(\rho  , \rho') \geq 2D_{TV}(\rho  , \rho')^{2}+ \frac{4D_{TV}(\rho  , \rho')^{4}}{9}.
+    \intertext{From which it follows that}
+    & D_{TV}(\rho  , \rho') \leq \frac{3}{2}\left(\sqrt{1 + \frac{4D_{1}(\rho  , \rho')}{9}} - 1\right)^{1/2}.
+    \intertext{Moreover, using inequality from~\cite{Vajda1970}, one gets}
+    & D_{1}(\rho  , \rho') +1 \geq \log\left(\frac{1 + D_{TV}(\rho  , \rho')}{1 - D_{TV}(\rho  , \rho')} \right).
+    \intertext{This inequality leads to the following}
+    &\frac{\exp(D_{1}(\rho  , \rho') +1) -1}{\exp(D_{1}(\rho  , \rho') +1) +1} \geq  D_{TV}(\rho  , \rho').
+\end{align*}
+By combining the above inequalities and by monotony of Renyi divergence regarding $\beta$, one obtains the expected result.
+\end{proof}
+
+From now on, we denote $\mathcal{M}_{TV}\left(\alpha,\alpha\right)$ and  $\mathcal{M}_{\beta}\left(\alpha,\alpha\right)$ the set of $(\alpha,\alpha)$-\emph{robust} classifiers respectively for $D_{TV}$ and $D_{\beta}$. The next section gives bounds on the generalization gap in the standard and the adversarial settings for these specific hypothesis classes. 
+
+\section{Risks' gap and Generalization gap for robust randomized classifiers}
+\label{section::LearningAdversarialGap}
+
+As discussed in Section~\ref{sec:AccRobTradeoff}, we can always decompose the adversarial risk of a classifier $\risk_\varepsilon(m)$ in two terms. First the standard risk $\risk(m )$  and second the amount of risk the adversary creates with non-zero perturbations $\risk^{>0}_\varepsilon(m)$.
+Hence minimizing $\risk(m )$ can give poor values for $\risk_\varepsilon(m )$ and vice-versa. In this section, we upper-bound the risks' gap $\risk^{>0}_\varepsilon(m )$, \emph{i.e.} the gap between the risk and the adversarial risk of a robust classifier.
+
+\subsection{Risks' gap for robust classifiers w.r.t. $D_{TV}$}
+
+First, let us consider $m  \in \mathcal{M}_{TV}\left(\varepsilon,\alpha\right)$.
+We can control the loss of accuracy under attack of this classifier with the robustness parameter $\alpha$. 
+
+\begin{thm}[Risk's gap for robust classifiers w.r.t $D_{TV}$]
+\label{th:TVboundRisk}
+ Let $m  \in \mathcal{M}_{TV}\left(\varepsilon,\alpha\right)$ . Then we have
+\begin{equation*}
+    \risk_\varepsilon(m )  \leq \risk(m ) + \alpha \equationspace.
+\end{equation*}
+\end{thm}
+
+\begin{proof} Let $m $ be an $(\varepsilon,\alpha)$-robust classifier \wrt~$D_{TV}$ , $(x ,y ) \sim \PP$ and $\perturb \in \mathcal{X}$ such that $\norm{\perturb}_p \leq \varepsilon$. By definition of the $\zo$ loss we have
+\begin{align*}
+&\zerooneloss\left( m (x  + \perturb), y \right) =  \mathbb{E}_{\hat{y} \sim m (x + \perturb)} \left[ \mathds{1}\left\{\hat{y} \neq y\right\} \right]. 
+\intertext{Furthermore, by definition of the total variation distance we have}
+&\mathbb{E}_{\hat{y} \sim m (x  + \perturb)} \left[ \mathds{1}\left\{\hat{y} \neq y\right\} \right] - \mathbb{E}_{\hat{y} \sim m (x )} \left[ \mathds{1}\left\{\hat{y} \neq y\right\} \right] \leq D_{TV}( m (x ),m (x +\perturb)). 
+\intertext{Since $m  \in \mathcal{M}_{TV}\left(\varepsilon,\alpha\right)$, the above amounts to write}
+&\zerooneloss\left( m (x  + \perturb), y \right) - \zerooneloss\left( m (x ), y \right) \leq \alpha. 
+\intertext{Finally, this holds for any $(x ,y) \sim \PP$ and any $\varepsilon$ bounded perturbation $\perturb$, then we get}
+& \mathbb{E}_{(x ,y) \sim \PP} \left[ \sup _{ \perturb \in B_p(\varepsilon)} \zerooneloss\left( m (x  + \perturb), y \right) \right] - \mathbb{E}_{(x ,y) \sim \PP} \left[ \zerooneloss\left( m (x ), y \right) \right] \leq \alpha.
+\end{align*}
+The above inequality concludes the proof.
+\end{proof}
+This result means that if we can design a class $\mathcal{M}_{TV}\left(\varepsilon,\alpha\right)$ with small enough $\alpha$, then minimizing the risk of $m  \in \mathcal{M}_{TV}\left(\varepsilon,\alpha\right)$ is also sufficient to control the adversarial risk. It is relatively easy to obtain, but it has an interesting consequence on the understanding we have of the trade-off between robustness and accuracy. 
+It says that there exists some classes of randomized classifiers for which robustness and standard accuracy may not be at odds, since we can upper-bound the maximal loss of accuracy the model may suffer under attack. This questions previous intuitions developed on deterministic classifiers by~\cite{su2018robustness,10.5555/3327546.3327734,tsipras2018robustness} and \cite{zhang2019theoretically} and advocates for the use of randomization schemes as defenses against adversarial attacks. Note, however, that we did not evade the trade-off between robustness and accuracy, we only showed that with certain hypothesis classes it can be controlled.
+
+\subsection{Risks' gap for robust classifiers w.r.t. $D_{\beta}$}
+
+We now extend the previous results the Renyi divergence. We show that, for any randomized classifier in $\mathcal{M}_{\beta}\left(\varepsilon,\alpha\right)$, we can bound the gap between the risk and the adversarial risk of $m $. Using the Renyi divergence, the factor that controls the classifier’s loss of accuracy under attack can be either multiplicative or additive, and depends both on the robustness parameter $\alpha$ and on the divergence parameter $\beta$.
+
+
+\begin{thm}[Multiplicative risks' gap for Renyi-robust classifiers]
+\label{th:multiplicative}
+ Let $m  \in \mathcal{M}_{\beta}\left(\varepsilon,\alpha\right)$. Then we have
+\begin{equation*}
+    \risk_\varepsilon(m ) \leq \left(e^{\alpha} \risk(m )\right)^{\frac{\beta-1}{\beta}}.
+\end{equation*}
+\end{thm}
+
+\begin{proof}
+Let $m $ be an $(\varepsilon,\alpha)$-robust classifier \wrt~$D_{\beta}$, $(x ,y ) \sim \PP$ and $\perturb \in \mathcal{X}$ such that $\norm{\perturb}_p \leq \varepsilon$. With the same reasoning as above, and with Proposition~\ref{prop::renyi}, we get 
+\begin{align*}
+\zerooneloss \left( m (x  + \perturb), y \right) = ~&  \mathbb{E}_{\hat{y} \sim m (x + \perturb)} \left[ \mathds{1}\left\{\hat{y} \neq y\right\} \right]\\
+= ~& \PP_{\hat{y} \sim m (x + \perturb)} \left[\hat{y} \neq y\right]\\
+\leq ~&\left(e^{ D_{\beta}\left( m (x  +\perturb),m (x ) \right)} \PP_{\hat{y} \sim m (x )} \left[\hat{y} \neq y \right]\right)^{\frac{\beta-1}{\beta}} \quad \text{(Prop.~\ref{prop::renyi})}\\
+= ~&\left(e^{ D_{\beta}\left( m (x  +\perturb),m (x ) \right)} \mathbb{E}_{\hat{y} \sim m (x )} \left[ \mathds{1}\left\{\hat{y} \neq y\right\} \right]\right)^{\frac{\beta-1}{\beta}}\\
+\leq ~&\left(e^{\alpha} \zerooneloss\left( m (x ), y \right) \right)^{\frac{\beta-1}{\beta}} \equationspace. \\
+\intertext{Since this holds for any $(x ,y) \sim \PP$ and any $\varepsilon$ bounded perturbation $\perturb$, we get }
+  \risk_\varepsilon(m ) = ~&\mathbb{E}_{(x ,y)\sim \mathcal{D}}\left[ \sup_{ \perturb \in B_p(\varepsilon)} \zerooneloss \left(m ( x +\perturb), y\right) \right]\\
+  \leq ~&\mathbb{E}_{(x ,y)\sim \mathcal{D}}\left[ e^{\frac{\beta-1}{\beta}\alpha}   \zerooneloss \left(m ( x ), y\right)^{\frac{\beta-1}{\beta}} \right]\\
+  \leq ~&e^{\frac{\beta-1}{\beta}\alpha} \mathbb{E}_{(x ,y)\sim \mathcal{D}}\left[  \zerooneloss \left(m ( x ), y\right)^{\frac{\beta-1}{\beta}}\right] \equationspace.
+  \intertext{Finally, using the Jensen inequality, one gets}
+  \leq ~& e^{\frac{\beta-1}{\beta}\alpha} \mathbb{E}_{(x ,y)\sim \mathcal{D}}\left[  \zerooneloss \left(m ( x ), y\right)\right ]^{\frac{\beta-1}{\beta}} =\left(e^{\alpha} \risk(m )\right)^{\frac{\beta-1}{\beta}} \equationspace.
+ \end{align*}
+ The above inequality concludes the proof.
+\end{proof}
+
+This first result gives a multiplicative bound on the gap between the standard and adversarial risks. This means that if we can design a class $\mathcal{M}_{\beta}\left(\varepsilon,\alpha\right)$ with small enough $\alpha$, and big enough $\beta$, then minimizing the risk of any $m  \in \mathcal{M}_{\beta}\left(\varepsilon,\alpha\right)$ is sufficient to also minimize the adversarial risk of $m $. Nevertheless, multiplicative factors are not easy to analyze. 
+\begin{rmq}
+More general bounds can be computed if we assume that for every randomized classifier $m $ there exists a convex function $\mathbf{f}$ such that for all $x $ and $\perturb$ with $\lVert\perturb\rVert_p\leq \varepsilon$, we have $m (x )(Z)\leq \mathbf{f}(m (x +\perturb)(Z))$ for all measurable sets $Z$. In this case, we get $\risk_\varepsilon(m) \leq \mathbf{f}\left( \risk(m )\right)$. This has a close link with randomized smoothing~\citep{KolterRandomizedSmoothing} and $f$-differential privacy~\citep{dong2019gaussian} where both try to fit the best possible $\mathbf{f}$ using Neyman-Pearson lemma.
+\end{rmq}
+
+The following result provides an additive counterpart to Theorem~\ref{th:multiplicative}. It gives a control over the loss of accuracy under attack with respect to the robustness parameter $\alpha$ and the Shannon entropy of $m $.  
+
+
+\begin{thm}[Additive risks' gap for Renyi-robust classifiers]
+\label{th:RenyiboundRisk}
+Let $m  \in \mathcal{M}_{\beta}\left(\varepsilon,\alpha\right)$, then we have
+$$ \risk_\varepsilon(m )-\risk(m ) \leq 1-e^{-\alpha}  \mathbb{E}_{x  \sim \mathcal{D}_{\mid \XX}}\left[e^{-H(m (x ))}\right]$$
+where $H$ is the Shannon entropy (\emph{i.e.} for any $\rho \in \mathcal{M}^+_1\left(\mathcal{Y}\right), H(\rho)= -\sum\limits_{k \in \YY} \rho_k \log(\rho_k)$) and $\mathcal{D}_{\mid \XX}$ is the marginal distribution of $\PP$ for $\XX$.
+\end{thm}
+
+\begin{proof}
+Let $m  \in  \mathcal{M}_{\beta}\left(\varepsilon,\alpha\right)$, then 
+\begin{align*}
+&\risk_\varepsilon(m )-\risk(m ) \\ 
+= ~& \mathbb{E}_{(x ,y) \sim \PP}\left[ \sup_{ \perturb \in B_p(\varepsilon)} \zerooneloss\left( m (x  + \perturb) , y \right) -  \zerooneloss\left( m (x ) , y \right) \right].
+\intertext{By definition of the $\zo$ loss, this amounts to write}
+= ~&\mathbb{E}_{(x ,y) \sim \PP}\left[ \sup_{ \perturb \in B_p(\varepsilon)} \mathbb{E}_{\hat{y}_{\text{adv}}\sim m (x +\perturb), \hat{y} \sim m (x ) }\left[ \mathds{1}\left(\hat{y}_{\text{adv}}\neq y\right)-  \mathds{1}\left(\hat{y}\neq y\right) \right]\right] \\
+\leq ~&\mathbb{E}_{(x ,y) \sim \PP}\left[ \sup_{ \perturb \in B_p(\varepsilon)} \mathbb{E}_{\hat{y}_{\text{adv}}\sim m (x +\perturb), \hat{y} \sim m (x )}\left[ \mathds{1}\left(\hat{y}_{\text{adv}}\neq \hat{y}\right)\right]\right]\\
+= ~&\mathbb{E}_{(x ,y) \sim \PP}\left[\sup_{ \perturb \in B_p(\varepsilon)}\mathbb{P}_{\hat{y}_{\text{adv}}\sim m (x +\perturb),\hat{y}\sim m (x )} \left [ \hat{y}_{\text{adv}}\neq \hat{y} \right ] \right] \\
+= ~&\mathbb{E}_{(x ,y) \sim \PP}\left[\sup_{ \perturb \in B_p(\varepsilon)} 1 - \mathbb{P}_{\hat{y}_{\text{adv}}\sim m (x +\perturb),\hat{y}\sim m (x )} \left [ \hat{y}_{\text{adv}} = \hat{y} \right ] \right] \\
+= ~&\mathbb{E}_{(x ,y) \sim \PP}\left[\sup_{ \perturb \in B_p(\varepsilon)} 1 - \sum_{i=1}^K  m (x )_i \times m (x  + \perturb)_i \right] \equationspace. 
+\end{align*}
+Now, note that for any $(x ,y) \sim \PP$ and $\perturb \in \XX$, by definition of a probability vector in $\mathcal{M}^+_1\left( \YY \right)$, and thanks to Jensen inequality we can write
+\begin{align*}
+&\sum_{i=1}^K  m (x )_i \times m (x  + \perturb)_i \geq \exp\left(\sum_{i=1}^K m (x )_i \log m (x  + \perturb)_i\right).
+\end{align*}
+Then by definition of the entropy and the Kullback Leibler divergence we have
+\begin{align*}
+& \exp\left(\sum_{i=1}^K m (x )_i \log m (x  + \perturb)_i\right) =\exp\big(-D_{1}\left(m (x ),m (x  + \perturb) \right) - H\left(m (x ) \right) \big).
+\end{align*} 
+Finally, by combining the above inequalities and since $m  \in \mathcal{M}_{\beta}\left(\varepsilon,\alpha\right)$ we get 
+\begin{align*}
+&\mathbb{E}_{(x ,y) \sim \PP}\left[\sup_{ \perturb \in B_p(\varepsilon)}\mathbb{P}_{\hat{y}_{\text{adv}}\sim m (x +\perturb),\hat{y}\sim m (x )}(\hat{y}_{\text{adv}}\neq \hat{y})\right]\\
+ \leq ~& \mathbb{E}_{(x ,y) \sim \PP}\left[\sup_{ \perturb \in B_p(\varepsilon)} 1-e^{- D_{1}(m (x ),m (x +\perturb))-H(m (x ))} \right]\\
+\leq ~& \mathbb{E}_{(x ,y) \sim \PP}\left[1-e^{-\alpha-H(m (x ))} \right] = 1-e^{-\alpha}\mathbb{E}_{x  \sim \PP_{\mid \XX}}\left[e^{-H(m (x ))}\right]\equationspace.
+\end{align*}
+The above inequality concludes the proof.
+\end{proof}
+
+ 
+This result is interesting because it relates the accuracy of $m $ with the bound we obtain. 
+In words, when $m (x )$ has large entropy (\emph{i.e.} $H(m (x ))\rightarrow \log(K)$) the output distribution tends towards the uniform distribution; hence $\alpha\rightarrow0$. This means that the classifier is very robust but also completely inaccurate, since it outputs classes uniformly at random.   
+On the opposite, if $H(m (x ))\rightarrow 0$, then $\alpha\rightarrow\infty$. The classifier may be accurate, but it is not robust anymore (at least according to our definition). Hence we need to find a classifier that achieves a trade-off between robustness and accuracy. 
+
+\section{Standard Generalization gap}
+\label{section::GeneralizationBoundAdvGap} 
+
+In this section we devise generalization gap bounds for randomized classifiers when they are robust according either to the total variation distance or the Renyi divergence. To do so, we upper-bound the Rademacher complexity of the loss space for TV-robust classifiers $$ \loss_{\mathcal{M}_{TV}\left(\varepsilon,\alpha\right)}:= \{ (x ,y) \mapsto \zerooneloss(\hypothesis(x ),y)  \mid m  \in \mathcal{M}_{TV}\left(\varepsilon,\alpha\right) \}. $$ The \emph{empirical Rademacher complexity}, first introduced by~\cite{bartlett2002rademacher}, is one of the standard measures of generalization gap. It is particularly useful to obtain quality bounds for complex classes such as neural networks since it does not depend on the number of parameters in the network contrary to combinatorial notions such as the \emph{VC dimension}.
+
+\begin{definition}[Rademacher complexity]
+For any class of real-valued functions $\mathcal{F} := \{(x ,y)\mapsto \mathbb{R} \}$, given a training sample $\fullSample=\{({x_1},y_1), \dots ,({x_n},y_n)\}$, the \emph{empirical Rademacher complexity} of $\mathcal{F}$ is defined as
+\begin{equation*}
+    Rad_{\mathcal{S}}(\mathcal{F}):= \frac1n \mathbb{E}_{r_i}\left[ \sup_{f \in \mathcal{F}} \sum_{i=1}^{n} r_i f({x_i},y_i) \right] \equationspace,
+\end{equation*}
+whith $r_i$ \emph{i.i.d.} drawn from a Rademacher measure, \emph{i.e.} $\PP(r_i = 1) = \PP(r_i = -1) = \frac12$.
+\end{definition}
+
+The empirical Rademacher complexity measures the uniform convergence rate of the empirical risk towards the risk on the function class $\mathcal{F}$ as demonstrated by \cite{mohri2018foundations}. Thanks to this notion of complexity, we can bound with high probability the generalization gap of any hypothesis $m $ in a class $\mathcal{M}$.
+
+\begin{thm}[\cite{mohri2018foundations}]
+\label{thm:RademacherandGenClassicalthm}
+Let $\mathcal{M}$ be a class of possibly randomized classifiers and $\loss_{\mathcal{M}} := \{ \loss_{m } :(x ,y) \mapsto \zerooneloss\left(m ({x}),y\right) \mid m  \in \mathcal{M} \}$. Then for any $\delta \in (0,1)$, with probability at least $1-\delta$, the following holds for any $m  \in \mathcal{M}_{TV}\left(\varepsilon,\alpha\right)$,
+\begin{equation*}
+    \risk\left( m  \right) - \widehat{\risk}\left( m  \right) \leq 2 Rad_{\mathcal{S}}(\loss_{\mathcal{M}}) + 3 \sqrt{\cfrac{\ln(2/\delta)}{2n}} \equationspace.
+\end{equation*}
+\end{thm}
+
+
+\subsection{Generalization error for robust classifiers}
+
+Accordingly, we want to upper bound the empirical Rademacher complexity of  $\loss_{\mathcal{M}_{TV}\left(\varepsilon,\alpha\right)}$, which motivates the following definition. 
+\begin{definition}[$\alpha$-covering and external covering number]
+Let us consider $(\XX , \norm{.}_p)$ a vector space equipped with the $\ell_p$ norm, $B \subset \XX$ and $\alpha \geq 0$. Then 
+\begin{itemize}
+    \item $C =\{ {c_1}, \dots, {c_m} \}$ is an $\alpha$-covering of $B$ for the $\ell_p$ norm if for any $x  \in B$ there exists ${c_i} \in C$ such that $\norm{x  - {c_i}}_p \leq \alpha$.
+    \item The external covering number of $B$ writes $N\left(B,\norm{.}_p,\alpha\right)$. It is the minimal number of points one needs to build an $\alpha$-covering of $B$ for the $\ell_p$ norm.
+\end{itemize}
+\end{definition}
+The covering number is a well-known measure that is often used in statistical learning theory~\citep{shalev2014understanding} and asymptotic statistics~\citep{van2000asymptotic} to evaluate the complexity of a set of functions.
+Here we use it to evaluate the number of $\ell_p$ balls we need to cover the training samples, which gives us the following bound on the Rademacher complexity of $\loss_{\mathcal{M}_{TV}\left(\varepsilon,\alpha\right)}$.
+
+\begin{thm}[Rademacher complexity for TV-robust classifiers]
+\label{thm:rad_tv}
+Let $\loss_{\mathcal{M}_{TV}\left(\varepsilon,\alpha\right)}$ be the loss function class associated with $\mathcal{M}_{TV}\left(\varepsilon,\alpha\right)$. Then, for any $\mathcal{S}:=\{({x_1},y_1), \dots  , ({x_n},y_n)\}$, the following holds,
+\begin{equation*}
+    \mathfrak{R}_{\mathcal{S}}\left(\loss_{\mathcal{M}_{TV}\left(\varepsilon,\alpha\right)}\right ) \leq \sqrt{\cfrac{ N \times K }{n}}+\alpha.
+\end{equation*}
+ Where $N =N\left( \{{x_1},\dots , {x_n}\}, \norm{.}_p, \varepsilon \right)$ is the $\varepsilon$-external covering number of the inputs $\{{x_1},\dots , {x_n}\}$ for the $\ell_p$ norm.
+\end{thm}
+
+\begin{proof}
+We denote $\mathcal{S}:=\{({x_1},y_1), \dots  , ({x_n},y_n)\}$ and $N=N\left( \{{x_1},\dots , {x_n}\}, \norm{.}_p, \varepsilon \right)$. By definition of a covering number, there exists $C= \{{c_1} , \dots, {c_N}\}$ an $\varepsilon$-covering of $\{{x_1},\dots {x_n}\}$ for the $\ell_p$ norm. Furthermore, for $j\in\{1,\dots ,N\}$ and $y \in\{1,\dots ,K\}$, we define $$E_{y,j} = \left\{ i \in \{1,\dots, n\} 
+\mid y_i = y \text{ and } \argmin\limits_{l \in \{ 1, \dots , N\}} \norm{x_i - c_l} = j\right\}.$$ 
+We also denote $E_j = \underset{y \in [K]}{\cup} E_{y,j}$. Finally, we denote $\loss_{m } :(x ,y) \mapsto \zerooneloss\left(m ({x}),y\right)$. Then, by definition of the empirical Rademacher complexity, we can write 
+\begin{align*}
+    \mathfrak{R}_{\mathcal{S}}\left(\loss_{\mathcal{M}_{TV}\left(\varepsilon,\alpha\right)}\right ) = ~& \frac1n \mathbb{E}_{r_i}\left[ \sup_{m  \in \mathcal{M}_{TV}\left(\varepsilon,\alpha\right)}
+     \sum_{i=1}^{n} r_i \loss_{m }({x_i}, y_i)\right].
+     \intertext{Then we can use $E_j$ to write}
+     \mathfrak{R}_{\mathcal{S}}\left(\loss_{\mathcal{M}_{TV}\left(\varepsilon,\alpha\right)}\right )  = ~&\frac1n \mathbb{E}_{r_i}\left[ \sup_{m  \in \mathcal{M}_{TV}\left(\varepsilon,\alpha\right)} \sum_{j=1}^N\sum_{i\in E_{j}} r_i \loss_{m }({x_i}, y_i) \right].
+\intertext{Furthermore for any $ m  \in \mathcal{M}_{TV}\left(\varepsilon,\alpha\right)$ and $i\in E_j$, there exists $\alpha_i \in[-\alpha,\alpha]$ such that: $\loss_{m }({x_i}, y_i) = \loss_{m }({c_j},y_i)+\alpha_i$. Then we have}
+     \mathfrak{R}_{\mathcal{S}}\left( \loss_{\mathcal{M}_{TV}\left(\varepsilon,\alpha\right)} \right) \leq ~&\frac1n \mathbb{E}_{r_i}\left[ \sup_{m  \in \mathcal{M}_{TV}\left(\varepsilon,\alpha\right)} \sum_{j=1}^N\sum_{i\in E_{j}} r_i \loss_{m }({c_j},y_i) \right]\\
+     + ~& \frac1n \mathbb{E}_{r_i}\left[ \sup_{\alpha_i\in[-\alpha,\alpha]} \sum_{j=1}^N\sum_{i\in E_{j}} r_i \alpha_i \right].
+\end{align*}
+Let us start by studying the second term. We have 
+\begin{align*}
+     \frac1n \mathbb{E}_{r_i}\left[ \sup_{\alpha_i\in[-\alpha,\alpha]} \sum_{j=1}^N\sum_{i\in E_{j}} r_i \alpha_i \right] =\frac1n \mathbb{E}_{r_i}\left[ \sup_{\alpha_i\in[-\alpha,\alpha]} \sum_{i=1}^n r_i \alpha_i \right] = \frac1n \sum_{i=1}^n \alpha =\alpha. 
+\end{align*}
+Now looking at the first term. Since $\loss_{m }(x ,y)\in[0,1]$ for all $(x ,y)$ we have
+\begin{align*}
+      &\frac1n \mathbb{E}_{r_i}\left[ \sup_{m  \in \mathcal{M}_{TV}\left(\varepsilon,\alpha\right)} \sum_{j=1}^N\sum_{i\in E_{j}} r_i \loss_{m }({c_j},y_i) \right] \\
+      = ~& \frac1n \mathbb{E}_{r_i}\left[ \sup_{m  \in \mathcal{M}_{TV}\left(\varepsilon,\alpha\right)} \sum_{j=1}^N\sum_{y=1}^K  \loss_{m }({c_j},y) \sum_{i\in E_{y,j}}r_i \right]\\
+      \leq ~&\frac1n \mathbb{E}_{r_i}\left[  \sum_{j=1}^N\sum_{y=1}^K  \abs{ \sum_{i\in E_{y,j}}r_i}\right] \equationspace.
+ \end{align*}
+ Finally using the Khintchine inequality and the Cauchy Schartz inequality we get 
+ \begin{align*}
+      \frac1n \mathbb{E}_{r_i}\left[  \sum_{j=1}^N\sum_{y=1}^K  \abs{ \sum_{i\in E_{y,j}}r_i}\right]\leq ~&\frac1n \sum_{j=1}^N\sum_{y=1}^K \sqrt{\abs{E_{y,j}}} \quad \text{(Khintchine)}\\
+      \leq ~&\frac1n \sqrt{N\times K}\sqrt{\sum_{j=1}^N\sum_{y=1}^K \abs{E_{y,j}}} \quad \text{(Cauchy)} \\
+      = ~&\sqrt{\frac{N\times K}{n}}.
+ \end{align*}
+By combining the upper-bounds we have for each term, we get the expected result,
+ \begin{align*}
+     \mathfrak{R}_{\mathcal{S}}\left(\loss_{\mathcal{M}_{TV}\left(\varepsilon,\alpha\right)}\right ) \leq \sqrt{\frac{N\times K}{n}}+\alpha.
+ \end{align*}
+\end{proof}
+
+The above result means that, if we can cover the $n$ training samples with $O(1)$ balls, then we can bound the generalization gap of any randomized classifier $m  \in \mathcal{M}_{TV}\left(\varepsilon,\alpha\right)$ by $O\left(\frac{1}{\sqrt{n}}\right) + \alpha$. Furthermore, a natural corollary of Theorem~\ref{thm:rad_tv} bounds the Rademacher complexity of the class $\loss_{\mathcal{M}_{\beta}\left(\varepsilon,\alpha\right)}$. 
+
+
+
+\begin{corollary}
+\label{cor:rad_rob}
+Let $\loss_{\mathcal{M}_{\beta}\left(\varepsilon,\alpha\right)}$ be the loss function class associated with $\mathcal{M}_{\beta}\left(\varepsilon,\alpha\right)$. Then, for any $\mathcal{S}:=\{({x_1},y_1), \dots  , ({x_n},y_n)\}$, the following holds,
+\begin{equation*}
+    \mathfrak{R}_{\mathcal{S}}\left(\loss_{\mathcal{M}_{\beta}\left(\varepsilon,\alpha\right)}\right ) \leq \sqrt{\cfrac{ N \times K }{n}}+ \min \left(\cfrac{3}{2}\left(\sqrt{1 + \cfrac{4\alpha}{9}} - 1\right)^{1/2}, \cfrac{e^{\alpha +1} -1}{e^{\alpha +1} +1}\right).
+\end{equation*}
+ Where $N =N\left( \{{x_1},\dots , {x_n}\}, \norm{.}_p, \varepsilon \right)$ is the $\varepsilon$-external covering number of the inputs $\{{x_1},\dots , {x_n}\}$ for the $\ell_p$ norm.
+\end{corollary}
+
+\begin{proof}
+This corollary is an immediate consequence of Theorem~\ref{thm:rad_tv} and Proposition~\ref{prop:Inequality-TV-Renyi}.
+\end{proof}
+ Thanks to Theorems~\ref{thm:RademacherandGenClassicalthm} and~\ref{thm:rad_tv} and Corollary~\ref{cor:rad_rob}, one can easily bound the generalization gap of robust randomized classifiers.
+
+\subsection{Discussion and dimensionality issues}
+
+\cite{xu2012robustness} previously studied generalization bounds for learning algorithms based on their robustness. 
+Although we use very different proof techniques, their results and ours are similar. More precisely, both analyses conclude that robust models generalize well if the training samples have a small covering number. Note, however, that we base our formulation on an \emph{adaptive partition} of the samples, while the initial paper from~\cite{xu2012robustness} only focuses on a fixed partition of the input space. Wre refer the reader to the discussion section in~\citep{xu2012robustness} for more details. 
+
+These findings seem to contradict the current line of works on the hardness of generalization in the adversarial setting. In fact, if the ground truth distribution is sufficiently concentrated (\emph{e.g.} lies in a low dimensional subspace of $x $), a small number of balls can cover $\fullSample$ with high probability; hence $N = O(1)$. This means that we can learn robust classifiers with the same sample complexity as in the standard setting. But if the ground truth distribution is not concentrated enough, the training samples will be far one from another; hence forcing the covering number to be large. In the worse case scenario, we need to cover the whole space $[0,1]^d$ giving a covering number $N = O\left(\frac{1}{(\varepsilon)^d }\right)$ which is exponential in the dimension of the problem.
+
+Therefore, in the worst-case scenario, our bound is in $O\left(\frac{1}{(\varepsilon)^d \sqrt{n}}\right) + \alpha$. When $\varepsilon$ is small and the dimension of the problem is high, this bound is too large to give any meaningful insight on the generalization gap of the problem.
+Therefore, we still need to tighten our analysis to show that robust learning for randomized classifiers is possible in high dimensional spaces. 
+
+\begin{rmq}
+Note that, we provided a very general result for randomized classifiers under the only assumption that they are robust \wrt~the total variation distance. Our result applies to any class of classifiers and not only linear classifiers or  one-hidden layer neural networks. To build a finer analysis, and to evade the curse of dimensionality, we should consider designing specific sub-classes $\mathcal{M} \subset \mathcal{M}_{TV}\left(\varepsilon,\alpha\right)$ and adapt the proofs to make the term $N$ smaller in the worst-case scenario.  
+\end{rmq}
+
+
+\section{Building robust randomized classifiers} 
+\label{section::Noisescheme}
+In this section we present a simple yet efficient way to transform a non-robust, non-randomized classifier into a robust randomized classifier. To do so, we use a key property of both the Renyi divergence and the total variation distance called the \textit{Data processing inequality}. It is a well-known result from information theory which states that \textit{``post-processing cannot increase information''}. The data processing inequality is as follows. 
+\begin{thm}[\cite{cover2012elements}]
+\label{th::Dataprocessing}
+Let us consider two arbitrary spaces $\mathcal{Z}, \mathcal{Z}'$, $\rho,\rho' \in \mathcal{M}^+_1\left( \mathcal{Z} \right)$ and $D \in \{D_{TV},D_{\beta}\}$. Then for any $\psi : \mathcal{Z} \rightarrow \mathcal{Z}'$ we have 
+$$  D\left( \psi \#\rho, \psi \#\rho' \right) \leq D\left( \rho,\rho' \right),$$
+where $\psi \#\rho$ denotes the pushforward of distiburtion $\rho$ by $\psi$.
+\end{thm}
+
+In the context of robustness to adversarial examples, we use the data processing inequality to ease the design of robust randomized classifiers. In particular, let us suppose that we can build a randomized pre-processing $\mathfrak{p}: \XX \rightarrow \mathcal{M}^+_1\left( \XX \right)$ such that for any $x  \in \mathcal{X}$ and any $\varepsilon$-bounded perturbation $\perturb$, we have 
+\begin{equation}
+   D\left(\mathfrak{p}(x ), \mathfrak{p}(x  + \perturb) \right) \leq \alpha,
+\text{ with }D \in  \{D_{TV}, D_\beta \}. 
+\end{equation}
+Then, thanks to the data processing inequality, we can take any deterministic classifier $\hypothesis$ to build an $(\varepsilon,\alpha)$ robust classifier w.r.t $D$ defined as $m  : x  \mapsto  \hypothesis \# \mathfrak{p}(x )$. This considerably simplifies the problem of building a class of robust models. Therefore, we want to build $\mathfrak{p}$ a randomized pre-processing for which we can control the Renyi divergence and/or total variation distance between two inputs. To do this, we analyze the simple procedure of injecting random noise directly on the image before sending it to a classifier. Since the Renyi divergence and the total variation distances are particularly well suited to the study of Gaussian distributions, we first use this type of noise injection. More precisely, in this section, we focus on a mapping that writes as follows.
+\begin{equation}
+    \mathfrak{p}: x  \mapsto \mathcal{N}\left(x , \Sigma \right),
+\end{equation}
+for some given non-degenerate covariance matrix $\Sigma \in \mathcal{M}_{d\times d}(\mathbb{R})$.
+We refer the interested reader to~\cite{pinot2019theoretical} for more general classes of noise, namely exponential families. 
+Let us now evaluate the maximal variation of Gaussian pre-processing $\mathfrak{p}$ when applied to an image $x \in \XX$ with and without perturbation. 
+
+\begin{lemma}
+\label{gaussRenyi} Let $\beta>1$, $x , \perturb \in \XX$ and $\Sigma \in \mathcal{M}_{d \times d}(\mathbb{R})$ a non-degenerate covariance matrix. Let $\rho = \mathcal{N}(x ,\Sigma)$ and $\rho'=\mathcal{N}(x  + \perturb,\Sigma)$, then $D_{\beta}(\rho,\rho') = \frac{ \beta }{2} \norm{\perturb}_{\Sigma^{- 1}}^2 $.
+\end{lemma}
+
+
+Thanks to the above lemma, we know how to evaluate the level of Renyi-robustness that a Gaussian noise pre-processing brings to a classifier. Now that we have this result, thanks to Proposition~\ref{prop:Inequality-TV-Renyi}, we can also upper-bound the total variation distance between $\mathcal{N}(x ,\Sigma)$ and $\mathcal{N}(x  + \perturb,\Sigma)$. But this bound is not always tight. Besides, we can directly evaluate the total variation distance between two Gaussian distributions as follows.
+
+\begin{lemma}
+\label{gaussTV}Let $x , x ' \in \XX$ and $\Sigma \in \mathcal{M}_{d \times d}(\mathbb{R})$ a non-degenerate covariance matrix. Let $\rho = \mathcal{N}(x ,\Sigma)$ and $\rho'=\mathcal{N}( x + \perturb,\Sigma)$, then $D_{TV}(\rho,\rho') = 2\Phi \left(\frac{\norm{\perturb}_{\Sigma^{-1}}}{2}\right)-1$ with $\Phi$ the cumulative density function of the standard Gaussian distribution.
+\end{lemma}
+
+Note that both bounds increase with the Mahalanobis norm of $\perturb$. Furthermore, we see that the greater the entropy of the Gaussian noise we inject, the smaller the distance between distributions. If we simplify the covariance matrix by setting $\Sigma= \sigma^2 I_d$, it means that we can build more or less robust randomized classifiers against $\ell_2$ adversaries, depending on $\sigma$.
+
+\begin{thm}[Robustness of Gaussian pre-processing]
+\label{thm:noiseinjection}
+Let us consider $c: \mathcal{X} \rightarrow \mathcal{Y}$ a deterministic classifier, $\sigma > 0$ and $\mathfrak{p}: x  \mapsto \mathcal{N}(x , \sigma^2 I_d)$ a pre-processing probabilistic mapping. Then the randomized classifier $m  := c \# \mathfrak{p}$ is 
+\begin{itemize}
+\item $(\alpha_2, \frac{(\alpha_2)^2 \beta}{2 \sigma})$-robust \wrt~$D_\beta$ against $\ell_2$ adversaries.
+\item $(\alpha_2,\ 2 \Phi\left( \frac{\alpha_2}{2 \sigma} \right) - 1)$-robust \wrt~$D_{TV}$ against $\ell_2$ adversaries.
+\end{itemize}
+\end{thm}
+
+\begin{proof} Let $x , \perturb \in \XX$ such that $\norm{\perturb}_2 \leq \alpha_2$. Thanks to Lemma~\ref{gaussRenyi} we have
+\begin{align*}
+D_\beta(\mathfrak{p}(x ),\mathfrak{p}(x  + \perturb)) &=\frac{\beta}{2}\lVert \perturb\rVert_{\Sigma^{-1}}^2 = \frac{\beta}{2 \sigma^2}\lVert \perturb\rVert_{2}^2 \leq \frac{\beta (\alpha_2)^2}{2 \sigma^2}.
+\intertext{Similarly, thanks to Lemma~\ref{gaussTV}, we get} 
+D_{TV}(\mathfrak{p}(x ),\mathfrak{p}(x  + \perturb)) &= 2\Phi\left(\frac{\lVert \perturb \rVert _{\Sigma^{-1}}}{2} \right)-1 \leq 2\Phi\left(\frac{\alpha_2}{2 \sigma} \right)-1.
+\end{align*}
+Finally, from the data processing inequality, \ie~ thm~\ref{th::Dataprocessing}, we get both \begin{align*}
+    D_{\beta}(m (x ),m (x  + \perturb)) &\leq  \frac{\beta (\alpha_2)^2}{2 \sigma^2}, 
+    \intertext{and }
+    D_{TV}(m (x ),m (x  + \perturb)) &\leq  2\Phi\left(\frac{\alpha_2}{2 \sigma} \right)-1.
+\end{align*}
+The above inequalities conclude the proof.  
+\end{proof}
+
+Theorem~\ref{thm:noiseinjection} means that we can build simple noise injection schemes as pre-processing of state-of-the-art image classification models and keep track of the maximal loss of accuracy under attack of the resulting randomized classifier. These results also highlight the profound link between randomized classifiers and randomized smoothing as presented by \cite{KolterRandomizedSmoothing}. Even though our findings are of different nature, both techniques use the same base mechanism (Gaussian noise injection). 
+Therefore, Gaussian pre-processing is a principled defense method that can be analyzed through several standpoints, including certified robustness and statistical learning theory.
+
+\section{Discussion: Mode preservation property and Randomized Smoothing}
+\label{sec:modepreservationendRS}
+
+Even though randomized classifiers have some interesting properties regarding generalization error, we can also study them through the prism of deterministic robustness. Let us for example consider the classifier that outputs the class with the highest probability for $m (x )$, \aka~the mode of $m (x )$. It writes
+\begin{equation}
+\label{eq:modeandRandomizedSmoothing}
+    \hypothesis_{\text{rob}}: x  \mapsto  \argmaxB\limits_{k \in [K]} m (x )_k
+\end{equation}
+
+Then checking whether $\hypothesis_{\text{rob}}$ is robust boils down to demonstrating that the mode of $m (x )$ does not change under perturbation. It turns out that $D_{TV}$ robust classifiers have this property. We call it the mode preservation property of $\mathcal{M}_{TV}(\varepsilon,\alpha)$.
+\begin{prop}[Mode preservation for $D_{TV}$-robust classifiers] 
+\label{prop:modepreservationforTV}
+Let $m  \in \mathcal{M}_{TV}\left(\varepsilon,\alpha\right)$ be a robust randomized classifier and $x  \in \mathcal{X}$ such that $m (x )_{(1)} \geq m (x )_{(2)} +2 \alpha$. Then, for any $\perturb \in \mathcal{X}$, the following holds,
+\begin{equation*}
+\norm{\perturb}_p \leq \varepsilon \implies \hypothesis_{\text{rob}}(x )  = \hypothesis_{\text{rob}}(x  + \perturb )\enspace.
+\end{equation*}
+\end{prop}
+
+\begin{proof}
+Let $x ,\perturb  \in \XX$ such that $\norm{\perturb}_p \leq \varepsilon$ and $m  \in \mathcal{M}_{TV}\left(\varepsilon,\alpha\right)$
+such that $$m (x )_{(1)} \geq m (x )_{(2)} +2\alpha.$$ By definition of $\mathcal{M}_{TV}\left(\varepsilon,\alpha\right)$, we have that $$D_{TV}(m (x ),m (x +\perturb))\leq\alpha.$$ Then, for all $k \in \{1, \dots, K\}$ we have $$m (x)_{k}-\alpha\leq m (x +\perturb)_{k}\leq m (x )_{k}+\alpha \equationspace.$$ 
+Let us denote $k^*$ the index of the biggest value in $m (x )$, \ie~$m (x )_{k^*} =m (x )_{(1)}$. For any $k\in \{1, \dots, K\}$ with $k \neq k^*$, we have $m (x )_{k^*} \geq m (x )_{k} + 2\alpha$. Finally, for any $k \neq k^*$, we get $$m (x +\perturb)_{k^*}\geq m (x )_{k^*}-\alpha\geq m (x )_{k}+\alpha\geq m (x +\perturb)_{k}.$$
+Then, $\argmaxB\limits_{k \in [K]}m (x )_{k}=\argmaxB\limits_{k \in [K]}m (x +\perturb)_{k}$. This concludes the proof.
+\end{proof}
+Similarly, we can demonstrate a mode preservation property for robust classifiers w.r.t. the Renyi divergence. 
+\begin{prop}[Mode preservation for Renyi-robust classifiers] Let $m  \in \mathcal{M}_{\beta}\left(\varepsilon,\alpha\right)$ be a robust randomized classifier and $x  \in \mathcal{X}$ such that  $$\left(m (x )_{(1) }\right)^{\frac{\beta}{\beta - 1}} \geq \exp\left( (2-\frac{1}{\beta}) \alpha \right) \left(m (x )_{(2)}\right)^{\frac{\beta-1}{\beta}}.$$ Then, for any $\perturb \in \mathcal{X}$, the following holds,
+\begin{equation*}
+\norm{\perturb}_p \leq \varepsilon \implies \hypothesis_{\text{rob}}(x ) = \hypothesis_{\text{rob}}(x  + \perturb), 
+\end{equation*}
+where $\hypothesis_{\text{rob}}(x ) := \argmaxB\limits_{k \in [K]}m (x )_{k}$.
+\end{prop}
+\begin{proof}
+Let $x , \perturb \in \XX$ such that  $\norm{\perturb}_p \leq \varepsilon$ and $m  \in \mathcal{M}_{\beta}\left(\varepsilon,\alpha \right)$ such that $$\left(m (x )_{(1)}\right)^{\frac{\beta}{\beta - 1}} \geq \exp\left( (2-\frac{1}{\beta})\alpha \right) \left(m (x )_{(2)}\right)^{\frac{\beta-1}{\beta}}.$$
+Then by definition of $ \mathcal{M}_{\beta}\left(\varepsilon,\alpha \right)$, we have $$D_{\beta}(m (x ),m ( x +\perturb)) \leq \alpha.$$ Furthermore, by using Proposition~\ref{prop::renyi}, for any $k \in \{1 ,\dots, K \}$ we have  $$ (*) m (x )_{k}\leq\left(\exp(\alpha)m (x +\perturb)_k\right)^{\frac{\beta-1}{\beta}}\text{ and } (**) m (x +\perturb)_{k}\leq\left(\exp(\alpha)m (x )_k\right)^{\frac{\beta-1}{\beta}} \equationspace.$$ 
+Let us denote $k^*$ the index such that $m (x )_{k^*} =m (x )_{(1)} $. Then using $(*)$ we get $$m (x +\perturb)_{k^*} \geq \exp(-\alpha)(m (x )_{k^*})^{\frac{\beta}{\beta-1}}.$$
+Furthermore for any $k \in \{1, \dots ,K\}$ where $k \neq k^*$, we can use the assumption we made on $m $ to get $$\exp(-\alpha)(m (x )_{k^*})^{\frac{\beta}{\beta-1}}\geq\exp(\frac{\beta-1}{\beta}\alpha)(m (x )_k)^{\frac{\beta-1}{\beta}}.$$
+Finally, using $(**)$ we have
+$$\exp(\frac{\beta-1}{\beta}\alpha)(m (x )_k)^{\frac{\beta-1}{\beta}} \geq m (x  + \perturb)_{k}.$$
+The above gives us $\argmaxB\limits_{k \in [K] }m (x )_{k}=\argmaxB\limits_{k \in [K] }m (x +\perturb)_{k}$. This concludes the proof.
+\end{proof}
+
+
+Coming back to the decomposition in Equation~\eqref{eq:decomposition}, with the above result, we can bound the risk the adversary induces with non-zero perturbations by the mass of points on which the classifier $\hypothesis_{\text{rob}}$ gives the good response but based on a low probability of success, \ie~with small confidence
+\begin{equation}
+\label{eq:premiseGeneralizationRandomizedSmoothing}
+    \risk^{>0}_\varepsilon(m ) \leq \PP_{(x ,y)\sim \PP} \left[ \hypothesis_{\text{rob}}(x )=y \emph{ and } m (x )_{(1)} < m (x )_{(2)} +2 \alpha \right]. 
+\end{equation}
+
+This means that the only points on which the adversary may induce misclassification are the points on which $m $ already has a high risk. Once more, this says something fundamental about the behavior of robust randomized classifiers. On undefended models, the adversary could change the decision on any point it wanted; now it is limited to changing points on which the classifier is already inaccurate. This considerably mitigates the threat model we should consider. Furthermore, for any deterministic classifier designed as in Equation~\eqref{eq:modeandRandomizedSmoothing}, we can also bound the maximal loss of accuracy under attack the classifier may suffer. This bound may, however, be harder to evaluate since it now depends on both the classifier and the dataset distribution. The classifier we define in Equation~\eqref{eq:modeandRandomizedSmoothing} and the mode preservation property of $m $ are closely related to provable defenses based on randomized smoothing. The core idea of randomized smoothing is to take a hypothesis $\hypothesis$ and to build a robust classifier that writes 
+\begin{equation}
+    c_{rob}: x  \mapsto \argmaxB\limits_{k \in [K]}\PP_{{z} \sim \mathcal{N}\left(0,\sigma^2 I\right)}\left[\hypothesis(x +{z}) = k\right]\equationspace.
+\end{equation}
+
+From a probabilistic point of view, for any input $x $, randomized smoothing amounts to output the most probable class of the probability measure $m (x ) := \hypothesis \# \mathcal{N}\left(x ,\sigma^2 I\right)$.
+Hence, randomized smoothing uses the mode preservation property of $m $ to build a provably robust (deterministic) classifier. Therefore, the above results (Proposition~\ref{prop:modepreservationforTV} and Equation~\ref{eq:premiseGeneralizationRandomizedSmoothing}) also hold for provable defenses based on randomized smoothing. Studying randomized smoothing from our point of view could give an interesting new perspective on that method. So far no results have been published on the generalisation gap of this defense in the adversarial setting. We could devise generalization bounds by similarity with our analysis. 
+Furthermore, the probabilistic interpretation stresses that randomized smoothing is somewhat restrictive since it only considers probability measures which are the expectation on a simple noise injection scheme.
+The mode preservation property explains the behavior of randomized smoothing, but also presents fundamental properties of randomized defenses that could be used to construct more general defense schemes. 
+
+
+\section{Numerical validations against $\ell_2$ adversary}
+\label{section::Experiments}
+
+To illustrate our findings, we train randomized neural networks with Gaussian pre-processing during training and inference on CIFAR-10 and CIFAR-100. Based on this randomized classifier, we study the impact of randomization on the standard accuracy of the network, and observe the theoretical trade-off between accuracy and robustness.
+
+
+\subsection{Architecture and training procedure}
+All the neural networks we use in this section are WideResNets~\citep{ZagoruykoK16} with $28$ layers, a widen factor of $10$, a dropout factor of $0.3$ and LeakyRelu activation with a $0.1$ slope. To train an undefended standard classifier we use the following hyper-parameters\footnote{Reusable code can be found in the following repository: \url{https://github.com/MILES-PSL/Adversarial-Robustness-Through-Randomization}}. 
+        \begin{itemize}
+            \item \textit{Number of Epochs:} 200
+            \item \textit{Batch size:} 400
+            \item \textit{Loss function:} Cross Entropy Loss
+            \item \textit{Optimizer :} Stochastic gradient descent algorithm with momentum $0.9$, weight decay of $2\times10^{-4}$ and a learning rate that decreases during the training as follows: 
+            \begin{align}
+                lr = \left\{
+                        \begin{matrix}
+                        &0.1 & \text{if} & 0 &\leq & \text{epoch} & <& 60\\
+                        &0.02 & \text{if} & 60 &\leq & \text{epoch} & <& 120\\
+                        &0.004 & \text{if} & 120 &\leq & \text{epoch} & <& 160\\
+                        &0.0008 & \text{if} & 160 &\leq & \text{epoch} & <& 200.\\
+                        \end{matrix} \notag
+                        \right.
+            \end{align}
+        \end{itemize}
+        
+
+To transform these standard networks into randomized classifiers, we inject noise drawn from Gaussian distributions, each with various standard deviations directly on the image before passing it through the network. Both during training and test, for computational efficiency, we evaluate the performance of the the algorithm over a single run for every images; hence no Monte Carlo estimator is used. However, in practice, the test-time accuracy is stable when evaluated over the entire test dataset.
+
+\subsection{Results}
+ 
+Figures~\ref{fig:GaussNoiseaccuracy} and~\ref{fig:GaussNoiseBound} show the accuracy and the minimum level of accuracy under attack of our randomized neural network for several levels of injected noise. We can see (Figure~\ref{fig:GaussNoiseaccuracy}) that the precision decreases as the noise intensity grows. In that sense, the noise must be calibrated to preserve both accuracy and robustness against adversarial attacks. This is to be expected, because the greater the entropy of the classifier, the less precise it gets.
+
+ \begin{figure}[!ht]
+\centering
+    \includegraphics[width=\textwidth]{sections/appendix/mlj_rando/images/AccuracyCIFAR10andCIFAR100Gauss.pdf}
+\caption{Impact of the standard deviation of the Gausian noise on accuracy in a randomized model on CIFAR-10 and CIFAR-100 dataset.}
+\label{fig:GaussNoiseaccuracy}
+\end{figure}
+
+
+Furthermore, when injecting Gaussian noise as a defense mechanism, the resulting randomized network $m $ is both $(\alpha_2, \frac{(\alpha_2)^2}{2 \sigma})$-robust \wrt~$D_1$ and $(\alpha_2,2 \Phi\left( \frac{\alpha_2}{2 \sigma} \right) - 1)$-robust \wrt~$D_{TV}$ against $\ell_2$ adversaries. Therefore thanks to thms~\ref{th:TVboundRisk} and~\ref{th:RenyiboundRisk} we have that
+\begin{align}
+    \risk_\varepsilon(m ) - \risk(m ) &\leq 2 \Phi\left( \frac{\alpha_2}{2 \sigma} \right) - 1, \text{\emph{ and}} \label{eq:boundTVriskgap}\\
+    \risk_\varepsilon(m ) - \risk(m ) &\leq 1-e^{-\frac{(\alpha_2)^2}{2 \sigma}} \mathbb{E}_{x  \sim \mathcal{D}_{\mid \XX}}\left[e^{-H(m (x ))}\right].\label{eq:boundRenyiriskgap}
+\end{align}
+
+\begin{figure}[!ht]
+\centering
+    \includegraphics[width=\textwidth]{sections/appendix/mlj_rando/images/MinimalAccuracyUnderAttackCIFAR10andCIFAR100Gauss.pdf}
+\caption{Guaranteed accuracy of different randomized models with Gaussian noise given the $\ell_2$ norm of the adversarial perturbations.}
+\label{fig:GaussNoiseBound}
+\end{figure}
+
+
+Figure~\ref{fig:GaussNoiseBound} illustrates the theoretical lower bound on accuracy under attack  (based on the minimum gap between Equations~\eqref{eq:boundTVriskgap} and~\eqref{eq:boundRenyiriskgap}) for different standard deviations. The term in entropy has been estimated using a Monte Carlo method with $10^4$ simulations. The trade-off between accuracy and robustness appears with respect to the noise intensity. With small noises, the accuracy is high, but the guaranteed accuracy drops fast with respect to the magnitude of the adversarial perturbation. Conversely, with bigger noises, the accuracy is lower but decreases slowly with respect to the magnitude of the adversarial perturbation. Overall, we get strong accuracy guarantees against small adversarial perturbations, but when the perturbation is bigger than $0.5$ on CIFAR-10 (resp. $0.3$ on CIFAR-100, the guarantees are still not sufficient). 
+
+
+\section{Lesson learned and future work}
+\label{section::conclusion}
+
+This paper brings new contributions to the theory of robustness to adversarial attacks. We provided an in depth analysis of randomized classifier, demonstrating their interest to defend against adversarial attacks. We first defined a notion of robustness for randomized classifiers using probability metrics/divergences, namely the total variation distance and the Renyi divergence. Second, we demonstrated that when a randomized classifier complies with this definition of robustness, we can bound their loss of accuracy under attack. We also studied the generalization properties of this class of functions and gave results indicating that robust randomized classifiers can generalize. Finally, we showed that randomized classifiers have a mode preservation property. This presents a fundamental property of randomized defenses that can be used to explain randomized smoothing from a probabilistic point of view.
+To support our theoretical findings we presented a simple yet efficient scheme for building robust randomized classifiers. We show that Gaussian noise injection can provide principled robustness against $\ell_2$ adversarial attacks. We ran a set of experiments on CIFAR-10 and CIFAR-100 using Gaussian noise injection with advanced neural network architectures to build accurate models with controlled loss of accuracy under attack.
+
+Future work will focus on studying the combination of randomization with more sophisticated defenses and on devising new tight bounds on the adversarial generalization and the adversarial risk gap of randomized classifiers. Based on the connections we established we randomized smoothing in Section~\ref{sec:modepreservationendRS}, we will also aim at devising bounds on the gap between the standard and adversarial risks for this defense. Another interesting direction would be to show that the classifiers based on randomized smoothing have a generalization gap similar to the classes of randomized classifiers we studied. 
+
+
+\section{Appendix: Proof of technical Lemmas}
+
+\subsection{Proof of Lemma~\ref{gaussRenyi}}
+
+\begin{proof}
+Let $\beta>1$. Let us denote $g$ and $g'$ respectively the probability density functions of $\rho$ and $\rho'$ with respect to the Lebesgue measure. We also set $x ' = x  + \perturb$ for readability. Then we have
+\begin{align*}
+D_\beta(\rho,\rho') &=\frac{1}{\beta-1}\log \mathbb{E}_{{z} \sim \rho'} \left[ \left(\frac{g({z}) }{g'({z})}\right)^\beta  \right ]\\
+ = & \frac{1}{\beta-1} \log \mathbb{E}_{{z} \sim \rho'} \Big[ \exp \Big(\frac{\beta}{2}\big(({z}-x ')^\intercal \Sigma^{-1}({z}-x ') - ({z}-x )^\intercal \Sigma^{-1}({z}-x ) \big) \Big) \Big]. \intertext{By change of variable we get}
+ = & \frac{1}{\beta-1}\log \mathbb{E}_{{z} \sim \mathcal{N}(0,\Sigma) }\left[ \exp\left(\frac{\beta}{2}\big({z}^\intercal\Sigma^{-1}{z}-({z}+\perturb)^\intercal \Sigma^{-1}({z}+\perturb) \big) \right) \right]\\
+ = &  \frac{1}{\beta-1} \log \mathbb{E}_{{z} \sim \mathcal{N}(0,\Sigma) }\left[ \exp\left(\frac{\beta}{2}\left(- 2{z}^\intercal\Sigma^{-1}\perturb- \norm{\perturb}_{\Sigma^{-1}}^2\right)\right) \right] \\
+ = &  \frac{1}{\beta-1} \log \int_{\mathbb{R}^d} \frac{\exp\left(-\frac{1}{2}{z}^\intercal\Sigma^{-1}{z} - \frac{\beta}{2}2{z}^\intercal\Sigma^{-1}\perturb -  \frac{\beta}{2}\norm{\perturb}_{\Sigma^{-1}}^2\right)}{(2 \pi)^d \det(\Sigma)^{d/2}} d{z} \equationspace.
+ \end{align*}
+ Furthermore, for any ${z} \in \mathbb{R}^d$, we have 
+ \begin{align*}
+ & -\frac{1}{2}{z}^\intercal\Sigma^{-1}{z} - \frac{\beta}{2}2{z}^\intercal\Sigma^{-1}\perturb -  \frac{\beta}{2}\norm{\perturb}_{\Sigma^{-1}}^2 \\
+ =& - \frac{1}{2}({z} + \beta\perturb)^\intercal\Sigma^{-1}({z} + \beta\perturb) + \frac{\beta^2 - \beta}{2} \norm{\perturb}_{\Sigma^{-1}}^2 \equationspace.
+ \end{align*}
+ Then we can re-write the Renyi divergence as follows
+ \begin{align*}
+ D_\beta(\rho,\rho') & = \frac{1}{\beta-1}\log \mathbb{E}_{{z} \sim \mathcal{N}(- \beta \perturb,\Sigma)} \left[\exp\left( \frac{\beta^2 - \beta}{2} \norm{\perturb}_{\Sigma^{-1}}^2 \right)\right]\\
+ & = \frac{1}{\beta-1}\log\left(\exp\left( \frac{\beta^2 - \beta}{2} \norm{\perturb}_{\Sigma^{-1}}^2 \right)\right)\\
+ & = \frac{ \beta }{2} \norm{\perturb}_{\Sigma^{- 1}}^2 \equationspace.
+\end{align*}
+
+This concludes the proof.
+\end{proof}
+
+\subsection{Proof of Lemma~\ref{gaussTV}}
+
+\begin{proof}
+ Let us denote $g$ and $g'$ respectively the probability density functions of $\rho$ and $\rho'$ with respect to the Lebesgue measure. Furthermore, we denote $x ' = x  + \perturb$. Then by definition of the total variation distance, we have  $D_{TV}(\rho,\rho)=\rho(Z)-\rho'(Z)$ with $Z=\{{z} \mid g({z})\geq g'({z})\}$. In our case $g({z})\geq g'({z})$ is equivalent to $$({z}-x ')^\intercal\Sigma^{-1}({z}-x ')-({z}-x )^\intercal\Sigma^{-1}({z}-x )\geq 0.$$
+Then with the same simplification as above, we have
+\begin{align*}
+\rho(Z)& = \PP_{ {z}\sim\mathcal{N}(x ,\Sigma)}\left(( {z}-x ')^\intercal\Sigma^{-1}( {z}-x ')-( {z}-x )^\intercal\Sigma^{-1}( {z}-x )\geq 0 \right)\\
+& =  \PP_{ {z}\sim\mathcal{N}(0,\Sigma)}\left(( {z}-\perturb)^\intercal\Sigma^{-1}( {z}-\perturb)- {z}^\intercal\Sigma^{-1} {z}\geq 0 \right)\\
+& = \PP_{ {z}\sim\mathcal{N}(0,\Sigma)}\left(-2 {z}^\intercal\Sigma^{-1}\perturb+\lVert \perturb\rVert _{\Sigma^{-1}}^2\geq 0 \right)\\
+&=\PP_{ {z}\sim\mathcal{N}(0,I_d)}\left( {z}^\intercal\Sigma^{-1/2}\perturb\leq\frac12 \lVert \perturb\rVert _{\Sigma^{-1}}^2\right). 
+\intertext{
+Furthermore, if $ {z}\sim \mathcal{N}(0,I_d)$ then $ {z}^\intercal\Sigma^{-1/2}\perturb\sim \mathcal{N}(0,\lVert \perturb\rVert _{\Sigma^{-1}}^2)$; hence we also have $\frac{{z}^\intercal\Sigma^{-1/2}\perturb}{\lVert \perturb\rVert _{\Sigma^{-1}} }\sim \mathcal{N}(0,1)$. Accordingly we get }
+\rho(Z) &= \PP_{{z}\sim\mathcal{N}(0,1)}\left( {z}\leq\frac12 \lVert \perturb\rVert _{\Sigma^{-1}} \right) = \Phi \left(\frac12 \lVert \perturb\rVert _{\Sigma^{-1}} \right).
+\end{align*}
+By symmetry we get that $\rho'(A)= 1-\rho(A) = 1-\Phi\left(\frac12 \lVert \perturb\rVert _{\Sigma^{-1}}\right)$. We then get
+$$D_{TV}(\mu,\nu) = 2\Phi\left(\frac{\lVert \perturb\rVert _{\Sigma^{-1}}}{2}\right)-1$$ 
+which concludes the proof.
+\end{proof}
+
+
+\section{Discussion on probability metrics}
+\label{appendix::discussion}
+
+As mentioned earlier in this paper, the choice of the metric/divergence is crucial as it characterizes the notion of adversarial robustness we are examining. We focus on the total variation distance and Renyi divergence, but the question of whether these metrics/divergences are more appropriate than others remains open. It should be noted, however, that our definition of robustness is monotonous depending on the metric/divergence we use.
+
+\begin{prop}[Monotonicity of the robustness]
+\label{th::PropimpliesRobustness}
+Let $m $ be a randomized classifier, and let  $D$ and $D'$ be two divergences/metrics on $\mathcal{M}^+_1(\YY)$.
+If there exists a non decreasing function $ f: \mathbb{R} \mapsto \mathbb{R}$ such that  $\forall \rho ,\rho' \in \mathcal{M}^+_1(\YY)$, $D(\rho  , \rho') \leq f(D'(\rho  , \rho')) $, then the following assertion holds. 
+$$m  \text{ is } (\varepsilon, \alpha)\textnormal{-robust \wrt~}D' \implies m  \text{ is } (\varepsilon, f(\alpha))\text{-robust \wrt~} D.$$
+\end{prop}
+ The proof straightforwardly comes from the definition of robustness.
+\begin{proof}
+Let us consider $m $ a randomized classifier $(\varepsilon, \alpha)$-robust \wrt~$ D'$. Then for any $x  \sim \PP$, and $\perturb\mid \norm{\perturb}_p \leq \varepsilon$, since $f$ is non decreasing, we have $$D(m (x ),m (x  +\perturb)) \leq f\left(D'(m (x ),m (x  +\perturb))\right) \leq f\left(\alpha\right).$$ 
+Then $m $ is  $(\varepsilon, f(\alpha))$-robust \wrt~$D$ which concludes the proof.
+\end{proof}
+
+The above result suggests that the different notions of robustness we might conceive are more related than they appear. Here are some of the most classical divergences used in machine learning. Let $\rho,\rho',\nu$ three measures in $\mathcal{M}^+_1(\YY)$. We denotes $g$ and $g'$ the probability density functions of $\rho$ and $\rho'$ with respect to $\nu$. Then we can define the \emph{Wasserstein distance} as follows 
+\begin{equation}
+        D_{W}(\rho  , \rho' ) := \inf\int_{\mathcal{Y}^{2}} \dist\left( y, y'\right) d\pi(y,y'),
+\end{equation}
+where $\dist$ is some ground distance on $\YY$, and the infimum is taken over all joint distributions $\pi$ in $\mathcal{M}^+_1\left( \mathcal{Y}\times\mathcal{Y} \right)$ with marginals $\rho$ and $\rho'$.  
+
+\begin{rmq}
+In transportation theory, the Wasserstein distance is solution of the Monge-Kantorovich problem with the cost function $c(y,y') = \dist(y,y')$. Then, the definitions of total variation and Wasserstein distance match when we use the trivial distance $\dist(y,y') = \mathds{1}\{y \neq y'\}$. 
+\end{rmq}
+
+We also define respectively the \emph{Hellinger distance} and the \emph{Separation distance} as follows.
+\begin{align}
+    & D_{H}(\rho  , \rho'):= \left[ \int_{\mathcal{Y}} \left(\sqrt{g} - \sqrt{g'} \right)^{2} d \nu \right]^{1/2}.\\
+    & D_{S}(\rho  , \rho'):= \sup\limits_{y \in \mathcal{Y}} \left( 1 - \frac{g(y)}{g'(y)} \right). 
+\end{align}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\textwidth]{sections/appendix/mlj_rando/images/DiagramProp67.pdf}
+    \caption{Summary of the relations between the different robustness notions from Propositions~\ref{prop:LinkTV-Wass} and~\ref{prop:LinkRenyiOthers}. }
+    \label{fig:Proposition67}
+\end{figure}
+
+If we take any of the above metrics/divergences to instantiate a notion of adversarial robustness we might get very different semantics for them. However, we can show that any of these definitions can be covered -- with respect to Proposition~\ref{th::PropimpliesRobustness} -- either by the Renyi or the total variation robustness. 
+Figure~\ref{fig:Proposition67} summarizes the links we can make between all these different definitions of robustness, and Propositions~\ref{prop:LinkTV-Wass} and~\ref{prop:LinkRenyiOthers} present the associated results. We can see that the total variation distance and the Renyi divergence are both central since they can cover any of the other robustness notions. This does not mean that they are more appropriate than the others, but at least they are general enough to cover a wide range of possible definitions.
+
+\begin{prop}
+\label{prop:LinkTV-Wass}
+Let $m $ be a randomized classifier. If $m $ is $(\varepsilon, \alpha)$-robust \wrt~$D_{TV}$ then the following assertions hold. 
+\begin{itemize}
+    \item $m $ is $\left(\varepsilon, \alpha \times Diam\left( \YY \right) \right)$-robust \wrt~$D_{W}$, where $Diam\left( \YY \right) := \max\limits_{y,y' \in \YY} \dist(y,y')$.
+     \item $m $ is $\left(\varepsilon, \sqrt{2 \alpha} \right)$-robust \wrt~$D_{H}$.
+\end{itemize} 
+\end{prop}
+\begin{proof}
+Let us consider $\rho$ and $\rho' \in \mathcal{M}^+_1\left(\YY\right)$. Thanks to~\cite{AGibbsMetrics2002} we have
+\begin{itemize}
+    \item $D_W(\rho,\rho') \leq Diam(\mathcal{Y}) D_{TV}(\rho,\rho')$.
+    \item $D_H(\rho,\rho') \leq  \sqrt{2 D_{TV}(\rho,\rho')}$.
+\end{itemize}
+Hence, by using Proposition~\ref{th::PropimpliesRobustness} respectively with $f: x \mapsto Diam(\mathcal{Y}) x$ and  $f: x \mapsto \sqrt{2x}$ we get the expected results.
+\end{proof}
+
+\begin{prop}
+\label{prop:LinkRenyiOthers}
+Let $m $ be a randomized classifier. If $m $ is $(\varepsilon, \alpha)$-robust \wrt~$D_{\beta}$ then the following assertions hold. 
+\begin{itemize}
+\item $m $ is $(\varepsilon, \alpha')$-robust \wrt~$D_{TV}$ with $\alpha' = \min \left(\frac{3}{2}\left(\sqrt{1 + \frac{4\alpha}{9}} - 1\right)^{1/2}, \frac{\exp(\alpha +1) -1}{\exp(\alpha +1) +1}\right)$.
+\item $m $ is $(\varepsilon, \sqrt{\alpha})$-robust \wrt~$D_H$.
+\item If $\beta =\infty$, then $m $ is $(\varepsilon, \alpha)$ robust \wrt~$D_S$.
+\end{itemize}
+\end{prop}
+
+\begin{proof}
+1) First, let us suppose that $\beta \geq 1$. Thanks to Proposition~\ref{prop:Inequality-TV-Renyi} and to~\citep{AGibbsMetrics2002}, for any $\rho, \rho' \in \mathcal{M}^+_1\left( \YY \right)$ we have
+\begin{itemize}
+\item $D_H(\rho,\rho') \leq \sqrt{ D_{1}(\rho,\rho') } \leq \sqrt{ D_{\beta}(\rho,\rho') } $ \quad \text{(see~\cite{AGibbsMetrics2002})}.
+\item $D_{TV}(\rho,\rho') \leq \min \left(\frac{3}{2}\left(\sqrt{1 + \frac{4D_{\beta}(\rho,\rho') }{9}} - 1\right)^{1/2}, \frac{\exp(D_{\beta}(\rho,\rho')  +1) -1}{\exp(D_{\beta}(\rho,\rho')  +1) +1}\right)$ \text{(Prop.~\ref{prop:Inequality-TV-Renyi})}.
+\end{itemize}
+Hence, by using Proposition~\ref{th::PropimpliesRobustness}, as above, we get the expected results.  
+
+\noindent 2) Now let us suppose that $\beta = \infty$. By definition of the supremum divergence, we have $$
+D_{\infty}(\rho,\rho') = \sup_{B \subset \mathcal{Y}} \ \left \vert \ln\frac{\rho(B)}{\rho'(B)}\right \vert.$$
+Furthermore, note that the function $x \mapsto  1-x - \left \vert \ln(x)\right \vert $ is negative on $\mathbb{R}$, therefore for any $y \in \mathcal{Y}$ one has $$1-\frac{\rho(y)}{\rho'(y)} \leq \left  \vert \ln\frac{\rho(y)}{\rho'(y)}\right \vert .$$ 
+Since the above inequality is true for any $y \in \YY$, we have $$D_S\left(\rho,\rho'\right) = \sup_{y \in \mathcal{Y}}\left(1-\frac{\rho(y)}{\rho'(y)} \right) \leq \sup_{y \in \mathcal{Y}}\left \vert \ln\frac{\rho(y)}{\rho'(y)}\right \vert \leq \sup_{B \subset \mathcal{Y} }\left \vert \ln\frac{\rho(B)}{\rho'(B)}\right \vert = D_{\infty}(\rho,\rho').$$ 
+Finally, by using Proposition~\ref{th::PropimpliesRobustness} with $f: x \mapsto x$ we get the expected results.
+\end{proof}
+
+

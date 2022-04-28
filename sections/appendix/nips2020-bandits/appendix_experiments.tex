@@ -1,5 +1,5 @@
 % !TEX root = main.tex
-\section{Experiments}
+\section{Appendix: Experiments}
 
 \subsection{Datasets and preprocessing}\label{app:experiments_setup}
 % \todoe{This section also explain how we preprocessed the real-wolrd datasets too.}
@@ -15,12 +15,11 @@ The second type of experiments is conducted in the real-world datasets Jester \c
 \subsection{Attacks on Rewards}\label{app:additional_fig_rwds}
 In this appendix, we present empirical evolution of the total cost and the number of draws for a unique target arm as a function of the attack parameter $\gamma$ for the Contextual ACE attack with perturbed rewards $\tilde{r}^{2}$ on generated data.
 
-\begin{figure}[htbp]
+\begin{figure}[h]
     \centering
-    \subfigure[Total cost]{\includegraphics[width=0.35\textwidth]{sections/appendix/nips2020-bandits/images/attack_reward/simulations/cost_epsilon.pdf}}
-    \subfigure[Number of draws]{\includegraphics[width=0.3\textwidth]{sections/appendix/nips2020-bandits/images/attack_reward/simulations/draws_epsilon.pdf}}
-    \caption{Total cost of attacks and number of draws of the target arm at $T = 10^{6}$ as a function of $\gamma$ on synthetic data     \label{fig:synth_cost_draws_gamma}
-}
+    \includegraphics[width=0.35\textwidth]{sections/appendix/nips2020-bandits/images/attack_reward/simulations/cost_epsilon.pdf}
+    \includegraphics[width=0.3\textwidth]{sections/appendix/nips2020-bandits/images/attack_reward/simulations/draws_epsilon.pdf}
+    \caption{Total cost of attacks and number of draws of the target arm at $T = 10^{6}$ as a function of $\gamma$ on synthetic data     \label{fig:synth_cost_draws_gamma}}
 \end{figure}
 
 Fig.~\ref{fig:synth_cost_draws_gamma} (left) shows that the total cost of attacks seems to be quite invariant w.r.t.  $\gamma$ except when $\gamma \rightarrow 0$ because the difference between the target arm and the other becomes negligible. This is also depicted by the total number of draws (Fig.~\ref{fig:synth_cost_draws_gamma}, Right) as the number of draws plummets when $\gamma \rightarrow 0$.
@@ -52,16 +51,7 @@ Stationary CACE \expfour &     $993, 673.24$ &  $988, 463.56$ &   $934, 304.23$ 
 
 \subsection{Attacks on all Contexts}\label{app:additional_fig_all_ctx}
 
-% \begin{figure}[h]
-%     \centering
-%     \subfigure[Synthetic data]{\includegraphics[width=0.33\textwidth]{images/all_context_3_alg_sim/gen_cost_all.pdf}}\hfill
-%     \subfigure[Jester Dataset]{\includegraphics[width=0.23\textwidth]{images/all_contexts_3_algs_jester/gen_jester_cost_all.pdf}}\hfill
-%     \subfigure[MovieLens Dataset]{\includegraphics[width=0.23\textwidth]{images/all_contexts_3_alg_movielens/gen_movielens_cost_all.pdf}}
-%     \caption{Total cost of the attacks for the attack of Sec.~\ref{sec:attack_all_context} on our synthetic dataset, Jester and MovieLens}
-%     \label{fig:cost_all_algs_attack_all_ctx}
-% \end{figure}
 
-% Fig.~\ref{fig:cost_all_algs_attack_all_ctx} shows the total cost for all the attacks (that is to say including CC \lints and CC$20$ \lints compared to Fig~\ref{fig:costs_plot} (Right)). This figure shows that even though the total cost of attacks is linear for the synthetic and Jester dataset, it seems that for MovieLens the attacker achieves their goal with a logarithmic total. Therefore, despite the fact that the estimate of $\theta_{a^\dagger}$ can be polluted by attacked samples, it seems that \lints can still pick up $a^{\dagger}$ as being optimal for this particular instance.
 
 \begin{figure}[ht]
     \label{fig:regret_all_algs_attack_all_ctx}
@@ -96,10 +86,10 @@ The attacks are computed by solving the optimization problems \ref{eq:attack_one
 For Problem \eqref{eq:attack_one_user} we use the \textsc{SLSQP} method from the Scipy optimize library \cite{scipy} to solve the full \linucb problem (Equation \ref{eq:attack_one_user}) and \textsc{quadprog} to solve the quadratic problem to attack \epsgreedy.
 
 
-\begin{figure}[htbp]
+\begin{figure}[ht]
     \centering
-    \subfigure[Synthetic data]{\includegraphics[width=0.33\textwidth]{sections/appendix/nips2020-bandits/images/one_context/simulations/standalone.pdf}}\hfill
-    \subfigure[Jester Dataset]{\includegraphics[width=0.33\textwidth]{sections/appendix/nips2020-bandits/images/one_context/jester/standalone.pdf}}\hfill
-    \subfigure[MovieLens Dataset]{\includegraphics[width=0.33\textwidth]{sections/appendix/nips2020-bandits/images/one_context/movielens/standalone.pdf}}
-    \caption{Total cost of the attacks for the attacks one one context on our synthetic dataset, Jester and MovieLens. As expected, the total cost is linear.     \label{fig:cost_attack_one_ctx}}
+    \includegraphics[width=0.33\textwidth]{sections/appendix/nips2020-bandits/images/one_context/simulations/standalone.pdf}\hfill
+    \includegraphics[width=0.33\textwidth]{sections/appendix/nips2020-bandits/images/one_context/jester/standalone.pdf}\hfill
+    \includegraphics[width=0.33\textwidth]{sections/appendix/nips2020-bandits/images/one_context/movielens/standalone.pdf}
+    \caption{Total cost of the attacks for the attacks one one context on respectively our synthetic dataset, Jester and MovieLens. As expected, the total cost is linear.     \label{fig:cost_attack_one_ctx}}
 \end{figure}

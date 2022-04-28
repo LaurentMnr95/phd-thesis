@@ -1,0 +1,383 @@
+\section{A new $\ell^p$ kernel-based testing procedure}
+% {\color{red} This should be defined in the introduction.} A conditional independence test is a statistical test testing whether $X$ is independent of $Y$ given $Z$ given samples $(x_i,y_i,z_i)_{i=1}^n$ i.i.d. samples from the joint distribution $P_{XYZ}$ . In other words, we aim to test the following hypothesis:
+% \begin{align*}
+%     H_0:~ X\perp Y | Z\qquad\text{v.s.}\qquad H_1:X\not\perp Y | Z.
+% \end{align*}
+In this section, we present our statistical procedure to test for conditional independence. We begin by introducing a general measure based on the $\ell^p$ distance $d_p$ between mean embeddings which characterizes the conditional independence. We derive an oracle test statistic for which we obtain its asymptotic distribution under both the null and alternative hypothesis. Then, we provide an efficient procedure to effectively compute an approximation of our oracle statistic and show that it has the exact same asymptotic distribution. To avoid any bootstrap or permutation procedures, we offer a normalized version of our statistic and derive a simple and consistent test from it.
+% We accelerate the computational scheme of our proposed method by using a random Fourier features approximation. 
+% In addition, we explain the proposed procedure in order to determine the hyperparameters involved in the statistic.
+
+% We denote the null hypothesis $H_0:~ X\perp Y | Z$ and $H_1:X\not\perp Y | Z$ the alternative hypothesis.
+% Since $d_{L^{p},k,J}$ is a random metric, it holds that
+% $d_{L^{p},k,J}^p(P_{X,Y},P_X\otimes P_Y)=0$ $\Gamma$-almost surely, if and only if  $X\perp Y$.
+
+\subsection{Conditional Independence Criterion}
+Let us first introduce the criterion we use to define our statistical test. We define a probability measure $P_{\ddot{X}\otimes Y|Z}$ on $\mathcal{\ddot{X}}\times\mathcal{Y}$ as
+\begin{align*}
+P_{\ddot{X}\otimes Y|Z}(A\times B):=\mathbb{E}_{Z}\left[\mathbb{E}_{\ddot{X}|Z}[\mathbf{1}_A|Z]\mathbb{E}_{Y|Z}[\mathbf{1}_B|Z]\right],
+\end{align*}
+for any $(A,B)\in\mathcal{B}(\mathcal{\ddot{X}})\times\mathcal{B}(\mathcal{Y})$, where $\mathbf{1}_A$ is the characteristic function of a measurable set $A$ and similarly for $B$. One now characterize the independence of $X$ and $Y$ given $Z$ as follows:  $X\perp Y | Z$ if and only if $P_{XZY}=P_{\ddot{X}\otimes Y|Z}$~\citep[Theorem 8]{fukumizu2004dimensionality}. Therefore, we have a first simple characterization of the conditional independence: $X\perp Y | Z$ if and only if $d_{p}(P_{XZY},P_{\ddot{X}\otimes Y|Z})=0$. With this in place, we now state some assumptions on the kernel $k$ considered in the rest of this paper.
+
+\begin{assump}
+\label{assump-kernel}
+ The kernel $k : (\mathcal{\ddot{X}}\times \mathcal{Y})\times (\mathcal{\ddot{X}}\times \mathcal{Y}) \rightarrow \mathbb{R}$ is definite positive, characteristic, bounded, continuous and analytic. Moreover, the kernel $k$ is a tensor product of kernels $k_{\ddot{\mathcal{X}}}$ and $k_\mathcal{Y}$ on $\mathcal{\ddot{X}}$ and $\mathcal{Y}$, respectively.
+\end{assump}
+It is worth noting that a sufficient condition for the kernel $k$ to be characteristic, bounded, continuous and analytic, is that both kernels $k_{\mathcal{\ddot{X}}}$ and $k_{\mathcal{Y}}$ are characteristic, bounded, continuous and analytic~\citep{szabo2018characteristic}. For example, if the kernels $k_\mathcal{\ddot{X}}$ and $k_\mathcal{Y}$ are Gaussian kernels\footnote{A gaussian kernel $K$ on $\mathcal{W}\subset\mathbb{R}^d$ satisfies for all $w,w'\in\mathcal{W}$, $K(w,w'):=\exp\left(\frac{\Vert w - w'\Vert_2^2}{2\sigma^2}\right).$} on $\mathcal{\ddot{X}}$ and $\mathcal{Y}$ respectively, then $k=k_\mathcal{\ddot{X}}\otimes k_\mathcal{Y}$ satisfies Assumption~\ref{assump-kernel}~\citep{jitkrittum2017adaptive}. Using the analyticity of the kernel $k$, one can work with $d_{p,J}$ defined in~\eqref{eq-dlp_J} instead of $d_{p}$ to characterize the conditional independence.
+\begin{prop}
+Let $p\geq 1$, $J\geq 1$, $k$ be a kernel satisfying Assumption~\ref{assump-kernel}, $\Gamma$ an absolutely continuous Borel probability measure on $\mathcal{\ddot{X}}\times\mathcal{Y}$, and $\{(\mathbf{t}^{(1)}_j,t^{(2)}_j)\}_{j=1}^J$ sampled independently from $\Gamma$. Then $\Gamma$-almost surely, $d_{p,J}(P_{XZY},P_{\ddot{X}\otimes Y|Z})=0$ if and only if $X\perp Y | Z$.
+\end{prop}
+\begin{proof}
+Recall that $X\perp Y | Z$ if and only if $P_{XZY}=P_{\ddot{X}\otimes Y|Z}$~\citep{fukumizu2008kernel}. If $k$ is bounded, characteristic, and analytic, then, by invoking~\citep[Theorem 4]{NEURIPS2019_0e2db0cb} we get that $d_{p,J}^p$ is a random metric on the space of Borel probability measures. This concludes the proof.
+\end{proof}
+The key advantage of using $d_{p,J}(P_{XZY},P_{\ddot{X}\otimes Y|Z})$ to measure the conditional dependence is that it only requires to compute the differences between the mean embeddings of $P_{XZY}$ and $P_{\ddot{X}\otimes Y|Z}$ at $J$ locations. In what follows, we derive from it a first oracle test statistic for conditional independence.
+
+
+
+\subsection{A First Oracle Test Statistic}
+When the kernel $k$ considered satisfies Assumption~\ref{assump-kernel}, we can obtain a simple expression of our measure $d_{p,J}(P_{XZY},P_{\ddot{X}\otimes Y|Z})$. Indeed, the tensor formulation of the kernel $k$ allows us to write the mean embedding of $P_{\ddot{X}\otimes Y|Z}$ for any $(\mathbf{t}^{(1)},t^{(2)})\in\mathcal{\ddot{X}}\times\mathcal{Y}$ as:
+\begin{equation}
+\begin{aligned}
+\label{eq-ME-tensor-cond}
+    \mu&_{P_{\ddot{X}\otimes Y|Z},k_{\mathcal{\ddot{X}}}\cdot k_{\mathcal{Y}}}(\mathbf{t}^{(1)},t^{(2)})=\\
+    &\mathbb{E}_{Z}\left[\mathbb{E}_{\ddot{X}}\left[k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)},\ddot{X})|Z\right]
+    \mathbb{E}_{Y}\left[k_{\mathcal{Y}}(t^{(2)},Y)|Z\right] \right]\; .
+\end{aligned}
+\end{equation}
+
+% \begin{equation}
+% \label{eq-ME-tensor-cond}
+%     \mu_{P_{\ddot{X}\otimes Y|Z},k_{\mathcal{\ddot{X}}}\cdot k_{\mathcal{Y}}}(\mathbf{t}^{(1)},t^{(2)})=
+%     \mathbb{E}_{Z}\left[\mathbb{E}_{\ddot{X}}\left[k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)},\ddot{X})|Z\right]
+%     \mathbb{E}_{Y}\left[k_{\mathcal{Y}}(t^{(2)},Y)|Z\right] \right].
+% \end{equation}
+Then, by defining the witness function as
+\begin{align*}
+    \Delta(\mathbf{t}^{(1)},t^{(2)}) :=\mathbb{E}&\left[\left(k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)},\ddot{X})- \mathbb{E}_{\ddot{X}}\left[k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)},\ddot{X})|Z\right]\right)\right. \\
+    &\times\left.\left(k_{\mathcal{Y}}(t^{(2)},Y)- \mathbb{E}_{Y}\left[k_{\mathcal{Y}}(t^{(2)},Y)|Z\right]\right)\right],
+\end{align*}
+% \begin{align*}
+%     \mu(\mathbf{t}^{(1)},t^{(2)}) :=\mathbb{E}&\left[\left(k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)},\ddot{X})- \mathbb{E}_{\ddot{X}}\left[k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)},\ddot{X})|Z\right]\right)\left(k_{\mathcal{Y}}(t^{(2)},Y)- \mathbb{E}_{Y}\left[k_{\mathcal{Y}}(t^{(2)},Y)|Z\right]\right)\right],
+% \end{align*}
+
+and by considering $\{(\mathbf{t}^{(1)}_j,t^{(2)}_j)\}_{j=1}^J$ sampled independently according to $\Gamma$, we get that (see Appendix~\ref{form-witness} for more details)
+$$ d_{p,J} (P_{XZY},P_{\ddot{X}\otimes Y|Z})=\left[\frac{1}{J}\sum_{j=1}^J \left|\Delta(\mathbf{t}^{(1)}_j,t^{(2)}_j)\right|^p\right]^{1/p}.$$
+% \begin{align*}
+% \label{eq-measure-true}
+%     d_{p,J} (P_{XZY},P_{\ddot{X}\otimes Y|Z})=\left[\frac{1}{J}\sum_{j=1}^J \left|\mu(\mathbf{t}^{(1)}_j,t^{(2)}_j)\right|^p\right]^{1/p}
+% \end{align*}
+
+% Let us first introduce the following witness function defined for all $(\mathbf{t}^{(1)},t^{(2)})\in\mathcal{\ddot{X}}\times\mathcal{Y}$ as the difference of the two mean embeddings of interest:
+% \begin{align*}
+%      \mu(\mathbf{t}^{(1)},t^{(2)})&:=\mu_{P_{XZY},k}(\mathbf{t}^{(1)},t^{(2)}) -\mu_{P_{\ddot{X}\otimes Y|Z},k}(\mathbf{t}^{(1)},t^{(2)}).
+% \end{align*}
+% where $\mu_{P_{XZY},k}$ and $\mu_{P_{\ddot{X}\otimes Y|Z},k}$ are respectively the mean embeddings of $P_{XZY}$ and $P_{\ddot{X}\otimes Y|Z}$. Then the random $L^p$ metric can be written as
+% \begin{align*}
+%     d_{L^{p},k,J}^p (P_{XZY},P_{\ddot{X}\otimes Y|Z})=\left(\frac{1}{J}\sum_{j=1}^J \left|\mu(\mathbf{t}^{(1)}_j,t^{(2)}_j)\right|^p\right)^{1/p}
+% \end{align*}
+% where $\{(\mathbf{t}^{(1)}_j,t^{(2)}_j)\}_{j=1}^J$ are sampled independently according to $\Gamma$. In fact, as the kernel $k$ considered is a tensor-product kernel between two kernels $k_{\mathcal{\ddot{X}}}$ and $k_{\mathcal{Y}}$ on respectively $\mathcal{\ddot{X}}$ and $\mathcal{Y}$, we have a simple expression of the witness function. Indeed, in that case the mean embedding of $P_{\ddot{X}\otimes Y|Z}$ with this choice of kernel can be expressed simply for any $(\mathbf{t}^{(1)},t^{(2)})\in\mathcal{\ddot{X}}\times\mathcal{Y}$ as
+% \begin{equation}
+% \begin{aligned}
+% \label{eq-ME-tensor-cond}
+%     &\mu_{P_{\ddot{X}\otimes Y|Z},k_{\mathcal{\ddot{X}}}\cdot k_{\mathcal{Y}}}(\mathbf{t}^{(1)},t^{(2)})=\\
+%     &\mathbb{E}_{Z}\left[\mathbb{E}_{\ddot{X}}\left[k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)},\ddot{X})|Z\right]
+%     \mathbb{E}_{Y}\left[k_{\mathcal{Y}}(t^{(2)},Y)|Z\right] \right].
+% \end{aligned}
+% \end{equation}
+
+% Therefore, under Assumption~\ref{assump-kernel}, the witness function is given by
+% \begin{align*}
+%     \mu(\mathbf{t}^{(1)},t^{(2)}) =\mathbb{E}&\left[\left(k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)},\ddot{X})- \mathbb{E}_{\ddot{X}}\left[k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)},\ddot{X})|Z\right]\right) \right. \\
+%     &\left. \left(k_{\mathcal{Y}}(t^{(2)},Y)- \mathbb{E}_{Y}\left[k_{\mathcal{Y}}(t^{(2)},Y)|Z\right]\right)\right].
+% \end{align*}
+
+% In the following we assume that the kernel $k$ is a tensor-product kernel between two kernels $k_{\mathcal{\ddot{X}}}$ and $k_{\mathcal{Y}}$ on respectively $\mathcal{\ddot{X}}$ and $\mathcal{Y}$ which satisfy Assumption~\ref{assump-kernel}. 
+% \begin{example}
+% Explain that the tensor product of three gaussian kernel satysfies Assumption~\ref{assump-kernel} and it is a tensor-product kernel. CITE JITT
+% \end{example}
+
+\textbf{Estimation.} Given $n$ observations $\{(x_i,z_i,y_i)\}_{i=1}^n$ that are drawn independently from $P_{XZY}$, we aim at obtaining an estimator of $ d_{p,J}^p (P_{XZY},P_{\ddot{X}\otimes Y|Z})$.
+% As we have access to samples of the distribution $P_{XZY}$, we can derive a simple estimator of its mean embedding such that for any $(\mathbf{t}^{(1)},t^{(2)})\in\mathcal{\ddot{X}}\times\mathcal{Y}$
+% \begin{align*}
+%     \mu_{\widehat{P}_{XZY},k}(\mathbf{t}^{(1)},t^{(2)})=\frac{1}{n}\sum_{i=1}^n k((\mathbf{t}^{(1)},t^{(2)}),(x_i,z_i,y_i)).
+% \end{align*}
+% However we do not have access to samples from the distribution $P_{\ddot{X}\otimes Y|Z}$ and therefore such estimator cannot be used to obtain an estimation of the mean embedding of the distribution $P_{\ddot{X}\otimes Y|Z}$. 
+% But when the kernel $k$ considered is a tensor-product kernel between two kernels $k_{\mathcal{\ddot{X}}}$ and $k_{\mathcal{Y}}$ on respectively $\mathcal{\ddot{X}}$ and $\mathcal{Y}$, then the mean embedding of $P_{\ddot{X}\otimes Y|Z}$ according to this kernel can be expressed simply for any $(\mathbf{t}^{(1)},t^{(2)})\in\mathcal{\ddot{X}}\times\mathcal{Y}$ as
+% \begin{equation}
+% \begin{aligned}
+% \label{eq-ME-tensor-cond}
+%     &\mu_{P_{\ddot{X}\otimes Y|Z},k_{\mathcal{\ddot{X}}}\cdot k_{\mathcal{Y}}}(\mathbf{t}^{(1)},t^{(2)})=\\
+%     &\mathbb{E}_{Z}\left[\mathbb{E}_{\ddot{X}}\left[k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)},\ddot{X})|Z\right]
+%     \mathbb{E}_{Y}\left[k_{\mathcal{Y}}(t^{(2)},Y)|Z\right] \right]
+% \end{aligned}
+% \end{equation}
+% Therefore thanks to the formulation of the mean embedding given in Eq~(\ref{eq-ME-tensor-cond}), we can obtain a first unbiased estimator defined as
+% \begin{align*}
+%      &\widehat{\mu}_{P_{\ddot{X}\otimes Y|Z},k_{\mathcal{\ddot{X}}}\cdot k_{\mathcal{Y}}}(\mathbf{t}^{(1)},t^{(2)})
+%     :=\\ 
+%      &\frac{1}{n}\sum_{i=1}^n \mathbb{E}_{\ddot{X}}\left[k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)},\ddot{X})|Z=z_i\right]
+%     \mathbb{E}_{Y}\left[k_{\mathcal{Y}}(t^{(2)},Y)|Z=z_i\right]
+% \end{align*}
+% In practice this estimator cannot be computed as it requires to compute the conditional expectancy. 
+To do so, we introduce the following estimate of $\Delta(\mathbf{t}^{(1)},t^{(2)})$, defined as
+\begin{align*}
+ \Delta_{n}(\mathbf{t}^{(1)},t^{(2)}):=\frac{1}{n}\sum_{i=1}^n & \left(k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)},\ddot{x}_i)- \mathbb{E}\left[k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)},\ddot{X})|z_i\right]\right)\\
+\times&\left(k_{\mathcal{Y}}(t^{(2)},y_i)- \mathbb{E}\left[k_{\mathcal{Y}}(t^{(2)},Y)|z_i\right]\right).
+\end{align*} 
+With this in place, a natural candidate to estimate $d_{p,J}^p (P_{XZY},P_{\ddot{X}\otimes Y|Z})$ (up to the constant $J$) can be expressed as
+\begin{align*}
+\text{CI}_{n,p}&:=\sum_{j=1}^J \left|  \Delta_{n}(\mathbf{t}^{(1)}_j,t^{(2)}_j)\right|^p,
+\end{align*}
+where $(\mathbf{t}^{(1)}_1,t^{(2)}_1),\dots,(\mathbf{t}^{(1)}_J,t^{(2)}_J)\in\mathcal{\ddot{X}}\times\mathcal{Y}$ are sampled independently from $\Gamma$.
+
+We now turn to derive the asymptotic distribution of this statistic. For that purpose, define, for all $j\in\{1,\dots,J\}$ and $i\in\{1,\dots,n\}$,
+\begin{align*}
+    u_i(j):=&\left(k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)}_j,\ddot{x}_i)- \mathbb{E}_{\ddot{X}}\left[k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)}_j,\ddot{X})|Z=z_i\right]\right) \\&\times\left(k_{\mathcal{Y}}(t^{(2)}_j,y_i)- \mathbb{E}_{Y}\left[k_{\mathcal{Y}}(t^{(2)}_j,Y)|Z=z_i\right]\right),
+\end{align*}
+$\mathbf{u}_i:=(u_i(1),\dots,u_i(J))^T$  and $\bm{\Sigma}:=\mathbb{E}(\mathbf{u}_1\mathbf{u}_1^T)$. We also denote by $\mathbf{S}_{n}:=\frac{1}{n}\sum_{i=1}^n \mathbf{u}_{i}$. Observe that $\text{CI}_{n,p}=\lVert\mathbf{S}_{n}\rVert_p^p$. In the following proposition we obtain the asymptotic distribution of our statistic $\text{CI}_{n,p}$.
+\begin{prop}
+\label{prop:oracle-law}
+Suppose that Assumption~\ref{assump-kernel} is verified. Let $p\geq 1$, $J\geq 1$ and $((\mathbf{t}^{(1)}_1,t^{(2)}_1),\dots,(\mathbf{t}^{(1)}_J,t^{(2)}_J))\in(\mathcal{\ddot{X}}\times\mathcal{Y})$. Then, under $H_0$, we have: $\sqrt{n}\mathbf{S}_{n}\rightarrow \mathcal{N}(0,\bm{\Sigma})$. Moreover, under $H_1$, if $((\mathbf{t}^{(1)}_j,t^{(2)}_j))_{j=1}^J$ are sampled independently according to $\Gamma$, then $\Gamma$-almost surely, for any $q\in\mathbb{R}$, $\lim_{n\rightarrow\infty}P( n^{p/2}\emph{CI}_{n,p} \geq q)=1$.
+\end{prop}
+
+
+\begin{proof}
+Recall that $\mathbf{S}_n = \frac1n\sum_{i=1}^n\mathbf{u}_i$ where $\mathbf{u}_i$ are i.i.d. samples.  Under $H_0$, $\mathbb{E}\left[\mathbf{u}_i\right]=0$. Using the Central Limit Theorem, we get: $\sqrt{n}\mathbf{S}_n\to\mathcal{N}(0,\bm{\Sigma})$. Using the analyticity of the kernel $k$, under $H_1$, $\Gamma$-almost surely, there exists a $j\in\{1,\dots,J\}$ such that $\mathbb{E}\left[u_1(j)\right]\neq 0$. Therefore, we can deduce that $\Gamma$-almost surely, $\mathbf{S}:=\mathbb{E}\left[\mathbf{u_1}\right]\neq 0$. Now, for all $q>0$, we get: $P(n^{p/2}\text{CI}_{n,p}>q)\to 1$ because $\text{CI}_{n,p}\to\lVert\mathbf{S}\rVert_p^p $  when $n\to\infty$.
+\end{proof}
+
+From the above proposition, we can define a consistent statistical test at level $0<\alpha<1$, by rejecting the null hypothesis if $n^{p/2}\text{CI}_{n,p}$ is larger than the $(1-\alpha)$ quantile of the asymptotic null distribution, which is the law associated with $\Vert X\Vert_p^p$, where $X$ follows the multivariate normal distribution $\mathcal{N}(0,\bm{\Sigma})$. However, in practice, $\text{CI}_{n,p}$ cannot be computed as it requires the access to samples from the conditional means involved in the statistic, namely $\mathbb{E}_{\ddot{X}}\left[k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)}_j,\ddot{X})|Z\right]$ and $\mathbb{E}_{Y}\left[k_{\mathcal{Y}}(t^{(2)}_j,Y)|Z\right]$ for all $j\in\{1,\dots,J\}$, which are unknown. Below, we show how to estimate these conditional means by using Regularized Least-Squares~(RLS) estimators. 
+% In the next section, we prove that the result of Proposition~\ref{prop:oracle-law} still holds for the RLS estimate under some {\color{red} [regularity?]} assumptions.
+
+
+% We will focus on that in the next section. Let define the following statistic: 
+% \begin{align*}
+%     \text{CI}_{n,p}&:=\frac{1}{J}\sum_{j=1}^J \left|  \widehat{\mu}_{\text{w}}(\mathbf{t}^{(1)}_j,t^{(2)}_j)\right|^p
+% \end{align*}
+
+% ADD PROPOSITION FOR CI
+\subsection{Approximation of the Test Statistic}
+ 
+Our goal here is to estimate $\mathbb{E}_{\ddot{X}}\left[k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)}_j,\ddot{X})|Z=\cdot\right]$ and $\mathbb{E}_{Y}\left[k_{\mathcal{Y}}(t^{(2)}_j,Y)|Z=\cdot\right]$ for all $j\in\{1,\dots,J\}$ in order to effectively approximate of our statistic. To do so, we consider kernel-based regularized least squares (RLS) estimators. Let $1 \leq r\leq n$ and $\{(x_i,z_i,y_i)\}_{i=1}^r$ be a subset of $r$ samples. Let also $j\in\{1,\dots,J\}$, and denote by $H_{\mathcal{Z}}^{1,j}$ and $H_{\mathcal{Z}}^{2,j}$ two separable RKHSs on $\mathcal{Z}$. Denote also by $k_{\mathcal{Z}}^{1,j}$ and $k_{\mathcal{Z}}^{2,j}$ their associated kernels and $\lambda^{(1)}_{j,r},~ \lambda^{(2)}_{j,r}>0$ the regularization parameters involved in the RLS regressions. Then, the RLS estimators are the unique solutions of the following problems:
+\begin{align*}
+ &\min_{h\in H_{\mathcal{Z}}^{2,j}}\frac{1}{r}\sum_{i=1}^r \left(h(z_i) -  k_{\mathcal{Y}}(t^{(2)}_j,y_i)\right)^2 +\lambda^{(2)}_{j,r}\Vert h\Vert_{H_{\mathcal{Z}}^{2,j}}^2\; \text{and}\\
+% \label{eq-RLS-1}
+    &\min_{h\in H_{\mathcal{Z}}^{1,j}}\frac{1}{r} \sum_{i=1}^r\left(h(z_i) -  k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)}_j,(x_i,z_i))\right)^2 +\lambda^{(1)}_{j,r}\Vert h\Vert_{H_{\mathcal{Z}}^{1,j}}^2,
+% \end{align*}
+% and
+% \begin{align*}
+% \label{eq-RLS-2}
+\end{align*}
+which we denote by $h^{(2)}_{j,r}$ and $h^{(1)}_{j,r}$, respectively. These estimators have simple expressions in term of the kernels involved. For example, let $k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)}_j,\ddot{X}_r):=[k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)}_j,(x_1,z_1)),\dots,k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)}_j,(x_r,z_r))]^T$, then for any $z\in\mathcal{Z}$, the estimator  $h^{(1)}_{j,r}$ can be expressed as
+\begin{align*}
+h^{(1)}_{j,r}(z)&=\sum_{i=1}^r [\alpha^{(1)}_{j,r}]_i k^{1,j}_{\mathcal{Z}}(z_i,z)\; , \text{~~with}\\
+\alpha^{(1)}_{j,r}&:= (\mathbf{K}^{1,j}_{r,\mathcal{Z}}+r\lambda^{(1)}_{j,r}\text{Id}_r)^{-1} k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)}_j,\ddot{X}_r)\in\mathbb{R}^{r}, 
+\end{align*}
+where $\mathbf{K}^{1,j}_{r,\mathcal{Z}}:=(k^{1,j}_{\mathcal{Z}}(z_i,z_j))_{1\leq i,j\leq r}$. Similarly, we obtain simple expressions of $h^{(2)}_{j,r}$.
+% Similarly, {\color{red}[similarly to what?]} for any separable RKHS $H^2_\mathcal{Z}$ for any $t^{(2)}\in \mathcal{Y}$, $h^{(2)}_{H^2_{\mathcal{Z}},r,t^{(2)}}$ denotes the solution of the following RLS problem
+% \begin{align*}
+%     \min_{h\in H^{2}_{\mathcal{Z}}}\frac{1}{r}\sum_{i=1}^r \left(h(z_i) -  k_{\mathcal{Y}}(t^{(2)},y_i)\right)^2 +\lambda_r\Vert h\Vert_{H^{2}_{\mathcal{Z}}}^2.
+% \end{align*}
+We can now introduce our new estimator of the witness function at each location $(\mathbf{t}^{(1)}_j,t^{(2)}_j)$ as follows:
+% \begin{align*}
+%     \widehat{\mu}_{\text{w},r}(\mathbf{t}^{(1)},t^{(2)}):=
+%     \frac{1}{n}\sum_{i=1}^n h^{(1)}_{H_{\mathcal{Z}},\lambda,r,\mathbf{t}^{(1)}}(z_i)
+%     h^{(2)}_{H_{\mathcal{Z}},\lambda,r,t^{(2)}}(z_i).
+% \end{align*}
+\begin{align*}
+  \widetilde{\Delta}_{n,r}(\mathbf{t}_j^{(1)},t_j^{(2)}):= \frac{1}{n}\sum_{i=1}^n & \left(k_{\mathcal{\ddot{X}}}(\mathbf{t}_j^{(1)},\ddot{x}_i)- h^{(1)}_{j,r}(z_i)\right)\\
+  &\times\left(k_{\mathcal{Y}}(t^{(2)}_j,y_i)- h^{(2)}_{j,r}(z_i)\right),
+\end{align*} 
+and the proposed test statistic becomes
+\begin{align*}
+\widetilde{\text{CI}}_{n,r,p}&:=\sum_{j=1}^J \left|  \widetilde{\Delta}_{n,r}(\mathbf{t}^{(1)}_j,t^{(2)}_j)\right|^p\;.
+\end{align*} 
+%In the following we aim at obtaining the asymptotic null distribution of this statistic. For that purpose denotes for all $j\in\{1,\dots,J\}$ and $i\in\{1,\dots,n\}$,
+% \begin{align*}
+%     u_i(j):=&\left(k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)}_j,\ddot{x}_i)- \mathbb{E}_{\ddot{X}}\left[k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)}_j,\ddot{X})|Z=z_i\right]\right)\\
+%   &\left(k_{\mathcal{Y}}(t^{(2)}_j,y_i)- \mathbb{E}_{Y}\left[k_{\mathcal{Y}}(t^{(2)}_j,Y)|Z=z_i\right]\right),
+% \end{align*}
+% $\mathbf{u}_i:=(u_i(1),\dots,u_i(J))^T$  and $\bm{\Sigma}:=\mathbb{E}(\mathbf{u}_i\mathbf{u}_i^T)$. 
+\paragraph{Asymptotic Distribution.} To get the asymptotic distribution, we need to make two extra assumptions. Let us define, for $m\in\{1,2\}$ and $j\in\{1,\dots,J\}$, $L^{m,j}_{Z}$---the operator on $L^2(\mathcal{Z},P_{Z})$ as
+   $L^{m,j}_{Z}(g)(\cdot) = \int_{\mathcal{\ddot{X}}} k^{m,j}_{\mathcal{Z}}(\cdot,z) g(z)dP_{Z}(z)$.
+
+\begin{assump}
+\label{ass:spectrum}
+There exists $Q>0$, and $\gamma\in[0,1]$ such that for all $\lambda>0$, $m\in\{1,2\}$ and $j\in\{1,\dots,J\}$:
+\begin{align*}
+    \text{Tr}((L^{m,j}_{Z}+\lambda I)^{-1}L^{m,j}_{Z})\leq Q \lambda^{-\gamma}.
+\end{align*}
+\end{assump}
+
+\begin{assump}
+\label{ass:source}
+There exists $2\geq \beta>1$ such that for any  $j\in\{1,\dots,J\}$,
+$(\mathbf{t}^{(1)},t^{(2)})\in\mathcal{\ddot{X}}\times\mathcal{Y}$, 
+\begin{small}
+\begin{align*}
+% \label{assumption-cvg-asymp}
+    \mathbb{E}_{\ddot{X}}\left[k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)},\ddot{X})|Z=\cdot\right]&\in \mathcal{R}\left(\left[L^{1,j}_{Z}\right]^{\beta/2}\right),\\
+    \mathbb{E}_{Y}\left[k_{\mathcal{Y}}(t^{(2)},Y)|Z=\cdot\right]&\in \mathcal{R}\left(\left[L^{2,j}_{Z}\right]^{\beta/2}\right),
+\end{align*}
+\end{small}
+where $\mathcal{R}\left(\left[L^{m,j}_{Z}\right]^{\beta/2}\right)$ is the image space of $\left[L^{m,j}_{Z}\right]^{\beta/2}$. Moreover, there exists $L,\sigma>0$ such that for all $l\geq 2$ and  $P_Z$-almost all $z\in\mathcal{Z}$
+\begin{small}
+\begin{align*}
+    &\mathbb{E}_{\ddot{X}}\left[\Big|k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)},\ddot{X})-  \mathbb{E}_{Y}\left[k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)},\ddot{X})\right]\Big|^{l}\right]\leq \frac{l!\sigma^2L^{l-2}}{2},\\
+      &\mathbb{E}_{\mid Z=z}\left[\Big|k_{\mathcal{Y}}(t^{(2)},Y)-  \mathbb{E}_{Y|Z=z}\left[k_{\mathcal{Y}}(t^{(2)},Y)\right]\Big|^{l}\right]\leq \frac{l!\sigma^2L^{l-2}}{2}.
+\end{align*}
+\end{small}
+\end{assump}
+
+These assumptions are central in our proofs and are common in kernel statistic studies~\citep{caponnetto2007optimal,fischer2020sobolev,rudi2017generalization}. Under these assumptions,~\cite{fischer2020sobolev} proved optimal learning rates for RLS in RKHS norm, which is essential to guarantee that our new statistic $\widetilde{\text{CI}}_{n,r,p}$, estimated with RLS, has the same asymptotic law as our oracle estimator $\text{CI}_{n,p}$.  
+
+
+To derive the asymptotic distribution of our new test statistic, we also need to define for all $j\in\{1,\dots,J\}$ and $i\in\{1,\dots,n\}$,
+    $\widetilde{u}_{i,r}(j):= (k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)}_j,\ddot{x}_i)- h^{(1)}_{j,r}(z_i))
+    (k_{\mathcal{Y}}(t^{(2)}_j,y_i)- h^{(2)}_{j,r}(z_i))$,
+$\widetilde{\mathbf{u}}_{i,r}:=(\widetilde{u}_{i,r}(1),\dots,\widetilde{u}_{i,r}(J))^T$, and $\widetilde{\mathbf{S}}_{n,r}:=\frac{1}{n}\sum_{i=1}^n  \widetilde{\mathbf{u}}_{i,r}$. Note that $\widetilde{\text{CI}}_{n,r,p}=\lVert\widetilde{\mathbf{S}}_{n,r}\rVert_p^p$. 
+In the following proposition, we show the asymptotic behavior of the statistic of interest. The proof of this proposition is given in Appendix~\ref{prv:rls-law}.
+\begin{prop} 
+\label{prop:rls-law}
+Suppose that Assumptions~\ref{assump-kernel}-\ref{ass:spectrum}-\ref{ass:source} are verified. Let $p\geq 1$, $J\geq 1$, $((\mathbf{t}^{(1)}_1,t^{(2)}_1),\dots,(\mathbf{t}^{(1)}_J,t^{(2)}_J))\in(\mathcal{\ddot{X}}\times\mathcal{Y})^J$, $r_n$ such that $n^{\frac{\beta+\gamma}{2\beta}}\in o(r_n)$ and $\lambda_{r_n}=r_n^{-\frac{1}{1+\gamma}}$. Then, under $H_0$, we have $\sqrt{n}\widetilde{\mathbf{S}}_{n,r_n}\rightarrow \mathcal{N}(0,\bm{\Sigma})$. Moreover, under $H_1$, if  the $((\mathbf{t}^{(1)}_j,t^{(2)}_j))_{j=1}^J$ are sampled independently according to $\Gamma$, then $\Gamma$-almost surely, for any $q\in\mathbb{R}$, $\lim_{n\rightarrow\infty}P( n^{p/2}\widetilde{\emph{CI}}_{n,r_n,p} \geq q)=1$.
+\end{prop}
+
+From the above proposition, we can derive a consistent test at level $\alpha$ for $0<\alpha<1$. Indeed, we obtain the asymptotic null distribution of $n^{p/2}\widetilde{\text{CI}}_{n,r_n,p}$ and we show that under the alternative hypothesis $H_1$, $\Gamma$-almost surely, $n^{p/2}\widetilde{\text{CI}}_{n,r_n,p}$ is arbitrarily large as $n$ goes to infinity. For a fixed level $\alpha$, the test rejects $H_0$ if  $n^{p/2}\widetilde{\text{CI}}_{n,r_n,p}$ exceeds the ($1 - \alpha$)-quantile of its asymptotic null distribution and this test is therefore consistent. For example, when $p\in\{1,2\}$, the asymptotic null distribution of $n^{p/2}\widetilde{\text{CI}}_{n,r_n,p}$ is either a sum of correlated Nakagami variables\footnote{the probability density function of a Nakagami distribution of parameters $m\geq \frac{1}{2}$ and $\omega>0$ is  for all $ x\geq 0$,\\ $f(x,m,\omega)=\frac{2m^m }{G(m)\omega^m}x^{2m-1}\exp(\frac{-m}{\omega}x^2)$ where $G$ is the Euler Gamma function.} ($p=1$) or a sum of correlated chi square variables ($p=2$). 
+% show that when $p\in\{1,2\}$, the asymptotic null distribution of $n^{p/2}\widetilde{\text{CI}}_{n,r_n,p}$ is either a sum of correlated Nakagami variables\footnote{the probability density function of a Nakagami distribution of parameters $m\geq \frac{1}{2}$ and $\omega>0$ is  for all $ x\geq 0$,\\ $f(x,m,\omega)=\frac{2m^m }{G(m)\omega^m}x^{2m-1}\exp(\frac{-m}{\omega}x^2)$ where $G$ is the Euler Gamma function.} ($p=1$) or a sum of correlated chi square variables ($p=2$). Moreover, we show that under the alternative hypothesis $H_1$, $\Gamma$-almost surely, $n^{p/2}\widetilde{\text{CI}}_{n,r_n,p}$ is arbitrarily large as $n$ goes to infinity. For a fixed level $\alpha$, the test rejects $H_0$ if  $n^{p/2}\widetilde{\text{CI}}_{n,r_n,p}$ exceeds the ($1 - \alpha$)-quantile of its asymptotic null distribution and this test is therefore consistent.
+However, computing the quantiles of these asymptotic null distributions can be computationally expensive as it requires a bootstrap or permutation procedure. In the following, we consider a different approach in which we normalize the statistic to obtain a simple asymptotic null distribution.
+
+\subsection{Normalization of the Test Statistic} 
+Herein, we consider a normalized variant of our statistic $\widetilde{\text{CI}}_{n,r,p}$ in order to obtain a tractable asymptotic null distribution. Denote $\bm{\Sigma}_{n,r}:=\frac{1}{n}\sum_{i=1}^n \widetilde{\bm{u}}_{i,r}\widetilde{\bm{u}}_{i,r}^T$ and let $\delta_n>0$, then the normalized statistic considered is given by
+\begin{align*}
+    \widetilde{\text{NCI}}_{n,r,p}:=\Vert  (\bm{\Sigma}_{n,r}+\delta_n\text{Id}_J)^{-1/2}\widetilde{\mathbf{S}}_{n,r}\Vert_{p}^p.
+\end{align*}
+In the next proposition, we show that our normalized approximate statistic converges in law to the standard multivariate normal distribution. The proof is given in Appendix~\ref{prv:norm-law}.
+\begin{prop}
+\label{prop:norm-law}
+Suppose that Assumptions~\ref{assump-kernel}-\ref{ass:spectrum}-\ref{ass:source} are verified. Let $p\geq 1$, $J\geq 1$, $((\mathbf{t}^{(1)}_1,t^{(2)}_1),\dots,(\mathbf{t}^{(1)}_J,t^{(2)}_J))\in(\mathcal{\ddot{X}}\times\mathcal{Y})^J$, $r_n$ such that $n^{\frac{\beta+\gamma}{2\beta}}\in o(r_n)$, $\lambda_n=r_n^{-\frac{1}{1+\gamma}}$ and $(\delta_n)_{n\geq 0}$ a sequence of positive real numbers such that $\lim_{n\rightarrow\infty}\delta_n=0$. Then, under $H_0$, we have $\sqrt{n}(\bm{\Sigma}_{n,r}+\delta_n\text{Id}_J)^{-1/2}\mathbf{S}_{n,r_n}\rightarrow \mathcal{N}(0,\text{Id}_J)$. Moreover, under $H_1$, if the $((\mathbf{t}^{(1)}_j,t^{(2)}_j))_{j=1}^J$ are sampled independently according to $\Gamma$, then $\Gamma$-almost surely, for any $q\in\mathbb{R}$, $\lim_{n\rightarrow\infty}P(n^{p/2}\widetilde{\emph{NCI}}_{n,r_n,p} \geq q)=1$.
+\end{prop}
+
+\begin{rmq}
+We emphasize that $J$ need not increase with $n$ for test consistency. Note also that the regularization parameter $\delta_n$ allows to ensure that $(\bm{\Sigma}_{n,r}+\delta_n\text{Id}_J)^{-1/2}$ can be stably computed. In practice, $\delta_n$ requires no tuning, and can be set to be a very small constant.
+\end{rmq}
+
+Our normalization procedure allows us to derive a simple statistical test, which is distribution-free under the null hypothesis. 
+
+\paragraph{Statistical test at level $\alpha$:} Compute $n^{p/2}\widetilde{\text{NCI}}_{n,r,p}$, choose the threshold $\tau$ corresponding to the $(1-\alpha)$ quantile of the asymptotic null distribution, and reject the null hypothesis whenever  $n^{p/2}\widetilde{\text{NCI}}_{n,r,p}$ is larger than $\tau$. For example, if $p=2$,  the threshold $\tau$ is the $(1 -\alpha)$-quantile of $\chi^2(J)$, i.e., a sum of $J$ \emph{independent} standard $\chi^2 $ variables.
+
+\paragraph{Total Complexity:} Our normalized statistic $\widetilde{\text{NCI}}_{n,r,p}$ requires first to compute $\alpha^{(1)}_{j,r}$ and $\alpha^{(2)}_{j,r}$. These quantities can be evaluated in at most $\mathcal{O}(r^2d+r^3)$ algebraic operations where $d$ corresponds to the computational cost of evaluating the kernels involved in the RLS regressions. We will use the above for the complexity analysis of our method, although one can apply the Coppersmith–Winograd algorithm~\citep{coppersmith1987matrix} that reduces the computational cost to $\mathcal{O}(r^2d+r^{2.376})$. Once $\alpha^{(1)}_{j,r}$ and  $\alpha^{(2)}_{j,r}$ are available, evaluating the RLS estimators $h_{j,r}^{(1)}$ and $h_{j,r}^{(2)}$ require only $\mathcal{O}(rd)$ operations. Then $\widetilde{\Delta}_{n,r}$ can be evaluated in $\mathcal{O}(nrd + r^2d + r^3)$ operations and $\widetilde{\text{CI}}_{n,r,p}$ has therefore a computational complexity of $\mathcal{O}(J(nrd + r^2d+r^3))$. The computation of $\widetilde{\text{NCI}}_{n,r,p}$ requires inverting a $J \times J$ matrix $\bm{\Sigma}_{n,r}+\delta_n\text{Id}_J$, but this is fast and numerically stable: we empirically observe that only a small value of J is required (see Section~\ref{sec-experiments-main}), e.g. less than 10.  Finally the total computational cost to evaluate $\widetilde{\text{NCI}}_{n,r,p}$ is $\mathcal{O}(J(nrd + r^2d + r^3) + nJ^2 + J^3)$.
+
+% Taking inspiration from \citep{strobl1702approximate}, in the next section we propose a faster version of our test.
+% One way of reducing the computational cost is to perform the RLS estimator with a reduced number of samples $r$. In that case one obtain the following estimator of the mean embedding:
+% \begin{align*}
+%     \widetilde{\mu}_{r}(\mathbf{t}^{(1)},t^{(2)}):=\frac{1}{n}\sum_{i=1}^n h^{(1)}_{H_{\mathcal{Z}},\lambda,r,\mathbf{t}^{(1)}}(z_i)
+%   h^{(2)}_{H_{\mathcal{Z}},\lambda,r,t^{(2)}}(z_i).
+% \end{align*}
+% where here the total computational cost is $\mathcal{O}(r^2 n)$. 
+% \subsection{A Random Features Approach}
+% We can reduce the time complexity of our test by using random features. Indeed by considering, for $m\in\{1,2\}$ and $j\in\{1,\dots,J\}$, kernels $k^{m,j}_{\mathcal{Z}}$ admitting a random feature expansion, we obtain a fast approximation of the RLS estimators $h_{m,j,r}$. More precisely, in the following we assume that the kernel $k^{m,j}_{\mathcal{Z}}$ can be written as
+% \begin{align}
+%     k^{m,j}_{\mathcal{Z}}(z,z')=\int_{\Theta}\phi^{m,j}(\theta,z)\phi^{m,j}(\theta,z')d\mu^{m,j}(\theta),
+% \end{align}
+% where $\mu^{m,j}\in\mathcal{M}_1^{+}(\Theta^{m,j})$, $\Theta^{m,j}$ is a metric space and $\phi^{m,j}$ is a continuous function such that $\phi(\theta,z)\leq \kappa^2$ for a constant $\kappa>0$ almost surely. Let $M\geq 1$, $\bm{\theta}^{m,j}_M:=(\theta^{m,j}_i)_{i=1}^M\in\Theta^M$ where each $\theta^{m,j}_i$ is sampled independently from $\mu^{m,j}$, define the kernel $ k^{m,j}_{\mathcal{Z},M}$ on $\mathcal{Z}$ as
+% \begin{align}
+%     k^{m,j}_{\mathcal{Z},M}(z,z')=\langle \phi^{m,j}_M(z),\phi^{m,j}_M(z')\rangle_{\mathbb{R}^M},
+% \end{align}
+% where $\phi^{m,j}_{M}(z):=\frac{1}{\sqrt{M}}(\phi^{m,j}(\theta^{m,j}_1,z),\dots,\phi^{m,j}(\theta^{m,j}_M,z))^T$,
+% and denote $H^{m,j}_{\mathcal{Z},M}$ its RKHS associated. Denote also for all $j\in\{1,\dots,J\}$, $h_{1,j,r}^{({M})}$ and $h_{1,j,r}^{({M})}$ respectively the solutions of the RLS problems~\eqref{eq-RLS-1} and~\eqref{eq-RLS-2} where the hypothesis spaces $H^{1,j}_{\mathcal{Z}}$ and $H^{2,j}_{\mathcal{Z}}$ have been replaced respectively by $H^{m,j}_{\mathcal{Z},M}$ and $H^{2,j}_{\mathcal{Z},M}$. Then we can define another estimator of the witness function $\mu$ at each location $(\mathbf{t}^{(1)}_j,t_j^{(2)})$ as
+% % \begin{align*}
+% %     \widetilde{\mu}^{(M)}_{n}(\mathbf{t}^{(1)},t^{(2)}):=
+% %     \frac{1}{n}\sum_{i=1}^n \widehat{h}^{(1)}_{H_{\bm{\theta}_M},\lambda,n,\mathbf{t}^{(1)}}(z_i)
+% %     \widehat{h}^{(2)}_{H_{\bm{\theta}_M},\lambda,n,t^{(2)}}(z_i)
+% % \end{align*}
+% \begin{align*}
+%   \widehat{\mu}^{(M)}_{r}(\mathbf{t}^{(1)}_j,t^{(2)}_j):= \frac{1}{n}\sum_{i=1}^n & \left(k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)}_j,\ddot{x}_i)- h_{1,j,r}^{({M})}(z_i)\right)\\
+%   &\times\left(k_{\mathcal{Y}}(t^{(2)}_j,y_i)-  h_{2,j,r}^{({M})}(z_i)\right).
+% \end{align*} 
+
+% In fact this estimator can be computed efficiently 
+% as we have for any $z\in\mathcal{Z}$,
+% \begin{align*}
+%  h_{m,j,r}^{({M})}(z)=\langle\omega_{r,M}^{m,j},\phi^{m,j}_M(z)\rangle_{\mathbb{R}^M},
+% \end{align*}
+% where 
+% \begin{align*}
+%  \omega_{r,M}^{m,j}:=(\phi^{m,j}_M(Z_r)\phi^{m,j}_M(Z_r)^T+ r\lambda\text{Id}_r )^{-1} \phi^{m,j}_M(Z_r)k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)},\ddot{X}_r),
+% \end{align*}
+% and $\phi^{m,j}_M(Z_r):=[\phi^{m,j}_M(z_1),\dots,\phi^{m,j}_M(z_r)]\in\mathbb{R}^{M\times r}$. Indeed computing $ h_{m,j,r}^{({M})}(z)$ requires only $\mathcal{O}(M^3+M^2 r)$ algebraic operations and the evaluation of the approximate witness function $\widehat{\mu}^{(M)}_{r}(\mathbf{t}^{(1)_j},t^{(2)}_j)$ can therefore be performed in $\mathcal{O}(M^3+M^2 r + n (M+ d))$. We can now introduce the following approximation of our statistic:
+% \begin{align*}    
+% % \widehat{\text{CI}}_{n,p}&:=\frac{1}{J}\sum_{j=1}^J \left|\mu_{\widehat{P}_{XZY},k}(\mathbf{t}^{(1)}_j,t^{(2)}_j)-\widehat{\mu}_{n}(\mathbf{t}^{(1)}_j,t^{(2)}_j)\right|^p\\
+%     \widetilde{\text{CI}}^{(M)}_{n,r,p}&:=\sum_{j=1}^J \left| \widehat{\mu}^{(M)}_{r}(\mathbf{t}^{(1)}_j,t^{(2)}_j)\right|^p,
+% \end{align*}
+% whose computational complexity is $\mathcal{O}(J(M^3+M^2 r + n (M+ d)))$. We also denote $\widetilde{\text{NCI}}^{(M)}_{n,r,p}$ its normalized version. One can show that the asymptotic law of this statistic is the same as the one presented in Propositions~\ref{prop:oracle-law}-\ref{prop:rls-law} however the number of random features required is larger than $n$. We conjecture that this result still holds even when the number of random features is smaller.
+% %In order to derive its asymptotic distribution, let us denote for all $j\in\{1,\dots,J\}$ and $i\in\{1,\dots,n\}$,
+% % \begin{align*}
+% %     \widehat{u}_{i,r,\lambda}^{(M)}(j):=& \left(k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)}_j,\ddot{x}_i)- \widehat{h}^{(1)}_{H_{\bm{\theta}_M},\lambda,r,\mathbf{t}^{(1)}_j}(z_i)\right)\\
+% %   &\left(k_{\mathcal{Y}}(t^{(2)}_j,y_i)- \widehat{h}^{(2)}_{H_{\bm{\theta}_M},\lambda,r,t^{(2)}_j}(z_i)\right),
+% % \end{align*}
+% % $\widehat{\mathbf{u}}^{(M)}_{i,r,\lambda}:=(\widehat{u}^{(M)}_{i,r,\lambda}(1),\dots,\widehat{u}^{(M)}_{i,r,\lambda}(J))^T$ and $\mathbf{S}_{n,r,\lambda}^{(M)}:=\frac{1}{n}\sum_{i=1}^n \widehat{\mathbf{u}}^{(M)}_{i,r,\lambda}$. Here again, we have 
+% % \begin{align*}
+% %     \text{CI}^{(M)}_{n,r,p}&:=\Vert \mathbf{S}_{n,r,\lambda}^{(M)}\Vert_p^p.
+% % \end{align*}
+% % Moreover denotes
+% % $$\bm{\widehat{\Sigma}}_{n,r,\lambda}^{(M)}:=\frac{1}{n}\sum_{i=1}^n \widehat{\mathbf{u}}_{i,r,\lambda}^{(M)}(\widehat{\mathbf{u}}_{i,r,\lambda}^{(M)})^T$$
+% % and consider for any $\mu>0$, $\bm{\widehat{\Sigma}}_{n,r,\lambda,\mu}^{(M)}:=\bm{\widehat{\Sigma}}_{n,r,\lambda}^{(M)} + \mu \text{Id}_J $ which can be computed in $\mathcal{O}(nJ^2)$. We can now introduce the normalized version of our statistic defined as:
+% % \begin{align*}
+% %     \text{NCI}_{n,r,p,\lambda,\mu}^{(M)}:=\left\Vert  \left(\bm{\widehat{\Sigma}}_{n,r,\lambda,\mu}^{(M)}\right)^{-1/2}\mathbf{S}_{n,r,\lambda}^{(M)}\right\Vert_{p}^p.
+% % \end{align*}
+
+
+% % \paragraph{Asymptotic distribution.} When $p\in\{1,2\}$, we have an explicit formulation of the asymptotic distribution.
+
+
+% % % \paragraph{Asymptotic distribution.} In the following we will restrict ourselves to the RLS estimator on a hypothesis class defined by the RKHS $H_{\mathcal{Z}}$ associated to a kernel $k_\mathcal{Z}$. We need to make two assumptions:
+
+% % % \begin{assumption}
+% % % \label{ass:source}
+% % % For any  $(\mathbf{t}^{(1)},t^{(2)})\in\mathcal{\ddot{X}}\times\mathcal{Y}$, 
+% % % \begin{align}
+% % % \label{assumption-cvg-asymp}
+% % %     \mathbb{E}_{\ddot{X}}\left[k_{\mathcal{\ddot{X}}}(\mathbf{t}^{(1)},\ddot{X})|Z=\cdot\right]&\in H_{\mathcal{Z}}\\
+% % %     \mathbb{E}_{Y}\left[k_{\mathcal{Y}}(t^{(2)},Y)|Z=\cdot\right]&\in H_{\mathcal{Z}}.
+% % % \end{align}
+% % % \end{assumption}
+
+% % % Let define $L_{\ddot{X}}$ and $L_Y$ the operators respectively on $L^2(\mathcal{\ddot{X}},P_{\ddot{X}})$ and  $L^2(\mathcal{Y},P_{\ddot{Y}})$ as:
+% % % \begin{align*}
+% % %   L_{\ddot{X}}g = \int_{\mathcal{\ddot{X}}} k_{\mathcal{\ddot{X}}}(\cdot,\ddot{x}) g(\ddot{x})dP_{\ddot{X}}(\ddot{x})\\
+% % %       L_{Y}g = \int_{\mathcal{Y}} k_{\mathcal{Y}}(\cdot,y) g(y)dP_{Y}(y)
+% % % \end{align*}
+
+% % % \begin{assumption}
+% % % \label{ass:spectrum}
+% % % There exists $Q>0$, and $\gamma\in[0,1]$ such that for all $\lambda>0$:
+% % % \begin{align*}
+% % %     Tr((L_{\ddot{X}}+\lambda I)^{-1}L_{\ddot{X}})\leq Q \lambda^{-\gamma}\\
+% % %     Tr((L_{Y}+\lambda I)^{-1}L_{Y})\leq Q \lambda^{-\gamma}
+% % % \end{align*}
+% % % \end{assumption}
+
+
+
+
+% % % \begin{prop} Let assume Assumptions~\ref{ass:source}-\ref{ass:spectrum} are verified. Let $\lambda_n=n^{-\frac{1}{1+\gamma}}$, then, under $H_0$,
+% % % $n^{p/2}\text{N}\widehat{\text{CI}}_{n,p}$ follows sum of independent naka or a sum of independent chi square. Under $H_1$, the statistic is arbitrarily large as $n$ goes to infinity.
+% % % \end{prop}
+
+
+% % TODO: define assumptions on the RF (i.e. bounded and continuous).
+% % \begin{prop} Let assume Assumptions~\ref{ass:source}-\ref{ass:spectrum} are verified. Let $\lambda_n=n^{-\frac{1}{1+\gamma}}$ and  $M_n=c_0n^{\frac{1}{1+\gamma}}\log{108\kappa^2n}$, then, under $H_0$,
+% % $n^{p/2}\text{N}\widehat{\text{CI}}^{(M_n)}_{n,r_n,p}$ follows sum of independent naka or a sum of independent chi square. Under $H_1$, the statistic is arbitrarily large as $n$ goes to infinity
+% %  with $c_0$ a constant independent from XXX
+% % \end{prop}
+
+
+
+
+\subsection{Hyperparameters}
+The hyperparameters of our statistics $\widetilde{\text{NCI}}_{n,r,p}$ fall into two categories: those directly involved with the test and those of the regression. We assume from now on that all the kernels involved in the computation of our statistics are \emph{Gaussian kernels}, and consider $n$ i.i.d. observations $\{(x_i,z_i,y_i)\}_{i=1}^n$.
+
+The first category includes both the choice of the locations $((t_x,t_z)_j,(t_y)_j))_{j=1}^J$ on which differences between the mean embeddings are computed and the choice of the kernels $k_{\mathcal{\ddot{X}}}$ and $k_{\mathcal{Y}}$. Each location $t_x,t_y,t_z$  is randomly chosen according to a Gaussian variable with mean and covariance of $\{x_i\}_{i=1}^n$, $\{y_i\}_{i=1}^n$, and $\{z_i\}_{i=1}^n$, respectively. As we consider Gaussian kernels, we should also choose the bandwidths. Here, we restrict ourselves to one-dimensional kernel bandwidths $\sigma_{\mathcal{{X}}}$, $\sigma_{\mathcal{{Y}}}$, and $\sigma_{\mathcal{{Z}}}$ for the kernels $k_{\mathcal{X}}$, $k_{\mathcal{Y}}$, and $k_{\mathcal{Z}}$, respectively. More precisely, we select the median of $\{\lVert x_i-x_j\rVert\}_{i,j=1}^n$, $\{\lVert y_i-y_j\rVert\}_{i,j=1}^n$, and $\{\lVert z_i-z_j\rVert\}_{i,j=1}^n$ for $\sigma_{\mathcal{X}}$, $\sigma_{\mathcal{Y}}$,  and $\sigma_{\mathcal{Z}}$, respectively.
+
+% These hyperparameters can be learned so as to improve the power of the test~\citep{jitkrittum2017adaptive,NEURIPS2019_0e2db0cb}. Let $\theta:=(\mathcal{V},\sigma_{\mathcal{\ddot{X}}},\sigma_{\mathcal{Y}})\in(\mathcal{\ddot{X}}\times\mathcal{Y})^J\times\mathbb{R}_{+}\times\mathbb{R}_+$, our goal is to find $$\theta^{*}:=\argmax_{\theta}n^{p/2}\text{NCI}_{n,r,p,\lambda}$$
+% that maximizes the power of the test. Importantly, the above optimization problem does not affect the both the null and the alternative hypothesis as long as the data used for parameter tuning and for testing are disjoint~\cite{NIPS2012_dbe272ba}.
+
+The other category contains all the kernels $k^{m,j}$ and the regularization parameters $\lambda^{(m)}_{j,r}$ involved in the RLS problems. These parameters should be selected carefully to avoid either underfitting of the regressions, which may increase the type-I error, or overfitting, which may result in a large type-II error. To optimize these, similarly to~\cite{zhang2012kernel}, we consider a GP regression that maximizes the likelihood of the observations. While carrying out a precise GP regression can be prohibitive, in practice, we run this method only on a batch of size $200$ observations randomly selected and we perform only $10$ iterations for choosing the hyperparameters involved in the RLS problems. Hence, our optimization procedure does not affect the total computational cost as it is independent of the number of observations $n$. 

@@ -1,9 +1,9 @@
 % !TEX root = main.tex
-\section{Contextual Bandit Algorithms}\label{app:algorithms}
+\section{Appendix: Contextual Bandit Algorithms}\label{app:algorithms}
 
 In this appendix, we present the different bandit algorithms studied in this paper. All algorithms we consider except \expfour uses disjoint models for building estimate of the arm feature vectors $(\theta_{a})_{a\in\llbracket 1, K\rrbracket}$. Each algorithm (except \expfour) builds least squares estimates of the arm features.
 
-\begin{algorithm}[h]
+\begin{algorithm}[H]
   \caption{Contextual \linucb}
   \label{alg:linucb}
 \begin{algorithmic}
@@ -15,13 +15,14 @@ In this appendix, we present the different bandit algorithms studied in this pap
   \STATE Pull arm  $a_{t} =\argmaxB_a \langle \hat{\theta}_{a}(t),x_t\rangle + \beta_{a}(t)||x_{t}||_{\bar{V}_{a}^{-1}(t)}$
   \STATE Observe reward $r_{t}$ and update parameters $\hat{\theta}_{a}(t)$ and $\bar{V}_{a}^{-1}(t)$ such that:
   \begin{align*}
-      \bar{V}_{a_{t}}(t+1) = \bar{V}_{a_{t}}(t) + x_{t}x_{t}^{\intercal},\quad b_{a_{t}}(t+1) = b_{a_{t}}(t) + r_{t}x_{t},\quad\theta_{a_{t}}(t+1) = \bar{V}_{a_{t}}^{-1}(t+1)b_{a_{t}}(t+1)
+      &\bar{V}_{a_{t}}(t+1) = \bar{V}_{a_{t}}(t) + x_{t}x_{t}^{\intercal},\quad b_{a_{t}}(t+1) = b_{a_{t}}(t) + r_{t}x_{t},\\
+      &\theta_{a_{t}}(t+1) = \bar{V}_{a_{t}}^{-1}(t+1)b_{a_{t}}(t+1)
   \end{align*}
   \ENDFOR
 \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[h]
+\begin{algorithm}[H]
   \caption{Linear Thompson Sampling with Gaussian prior}
   \label{alg:linTS}
 \begin{algorithmic}
@@ -33,13 +34,14 @@ In this appendix, we present the different bandit algorithms studied in this pap
   \STATE Pull arm $a_{t} = \argmaxB_{a\in \llbracket 1, K\rrbracket} \left\langle \tilde{\theta}_{a}, x_{t}\right\rangle$
   \STATE Observe reward $r_{t}$ and update parameters $\hat{\theta}_{a}(t)$ and $\bar{V}_{a}^{-1}(t)$
     \begin{align*}
-      \bar{V}_{a_{t}}(t+1) = \bar{V}_{a_{t}}(t) + x_{t}x_{t}^{\intercal},\quad b_{a_{t}}(t+1) = b_{a_{t}}(t) + r_{t}x_{t},\quad\theta_{a_{t}}(t+1) = \bar{V}_{a_{t}}^{-1}(t+1)b_{a_{t}}(t+1)
+      &\bar{V}_{a_{t}}(t+1) = \bar{V}_{a_{t}}(t) + x_{t}x_{t}^{\intercal},\quad b_{a_{t}}(t+1) = b_{a_{t}}(t) + r_{t}x_{t},\\
+      &\theta_{a_{t}}(t+1) = \bar{V}_{a_{t}}^{-1}(t+1)b_{a_{t}}(t+1)
   \end{align*}
   \ENDFOR
 \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[ht]
+\begin{algorithm}[H]
   \caption{\epsgreedy}
   \label{alg:egreedy}
 \begin{algorithmic}
@@ -57,7 +59,7 @@ In this appendix, we present the different bandit algorithms studied in this pap
 \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[h]
+\begin{algorithm}[H]
   \caption{\expfour}
   \label{alg:exp4}
 \begin{algorithmic}

@@ -1,5 +1,5 @@
 % !TEX root = main.tex
-\section{Semi-Online Attacks}
+\section{Appendix: Semi-Online Attacks}
 
 \cite{liu2019data} studies what they call the offline setting for adversarial attacks on stochastic bandits. They consider a setting where a bandit algorithm is successively updated with mini-batch\changebr{es} of fixed size $B$. \changebr{The attacker can tamper with some of the incoming mini-batches. % Each mini-batch that can be t\changebr{a}mpered with by the attacker. 
  More precisely, they can modify the context, the reward and even the arm that was pulled for any entry of the attacked mini-batches.}
@@ -59,7 +59,8 @@ Whereas for all diagonal elements, $v_{i,i} \geq \delta_{a}^2 > r_i$. Thus $V_{t
 Then, for every arm $a \neq a^{\dagger}$ and any context $x\in \mathcal{D}$ and any time $t$ after the attack:
 \begin{align*}
     \langle\hat{\theta}_{a,t}, x\rangle + \beta_{a}(t) ||x||_{V_{t,a}^{-1}} & \leq  \sum_{l=1, a_{l} = a}^{t} r_t (V_{t,a}^{-1} x_t)^{\intercal} x + \beta_{a}(t)||x||_{1}\sqrt{\lVert V_{t,a}^{-1} \rVert_\infty}\\
-    & \leq  \lVert V_{t,a}^{-1} \rVert_\infty dN_{t}(a) \sup_{y\in\mathcal{D}} ||y||_{2}^{2} + \beta_{\text{max}}\sqrt{d}\sup_{y\in\mathcal{D}} ||y||_{2}\sqrt{\lVert V_{t,a}^{-1} \rVert_\infty} < \nu
+    & \leq  \lVert V_{t,a}^{-1} \rVert_\infty dN_{t}(a) \sup_{y\in\mathcal{D}} ||y||_{2}^{2} \\
+    &+ \beta_{\text{max}}\sqrt{d}\sup_{y\in\mathcal{D}} ||y||_{2}\sqrt{\lVert V_{t,a}^{-1} \rVert_\infty} < \nu
 \end{align*}
 
     % &= \left({A'}^{-1} \sum_{t=0}^{N(a)} r_t x_t\right)^{\intercal} x + \beta_{a}(t) \sqrt{x^{\intercal} A'^{-1} x}\\

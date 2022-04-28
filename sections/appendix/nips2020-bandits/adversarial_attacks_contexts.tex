@@ -97,7 +97,10 @@ An issue is that the norm of the attacked context can be greater that the upper 
 
 \begin{prop}
 \label{prop:cost_attack_all_ctx}
-	Using the attack described in Fig.~\ref{alg:context_attack_protocol} \changee{and assuming that $\|x\|_{2}\leq \nu L/2$ for all contexts $x\in\mathcal{D}$}, for any $\delta\in (0,1/K]$, with probability at least $1 - K\delta$, the number of times \linucb does not pull \changebrtwo{an} arm \changelm{in $A^{\dagger}$} \otc{before time $T$} is at most     $\sum_{j\notin A^{\dagger}} N_{j}(T) \leq 32K^{2}\left( \frac{\lambda}{\alpha^{2}} + \sigma^{2}d\log\left(\frac{\lambda d + TL^2\alpha^{2}}{d\lambda\delta}\right) \right)^{3}$ 
+	Using the attack described in Fig.~\ref{alg:context_attack_protocol} \changee{and assuming that $\|x\|_{2}\leq \nu L/2$ for all contexts $x\in\mathcal{D}$}, for any $\delta\in (0,1/K]$, with probability at least $1 - K\delta$, the number of times \linucb does not pull \changebrtwo{an} arm \changelm{in $A^{\dagger}$} \otc{before time $T$} is at most     
+        \begin{align*}
+                \sum_{j\notin A^{\dagger}} N_{j}(T) \leq 32K^{2}\left( \frac{\lambda}{\alpha^{2}} + \sigma^{2}d\log\left(\frac{\lambda d + TL^2\alpha^{2}}{d\lambda\delta}\right) \right)^{3}
+        \end{align*}
 % \begin{align*}
 %     \sum_{j\neq a^{\dagger}} N_{j}(T) \leq 32K^{2}\left( \frac{\lambda}{\alpha^{2}} + \sigma^{2}d\log\left(\frac{\lambda d + TL^2\alpha^{2}}{d\lambda\delta}\right) \right)^{3}
 % \end{align*}

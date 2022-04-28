@@ -1,25 +1,7 @@
 
- \newcommand{\mtbxx}[1]{\textcolor{black}{#1}}
-  \newcommand{\br}[1]{\textcolor{black}{#1}}
 
-\newcommand{\ccc}[1]{\textcolor{black}{#1}}
-\newcommand{\cc}[1]{\textcolor{black}{#1}}
-\newcommand{\brtwo}[1]{\textcolor{black}{#1}}
-
-\newcommand{\carola}[1]{\textcolor{black}{#1}}
-  \newcommand{\olivier}[1]{\textcolor{black}{#1}}
-
-
-
-
-
-
-\newcommand{\mlc}[1]{\textcolor{black}{[#1]}}
-%\newcommand{\todo}[1]{\textcolor{red}{#1}}
-\newcommand{\ot}[1]{\textcolor{black}{#1}}
-\newcommand{\removeme}[1]{\textcolor{black}{#1}}
-\newcommand{\TODODimo}[1]{{\color{red} TODO Dimo: #1}}
  
+\chapter{Variance Reduction for Better Sampling in Continuous Domains}
 Design of experiments, random search, initialization of population-based methods, or sampling inside an epoch of an evolutionary algorithm uses a sample drawn according to some probability distribution for approximating the location of an optimum. Recent papers have shown that the optimal {\textit{search}} distribution, used for the sampling, might be more peaked around the center of the distribution than the {\textit{prior}} distribution modelling our uncertainty about the location of the optimum.
 We confirm this statement, provide explicit values for this reshaping of the search distribution depending on the population size $\lambda$ and the dimension $d$, and validate our results experimentally.
 
@@ -79,10 +61,10 @@ We complement our theoretical analyses by an empirical investigation of the resc
 strategies. More precisely, we show a positive impact on the initialization of Bayesian optimization algorithms~\cite{ego} and on differential evolution~\cite{de}.   
 % 
 % Our results are relevant beyond evolutionary computation: they have applications in Machine Learning (where random search is ubiquitous) and, more generally, in design of experiments. Our theoretical results are in Sec.~\ref{sec:theory}), and the experimental validation is in Sec.~\ref{sec:experiments}.
-% Design of experiments~\cite{nie,mckay,hammersley,atanasov}, the initialization of population-based algorithms\otc{, or each iteration of an evolutionary optimization algorithm,} estimate the location of the optimum using a sampling of $\lambda$ points according to some current candidate distribution, \otc{e.g. }a Gaussian distribution $\mathcal{N}(0,\sigma^2 I_d)$, in the search domain of dimension $d$.
-% Recent works~\cite{centerbased,icmldoe}, however, proved  that -- unless the population size $\lambda$ is exponentially large in the problem dimension $d$ -- the expected distance of the best of these $\lambda$ points to a randomly placed optimum is larger than the expected distance of this optimum \otc{to $(0,\dots,0)$}. This suggests that, in terms of minimizing the expected distance to the optimum, deterministically sampling the middle point (i.e. choosing $\sigma=0$) is superior to sampling $\lambda$ points from the same distribution from which the optimum is chosen (i.e. $\sigma=1$). 
+% Design of experiments~\cite{nie,mckay,hammersley,atanasov}, the initialization of population-based algorithms{, or each iteration of an evolutionary optimization algorithm,} estimate the location of the optimum using a sampling of $\lambda$ points according to some current candidate distribution, {e.g. }a Gaussian distribution $\mathcal{N}(0,\sigma^2 I_d)$, in the search domain of dimension $d$.
+% Recent works~\cite{centerbased,icmldoe}, however, proved  that -- unless the population size $\lambda$ is exponentially large in the problem dimension $d$ -- the expected distance of the best of these $\lambda$ points to a randomly placed optimum is larger than the expected distance of this optimum {to $(0,\dots,0)$}. This suggests that, in terms of minimizing the expected distance to the optimum, deterministically sampling the middle point (i.e. choosing $\sigma=0$) is superior to sampling $\lambda$ points from the same distribution from which the optimum is chosen (i.e. $\sigma=1$). 
 % In the present work, we propose a scaling factor $\sigma$ for given $\lambda$ and $d$:
-% we show that by choosing $\sigma^2=\min(1,\Theta(\sqrt{\log(\lambda)/d}))$ and sampling the $\lambda$ points from $\mathcal{N}(0,\sigma^2 I_d)$, the probability that the best of these points has smaller distance\olivier{, by a margin $\alpha>0$,} to the optimum, \carola{than the middle point \otc{$(0,\dots,0)$} alone}, is greater than $1/2$.
+% we show that by choosing $\sigma^2=\min(1,\Theta(\sqrt{\log(\lambda)/d}))$ and sampling the $\lambda$ points from $\mathcal{N}(0,\sigma^2 I_d)$, the probability that the best of these points has smaller distance\olivier{, by a margin $\alpha>0$,} to the optimum, \carola{than the middle point {$(0,\dots,0)$} alone}, is greater than $1/2$.
 % Our result therefore confirms that a proper scaling of the initial sampling contribution is essential, and, compared to previous works, we propose a scaling (i) provably better  than $\sigma=0$ (2) empirically better than previous proposals. 
 % 
 %\carolanote{Olivier, would you have some concrete examples or references where a better scaling would easily be seen to be beneficial? Willing to bet for a beer (or two ;-) )that reviewers will ask for it... Alternatively, we could just integrate the references from the first paragraph from the theory section here, but we should ideally also have some concrete examples (ideally from ML)} 
@@ -98,7 +80,7 @@ strategies. More precisely, we show a positive impact on the initialization of B
 \paragraph{Related Work.} While the most relevant works for our study have been mentioned above, we briefly note that a similar surprising effect as observed here is the ``Stein phenomenon''~\cite{Stein56,JamesStein61}. Although an intuitive way to estimate the mean of a standard gaussian distribution is to compute the empirical mean, Stein showed that this strategy is sub-optimal w.r.t. mean squared error and that the empirical mean needs to be rescaled by some factor to be optimal.
 \section{Problem Statement and Related Work}\label{statement}
 \label{sec:basics}
-The context of our \otc{theoretical analysis} is \textit{one-shot optimization}. In one-shot optimization, we are allowed to select $\lambda$ points $x_1, \ldots, x_{\lambda} \in \RR^d$. The quality $f(x_i)$ of these points is evaluated, and we measure the performance of our samples in terms of simple regret~\cite{bubeck2009pure} 
+The context of our {theoretical analysis} is \textit{one-shot optimization}. In one-shot optimization, we are allowed to select $\lambda$ points $x_1, \ldots, x_{\lambda} \in \RR^d$. The quality $f(x_i)$ of these points is evaluated, and we measure the performance of our samples in terms of simple regret~\cite{bubeck2009pure} 
 $\min_{i=1, \ldots,\lambda}f(x_i)-\inf_{x \in \RR^d} f(x)$.\footnote{This requires knowledge of $\inf_{x} f(x)$, which may not be available in real-world \olivier{applications. In this case, without loss of generality (this is just for the sake of plotting regret values), the infimum can be replaced by an empirical minimum. In all} applications considered in this work the value of $\inf_x f(x)$ is known.} That is, we aim to minimize the distance -- measured in \textit{quality space} -- of the best of our points to the optimum. This formulation, however, also covers the case in which we aim to minimize the distance to the optimum in the \textit{search space}: we simply take as $f$ the root of the sphere function $f_{x^*}: \RR^d \to \RR, x \mapsto \lVert x - x^*\rVert^2$, where here and in the following $\lVert .\rVert$ denotes the Euclidean norm. 
 \paragraph{Rescaled Random Sampling for Randomly Placed Optimum.} In the setting studied in Sec.~\ref{sec:theory} we assume that the optimum $x^*$ is sampled from the standard multivariate Gaussian distribution $\mathcal{N}(0,I_d)$, and that we aim to minimize the \olivier{regret} $\min_{i=1,\ldots,\lambda} \lVert x_i-x^*\rVert^2$ through i.i.d. samples $x_i \sim \mathcal{N}(0,\sigma^2 I_d)$. That is, in contrast to the classical \textit{design of experiments} (DoE) setting, we are only allowed to choose the scaling factor $\sigma$, whereas in DoE more sophisticated (often quasi-random and space-filling designs -- which are typically not i.i.d. samples\olivier{)} are admissible.
 Intuitively, one might be tempted to guess that $\sigma=1$ should be a good choice, as in this case the $\lambda$ points are chosen from the same distribution as the optimum $x^*$. This intuition, however, was refuted in~\cite[Theorem~1]{icmldoe}, where is was shown that the middle point sampling strategy, which uses $\sigma=0$ (i.e., all $\lambda$ points collapse to $(0,\ldots,0)$) yields smaller regret than sampling from $\mathcal{N}(0,I_d)$ unless $\lambda$ grows exponentially in $d$. More precisely, it is shown in~\cite{icmldoe} that, for this regime of $\lambda$ and $d$, the median of $\lVert x^*\rVert^2$ is smaller than the median of $\lVert x_i - x^*\rVert^2$ for i.i.d. $x_i \in \mathcal{N}(0,I_d)$.  
@@ -153,7 +135,7 @@ $\sigma^2$ is chosen proportionally to $\log \lambda/d$ (and $\lambda$ does not 
     %     \includegraphics[trim=5 5 5 5,clip,width=.35\textwidth]{fig_rescaling_sphere_d_fixed.pdf}
     % \includegraphics[width=.3\textwidth]{fig_boxplot_500.pdf}     
     % \includegraphics[width=.3\textwidth]{fig_boxplot_1000.pdf}   \\ 
-\caption{Comparison of methods: without rescaling ($\sigma=1$), middle point sampling ($\sigma = 0$), and our rescaling method ($\sigma=\sqrt{\frac{\log\lambda}{d}}$). Each mean has been estimated from $10^5$ samples. (On left) Average regret, normalized by $d$, on the sphere function for diverse population sizes $\lambda$ at fixed dimension $d=20$. The gain of rescaling decreases as $\lambda$ increases.  (On right) Distribution of the regret for the strategies on the $50d$-sphere function for $\lambda=1000$. %\carola{We see that the dispersion of regret is similar.} %$\lambda\in\{500,1000\}$. \otc{We notice the variances are close.}
+\caption{Comparison of methods: without rescaling ($\sigma=1$), middle point sampling ($\sigma = 0$), and our rescaling method ($\sigma=\sqrt{\frac{\log\lambda}{d}}$). Each mean has been estimated from $10^5$ samples. (On left) Average regret, normalized by $d$, on the sphere function for diverse population sizes $\lambda$ at fixed dimension $d=20$. The gain of rescaling decreases as $\lambda$ increases.  (On right) Distribution of the regret for the strategies on the $50d$-sphere function for $\lambda=1000$. %\carola{We see that the dispersion of regret is similar.} %$\lambda\in\{500,1000\}$. {We notice the variances are close.}
 }
 \label{fig:boxplots}
 \end{figure}
@@ -230,7 +212,7 @@ then $\varepsilon\leq C' \log(\lambda)/d$.
     \centering
     % \includegraphics[trim={10 10 12 97}, clip,width=.8\textwidth]{newnewnewdoe.png}
     \includegraphics[trim={10 25 12 80}, clip,width=0.85\textwidth]{sections/appendix/ppsn2020-rescaling/figures/newnewnewdoe.png}
-    \caption{Comparison of various one-shot optimization methods from the point of view of the simple regret. Reading guide in Sec.~\ref{rg}. Results are averaged over objective functions Cigar, Rastrigin, Sphere in dimension $20$, $200$, $2000$, and budget $30$, $100$, $3000$, $10000$, $30000$, $100000$. \otc{\texttt{MetaTuneRecentering} performs best overall. Only the 30 best performing methods are displayed as columns, and the 6 best as rows. Red means superior performance of row vs col. Rows and cols ranked by performance.}}
+    \caption{Comparison of various one-shot optimization methods from the point of view of the simple regret. Reading guide in Sec.~\ref{rg}. Results are averaged over objective functions Cigar, Rastrigin, Sphere in dimension $20$, $200$, $2000$, and budget $30$, $100$, $3000$, $10000$, $30000$, $100000$. {\texttt{MetaTuneRecentering} performs best overall. Only the 30 best performing methods are displayed as columns, and the 6 best as rows. Red means superior performance of row vs col. Rows and cols ranked by performance.}}
     \label{doexp}
 \end{figure}
 \label{sketch}
@@ -312,7 +294,7 @@ of the regret.
 %     \centering
 %     % \includegraphics[trim=5 25 5 5,clip,width=.7\textwidth]{rescaling_sphere.pdf}
 %     \includegraphics[trim=5 5 5 5,clip,width=.7\textwidth]{rescaling_sphere.pdf}
-%     \caption{Average regret, normalized by $d$, on the sphere function for various dimensions and budgets in terms of rescaled standard deviation. Each mean have been estimated with $100000$ points. \otc{We see that $\sigma=1.1\sqrt{\log(\lambda)/d}$ is a sensible choice.}
+%     \caption{Average regret, normalized by $d$, on the sphere function for various dimensions and budgets in terms of rescaled standard deviation. Each mean have been estimated with $100000$ points. {We see that $\sigma=1.1\sqrt{\log(\lambda)/d}$ is a sensible choice.}
 %     %The dimensions and budgets are chosen to respect Assumptions~\eqref{ass1b} and~\eqref{ass3b}
 %     }
 %     \label{valsphere}
@@ -334,7 +316,7 @@ of the regret.
 \includegraphics[trim={30 25 12 80}, clip,width=.32\textwidth]{sections/appendix/ppsn2020-rescaling/figures/fight_namesphere}      \includegraphics[trim={30 25 12 80}, clip,width=.32\textwidth]{sections/appendix/ppsn2020-rescaling/figures/fight_namecigar.png}     
 \includegraphics[trim={30 25 12 80}, clip,width=.32\textwidth]{sections/appendix/ppsn2020-rescaling/figures/fight_namerastrigin.png}   \\ 
 ~\hfill Sphere function\hfill ~ \hfill Cigar function\hfill ~ \hfill Rastrigin function\hfill ~\\
-\caption{Same experiment as Fig.~\ref{doexp}, but separately over each objective function. Results are still averaged over 6 distinct budgets ($30$, $100$, $3000$, $10000$, $30000$, $100000$) and 3 distinct dimensionalities ($20$, $200$, $2000$). \otc{\texttt{MetaTuneRecentering} performs well in each case, and is not limited to the sphere function for which it was derived. Variants of LHS are sometimes excellent and sometimes not visible at all (only the 30 best performing methods are shown).}}
+\caption{Same experiment as Fig.~\ref{doexp}, but separately over each objective function. Results are still averaged over 6 distinct budgets ($30$, $100$, $3000$, $10000$, $30000$, $100000$) and 3 distinct dimensionalities ($20$, $200$, $2000$). {\texttt{MetaTuneRecentering} performs well in each case, and is not limited to the sphere function for which it was derived. Variants of LHS are sometimes excellent and sometimes not visible at all (only the 30 best performing methods are shown).}}
     \label{toto3}
 \end{figure}
 %
@@ -349,7 +331,7 @@ of the regret.
 \includegraphics[trim={10 20 12 80}, clip,width=.48\textwidth]{sections/appendix/ppsn2020-rescaling/figures/fight_namesphere,budget30000.png}
 \includegraphics[trim={10 20 12 80}, clip,width=.48\textwidth]{sections/appendix/ppsn2020-rescaling/figures/fight_namesphere,budget100000.png}\\
 ~\hfill Budget $\lambda=30000$ \hfill ~ \hfill Budget $\lambda=100000$ \hfill ~ \\
-\caption{Methods ranked by performance on the sphere function, per budget. Results averaged over dimension $20$, $200$, $2000$. \texttt{MetaTuneRecentering} performs among the best in all cases. \otc{LHS is excellent on this very simple setting, namely the sphere function.} }
+\caption{Methods ranked by performance on the sphere function, per budget. Results averaged over dimension $20$, $200$, $2000$. \texttt{MetaTuneRecentering} performs among the best in all cases. {LHS is excellent on this very simple setting, namely the sphere function.} }
     \label{toto}
 \end{figure}
 %
@@ -359,7 +341,7 @@ of the regret.
 \includegraphics[trim={10 20 12 80}, clip,width=.32\textwidth]{sections/appendix/ppsn2020-rescaling/figures/fight_namesphere,useful_dimensions200.png}
 \includegraphics[trim={10 20 12 80}, clip,width=.32\textwidth]{sections/appendix/ppsn2020-rescaling/figures/fight_namesphere,useful_dimensions2000.png}   \\
 ~\hfill Dimension $20$ \hfill ~ \hfill Dimension $200$ \hfill ~ \hfill Dimension $2000$\hfill ~\\
-\caption{Results on the sphere function, per dimensionality. Results are  averaged over 6 values of the budget: $30$, $100$, $3000$, $10000$, $30000$, $100000$. \otc{Our method becomes better and better as the dimension increases.}}
+\caption{Results on the sphere function, per dimensionality. Results are  averaged over 6 values of the budget: $30$, $100$, $3000$, $10000$, $30000$, $100000$. {Our method becomes better and better as the dimension increases.}}
     \label{toto2}
 \end{figure}
 \begin{figure}[t]
@@ -392,7 +374,7 @@ Several rescaling methods are already available on Nevergrad. A large fraction o
     %\carolanote{which name does this one have? Should be mentioned here}
     \item The quasi-opposite methods suggested in~\cite{centerbased}, with prefix ``\texttt{QO}''\olivier{: when $x$ is sampled, then another sample $c-rx$ is added, with $r$ uniformly drawn in $[0,1]$ and $c$ the center of the distribution.}
     \end{itemize}\carola{\olivier{We also include} in our comparison \olivier{a different type of one-shot optimization techniques, independent of the present work, currently available in the platform:} they use the information obtained from the sampled points to recommend a point $x$ that is not necessarily one of the $\lambda$ evaluated ones. These \textit{``one-shot+1''} strategies \olivier{have the prefix} ``\texttt{Avg}''. }%\olivier{Remarkably,} our rescaled sampling still outperforms these more powerful methods.}
-We keep all these and all other sampling strategies available in Nevergrad for our experiments.   %\otc{The methods containing ``Avg'' in the name are different by nature: they find an approximation of the optimum using the sampled points (assuming a model of the fitness values), but do not have to choose a point among the $X_1,\dots,X_\lambda$: we note that we still outperform those methods.}
+We keep all these and all other sampling strategies available in Nevergrad for our experiments.   %{The methods containing ``Avg'' in the name are different by nature: they find an approximation of the optimum using the sampled points (assuming a model of the fitness values), but do not have to choose a point among the $X_1,\dots,X_\lambda$: we note that we still outperform those methods.}
 We add to this existing Nevergrad portfolio our own rescaling strategy, which uses the scaling factor derived in Sec.~\ref{sec:theory}; i.e.,  $\sigma = \sqrt{\log(\lambda)/d}$. We refer to this sampling strategy as \texttt{MetaTuneRecentering}, defined below.
 Both scaling factors \texttt{MetaRecentering}~\cite{icmldoe} and \texttt{MetaTuneRecentering} (our equations) are applied to quasirandom sampling (more precisely, scrambled Hammersley~\cite{hammersley,atanasov}) rather than random sampling. We provide detailed specifications of these methods and the most important ones below, whereas \olivier{we skip the dozens of other methods: they are open sourced in Nevergrad~\cite{nevergrad}.}
 \paragraph{From $[0,1]^d$ to Gaussian quasi-random, random or LHS sampling:}
@@ -432,7 +414,7 @@ It is well known that a proper initialization can be very critical for the perfo
     %     \includegraphics[trim={10 10 12 80}, clip,width=.80\textwidth]{parahdbo4d.png}
     % \includegraphics[trim={10 10 12 80}, clip,width=.80\textwidth]{paraalldes.png}
     \vspace{-10pt}
-    \caption{Performance comparison of different strategies to initialize Bayesian Optimization (BO, left) and Differential Evolution (DE, right). A detailed description is given in Sec.~\ref{sec:initialization}. \otc{\texttt{MetaTuneRecentering} performs best as an initialization method. In the case of DE, methods different from the traditional DE remain the best on this testcase: when we compare DE with a given initialization and DE initialized with \texttt{MetaTuneRecentering}, \texttt{MetaTuneRecentering} performs best in almost all cases. }}
+    \caption{Performance comparison of different strategies to initialize Bayesian Optimization (BO, left) and Differential Evolution (DE, right). A detailed description is given in Sec.~\ref{sec:initialization}. {\texttt{MetaTuneRecentering} performs best as an initialization method. In the case of DE, methods different from the traditional DE remain the best on this testcase: when we compare DE with a given initialization and DE initialized with \texttt{MetaTuneRecentering}, \texttt{MetaTuneRecentering} performs best in almost all cases. }}
     \label{deinitxp}\label{boinit}
 \end{figure}
 Fig.~\ref{boinit} summarizes the results of our experiments. As in the previous setups, we compare against existing methods from the Nevergrad platform, to which we have just added our rescaling factor termed \texttt{MetaTuneRecentering}. For each initialization scheme, \carola{four} different initial population sizes are considered: denoting by $d$ the dimension, by $w$ the  parallelism \carola{(i.e., the number of workers)}, and by $b$ the total budget that the algorithms can spend on optimizing the given optimization task, the initial population $\lambda$ is set as   
@@ -448,7 +430,7 @@ The chart on the right of Fig.~\ref{boinit} summarizes results for Differential 
 %scaling performs best in most cases as a one-shot optimization method (Fig. \ref{doexp}, \ref{toto}, \ref{toto2}, and~\ref{toto3}). This scaling also 
 % performs quite well as an initialization method for optimization algorithms. \carolanote{We should add a few more details about the results}
 %(Fig.~\ref{boinit}).
-% \otc{With just this rescaling, we perform quite well also compared to methods building an approximate optimum $\hat X$ using a model of the objective function (methods with ``Avg'' in the name) - whereas we do not have to spend time validating our approximate optimum given that it is one of the evaluated points $X_1,\dots,X_\lambda$.}
+% {With just this rescaling, we perform quite well also compared to methods building an approximate optimum $\hat X$ using a model of the objective function (methods with ``Avg'' in the name) - whereas we do not have to spend time validating our approximate optimum given that it is one of the evaluated points $X_1,\dots,X_\lambda$.}
 %\subsection{The multi-epochs case}
 %TODO discuss choice of values in the state of the art
 %
@@ -468,9 +450,8 @@ We have investigated \olivier{the scaling} of the variance of random sampling in
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%    APPENDIX   %%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{subappendices}
 
-\section{Relevant Concentration Bounds for $\chi^2$ Distributions}
+\section{Appendix: Relevant Concentration Bounds for $\chi^2$ Distributions}
 \label{back}
 
 We recall some basic definitions and properties of the central and the non-central $\chi^2$ distributions, which are needed in the proofs of Theorems~\ref{thm:suff} and~\ref{thm:nec}. %\carolanote{For reasons of space, we can only sketch these here; the interested reader is referred to~\cite{SomeBook} for a more extended discussion.@Laurent, do you happen to know a good textbook?} 
@@ -531,7 +512,7 @@ P\left(U\leq -x\right) \leq \exp{\left(-\frac14 \frac{x^2}{2\mu+d}\right)}.
 Proofs for the concentration inequalities~\ref{concentration1} and~\ref{concentration2} can be found in~\cite[Theorem~7]{chi2magical}. 
 \section{Proof of Theorem~\ref{thm:suff} (Sufficient condition)}
 \label{sec:suff}
-\begin{prv*}
+\begin{proof}
 
 We now present the proof of Theorem~\ref{thm:suff}, the sufficient condition for the scaling factor $\sigma^2$ to be beneficial over sampling the middle point. 
 % \begin{proof}
@@ -613,14 +594,14 @@ To show~\eqref{eq:suff3}, we first note that
 $$\frac{(\varepsilon\frac{\lVert x^*\rVert^2}{\sigma^2}+d)^2}{2\frac{\lVert x^*\rVert^2}{\sigma^2}+d} \leq \frac{\left(\frac{c_1}{c_2}(1+t)+1\right)^2}{2\frac{d}{c_2\log\lambda}(1-t)+1}.$$ 
 Under the assumptions stated in~\eqref{ass3b}, and since $d\rightarrow\infty$, we approximate $$\frac{\frac{c_1}{c_2}(1+t)+1}{\frac{d}{c_2\log\lambda}(1-t)+1}=\frac{c_2}{2}\left(\frac{c_1}{c_2}+1\right)^2\log \lambda+o(\log \lambda) = \frac{2}{3 C_\beta} \log \lambda+o(\log \lambda)$$ 
 and $A_\lambda= \frac{1}{C_\beta}\log \lambda+o(\log\lambda)$, which shows that condition~\ref{eq:suff3} holds for $d$ sufficiently large and $x^*$ satisfying $\lvert\frac{\lVert x^*\rVert^2}{d}-1\rvert\leq t$. 
-\end{prv*}
+\end{proof}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% Nec Case %%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%
-\section{Proof of Theorem~\ref{thm:nec} (Necessary condition)}
+\section{Appendix: Proof of Theorem~\ref{thm:nec} (Necessary condition)}
 \label{sec:nec}
-\begin{prv*}
+\begin{proof}
 We now prove the necessary condition which we have stated in Theorem~\ref{thm:nec}.
 Let $d$, $\lambda$, $\varepsilon$, and $\sigma$ satisfy the condition of Theorem~\ref{thm:nec}.  
 As in the beginning of the proof for Theorem~\ref{thm:suff}, we can deduce the following necessary condition. For all $t\leq1$ it holds that 
@@ -656,15 +637,15 @@ Fixing $t = d^{-1/3}$ and considering the requirements stated in~\eqref{ass3b} w
 $\tilde{\sigma}= 2\frac{\tilde{A}_\lambda}{d}+o\left(\frac{\tilde{A}_\lambda}{d}\right)=8 \frac{\log \lambda}{d}+o\left(\frac{\log \lambda}{d}\right)$,
 which concludes the proof of the necessary condition, as it shows 
 $\sigma^2\in O\left( \frac{\log\lambda_d}{d}\right)$.
-\end{prv*}
+\end{proof}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% Upper bound %%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%
-\section{Proof of Theorem~\ref{thm:approx} (Upper Bound for the Gain)}
+\section{Appendix: Proof of Theorem~\ref{thm:approx} (Upper Bound for the Gain)}
 \label{sec:approx} 
 
-\begin{prv*}
+\begin{proof}
 
 The proof of Theorem~\ref{thm:approx} uses the same argument as the one of Theorem~\ref{thm:nec}. We have proved that $\sigma^2$ must be between $0$ and $\tilde{\sigma}=2\frac{\lVert x^*\rVert^2/d}{\frac{d}{\bar{A}_\lambda}-1}$. Then  we get that:
 
@@ -687,6 +668,5 @@ We get after simple algebraic simplifications and for $d$ sufficiently large und
 Then $\varepsilon\in O\left( \frac{\log\lambda_d}{d}\right)$, which concludes the proof of Theorem~\ref{thm:approx}.
 % \newpage
 
-\end{prv*}
+\end{proof}
 
-\end{subappendices}

@@ -35,7 +35,7 @@ It turns out that, given an additional assumption, this condition is actually su
 
 \begin{thm}[Sufficient conditions for Calibration] 
 \label{thm:calibration-suf}
-Let $\phi$  be a continuous margin loss and $\varepsilon>0$. If $\phi$ is strictly decreasing in a neighbourhood of $0$ and calibrated in the standard setting and $0\not\in \argminB_{\alpha\in\bar{\RR}}
+Let $\phi$  be a continuous margin loss and $\varepsilon>0$. If $\phi$ is decreasing and strictly decreasing in a neighbourhood of $0$ and calibrated in the standard setting and $0\not\in \argminB_{\alpha\in\bar{\RR}}
 \frac12\phi(\alpha)+\frac12\phi(-\alpha)$, then $\phi$ is adversarially uniformly calibrated at level $\varepsilon$.
 \end{thm}
 
@@ -98,9 +98,10 @@ Let $\phi$  be a continuous margin loss and $\varepsilon>0$. If $\phi$ is strict
      \frac12\max\left(\phi(\alpha_n),\phi(\beta_n)\right)+\frac12\max\left(\phi(-\alpha_n),\phi(-\beta_n)\right)\longrightarrow \inf_\alpha \frac12\phi(\alpha)+\frac12\phi(-\alpha) 
     \end{align}
     
-    Since, for $n$ sufficiently large, $\alpha_n<0<\beta_n$ and $\phi$ is strictly decreasing, $\max\left(\phi(\alpha_n),\phi(\beta_n)\right) = \phi(\alpha_n)$ and $\max\left(\phi(-\alpha_n),\phi(-\beta_n)\right) = \phi(-\beta_n)$. Moreover, there exists $\lambda>0$ such that for $n$ sufficiently large $\phi(\alpha_n) - \phi(\beta_n)\geq \lambda$. Then for $n$ sufficiently large:
+    Since, for $n$ sufficiently large, $\alpha_n<0<\beta_n$ and $\phi$ is decreasing  and strictly decreasing in a neighbourhood of $0$, we get that $\max\left(\phi(\alpha_n),\phi(\beta_n)\right) = \phi(\alpha_n)$ and $\max\left(\phi(-\alpha_n),\phi(-\beta_n)\right) = \phi(-\beta_n)$. Moreover, there exists $\lambda>0$ such that for $n$ sufficiently large $\phi(\alpha_n) - \phi(\beta_n)\geq \lambda$. Then for $n$ sufficiently large:
     \begin{align*}
-        \frac12\max\left(\phi(\alpha_n),\phi(\beta_n)\right)+\frac12\max\left(\phi(-\alpha_n),\phi(-\beta_n)\right) &= \frac{1}{2} \phi(\alpha_n) +\frac12 \phi(-\beta_n)\\
+        \frac12\max\left(\phi(\alpha_n),\phi(\beta_n)\right)&+\frac12\max\left(\phi(-\alpha_n),\phi(-\beta_n)\right)\\
+         &= \frac{1}{2} \phi(\alpha_n) +\frac12 \phi(-\beta_n)\\
         &= \frac{1}{2} \left(\phi(\alpha_n)- \phi(\beta_n)\right)+\frac12 \phi(-\beta_n)+\frac{1}{2}+ \phi(\beta_n)\\
         &\geq \frac12\lambda +\inf_u \frac12\phi(u)+\frac12\phi(-u)
     \end{align*}
@@ -129,12 +130,12 @@ Let $\phi$  be a continuous margin loss and $\varepsilon>0$. If $\phi$ is strict
 % \end{prv-sk*}
 
 
-\begin{rmq}[Strictly decreasing hypothesis] 
+\begin{rmq}[Decreasing hypothesis] 
 
 
 
 
-For the reciprocal, the additional assumption of strict decreasing of $\phi$ in a neighbourhood of $0$ is not restrictive for losses. In Theorem~\ref{thm:cal-standard}, this assumption is stated as a necessary and sufficient condition for convex losses to be calibrated.
+For the reciprocal, the additional assumption that $\phi$ is decreasing and strictly decreasing in a neighbourhood of $0$ is not restrictive for losses. In Theorem~\ref{thm:cal-standard}, this assumption is stated as a necessary and sufficient condition for convex losses to be calibrated.
 \end{rmq}
 
 
@@ -145,7 +146,7 @@ For the reciprocal, the additional assumption of strict decreasing of $\phi$ in 
 
 Thanks to Theorem~\ref{thm:calibration-nec}, we can present two notable corollaries dismissing two important classes of surrogate losses in the standard setting. The first class of losses are convex margin losses. This losses are maybe the most widely used in modern day machine learning as they comprise the logistic loss or the margin loss that are the building block of most classification algorithms. %\textcolor{blue}{[CITE Pytorch or else]}
 
-\begin{coro} Let $\varepsilon>0$. Then no convex margin loss can be adversarially calibrated at level $\epsilon$.
+\begin{coro} Let $\varepsilon>0$. Then no convex margin loss can be adversarially calibrated at level $\varepsilon$.
 \end{coro} 
 %$\phi$ a convex margin loss. Then, $\phi$ is not adversarially calibrated at level $\varepsilon$. 
 
@@ -326,15 +327,16 @@ Let $\phi$  be a continuous margin loss .  If $\phi$ is adversarially uniformly 
 
 \end{prop*}
 
-
-TODO
-
 \begin{prop*}[Sufficient conditions for $\mathcal{H}$-Calibration of adversarial losses]
 Let $\mathcal{H}\subset \mathcal{F}(\mathcal{X})$. Let us assume that $\mathcal{H}$ contains all constant functions.
 Let $\phi$  be a continuous strictly decreasing margin loss and $\varepsilon>0$. If $\phi$ is calibrated in the standard classification setting and $0\not\in \argminB_{\alpha\in\bar{\RR}}
-\frac12\phi(\alpha)+\frac12\phi(-\alpha)$, then $\phi$ is adversarially uniformly $\mathcal{H}$-calibrated at level $\varepsilon$.
+\frac12\phi(\alpha)+\frac12\phi(-\alpha)$, then $\phi$ is adversarially uniformly $\mathcal{H}$-calibrated at level $\varepsilon$.x
 
 
 \end{prop*}
 
-TODO
+The proofs are sensibly the same than in the adversarial calibration setting. It worth noting that the assumptions on $\mathcal{H}$ are very weak: for instance, the set of linear classifiers 
+\begin{align*}
+    \mathcal{H}=\left\{x\mapsto \langle w,x\rangle +b\mid w\in\RR^d,b\in \RR \right\}
+\end{align*}
+satisfy the existence of $x\in\XX$ and $(f_n)_n\in\mathcal{H}^\mathbb{N}$ such that $f_n(u)\to 0$ for all $ u\in B_\varepsilon(x)$ and for all $n\in\mathbb{N}$, $\sup_{u\in B_\varepsilon(x)} f_n(u)>0$ and  $\inf_{u\in B_\varepsilon(x)} f_n(u)<0$. 

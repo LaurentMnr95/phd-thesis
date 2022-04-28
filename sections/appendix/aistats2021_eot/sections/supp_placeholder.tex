@@ -1,10 +1,8 @@
-\onecolumn
-\section*{Supplementary material}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Proofs}
+\section{Appendix: Proofs}
 \label{sec:proofs}
 
 \subsection{Notations}
@@ -29,7 +27,7 @@ We also define the following subset of $\mathcal{M}_+(\mathcal{X}\times \mathcal
 
 \subsection{Proof of Proposition~\ref{prop:mot-equality}}
 \label{prv:mot-equality}
-\begin{prv*}
+\begin{proof}
 
 First, it is clear that $\MOT_{\mathbf{c}}(\mu,\nu) \geq  \inf_{\gamma\in\Gamma^N_{\mu,\nu}}\{t\text{ s.t. }\forall i,~t=\int c_id\gamma_i\}$. Let us now show that in fact it is an equality. Thanks to Theorem~\ref{thm:duality-GOT}, the infimum is attained for $\inf_{\gamma\in\Gamma_{\mu,\nu}}\max_i\int c_id\gamma_i$. Indeed recall that $\Gamma^N_{\mu,\nu}$ is compact and that the objective is lower semi-continuous. Let $\gamma^*$ be such a minimizer. Let $I$ be the set of indices $i$ such that $\int c_id\gamma^*_i=\MOT_{\mathbf{c}}(\mu,\nu)$. Assume that there exists $j$ such that, $\MOT_{\mathbf{c}}(\mu,\nu)>\int c_jd\gamma^*_j$. 
 
@@ -43,12 +41,12 @@ $\MOT_{\mathbf{c}}(\mu,\nu) = \inf_{\gamma\in\Gamma^N_{\mu,\nu}}\max_i\int c_id\
 It is clear that equitability is verified thanks to the previous proof. For proportionality, assume the normalization:  $\forall i$, there exists $\gamma_i\in\mathcal{M}_+^1(\mathcal{X}\times\mathcal{Y})$ such that $V_i(\gamma_i)=1$. Then for each $i$, $V_i(\gamma_i/N)=1/N$ and $(\gamma_i)_i\in\Gamma^N_{\mu,\nu}$. Then at optimum: $\forall i$, $V_i(\gamma_i^*)\geq 1/N$ and proportionality is verified.
 
 
-\end{prv*}
+\end{proof}
 
 \subsection{Proof of Proposition~\ref{prop:mot-otplans}}
 \label{prv:mot-otplans}
 
-\begin{prv*}
+\begin{proof}
 
  
 We prove along with Theorem~\ref{thm:duality-GOT} that the infimum defining $\MOT_\mathbf{c}(\mu,\nu)$ is attained. Let $\gamma^*$ be this infimum. Then at optimum we have shown that for all $i,j$, $\int c_id\gamma^*_i=\int c_jd\gamma^*_j = t$. Let denote for all $i$, $\mu_i=\Pi_{1\sharp}\gamma^*_i$ and $\nu_i=\Pi_{2\sharp}\gamma^*_i$. 
@@ -65,7 +63,7 @@ We previously show that at optimum the couplings are optimal transport plans, th
 \MOT_\mathbf{c}(\mu,\nu) =\min_{\substack{(\mu_i,\nu_i)_{i=1}^N\in\Upsilon^N_{\mu,\nu}}} \left\{t~\mathrm{s.t.}~ \forall i,~ \wass_{c_i}(\mu_i,\nu_i) =t\right\}
 \end{align*}
 which concludes the proof.
-\end{prv*}
+\end{proof}
 
 
 \subsection{Proof of Theorem~\ref{thm:duality-GOT}}
@@ -81,7 +79,7 @@ Let $\mathcal{X}$ and $\mathcal{Y}$ be Polish spaces, and $\mu$ and $\nu$ two pr
 \end{lemma}
 
 
-\begin{prv*}
+\begin{proof}
 Let $(\gamma^n)_{n\geq 0}$ a sequence in $\Gamma^N_{\mu,\nu}$, and let us denote for all $n\geq 0$, $\gamma^n=(\gamma^n_i)_{i=1}^N$. We first remark that for all $i\in\{1,...,N\}$ and $n\geq 0$, $\Vert \gamma_i^n\Vert_{\TV}\leq 1$ therefore for all $i\in\{1,...,N\}$, $(\gamma^n_i)_{n\geq 0}$ is uniformly bounded. Moreover as $\{\mu\}$ and $\{\nu\}$ are tight, for any $\delta>0$, there exist $K\subset \mathcal{X} $ and $L\subset \mathcal{Y}$ compact sets such that 
 \begin{align}
     \mu(K^c)\leq \frac{\delta}{2} \text{\quad and\quad }  \nu(L^c)\leq \frac{\delta}{2}.
@@ -94,7 +92,7 @@ Therefore, we obtain that for any for all $i\in\{1,...,N\}$,
 \end{align}
 Therefore, for all $i\in\{1,...,N\}$,  $(\gamma_i^n)_{n\geq 0}$ is tight and uniformly bounded and Prokhorov's theorem~\citep[Theorem A.3.15]{dupuis2011weak} guarantees for all $i\in\{1,...,N\}$,  $(\gamma_i^n)_{n\geq 0}$ admits a weakly convergent subsequence. By extracting a common convergent subsequence, we obtain that $(\gamma^n)_{n\geq 0}$ admits a weakly convergent subsequence. By continuity of the projection, the limit also lives in $\Gamma
 ^N_{\mu,\nu}$ and the result follows.
-\end{prv*}
+\end{proof}
 
 Next lemma generalizes Rockafellar-Fenchel duality to our case.
 \begin{lemma}
@@ -104,13 +102,13 @@ Let $V$ be a normed vector space and $V^*$ its topological dual. Let $V_1,...,V_
 \inf_{u\in V} \sum_i V_i(u) + E(u) = \sup\limits_{\substack{\gamma_1...,\gamma_N,\gamma\in V^*\\\sum_i \gamma_i = \gamma}}-\sum_i V^*_i(-\gamma_i)-E^*(\gamma)
 \end{align*}
 \end{lemma}
-\begin{prv*}
+\begin{proof}
 This Lemma is an immediate application of Rockafellar-Fenchel duality theorem~\citep[Theorem 1.12]{brezis2010functional} and of Fenchel-Moreau theorem~\citep[Theorem 1.11]{brezis2010functional}. 
 Indeed, $V = \sum\limits_{i=1}^N V_i(u)$ is a convex function, lower semi-continuous and its Legendre-Fenchel transform is given by:
 \begin{align}
     V^{*}(\gamma^*)=\inf_{\sum\limits_{i=1}^N \gamma_{i}^*=\gamma^*}\sum_{i=1}^N V_i^{*}(\gamma_{i}^*).
 \end{align}
-\end{prv*}
+\end{proof}
 
 
 % \begin{lemma}
@@ -123,11 +121,11 @@ Indeed, $V = \sum\limits_{i=1}^N V_i(u)$ is a convex function, lower semi-contin
 % \end{align}
 % \end{lemma}
 
-% \begin{prv*}
+% \begin{proof}
 % It is clear that $\MOT_{\mathbf{c}}(\mu,\nu)\leq \inf_{\gamma\in\Gamma_{\mu,\nu}^N} \max_i\int_{\mathcal{X}\times\mathcal{Y}}c_i(x,y)d\gamma_i(x,y)$. The infimum is attained for both problem thanks to weak compactness of $\Gamma_{\mu,\nu}^N$ (Lemma~\ref{lem:compact-weak}) and Stone Weierstrass Lemma. Let $\gamma^*$ be the optimum for $\inf_{\gamma\in\Gamma_{\mu,\nu}^N} \max_i\int_{\mathcal{X}\times\mathcal{Y}}c_i(x,y)d\gamma_i(x,y)$. 
 
 % Assume there exists $i,j$ such that $\int c_i d\gamma_i>\int c_j d\gamma_j$
-% \end{prv*}
+% \end{proof}
 
 Last lemma is an application of Sion's Theorem to this problem.
 \begin{lemma}
@@ -140,7 +138,7 @@ Let $\mathcal{X}$ and $\mathcal{Y}$ be Polish spaces. Let $\mathbf{c}=(c_i)_{1\l
 and the infimum is attained.
 % and both the infimum and the supremum are attained. Moreover, if $\gamma^*$ be an optimum for~\eqref{eq-primal} and $\lambda^*$ an optimum for~\eqref{eq:supinf}, then $(\lambda^*,\gamma^*)$ is a saddle point for the minmax problem.
 \end{lemma}
-\begin{prv*}
+\begin{proof}
 Taking for granted that a minmax principle can be invoked, we have
 \begin{align*}
     \sup_{\lambda\in\Delta_N^{+}}\inf_{\gamma\in\Gamma_{\mu,\nu}^N} \sum_{i=1}^N\lambda_i\int_{\mathcal{X}\times\mathcal{Y}}c_i(x,y)d\gamma_i(x,y) &= \inf_{\gamma\in\Gamma_{\mu,\nu}^N}\sup_{\lambda\in \Delta_N^{+}} \sum_{i=1}^N\lambda_i\int_{\mathcal{X}\times\mathcal{Y}}c_i(x,y)d\gamma_i(x,y)\\
@@ -152,11 +150,11 @@ But thanks to Lemma \ref{lem:compact-weak}, we have that $\Gamma_{\mu,\nu}^N$ is
 %Moreover $\lambda\in\Delta^+_N \rightarrow \min_{\gamma\in\Gamma_{P,Q}^N} f(\lambda,\gamma)$ is upper semi continuous as being a infimum of linear (hence continuous) functions. Then then by compacity of $\Delta^+_N$ we can apply the Stone-Weierstass Theorem~\citep[Theorem 5.8]{rudin1991functional} which conclude the existence of minimum and supremum.
 
 % Let $\gamma^*$ be the optimum for~\eqref{eq-primal} and $\lambda^*$ the optimum for~\eqref{eq:supinf}. Since $f:(\lambda,\gamma)\mapsto\sum_{i=1}^N\lambda_i\int_{\mathcal{X}\times\mathcal{Y}}c_i(x,y)d\gamma_i(x,y)$ is linear in both variables, the optimal value of~\eqref{eq-primal} and~\eqref{eq:supinf} coincide at $f(\lambda^*,\gamma^*)$. Following the standard results from convex analysis~\citep[Lemma 36.2, Corollary  37.6.2]{rockafellar1970convex}, $(\lambda^*,\gamma^*)$ is a saddle point for the minmax problem.
-\end{prv*}
+\end{proof}
 
 We are now able to prove Theorem~\ref{thm:duality-GOT}.
 
-\begin{prv*}
+\begin{proof}
 Let $\mathcal{X}$ and $\mathcal{Y}$ be two Polish spaces. For all $i\in \{1,..,N\}$, we define $c_i:\mathcal{X}\times\mathcal{Y}\rightarrow \mathbb{R}$ a bounded below lower-semi cost function. The proof follows the exact same steps as those in the proof of~\citep[Theorem 1.3]{villani2003topics}. First we suppose that $\mathcal{X}$ and $\mathcal{Y}$ are compact and that for all $i$, $c_i$ is continuous, then we show that it can be extended to $X$ and $Y$ non compact and finally to $c_i$ only lower semi continuous.
 
 \medskip
@@ -318,14 +316,14 @@ To conclude, we apply Lemma~\ref{lem:technical-lemma-primal}, and we get:
 \end{align*}
 
 
-\end{prv*}
+\end{proof}
 
 
 
 
 \subsection{Proof of Proposition~\ref{prop:optimality-cond}}
 \label{prv:optimality-cond}
-\begin{prv*}
+\begin{proof}
 Let recall that, from standard optimal transport results:
 \begin{align*}
     \MOT_\mathbf{c}(\mu,\nu) = \sup_{u\in\Phi_\mathbf{c}}\int u d\mu d\nu
@@ -360,7 +358,7 @@ then $\gamma_k$ is solution of the primal problem. We also have for any $k$:
 &=\int c_k d\gamma_k\\
 &\geq \MOT_{\mathbf{c}}(\mu,\nu)\\
 \end{align*}
-\end{prv*}
+\end{proof}
 then, thanks to Theorem~\ref{thm:duality-GOT}, $(\lambda,f,g)$ is solution of the dual problem.
 
 Let now proof the result stated in Remark~\ref{rk:lambdanonzero}. Let assume the costs are strictly positive or strictly negative. If there exist $i$ such that $\lambda_i=0$, thanks to the condition $f\oplus g\leq \lambda_i c_i$, we get $f\oplus g\leq0$ and then $f\oplus g=0$ which contradicts the conditions $f\oplus g = \lambda_kc_k$ for all $k$. 
@@ -385,7 +383,7 @@ then for any $(\mu,\nu)\in\mathcal{M}_+^{1}(\mathcal{X})\times\mathcal{M}_+^{1}(
 \end{align}
 \end{lemma}
 
-\begin{prv*}
+\begin{proof}
 Let $(\mu,\nu)\in\mathcal{M}_+^{1}(\mathcal{X})\times\mathcal{M}_+^{1}(\mathcal{Y})$ and $\mathbf{c}:=(c_i)_{1\leq i\leq N}$ cost functions on $\mathcal{X}\times \mathcal{Y}$. Let $\lambda\in\Delta_N^{+}$, then by Proposition~\ref{thm:duality-GOT}:
 \begin{align*}
     \MOT_{\mathbf{c}}(\mu,\nu)= \sup_{\lambda\in\Delta_N^{+}} \sup_{(f,g)\in \mathcal{F}_{\mathbf{c}}^{\lambda}} \int_{\mathcal{X}} f(x)d\mu(x)+ \int_{\mathcal{Y}} g(y)d\nu(y)
@@ -395,12 +393,12 @@ Therefore by denoting $c_\lambda:=\min_i(\lambda_ic_i)$ which is a continuous. T
 \sup_{(f,g)\in \mathcal{F}_{\mathbf{c}}^{\lambda}} \int_{\mathcal{X}} f(x)d\mu(x)+ \int_{\mathcal{Y}} g(y)d\nu(y) =  \wass_{c_\lambda}(\mu,\nu)
 \end{align*}
 and the result follows.
-\end{prv*}
+\end{proof}
 
 
 Let us now prove the result of Proposition~\ref{prop:GOT-holder}. 
 
-\begin{prv*} 
+\begin{proof} 
 Let $\mu$ and $\nu$ be two probability measures. Let $\alpha\in (0,1]$. Note that if $d$ is a metric then $d^\alpha$ too. Therefore in the following we consider $d$ a general metric on $\mathcal{X}\times\mathcal{X}$. Let $c_1:(x,y)\rightarrow2\times \mathbf{1}_{x\neq y}$ and $c_2=d^{\alpha}$. For all $\lambda\in[0,1)$:
 $$c_\lambda(x,y) := \min(\lambda c_1(x,y),(1-\lambda)c_2(x,y))=\min(2\lambda,(1-\lambda)d(x,y))$$
 defines a distance on  $\mathcal{X}\times\mathcal{X}$. Then according to \cite[Theorem 1.14]{villani2003topics}: 
@@ -414,7 +412,7 @@ Reciprocally, let $g$ be a function satisfying $||g||_\infty+||g||_d\leq 1$. Let
 \medskip
 
 Finally we get $\MOT_{(c_1,c_2)}(\mu,\nu) = \beta_d(\mu,\nu)$ when $c_1:(x,y)\rightarrow2\times \mathbf{1}_{x\neq y}$ and $c_2=d$ a distance on $\mathcal{X}\times\mathcal{X}$.
-\end{prv*}
+\end{proof}
 
 
 
@@ -427,7 +425,7 @@ Let $x_1,\dots,x_N\geq0$, then:
     \sup_{\lambda\in\Delta_N^{+}} \min_i\lambda_i x_i= \frac{1}{\sum_i\frac{1}{x_i}}
 \end{align*}
 \end{lemma}
-\begin{prv*}First if there exists $i$ such that $x_i=0$, we immediately have  $\sup_{\lambda\in\Delta_N^{+}} \min_i\lambda_i x_i=0$.\\
+\begin{proof}First if there exists $i$ such that $x_i=0$, we immediately have  $\sup_{\lambda\in\Delta_N^{+}} \min_i\lambda_i x_i=0$.\\
 $g:\lambda\mapsto \min_i\lambda_i x_i$ is a continuous function on the compact set $\lambda\in\Delta_N^{+}$. Let denote $\lambda^*$ the maximum of $g$. \\
 Let show that for all $i,j$, $\lambda^*_ix_i=\lambda^*_jx_j$. Let denote $i_0,\dots,i_k$ the indices such that $\lambda^*_{i_l}x_{i_l}=\min_i\lambda^*_i x_i$. Let assume there exists $j_0$ such that: $\lambda^*_{j_0}x_{j_0}>\min_i\lambda^*_i x_i$, and that all  other indices $i$ have a larger $\lambda^*_i x_i\geq \lambda^*_{j_0}x_{j_0}$. Then for $\epsilon>0$ sufficiently small, let $\tilde{\lambda}$ defined as: $\tilde{\lambda}_{j_0}=\lambda
 ^*_{j_0}-\epsilon$, $\tilde{\lambda}_{i_l}=\lambda
@@ -442,8 +440,8 @@ and then:
 \sup_{\lambda\in\Delta_N^{+}} \min_i\lambda_i x_i= \frac{1}{\sum_i\frac{1}{x_i}}.
 \end{align*}
 
-\end{prv*}
-\begin{prv*}
+\end{proof}
+\begin{proof}
 Let $\mu$ and $\nu$ be two probability measures respectively on $\mathcal{X}$ and $\mathcal{Y}$. Let $\mathbf{c}:=(c_i)_i$ be a family of cost functions. Let define for $\lambda\in\Delta_N^{+}$, $c_\lambda(x,y) := \min_i(\lambda_i c_i(x,y))$. We have, by linearity $\wass_{c_\lambda}(\mu,\nu)\leq \min_i(\lambda_i \wass_{c_i}(\mu,\nu))$. So we deduce by Lemma~\ref{lem:sup_wasser}:
 
 \begin{align*}
@@ -452,7 +450,7 @@ Let $\mu$ and $\nu$ be two probability measures respectively on $\mathcal{X}$ an
     &= \frac{1}{\sum_i\frac{1}{\wass_{c_i}(\mu,\nu)}}\text{ by Lemma~\ref{lem:supmin}}\\ 
 \end{align*}
 which concludes the proof.
-\end{prv*}
+\end{proof}
 
 
 
@@ -463,7 +461,7 @@ which concludes the proof.
 
 
 
-\begin{prv*}
+\begin{proof}
 To show the strong duality of the regularized problem, we use the same sketch of proof as for the strong duality of the original problem. 
 \medskip
 Let first assume that, for all $i$, $c_i$ is continuous on the compact set $\mathcal{X}\times\mathcal{Y}$. Let fix $\lambda\in\Delta^+_N$. We define, for all $u\in\mathcal{C}^b(\mathcal{X}\times\mathcal{Y})$:
@@ -529,7 +527,7 @@ Moreove by fixing $\gamma\in\Gamma^N_{\mu,\nu}$, we have
 which concludes the proof in case of continuous costs. A similar proof as the one of the Theorem~\ref{thm:duality-entropic} allows to extend the results for lower semi-continuous cost functions.
 % \todo{To recheck proof}
 % The objective is convex and continuous in its variable $(\lambda,\gamma)$, and as before the constraint space satisfies the assumption of the Sion's theorem from which the result follows when the cost functions are continuous and the sets compacts. A similar proof as the one of the Theorem [citer DUALITE] allows to extend the results for any Polish space and lower semi continuous cost functions.
-\end{prv*}
+\end{proof}
 
 
 
@@ -539,7 +537,7 @@ which concludes the proof in case of continuous costs. A similar proof as the on
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage 
 
-\section{Discrete cases}
+\section{Appendix: Discrete cases}
 \subsection{Exact discrete case}
 \label{dis:exact}
 
@@ -589,7 +587,7 @@ The objective function for the dual problem is strictly concave in $(\lambda,f,g
 
 % \subsection{Proofs of Proposition~\ref{prop:discrete-dual} and~\ref{prop:discrete-reg-dual}}
 
-\begin{prv*}
+\begin{proof}
 The proofs in the discrete case are simpler and only involves Lagrangian duality~\citep[Chapter 5]{boyd2004convex}. Let do the  proof in the regularized case, the one for the standard problem follows exactly the same path.
 
 Let $a\in\Delta_N^{+}$ and $b\in\Delta^+_m$ and $\mathbf{C}:=(C_i)_{1\leq i\leq N}\in\left(\mathbb{R}^{n\times m}\right)^N$ be $N$ cost matrices. 
@@ -623,7 +621,7 @@ Finally we obtain that
     \widehat{\MOT}^{\bm{\varepsilon}}_{\mathbf{C}}(a,b)
     &= \sup\limits_{\substack{f\in\mathbb{R}^n,~g\in\mathbb{R}^m,~\lambda\in\Delta_N^{+}}} \langle f,a \rangle + \langle g, b \rangle  - \sum_{k=1}^N \varepsilon_k \sum_{i,j} \exp\left(\frac{f_i+g_j-\lambda_k C_k^{i,j}}{\varepsilon_k}\right)
 \end{align*}
-\end{prv*}
+\end{proof}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -631,7 +629,7 @@ Finally we obtain that
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newpage 
-\section{Other results}
+\section{Appendix: Other results}
 
 
 \subsection{Utilitarian and Optimal Transport}
@@ -646,9 +644,9 @@ Let $\mathcal{X}$ and $\mathcal{Y}$ be Polish spaces. Let $\mathbf{c}:=(c_i)_{1\
 \end{prop}
 
 
-\begin{prv*}
+\begin{proof}
 The proof is a by-product of the proof of Theorem~\ref{thm:duality-GOT}. The continuity of the costs is necessary since $\min_i(c_i)$ is not necessarily lower semi-continuous when the costs are supposed lower semi-continuous.
-\end{prv*}
+\end{proof}
 
 \begin{rmq} 
 We thank an anonymous reviewer for noticing that the utilitarian problem can be written also as an Optimal Transport on the space  $\mathcal{Z} = (\mathcal{X}\times\{1,\dots,N\})\times(\mathcal{Y}\times\{1,\dots,N\})$:
@@ -688,7 +686,7 @@ Let $\mathcal{X}$ and $\mathcal{Y}$ be Polish spaces. Let $N\geq 0$, $\mathbf{c}
     \MOT_{\mathbf{d}_k}(\mu,\nu) = \MOT_{\mathbf{c}_k}(\mu,\nu)
 \end{align}
 \end{prop}
-\begin{prv*}
+\begin{proof}
 For all $k\in\{1,...,N\}$, we define $\mathbf{d}_k:=(c_1,...,(N-k+1)\times c_k,...,(N-k+1)\times c_k)$. Therefore, thanks to Lemma \ref{lem:sup_wasser} we have
 \begin{align}
 \MOT_{\mathbf{d}_k}(\mu,\nu)& = \sup_{\lambda\in\Delta_N^{+}} \wass_{c_\lambda}(\mu,\nu) \\
@@ -713,7 +711,7 @@ Then we obtain that
      \MOT_{\mathbf{d}_k}(\mu,\nu)\leq  \MOT_{\mathbf{c}_k}(\mu,\nu) 
 \end{align*}
 and the result follows.
-\end{prv*}
+\end{proof}
 
 \begin{prop}
 Let $\mathcal{X}$ and $\mathcal{Y}$ be Polish spaces and $\mathbf{c}:=(c_i)_{1\leq i\leq N}$ a family of nonnegative lower semi-continuous costs on $\mathcal{X}\times \mathcal{Y}$. We suppose that, for all $i$, $c_i= N\times c_1$. Then for any $(\mu,\nu)\in\mathcal{M}_+^{1}(\mathcal{X})\times\mathcal{M}_+^{1}(\mathcal{Y})$  
@@ -721,7 +719,7 @@ Let $\mathcal{X}$ and $\mathcal{Y}$ be Polish spaces and $\mathbf{c}:=(c_i)_{1\l
     \MOT_{\mathbf{c}}(\mu,\nu)=\MOT_{c_1}(\mu,\nu)=\wass_{c_1}(\mu,\nu).
 \end{align}
 \end{prop}
-\begin{prv*}
+\begin{proof}
 Let $c:=(c_i)_{1\leq i\leq N}$ such that for all $i$, $c_i=c_1$. for all $(x,y)\in\mathcal{X}\times \mathcal{Y}$ and $\lambda\in\Delta^+_N$, we have:
 \begin{align*}
     c_\lambda(x,y):=\min_i(\lambda_i c_i(x,y)) = \min_i(\lambda_i)c_1(x,y)
@@ -737,7 +735,7 @@ But we also have that:
     &=\min_i(\lambda_i )  \wass_{c_1}(\mu,\nu)
 \end{align*}
 Finally by taking the supremum over $\lambda\in\Delta^+_N$ we conclude the proof.
-\end{prv*}
+\end{proof}
 
 \subsection{Regularized EOT tends to EOT}
 \label{res:epsto0}
@@ -751,12 +749,12 @@ For $(\mu,\nu)\in\mathcal{M}_+^{1}(\mathcal{X})\times\mathcal{M}_+^{1}(\mathcal{
 \end{prop}
 
 
-\begin{prv*}
+\begin{proof}
 Let $(\bm{\varepsilon}_l=(\varepsilon_{l,1},\dots,\varepsilon_{l,N}))_l$ a sequence converging to $0$. Let $\gamma_l = (\gamma_{l,1},\dots,\gamma_{l,N})$ be the optimum of $\MOT^{\bm{\varepsilon_l}}_\mathbf{c}(\mu,\nu)$. By Lemma~\ref{lem:compact-weak}, up to an extraction, $\gamma_l\rightarrow \gamma^\star=(\gamma^\star_{1},\dots,\gamma^\star_{N})\in\Gamma^N_{\mu,\nu}$. Let now $\gamma=(\gamma_{1},\dots,\gamma_{N})$ be the optimum of $\MOT_\mathbf{c}(\mu,\nu)$. By optimality of $\gamma$ and $\gamma_l$, for all $i$: \begin{align*}
     0\leq  \int c_id\gamma_{l,i}-\int c_id\gamma_{i}\leq\sum_i\varepsilon_{l,i}\left(\KL(\gamma_{i}||\mu\otimes\nu)-\KL(\gamma_{l,i}||\mu\otimes\nu)\right)
 \end{align*}
 By lower semi continuity of $\KL(.||\mu\otimes\nu)$ and by taking the limit inferior as $l\to\infty$, we get for all $i$, $\liminf_{\ell\rightarrow\infty} \int c_id\gamma_{l,i}=\int c_id\gamma_{i}$. Moreover by continuity of $\gamma\rightarrow \int c_i d\gamma_i$  we therefore obtain that for all $i$, $\int c_id\gamma^\star_{i}\leq \int c_id\gamma_{i}$. Then by optimality of $\gamma$ the result follows.
-\end{prv*}
+\end{proof}
 
 
 \subsection{Projected Accelerated Gradient Descent}
@@ -773,7 +771,7 @@ Moreover, $F_{\mathbf{C}}^{\varepsilon}$ is concave, differentiable and $\nabla 
 \end{prop}
 
 
-\begin{prv*}
+\begin{proof}
 Let $\mathcal{Q}:=\left\{P:=(P_1,...,P_N)\in(\mathbb{R}_{+}^{n\times m})^N \text{:\quad} \sum_{k=1}^N \sum_{i,j} P_k^{i,j}=1 \right\}$. Note that $\Gamma_{a,b}^N\subset \mathcal{Q}$, therefore from the primal formulation of the problem we have that 
 \begin{align*}
     \widehat{\MOT}^{\bm{\varepsilon}}_{\mathbf{C}}(a,b)&=\sup_{\lambda\in\Delta_N^{+}}\inf_{P\in \Gamma_{a,b}^N}  \sum_{i=1}^N \lambda_i \langle P_i,C_i\rangle -\varepsilon \ent(P_i) \\
@@ -841,7 +839,7 @@ Indeed the last two inequalities come from Cauchy Schwartz. Moreover we have
   - \frac{\sum_{k=1}^N v_k^2 \max\limits_{1\leq i\leq N}(\Vert C_i\Vert_{\infty}^2) }{\varepsilon}  & \leq 
  \end{align*}
  Therefore we deduce that $\lambda\in\mathbb{R}^N \rightarrow \nabla_{\lambda} F(\lambda,f,g)$ is $\frac{\max\limits_{1\leq i\leq N}(\Vert C_i\Vert_{\infty}^2)}{\varepsilon}$ Lipschitz-continuous, hence $\nabla F(\lambda,f,g)$ is $\frac{\max\left(\max\limits_{1\leq i\leq N}\Vert C_i\Vert_{\infty}^2,2N\right)}{\varepsilon}$ Lipschitz-continuous on $\mathbb{R}^N\times \mathbb{R}^n \times\mathbb{R}^m$. 
-\end{prv*}
+\end{proof}
 
 
 
@@ -908,7 +906,7 @@ $(v,w,z)^T \leftarrow (\lambda^{k-1},f^{k-1},g^{k-1})^T+\frac{k-2}{k+1}\left((\l
 % \end{align} 
 % \end{prop}
 
-% \begin{prv*}
+% \begin{proof}
 % \label{prv:dual-reformulation}
 % Let us first introduce the following Lemma which guarantees that compacity of  $\Upsilon^N_{\mu,\nu}$ for the weak topology.
 % \begin{lemma}
@@ -917,11 +915,11 @@ $(v,w,z)^T \leftarrow (\lambda^{k-1},f^{k-1},g^{k-1})^T+\frac{k-2}{k+1}\left((\l
 % \end{lemma}
 
 
-% \begin{prv*}
+% \begin{proof}
 % Let $(\gamma^n)_{n\geq 0}$ a sequence in $\Upsilon^N_{\mu,\nu}$, and let us denote for all $n\geq 0$, $\gamma^n=(\mu^n_i,\nu^n_i)_{i=1}^N$. We first remarks that for all $i\in\{1,...,N\}$ and $n\geq 0$, $\Vert \mu_i^n\Vert_{\TV} \leq 1$ and $\Vert \nu_i^n\Vert_{\TV} \leq 1$ therefore for all $i\in\{1,...,N\}$, $(\mu^n_i)_{n\geq 0}$ and $(\nu^n_i)_{n\geq 0}$  are uniformly bounded. Moreover as $\{\mu\}$ and $\{\nu\}$ are tight, for any $\delta>0$, there exists $K\subset \mathcal{X} $ and $L\subset \mathcal{Y}$ compact such that $\mu(K^c)\leq \delta \text{\quad and\quad }  \nu(L^c)\leq \delta$. Then, we obtain that for any for all $i\in\{1,...,N\}$, $\mu_i^n(K^c)\leq \delta \text{\quad and\quad }  \nu_i^n(L^c)\leq \delta$.
 % Therefore, for all $i\in\{1,...,N\}$,  $(\mu_i^n)_{n\geq 0}$ and $(\nu_i^n)_{n\geq 0}$ are tight and uniformly bounded and Prokhorov's theorem~\citep[Theorem A.3.15]{dupuis2011weak} guarantees for all $i\in\{1,...,N\}$,  $(\mu_i^n)_{n\geq 0}$ and $(\nu_i^n)_{n\geq 0}$ admit a weakly convergent subsequence. By extracting a common convergent subsequence, we obtain that $(\gamma^n)_{n\geq 0}$ admits a weakly convergent subsequence. By continuity of the projection, the limit also lives in $\Upsilon
 % ^N_{\mu,\nu}$ and the result follows.
-% \end{prv*}
+% \end{proof}
 % We can now prove the Proposition. As shown in the proof of Proposition~\ref{dual-interpret-max}, we have that for any $\lambda\in\Delta_N$
 % \begin{align*}
 %       &\sup\limits_{(f,g)\in\mathcal{F}_{\mathbf{c}}^{\lambda}} \int_{x\in\mathcal{X}} f(x)d\mu(x)+ \int_{y\in\mathcal{Y}} g(y)d\nu(y)\\
@@ -946,7 +944,7 @@ $(v,w,z)^T \leftarrow (\lambda^{k-1},f^{k-1},g^{k-1})^T+\frac{k-2}{k+1}\left((\l
 %      &= \inf_{t} \left\{t~\mathrm{ s.t.}~\forall k, ~ \int f_kd\mu_k+ \int g_kd\nu_k = t \right\}
 % \end{align*}
 % where the inversion is possible as the Slater's conditions are satisfied  and the result follows.
-% \end{prv*}
+% \end{proof}
 
 
 
@@ -981,7 +979,7 @@ Note that here we do not want to solve the problem under equality constraints si
 Here $\MOT$ is the relaxation of this problem where we split the cakes viewed as distributions instead of sets themselves. Note that in this problem, the utility of the agents are coupled.
 \newpage
 
-\section{Illustrations and Experiments}
+\section{Appendix: Illustrations and Experiments}
 \label{appendix-illustrations}
 
 \subsection{Primal Formulation}
@@ -1065,7 +1063,7 @@ Under the same assumptions of Proposition~\ref{prop:mot-equality},  we have
 \end{align} 
 \end{prop}
 
-\begin{prv*}
+\begin{proof}
 \label{prv:dual-reformulation}
 Let us first introduce the following Lemma which guarantees that compacity of  $\Upsilon^N_{\mu,\nu}$ for the weak topology.
 \begin{lemma}
@@ -1074,11 +1072,11 @@ Let $\mathcal{X}$ and $\mathcal{Y}$ be Polish spaces, and $\mu$ and $\nu$ two pr
 \end{lemma}
 
 
-\begin{prv*}
+\begin{proof}
 Let $(\gamma^n)_{n\geq 0}$ a sequence in $\Upsilon^N_{\mu,\nu}$, and let us denote for all $n\geq 0$, $\gamma^n=(\mu^n_i,\nu^n_i)_{i=1}^N$. We first remarks that for all $i\in\{1,...,N\}$ and $n\geq 0$, $\Vert \mu_i^n\Vert_{\TV} \leq 1$ and $\Vert \nu_i^n\Vert_{\TV} \leq 1$ therefore for all $i\in\{1,...,N\}$, $(\mu^n_i)_{n\geq 0}$ and $(\nu^n_i)_{n\geq 0}$  are uniformly bounded. Moreover as $\{\mu\}$ and $\{\nu\}$ are tight, for any $\delta>0$, there exists $K\subset \mathcal{X} $ and $L\subset \mathcal{Y}$ compact such that $\mu(K^c)\leq \delta \text{\quad and\quad }  \nu(L^c)\leq \delta$. Then, we obtain that for any for all $i\in\{1,...,N\}$, $\mu_i^n(K^c)\leq \delta \text{\quad and\quad }  \nu_i^n(L^c)\leq \delta$.
 Therefore, for all $i\in\{1,...,N\}$,  $(\mu_i^n)_{n\geq 0}$ and $(\nu_i^n)_{n\geq 0}$ are tight and uniformly bounded and Prokhorov's theorem~\citep[Theorem A.3.15]{dupuis2011weak} guarantees for all $i\in\{1,...,N\}$,  $(\mu_i^n)_{n\geq 0}$ and $(\nu_i^n)_{n\geq 0}$ admit a weakly convergent subsequence. By extracting a common convergent subsequence, we obtain that $(\gamma^n)_{n\geq 0}$ admits a weakly convergent subsequence. By continuity of the projection, the limit also lives in $\Upsilon
 ^N_{\mu,\nu}$ and the result follows.
-\end{prv*}
+\end{proof}
 We can now prove the Proposition. We have that for any $\lambda\in\Delta_N$
 \begin{align*}
       &\sup\limits_{(f,g)\in\mathcal{F}_{\mathbf{c}}^{\lambda}} \int_{x\in\mathcal{X}} f(x)d\mu(x)+ \int_{y\in\mathcal{Y}} g(y)d\nu(y)\\
@@ -1103,7 +1101,7 @@ Let us now fix $(f_k,g_k)_{k=1}^N\in  \mathcal{G}^{N}_{\mathbf{c}}$ and $(\mu_k,
      &= \inf_{t} \left\{t~\mathrm{ s.t.}~\forall k, ~ \int f_kd\mu_k+ \int g_kd\nu_k = t \right\}
 \end{align*}
 where the inversion is possible as the Slater's conditions are satisfied  and the result follows.
-\end{prv*}
+\end{proof}
 
 \begin{figure*}[h!]
 \begin{tabular}{@{}c@{}c@{}c@{}c@{}}

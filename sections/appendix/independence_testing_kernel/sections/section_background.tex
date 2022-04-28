@@ -1,0 +1,119 @@
+% \section{Related Work}
+ 
+
+
+% In the latter work~\citep{strobl1702approximate}, the authors extended the work from~\cite{zhang2012kernel} to random features to get a fast computation of the statistic. In this paper, the authors get the law for an oracle estimator of the conditional expectation. We also propose a random Fourier estimation of our statistic, but leave as further the proof of its consistency.
+
+% \cite{zhang2012kernel} introduced a
+% kernel-based test for conditional independence testing (KCIT), offering a
+% test statistic that can potentially asses all the moments of the joint distribution of $X$, $Y$, and $Z$. The test is accompanied with a type I error control guarantee that holds asymptotically in the number of samples. One limitation of this test is that it may become computationally infeasible as the dimensions of the problem increase: it scales at least quadratically with sample size. In response, \cite{strobl1702approximate} reduce the time complexity of KCIT by considering a Random Fourier features approximations of the kernels involved in the statistic and obtain a test which scales linearly with respect to the sample size. In this paper, we explore similar ideas in order to approximate the our proposed statistic and obtain a linear time test for conditional independence.
+% .
+
+
+
+% \begin{itemize}
+%     \item Expliquer que pour \cite{zhang2012kernel}: l'obtention de la loi n'est pas clair mais qu'avec des hypotheses supplementaires sur la convergence en proba le resultat tient.
+%     \item Expliquer pour \cite{strobl1702approximate} l'obtention de la loi asymptotique n'est obtenu que pour un estimateur oracle de la l'esperance conditionnel mais qu'aucun resultat n'est donne pour la loi asymptotique lorsque l'on emploie des RF.
+% \end{itemize}
+
+% \textbf{Covariance Operator.} Let $(\mathcal{D}_1,\mathcal{A}_1)$ and $(\mathcal{D}_2,\mathcal{A}_2)$ two measurable spaces, $(H_1,k_1)$ and $(H_2,k_2)$ two measurable reproducing kernel Hilbert spaces (RKHS) on respectively $\mathcal{D}_1$ and $\mathcal{D}_2$ respectively and let $\nu\in\mathcal{M}_{1}^{+}(\mathcal{D}_1\times\mathcal{D}_2)$. If  $\mathbb{E}_{(x,y)\sim\nu}[k_{1}(x,x)]$, and  $\mathbb{E}_{(x,y)\sim\nu}[k_{2}(y,y)]$ are finite, then there exists a unique operator $\Sigma_{\nu}^{k_1,k_2}$ from $H_1$ to $H_2$ such that for all $(f,g)\in H_1\times H_2$,
+% \begin{align*}
+%     \langle g,\Sigma_{\nu}^{k_1,k_2}f\rangle_{H_2} = \mathbb{E}_{(x,y)\sim\nu}(f(x)g(y))\; .
+% \end{align*}
+
+% A close link exists between the mean embedding and the covariance operator. Indeed by defining for all $x,x'\in\mathcal{D}_1$ and $y,y'\in\mathcal{D}_2$ the measurable kernel $k_1\cdot k_2 ((x,y),(x',y'))=k_1(x,x')k_2(y,y')$ on $\mathcal{D}_1\times\mathcal{D}_2$ with corresponding RKHS $H_1\otimes H_2$, the tensor-product space of $H_1$ and $H_2$, one obtains that for all $(t_1,t_2)\in\mathcal{D}_1\times \mathcal{D}_2$
+% \begin{align*}
+%     \mu_{\nu,k_1\cdot k_2}(t_1,t_2)=\langle k_2(t_2,\cdot),\Sigma_{\mu}^{k_1,k_2}k_1(t_1,\cdot)\rangle_{H_2}\; .
+% \end{align*}
+
+
+\section{Background and Notations}
+We first recall some notions on kernels and mean embeddings which will be useful in the derivation of our conditional independence test.
+% \paragraph{$\ell^p$-distance between mean embeddings.}  Non-parametric two sample using kernels has been widely studied in literature. At first, GRETTON proposed to use the maximum mean discrepancy (MMD) to build a consistent statistical test. ADD a bit more of text 
+% More recently, REF proposed to study closely related two sample tests.
+% ADD REF Introduce Lp two sample test and notations
+% \paragraph{Independence testing}
+% Explain here the link with covariance operator gretton Scholkoff ect formally also + Witt test with L2 metric: S and g considers the MMD distance between mean embeddings while Witt consider the L2 distance. 
+Let $(\mathcal{D},\mathcal{A})$ be a Borel measurable space and denote $\mathcal{M}_{1}^{+}(\mathcal{D})$ the space of Borel probability measures on $\mathcal{D}$. Let also $(H,k)$ be a measurable RKHS  on $\mathcal{D}$, i.e. a functional Hilbert space satisfying the reproducing property: for all $f\in H$, $x\in\mathcal{D}$, $f(x)=\langle f,k_x\rangle_H$. Let $\nu\in\mathcal{M}_{1}^{+}(\mathcal{D})$. If $\mathbb{E}_{x\sim\nu}[\sqrt{k(x,x)}]$ is finite, we define for all $t\in\mathcal{D}$ the \emph{mean embedding} as $\mu_{\nu,k}(t):=\int_{x\in\mathcal{D}}k(x,t)d\nu(x)$.
+Note that $\mu_{\nu,k}$ is the unique element in $H$ satisfying for all $f\in H$,  $\mathbb{E}_{x\sim\nu}(f(x))=\langle \mu_{\nu,k},f\rangle_{H}$. If  $\nu\mapsto\mu_{\nu,k}$ is injective, then  the kernel $k$ is said to be \emph{characteristic}. This property is essential for the separation property to be verified when defining a kernel metric between distributions, such as the MMD~\citep{gretton2012kernel}, or the $\ell^p$ distance~\citep{NEURIPS2019_0e2db0cb}. % For instance the t
+% \textbf{Characteristic and analytic kernels.} A kernel $k$ is said to be characteristic if  $\nu\mapsto\mu_{\nu,k}$ is injective. This property is essential for separation property to be verified when defining a kernel metric between distributions as MMDs~\citep{gretton2012kernel}, or $\ell^p$ distances~\citep{chwialkowski2015fast,jitkrittum2017adaptive,NEURIPS2019_0e2db0cb}. An analytic kernel on $\mathbb{R}^d$ is a positive definite kernel such that for all $x\in\mathbb{R}^d$, $k(x,\cdot)$ is an analytic function, i.e., a function defined locally by a convergent power series. Remark that the tensor-product of two analytic kernel is still analytic.% For instance the t
+% %Speak about the gaussian case: \textbf{Example of Tensor-product Analytic Kernels.} Explain the gaussian case. Here note that the evaluation of the kernels requires only $\mathcal{O}(d_1+d_2)$ algebraic operations.
+
+\textbf{$\ell^p$-distance between mean embeddings.} Let $k$ be a definite positive, characteristic, continuous, and bounded kernel on $\mathbb{R}^d$ and $p\geq 1$ an integer. \citet{NEURIPS2019_0e2db0cb} showed that given an absolutely continuous Borel probability measure $\Gamma$ on $\mathbb{R}^d$, the following function defined for any  $(P,Q)\in\mathcal{M}_1^{+}(\mathbb{R}^d)\times\mathcal{M}_1^{+}(\mathbb{R}^d)$ as 
+\begin{align}
+\label{eq-dlp}
+    d_{p}(P,Q):=\left[\int_{\mathbb{R}^d}|\mu_{P,k}(\mathbf{t})-\mu_{Q,k}(\mathbf{t})|^p d\Gamma(\mathbf{t})\right]^{\frac{1}{p}}
+\end{align}
+is a metric on $\mathcal{M}_1^{+}(\mathbb{R}^d)$.
+% Therefore we have a simple characterization of independence.
+% Indeed $d_{L^{p},k}^p(P_{XY},P_X\otimes P_Y)=0$ if and only if $X\perp Y$.
+%  Remark that the tensor-product of two analytic kernel is still analytic. 
+When the kernel $k$ is analytic\footnote{An \emph{analytic kernel} on $\mathbb{R}^d$ is a positive definite kernel such that for all $x\in\mathbb{R}^d$, $k(x,\cdot)$ is an analytic function, i.e., a function defined locally by a convergent power series.}, \citet{NEURIPS2019_0e2db0cb} also showed that for any $J\geq 1$, 
+\begin{align}
+\label{eq-dlp_J}
+    d_{p,J}(P,Q):=\left[\frac{1}{J}\sum_{j=1}^J |\mu_{P,k}(\mathbf{t}_j)-\mu_{Q,k}(\mathbf{t}_j)|^p\right]^{\frac{1}{p}},
+\end{align}
+where $(\mathbf{t}_j)_{j=1}^J$ are sampled independently from the $\Gamma$ distribution, is a random metric\footnote{A random metric is a random process which satisfies all the conditions for a metric almost-surely.} on $\mathcal{M}_1^{+}(\mathbb{R}^d)$.
+% \textbf{Smooth Characteristic Functions.}  Define what is A smooth characteristic function,
+% \paragraph{Regularized Least-Square Estimator.} Define the RLS estimator in general and give sufficient condition for the RLS estimator to converge in L2.
+
+
+
+In what follows, we consider distributions on Euclidean spaces. More precisely, let $d_x,d_y,d_z\geq 1$, $\mathcal{X}:=\mathbb{R}^{d_x}$, $\mathcal{Y}:=\mathbb{R}^{d_y}$, and $\mathcal{Z}:=\mathbb{R}^{d_z}$. Let $(X,Z,Y)$ be a random vector on $\mathcal{X}\times\mathcal{Z}\times\mathcal{Y}$ with law $P_{XZY}$. We denote by $P_{XY}$, $P_X$, and $P_Y$ the law of $(X,Y)$, $X$, and $Y$, respectively. We also denote by $\mathcal{\ddot{X}}:=\mathcal{X}\times\mathcal{Z}$, $\ddot{X}:=(X,Z)$, and $P_{\ddot{X}}$ its law. Let $P_X\otimes P_Y$ be the product of the two measures $P_X$ and $P_Y$. Given $(H_{\mathcal{\ddot{X}}},k_\mathcal{\ddot{X}})$ and $(H_{\mathcal{Y}},k_{\mathcal{Y}})$, two measurable reproducing kernel Hilbert spaces (RKHS) on $\mathcal{\ddot{X}}$ and $\mathcal{Y}$, respectively, we define the tensor-product RKHS $H=H_{\mathcal{\ddot{X}}}\otimes H_\mathcal{Y}$ associated with its \emph{tensor-product kernel} $k=k_{\mathcal{\ddot{X}}}\otimes k_{\mathcal{Y}}$, defined for all $\ddot{x},\ddot{x}'\in\mathcal{\ddot{X}}$ and $y,y'\in\mathcal{Y}$, as $k((\ddot{x},y),(\ddot{x}',y'))= k_{\mathcal{\ddot{X}}}(\ddot{x},\ddot{x}')\times k_{\mathcal{Y}}(y,y').$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% \paragraph{Random features.} Let $\mathcal{H}$ be a RKHS with kernel $k$ on ground space $\mathcal{X}$. Let assume that $k$ admits the following decomposition: 
+% \begin{align*}
+%     k(x,y) = \mathbb{E}_{w\sim P}\left(\phi(w,x)^T\phi(w,y)\right)
+% \end{align*}
+% where $P$ is a distribution on some space $\mathcal{W}$ and $\phi:\mathcal{W}\times\mathcal{X}\mapsto \mathbb{R}^p$. Without loss of generality we will assume in the following that $p=1$.
+% Then using MC estimation one estimation:
+% ADD PROPERTY OF UNIFORM CONVERGENCE TO THE KERNEL
+
+
+% We now assume that $k_\mathcal{X}$, $k_\mathcal{Y}$ and $k_\mathcal{Z}$ admits a random features decomposition. Let denote $\widehat{\phi_\mathcal{X}} = \left(\phi^1_\mathcal{X},\dots,\phi^{r_\mathcal{X}}_\mathcal{X}\right)$, the features such that $k_\mathcal{X}(x,y)\simeq \widehat{\phi_\mathcal{X}} (x)^T\widehat{\phi_\mathcal{X}} (y)$. In this case: 
+% \begin{align*}
+% \langle\Sigma_{YX},\phi_X(t_1)\otimes \phi_Y(t_2)\rangle_{\mathcal{H}_X\otimes\mathcal{H}_Y} \simeq \widehat{\phi_\mathcal{X}}(t_1)^TC_{YX} \widehat{\phi_\mathcal{Y}}(t_2)
+% \end{align*}
+% where $(C_{YX})_{ij} = \cov_{(X,Y)\sim p_{XY}} (\phi^i_\mathcal{X}(X),\phi^j_\mathcal{Y}(Y))$. Then one can estimate $C_{YX}$ using empirical estimates of covariances. We denote $\widehat{C_{YX}}$ this estimate.
+
+% One can then also estimate the conditional covariance operator in this case. 
+% More over one can notice that:
+% \begin{align*}
+% \left(C_{XZ}C_{ZZ}^{-1/2}\right)_{i,j}= \frac{\cov_{(X,Z)\sim p_{XZ}}(\phi^i_\mathcal{X}(X),\phi^j_\mathcal{Z}(Y))}{\sqrt{\var_{Z\sim p_Z}(\phi^j_\mathcal{Z}(Z))}}    
+% \end{align*}
+
+
+
+% \subsection{Kernel measures of independence}
+
+% Then a natural extension of $XXX$ and $XXX$ to measure condition independence is:
+% \begin{align*}
+%     D_1&(p_{XY},p_X\otimes p_Y)\\ &=\mathbb{E}_{(t_1,t_2)\sim\Gamma}\left(\lvert\langle \Sigma_{YX},\phi_X(t_1)\otimes \phi_Y(t_2)\rangle_{\mathcal{H}_X\otimes\mathcal{H}_Y}\rvert\right)
+% \end{align*}
+
+
+
+% \section{Kernel measures of conditional independence}
+% % DEFINE kernel and RKHS
+% % $\Sigma_{XY|Z}=\Sigma_{XY}-\Sigma_{XZ}\Sigma_{ZZ}^{-1}\Sigma_{ZY}$
+% % Without loss of generality, up to an isometry, this operator can be seen as elements of $\mathcal{H}_X\otimes\mathcal{H}_Y$ Then, in $\mathcal{H}_X\otimes\mathcal{H}_Y$, the mean embedding of $p_{XY}-p_{X}\otimes p_Y$ is $\Sigma_{XY}$ and the one of $\mathbb{E}_Z\left(p_{X|Z}\otimes p_{Y|Z}\right) -p_{X}\otimes p_Y$ (Check a centralized version) is $\Sigma_{XZ}\Sigma_{ZZ}^{-1}\Sigma_{ZY}$. 
+
+% Then a natural extension of $XXX$ and $XXX$ to measure condition independence is:
+% \begin{align*}
+%     D_1&(p_{XY},\mathbb{E}_Z\left(p_{X|Z}\otimes p_{Y|Z}\right) )\\ &=\mathbb{E}_{(t_1,t_2)\sim\Gamma}\left(\lvert\langle \Sigma_{YX|Z},\phi_X(t_1)\otimes \phi_Y(t_2)\rangle_{\mathcal{H}_X\otimes\mathcal{H}_Y}\rvert\right)
+% \end{align*}
+
+

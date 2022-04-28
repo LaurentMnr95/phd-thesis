@@ -1,4 +1,4 @@
-\section{Attacks on Adversarial Bandits}\label{app:adversarial_rewards}
+\section{Appendix: Attacks on Adversarial Bandits}\label{app:adversarial_rewards}
 In the previous sections, we studied algorithms with sublinear regret $R_T$, \ie mainly bandit algorithms designed for stochastic stationary environments. Adversarial algorithms like \expfour do not provably \otc{enjoy} a \changee{sublinear \textbf{stochastic} regret $R_{T}$ (as defined in the introduction) \footnote{\expfour enjoys a sublinear hindsight regret though. Showing a sublinear upper-bound for the stochastic regret of \expfour is still an open problem (see Section $29.1$ in \cite{lattimore2018bandit})}}. In addition, because this type of algorithms are, by design, robust to non-stationary environments, one could expect them to induce a linear cost on the attacker. In this section, we show that this is not the case for most contextual adversarial algorithms. Contextual adversarial algorithms are studied through the reduction to the bandit with expert advice problem. This is a bandit problem with $K$ arms where at every step, $N$ experts suggest a probability distribution over the arms. The goal of the algorithm is to learn which expert gets the best expected reward in hindsight after $T$ steps. The regret in this type of problem is defined as $R_{T}^{\text{exp}} = \mathbb{E}\left( \max_{m\in \llbracket 1, N \rrbracket}\sum_{t=1}^{T} \sum_{j=1}^{K} E_{m,j}^{(t)}r_{t,j} - r_{t,a_{t}}\right)$
 % \begin{equation*}
 % R_{T}^{\text{exp}} = \mathbb{E}\left( \max_{m\in \llbracket 1, N \rrbracket}\sum_{t=1}^{T} \sum_{j=1}^{K} E_{m,j}^{(t)}r_{t,j} - r_{t,a_{t}}\right)
@@ -35,8 +35,12 @@ For strategy $i=1$, we have:
     \mathbb{E}\left(\sum_{t=1}^{T} \tilde{r}^{1}_{t, a^{\dagger}_{t, \star}} - \tilde{r}^{1}_{t,a_{t}} \right) &=
     \changee{\sum_{t=1}^{T} \mathbb{E}\left(r_{t,a_{t,\star}^{\dagger}} - \mathds{1}_{\{ a_{t}\in A^{\dagger}\}}\right)\geq \left(T-\mathbb{E}\left(\sum_{t=1}^{T} \mathds{1}_{\{ a_{t} = a_{t,\star}^{\dagger}\}}\right)\right)\Delta}
 \end{align*}
-\changee{where $\Delta := \min_{x\in \mathcal{D}}\left\{ \langle \theta_{a^\dagger(x)}, x\rangle - \max_{a\in A^{\dagger},a\neq a^{\dagger}(x)} \langle \theta_{a'}, x\rangle\right\}$ with $a^{\dagger}(x) := \arg\max_{a\in A^{\dagger}} \langle \theta_{a}, x\rangle$}. Then, as $\Tilde{R}_{T}^{1,\text{exp}}\in o(T)$ and $\mathbb{E}\left(\sum_{t=1}^{T}(1 - E_{m^{\star}, a^{\dagger}_{t, \star}}^{(t)})\right)\in o(T)$, we deduce that $\mathbb{E}(\sum_{t} \mathds{1}_{\{ a_{t} = a_{t,\star}
-^{\dagger}\}}) = T-o(T)$. 
+\changee{where $\Delta := \min_{x\in \mathcal{D}}\left\{ \langle \theta_{a^\dagger(x)}, x\rangle - \max_{a\in A^{\dagger},a\neq a^{\dagger}(x)} \langle \theta_{a'}, x\rangle\right\}$ with $a^{\dagger}(x) := \arg\max_{a\in A^{\dagger}} \langle \theta_{a}, x\rangle$}. Then, as $\Tilde{R}_{T}^{1,\text{exp}}\in o(T)$ and $\mathbb{E}\left(\sum_{t=1}^{T}(1 - E_{m^{\star}, a^{\dagger}_{t, \star}}^{(t)})\right)\in o(T)$, we deduce that
+\begin{align*}
+    \mathbb{E}(\sum_{t} \mathds{1}_{\{ a_{t} = a_{t,\star}
+^{\dagger}\}}) = T-o(T)\quad.
+\end{align*}
+
 % For this strategy the cost is therefore bounded by: 
 % \begin{align*}
 % \mathbb{E}\left( \sum_{t=1}^{T} c_{t}\right) &\leq \mathbb{E}\left(\sum_{t=1}^{T} \mathds{1}_{\{a_{t}\neq a^{\dagger}\}} + |\eta_{a_{t}, t}|+ |\eta_{a_{t},t}'|\right) \leq (1 + 2\sigma) \mathbb{E}\left( N_{a^{\dagger}}(T)\right)
@@ -58,7 +62,8 @@ because $C_{t,a_{t}}>0$ means that $(1 - \gamma) \langle \theta_{a^{\dagger}_{t,
 \end{align*}
 Finally, putting everything together we have:
 \begin{align*}
-    \mathbb{E}&\left(\sum_{t=1}^{T} \gamma\min_{x\in\mathcal{D}} \langle x, \theta_{a^{\dagger}_{t,\star}}\rangle \mathds{1}_{\{a_{t}\neq a^{\dagger}_{t,\star}\}}\right) \leq \Tilde{R}_{T}^{2,\text{exp}} + \mathbb{E}\left(\sum_{t=1}^{T}(1 - E_{m^{\star}, a^{\dagger}_{t,\star}}^{(t)})\right) + \delta T \left(\min\{\gamma\min_{a^{\dagger}\in A^{\dagger}}\min_{x\in\mathcal{D}} \langle x, \theta_{a^{\dagger}}\rangle, \Delta\} +1\right)
+    \mathbb{E}&\left(\sum_{t=1}^{T} \gamma\min_{x\in\mathcal{D}} \langle x, \theta_{a^{\dagger}_{t,\star}}\rangle \mathds{1}_{\{a_{t}\neq a^{\dagger}_{t,\star}\}}\right) \leq &\Tilde{R}_{T}^{2,\text{exp}} + \mathbb{E}\left(\sum_{t=1}^{T}(1 - E_{m^{\star}, a^{\dagger}_{t,\star}}^{(t)})\right)\\
+     &+ \delta T \left(\min\{\gamma\min_{a^{\dagger}\in A^{\dagger}}\min_{x\in\mathcal{D}} \langle x, \theta_{a^{\dagger}}\rangle, \Delta\} +1\right)
 \end{align*}
 Hence, because $\Tilde{R}_{T}^{1,\text{exp}} = o(T)$ and $\mathbb{E}\left(\sum_{t=1}^{T}(1 - E_{m^{\star}, a^{\dagger}}^{(t)})\right) = o(T)$ we have that for $\delta \leq 1/T$, the expected number of pulls of the optimal arm in $A^{\dagger}$ is of order $o(T)$. In addition, the cost for the attacker is bounded by: 
 \begin{align*}

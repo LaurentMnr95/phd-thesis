@@ -1,24 +1,15 @@
 \chapter*{Abstract}
 This thesis investigates the problem of classification in presence of advesarial attacks. An adversarial attack is a small and humanly imperceptible perturbation of input designed to fool start-of-the-art machine learning classifiers. In particular, deep learning systems, used in safety critical AI systems as self-driving cars are at stake with the eventuality of such attacks. What is even more striking is the ease to create such adversarial examples and the difficulty to defend against them while keeping a high level of accuracy. Robustness to adversarial perturbations is a still misunderstood field in academics. In this thesis, we aim at understanding better the nature of the adversarial attacks problem from a theoretical perspective.
 
+
+\begin{tcolorbox}[colback=grund,colframe=rahmen]
 \begin{center}
     Can we find a principled way to defend against adversarial examples?
 \end{center}
+\end{tcolorbox}
 
 
-In a first part, we tackle the problem of adversarial examples from a game theoretic point of view. We
-study the open question of the existence of mixed
-Nash equilibria in the zero-sum game formed by
-the attacker and the classifier. To that extent, we consider a randomized classifier and we introduce a more general attacker that can move each point randomly in the vinicity of original points. While previous
-game theoretic approaches usually allow only one player to use randomized strategies, we show the necessity of considering randomization for both the classifier and
-the attacker. We demonstrate that this game has
-no duality gap, meaning that it always admits approximate Nash equilibria. We also provide the
-first optimization algorithms to learn a mixture of
-a finite number of classifiers that approximately
-realizes the value of this game, i.e. procedures to
-build an optimally robust randomized classifier.
-
-
+In a first part, we tackle the problem of adversarial examples from a game theoretic point of view. We study the open question of the existence of mixed Nash equilibria in the zero-sum game formed by the attacker and the classifier. To that extent, we consider a randomized classifier and we introduce a more general attacker that can move each point randomly in the vinicity of original points. While previous game theoretic approaches usually allow only one player to use randomized strategies, we show the necessity of considering randomization for both the classifier and the attacker. We demonstrate that this game has no duality gap, meaning that it always admits approximate Nash equilibria. We also provide the first optimization algorithms to learn a mixture of a finite number of classifiers that approximately realizes the value of this game, i.e. procedures to build an optimally robust randomized classifier.
 
 
 

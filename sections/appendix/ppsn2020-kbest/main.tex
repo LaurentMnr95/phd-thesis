@@ -1,4 +1,5 @@
-Choosing the right selection rate is a long standing issue in evolutionary computation. \otc{In the continuous unconstrained case, }we prove mathematically that a single parent $\mu=1$ leads to a sub-optimal simple regret in the case of the sphere function. We provide a theoretically-based selection rate $\mu/\lambda$ that leads  to better progress rates. With our choice of selection rate, we get a provable regret of order $O(\lambda^{-1})$ which has to be compared with $O(\lambda^{-2/d})$ in the case where $\mu=1$. We complete our study with experiments to confirm our theoretical claims. %This lead to a selection rate:  %We solve this in the single-epoch case for the continuous case and the sphere function: we prove an explicit formula for the selection rate $\mu/\lambda$, depending on the population size $\lambda$ and the dimension $d$: $\mu=\lceil \lambda/1.1^d\rceil$.
+\chapter{On averaging the best samples in evolutionary computation: the sphere function case}
+Choosing the right selection rate is a long standing issue in evolutionary computation. {In the continuous unconstrained case, }we prove mathematically that a single parent $\mu=1$ leads to a sub-optimal simple regret in the case of the sphere function. We provide a theoretically-based selection rate $\mu/\lambda$ that leads  to better progress rates. With our choice of selection rate, we get a provable regret of order $O(\lambda^{-1})$ which has to be compared with $O(\lambda^{-2/d})$ in the case where $\mu=1$. We complete our study with experiments to confirm our theoretical claims. %This lead to a selection rate:  %We solve this in the single-epoch case for the continuous case and the sphere function: we prove an explicit formula for the selection rate $\mu/\lambda$, depending on the population size $\lambda$ and the dimension $d$: $\mu=\lceil \lambda/1.1^d\rceil$.
 %\setcounter{tocdepth}{5}
 %\tableofcontents
 \section{Introduction}
@@ -7,7 +8,7 @@ However,
 some sources~\cite{amorales} recommend a lower value $1/7$. Experimental results in~\cite{ratio} and theory in \cite{fournierAlgorithmica} together suggest a ratio $\min(d,\lambda/4)$ with $d$ the dimension, i.e. keep a population size at most the dimension. \cite{jeb} suggests to keep increasing $\mu$ besides that limit, but slowly enough so that that rule $\mu=\min(d,\lambda/4)$ would be still nearly optimal. Weighted recombination is common~\cite{weightdirk}, but not with a clear gap when compared to truncation ratios~\cite{esniko}, except in the case of large population size~\cite{sumotori}.
 There is, overall, limited theory around the optimal choice of $\mu$ for optimization in the continuous setting. 
 In the present paper, we focus on a simple case (sphere function and single epoch), but prove exact theorems. 
-We point out that the single epoch case is important \otc{by} itself - this is fully parallel optimization~\cite{nie,mckay,bergstra2012random,bousquet}.
+We point out that the single epoch case is important {by} itself - this is fully parallel optimization~\cite{nie,mckay,bergstra2012random,bousquet}.
 Experimental results with a publicly available platform support the approach.
 \section{Theory}
 We consider the case of a single batch of evaluated points. We generate $\lambda$ points according to some probability distribution. We then select the $\mu$ best and average them. The result is our approximation of the optimum. This is therefore an extreme case of evolutionary algorithm, with a single population; this is commonly used for e.g. hyperparameter search in machine learning~\cite{bergstra,bousquet}, though in most cases with the simplest case $\mu=1$.
@@ -15,14 +16,14 @@ We consider the case of a single batch of evaluated points. We generate $\lambda
 % \begin{figure}[t]
 %     \centering
 %     \includegraphics[width=.45\textwidth]{imgs/fig_y=0.pdf}
-%     \caption{Centered case: validation of the theoretical formula for $\mathbb{E}_{X_1...X_\lambda\sim\mathcal{B}(0,r)}\left[ f(\bar X_{(\mu)})\right]$ when $y=0$ from Theorem~\ref{thm:formula_k_best} for $d=5$, $\lambda=1000$ and $R=1$. $10000$  samples have been drawn to estimate the expectation. \otc{The theory matches the practice.}}
+%     \caption{Centered case: validation of the theoretical formula for $\mathbb{E}_{X_1...X_\lambda\sim\mathcal{B}(0,r)}\left[ f(\bar X_{(\mu)})\right]$ when $y=0$ from Theorem~\ref{thm:formula_k_best} for $d=5$, $\lambda=1000$ and $R=1$. $10000$  samples have been drawn to estimate the expectation. {The theory matches the practice.}}
 %     \label{fig:exp_th_c}
 % \end{figure}
 % \begin{figure}[t]
 %     \centering
 %     \includegraphics[width=.45\textwidth]{imgs/n=100.pdf}
 %     \includegraphics[width=.45\textwidth]{imgs/n=10000.pdf}
-%     \caption{Non centered  case: validation of the theoretical bounds for $\mathbb{E}_{X_1...X_\lambda\sim\mathcal{B}(0,r)}\left[ f(\bar X_{(\mu)})\right]$ when $\rVert y\rVert =\frac{R}{3}$ (i.e. $\epsilon=\frac{1}{3}$) from Theorem~\ref{thm:noncentered} for $d=5$ and $R=1$. We implemented $\lambda=100$ and $\lambda=10000$ and draw the vertical line $\frac{\mu}{\lambda} = (1-\epsilon)^d$ to illustrate the result in Theorem~\ref{thm:asymp} for $\mu$ when $\lambda\rightarrow \infty$ . $10000$  samples have been drawn to estimate the expectation. We see that such a value for $\mu$ is a good approximation of the minimum of the empirical values\otc{: we can recommend $\mu=\lceil \lambda (1-\epsilon)^d\rceil$.}}
+%     \caption{Non centered  case: validation of the theoretical bounds for $\mathbb{E}_{X_1...X_\lambda\sim\mathcal{B}(0,r)}\left[ f(\bar X_{(\mu)})\right]$ when $\rVert y\rVert =\frac{R}{3}$ (i.e. $\epsilon=\frac{1}{3}$) from Theorem~\ref{thm:noncentered} for $d=5$ and $R=1$. We implemented $\lambda=100$ and $\lambda=10000$ and draw the vertical line $\frac{\mu}{\lambda} = (1-\epsilon)^d$ to illustrate the result in Theorem~\ref{thm:asymp} for $\mu$ when $\lambda\rightarrow \infty$ . $10000$  samples have been drawn to estimate the expectation. We see that such a value for $\mu$ is a good approximation of the minimum of the empirical values{: we can recommend $\mu=\lceil \lambda (1-\epsilon)^d\rceil$.}}
 %     \label{fig:exp_th_nc}
 % \end{figure}
 % \begin{figure}[t]
@@ -48,10 +49,10 @@ We consider the case of a single batch of evaluated points. We generate $\lambda
 % \end{figure}
 We consider the optimization of the simple function $x\mapsto \lVert x-y\rVert ^2$ for an unknown $y\in \mathcal{B}(0,r)$.
 In Section \ref{notations} we introduce notations.
-In Section \ref{easier} we analyze the case of random search uniformly in a ball of radius $h$ centered on $y$. \otc{We can, therefore, exploit the knowledge of the optimum's position and assume that $y=0$.} We then extend the results to random search in a ball of radius $r$ centered on $0$, provided that $r>\rVert y\rVert $ and show that results are essentially the same up to an exponentially decreasing term (Section \ref{harder}).
+In Section \ref{easier} we analyze the case of random search uniformly in a ball of radius $h$ centered on $y$. {We can, therefore, exploit the knowledge of the optimum's position and assume that $y=0$.} We then extend the results to random search in a ball of radius $r$ centered on $0$, provided that $r>\rVert y\rVert $ and show that results are essentially the same up to an exponentially decreasing term (Section \ref{harder}).
 \subsection{Notations}\label{notations}
 We are interested in minimizing the function $f:x\in\mathbb{R}^d\mapsto \lVert x-y\rVert ^2$ for a fixed unknown $y$ in parallel one-shot black box optimization, i.e. we sample $\lambda$ points $X_1,...,X_\lambda$ from some distribution $\mathcal{D}$ and we search for $x^\star = \arg\min_x f(x)$. In what follows we will study the sampling from $\mathcal{B}(0,r)$, the uniform distribution on the $\ell_2$-ball of radius $r$; w.l.o.g. $\mathcal{B}(y,r)$ will also denote the $\ell_2$-ball centered in $y$ and of radius $r$.  \\
-We are interested in comparing the strategy ``$\mu$-best'' vs ``$1$-best''. We denote $X_{(1)},...,X_{(\lambda)}$, the sorted values of $X_i$ \otc{i.e. $(1)$,\dots,$(\lambda)$ are such that} $f(X_{(1)})\leq...\leq f(X_{(\lambda)})$. The ``$\mu$-best'' strategy is to return  $\bar{X}_{(\mu)} = \frac1\mu\sum_{i=1}^\mu X_{(i)}$ as an estimate of the optimum and the ``1-best'' is to return $X_{(1)}$. We will hence compare :
+We are interested in comparing the strategy ``$\mu$-best'' vs ``$1$-best''. We denote $X_{(1)},...,X_{(\lambda)}$, the sorted values of $X_i$ {i.e. $(1)$,\dots,$(\lambda)$ are such that} $f(X_{(1)})\leq...\leq f(X_{(\lambda)})$. The ``$\mu$-best'' strategy is to return  $\bar{X}_{(\mu)} = \frac1\mu\sum_{i=1}^\mu X_{(i)}$ as an estimate of the optimum and the ``1-best'' is to return $X_{(1)}$. We will hence compare :
 $\mathbb{E}\left[f\left(\bar{X}_{(\mu)}\right)\right]$ and $\mathbb{E}\left[f\left(X_{(1)}\right)\right]$. 
 We recall the definition of the gamma function $\Gamma$: $\forall z>0$, $\Gamma(z) = \int_0^{\infty}t^{z-1}e^{-t}dt$, as well as the property $\Gamma(z+1)=z\Gamma(z)$.
 % \begin{itemize}
@@ -74,7 +75,7 @@ We recall the definition of the gamma function $\Gamma$: $\forall z>0$, $\Gamma(
 % \end{itemize}
 \subsection{When the center of the distribution is also the optimum} \label{easier}
 In this section we assume that $y=0$ (i.e. $f(x)=\lVert x\rVert ^2$) and consider sampling in $\mathcal{B}(0,r)\subset \mathbb{R}^d$. In this simple case, we show that keeping the best $\mu>1$ sampled points is asymptotically a better strategy than selecting a single best point. The choice of $\mu$ will be discussed in Section~\ref{harder}.
-%\otc{In particular it is, asymptotically, a better strategy than taking only one. We will see later how to non-asymptotically choose $\mu$. }\laurentnote{This part is not asymptotic, this is the next one}
+%{In particular it is, asymptotically, a better strategy than taking only one. We will see later how to non-asymptotically choose $\mu$. }\laurentnote{This part is not asymptotic, this is the next one}
 \begin{thm}
 \label{thm:k_avg_best_vs_1_best}For all $\lambda>\mu\geq2$  and $d\geq2,$ $r>0$,
 for $f(x)=\left\Vert x\right\Vert ^{2}$,
@@ -410,9 +411,9 @@ In this Bayes decomposition, we can bound the various terms as follows:  \begin{
 \mathbb{P}\left(f(X_{(\mu+1)})\geq (1-\epsilon)^2r^2\right)&\leq &1,\\ \mathbb{E}\left[f(\bar{X}_{(\mu)})|f(X_{(\mu+1)})< (1-\epsilon)^2r^2\right]&\leq&\frac{r^2 d\times\Gamma(\lambda+1)\Gamma(\mu+1+2/d)}{\mu(d+2)\Gamma(\mu+1)\Gamma(\lambda+1+2/d)}.
 \end{eqnarray*}
 Combining these equations yields the first (upper) bound.
-%\otc{Combining these equations yields the first bound.}
+%{Combining these equations yields the first bound.}
 The second (lower) bound is deduced from the centered case (i.e. when the distribution is centered on the optimum) as in the previous section.
-%\otc{: this case provides the lower bound.}
+%{: this case provides the lower bound.}
 \end{proof}
 Figure~\ref{fig:exp_th_nc} gives an illustration of the bounds. Until $\mu\simeq (1-\epsilon)^{d}\lambda$, the centered and non centered case coincide when $\lambda\rightarrow\infty$: in this case, we can have a more precise asymptotic result for the choice of $\mu$.
 \begin{thm}\label{thm:asymp}
@@ -445,7 +446,7 @@ All the results we proved in this section are easily extendable to strongly conv
 \begin{figure}[t]
     \centering
     \includegraphics[width=.45\textwidth]{sections/appendix/ppsn2020-kbest/imgs/fig_y=0}
-    \caption{Centered case: validation of the theoretical formula for $\mathbb{E}_{X_1...X_\lambda\sim\mathcal{B}(0,r)}\left[ f(\bar X_{(\mu)})\right]$ when $y=0$ from Theorem~\ref{thm:formula_k_best} for $d=5$, $\lambda=1000$ and $R=1$. $1000$  samples have been drawn to estimate the expectation. \otc{The two curves overlap, showing agreement between theory and practice.}}
+    \caption{Centered case: validation of the theoretical formula for $\mathbb{E}_{X_1...X_\lambda\sim\mathcal{B}(0,r)}\left[ f(\bar X_{(\mu)})\right]$ when $y=0$ from Theorem~\ref{thm:formula_k_best} for $d=5$, $\lambda=1000$ and $R=1$. $1000$  samples have been drawn to estimate the expectation. {The two curves overlap, showing agreement between theory and practice.}}
     \label{fig:exp_th_c}
 \end{figure}
 
@@ -453,7 +454,7 @@ All the results we proved in this section are easily extendable to strongly conv
 The method above was designed for the sphere function, yet its adaptation to other quadratic convex functions is straightforward. On the other hand, our reasoning might break down when applied to 
 multimodal functions.
 %But we can guess that it can be detrimental in multimodal functions.
-We thus consider an adaptive strategy to define $\mu$.  A desirable property to a $\mu$-best approach is that the level-sets of the functions are convex.  \otc{A simple workaround is to choose $\mu$ maximal such that there is a quasi-convex function which is identical to $f$ on $\{X_{(1)},\dots,X_{(\mu)}\}$.}
+We thus consider an adaptive strategy to define $\mu$.  A desirable property to a $\mu$-best approach is that the level-sets of the functions are convex.  {A simple workaround is to choose $\mu$ maximal such that there is a quasi-convex function which is identical to $f$ on $\{X_{(1)},\dots,X_{(\mu)}\}$.}
 %\laurentnote{This part is not very clear}
 %\crc{I agree with Laurent. I tried to reformulate what I think is more a discussion than a rigorous argument.}
 %{\bf{Preserving theoretical guarantees:}}
@@ -467,7 +468,7 @@ $X_{(i)}$ is on the frontier (denoted $\partial$) of the convex hull of $\{X_{(1
 % %\item Therefore, for all $\tilde \mu\leq \lambda$, the value $$h=\max \left\{ i\in [1,\lambda], \forall j\leq i, X_{(j)}\in \partial\left[\texttt{ConvexHull}(X_{(1)},\dots,X_{(j)})\right]\right\}$$ verifies $h\geq \lambda\geq \tilde \mu$ so that $\mu=\min(h,\tilde\mu)$ is actually equal to $\tilde \mu$.
 % \item Thus, the value $$h=\max \left\{ i\in [1,\lambda], \forall j\leq i, X_{(j)}\in \partial\left[\texttt{ConvexHull}(X_{(1)},\dots,X_{(j)})\right]\right\}$$ verifies $h \geq \tilde \mu$ so that $\mu=\min(h,\tilde\mu)$ is actually equal to $\tilde \mu$.
 % \end{itemize}
-\otc{As a result:
+{As a result:
 \begin{itemize}
     \item in the case of the sphere function, or any quasi-convex function, if we set $\tilde \mu=\lfloor \lambda (1-\epsilon)^d\rfloor$, using $\mu=\min(h,\tilde \mu)$ leads to the same value of $\mu=\tilde \mu = \lfloor \lambda (1-\epsilon)^d\rfloor$. In particular, we preserve the theoretical guarantees of the previous sections for the sphere function $x\mapsto \lVert x-y\rVert ^2$.
     \item if the objective function is not quasi-convex, we can still compute the quantity $h$ defined above, but we might get a $\mu$ smaller than $\tilde \mu$. However, this strategy remains meaningful at it prevents from keeping too many points when the function is  ``highly'' non-quasi-convex.
@@ -476,7 +477,7 @@ $X_{(i)}$ is on the frontier (denoted $\partial$) of the convex hull of $\{X_{(1
 % \begin{figure}[t]
 %     \centering
 %     \includegraphics[width=.45\textwidth]{imgs/fig_y=0.pdf}
-%     \caption{Centered case: validation of the theoretical formula for $\mathbb{E}_{X_1...X_\lambda\sim\mathcal{B}(0,r)}\left[ f(\bar X_{(\mu)})\right]$ when $y=0$ from Theorem~\ref{thm:formula_k_best} for $d=5$, $\lambda=1000$ and $R=1$. $10000$  samples have been drawn to estimate the expectation. \otc{The theory matches the practice.}}
+%     \caption{Centered case: validation of the theoretical formula for $\mathbb{E}_{X_1...X_\lambda\sim\mathcal{B}(0,r)}\left[ f(\bar X_{(\mu)})\right]$ when $y=0$ from Theorem~\ref{thm:formula_k_best} for $d=5$, $\lambda=1000$ and $R=1$. $10000$  samples have been drawn to estimate the expectation. {The theory matches the practice.}}
 %     \label{fig:exp_th_c}
 % \end{figure}
 
@@ -487,13 +488,13 @@ $X_{(i)}$ is on the frontier (denoted $\partial$) of the convex hull of $\{X_{(1
     \centering
     \includegraphics[width=.45\textwidth]{sections/appendix/ppsn2020-kbest/imgs/n=100.pdf}
     \includegraphics[width=.45\textwidth]{sections/appendix/ppsn2020-kbest/imgs/n=10000.pdf}
-    \caption{Non centered  case: validation of the theoretical bounds for $\mathbb{E}_{X_1...X_\lambda\sim\mathcal{B}(0,r)}\left[ f(\bar X_{(\mu)})\right]$ when $\rVert y\rVert =\frac{R}{3}$ (i.e. $\epsilon=\frac{1}{3}$) from Theorem~\ref{thm:noncentered} for $d=5$ and $R=1$. We implemented $\lambda=100$ and $\lambda=10000$. $10000$  samples have been drawn to estimate the expectation. We see that such a value for $\mu$ is a good approximation of the minimum of the empirical values\otc{: we can thus recommend $\mu=\lfloor \lambda (1-\epsilon)^d\rfloor$ when $\lambda\rightarrow\infty$.} We also added some classical choices of values for $\mu$ from literature: when $\lambda\rightarrow\infty$, our method performs the best.}
+    \caption{Non centered  case: validation of the theoretical bounds for $\mathbb{E}_{X_1...X_\lambda\sim\mathcal{B}(0,r)}\left[ f(\bar X_{(\mu)})\right]$ when $\rVert y\rVert =\frac{R}{3}$ (i.e. $\epsilon=\frac{1}{3}$) from Theorem~\ref{thm:noncentered} for $d=5$ and $R=1$. We implemented $\lambda=100$ and $\lambda=10000$. $10000$  samples have been drawn to estimate the expectation. We see that such a value for $\mu$ is a good approximation of the minimum of the empirical values{: we can thus recommend $\mu=\lfloor \lambda (1-\epsilon)^d\rfloor$ when $\lambda\rightarrow\infty$.} We also added some classical choices of values for $\mu$ from literature: when $\lambda\rightarrow\infty$, our method performs the best.}
     \label{fig:exp_th_nc}
 \end{figure}
 
 
 %\subsection{Validation of the theoretical results}
-%\otc{the theoretical formula from Theorem~\ref{thm:formula_k_best} and its empirical estimation: we note that the results coincide}
+%{the theoretical formula from Theorem~\ref{thm:formula_k_best} and its empirical estimation: we note that the results coincide}
 To validate our theoretical findings, we first compare the formulas obtained in Theorems~\ref{thm:formula_k_best} and~\ref{thm:noncentered} with their empirical estimates. We then perform larger scale experiments in a one-shot optimization setting. 
 
 \subsection{Experimental validation of theoretical formulas}
@@ -582,6 +583,6 @@ Our combinations \texttt{THCHAvg} and \texttt{HCHAvg} perform well: in most sett
 We have proved formally that the average of the $\mu$ best is better than the single best in the case of the sphere function (simple regret $O(1/\lambda)$ instead of $O(1/\lambda^{2/d})$) with uniform sampling. We suggested a value $\mu=\lfloor c\lambda\rfloor$ with $0<c<(1-\epsilon)^{d}$. Even better results can be obtained in practice using quasi-convexity, without losing the theoretical guarantees of the convex case on the sphere function. Our results have been successfully implemented in \cite{nevergrad}. The improvement compared to the state of the art, albeit moderate, is obtained without any computational overhead in our method, and supported by a theoretical result.\\
 %We nonetheless provide a proof of an improved rate, and did better without any computational overhead in our method. \\
 
-{\bf{Further work.}} Our theorem is limited to a single iteration, i.e. fully parallel optimization, and to the sphere function. Experiments are positive in the convex case, encouraging more theoretical developments in this setting. We did not explore approaches based on surrogate models. Our experimental methods include an automatic choice of $\mu$ in the multimodal case using quasi-convexity, for which the theoretical analysis has yet to be fully developed - we show that this is not detrimental in the convex setting, but not that it performs better in a non-convex setting.
-We need an upper bound on the distance between the center of the sampling and the optimum for our results to be applicable (see parameter $\epsilon$): removing this need is an worthy consideration, as such a bound is rarely available in real life. 
+% {\textbf{Further work.}} Our theorem is limited to a single iteration, i.e. fully parallel optimization, and to the sphere function. Experiments are positive in the convex case, encouraging more theoretical developments in this setting. We did not explore approaches based on surrogate models. Our experimental methods include an automatic choice of $\mu$ in the multimodal case using quasi-convexity, for which the theoretical analysis has yet to be fully developed - we show that this is not detrimental in the convex setting, but not that it performs better in a non-convex setting.
+% We need an upper bound on the distance between the center of the sampling and the optimum for our results to be applicable (see parameter $\epsilon$): removing this need is an worthy consideration, as such a bound is rarely available in real life. 
 

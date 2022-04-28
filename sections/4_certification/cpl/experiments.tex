@@ -191,7 +191,7 @@ Our layers  only provide an upper bound on the Lipschitz constant, while orthono
     S[table-format=2.2]
   }
   \toprule
-  &\multicolumn{1}{c}{\textbf{Batch size }}& \multicolumn{1}{c}{\textbf{Clean Acc.}} & \multicolumn{3}{c}{\textbf{Provable Accuracy ($\varepsilon $)}} &  \multicolumn{1}{c}{\textbf{T. per epoch (s)}} 
+  &\multicolumn{1}{c}{\textbf{Batch}}& \multicolumn{1}{c}{\textbf{Clean Acc.}} & \multicolumn{3}{c}{\textbf{Provable Accuracy ($\varepsilon $)}} &  \multicolumn{1}{c}{\textbf{T./epoch (s)}} 
     \\
     \cmidrule{4-6}
     & \multicolumn{1}{c}{ } & \multicolumn{1}{c}{ } &\multicolumn{1}{c}{36/255} & \multicolumn{1}{c}{72/255} &  \multicolumn{1}{c}{108/255} & \multicolumn{1}{c}{\textbf{}} 
@@ -241,7 +241,7 @@ Our layers  only provide an upper bound on the Lipschitz constant, while orthono
     S[table-format=2.2]
   }
   \toprule
-  &\multicolumn{1}{c}{\textbf{Batch size }}& \multicolumn{1}{c}{\textbf{Clean Acc.}} & \multicolumn{3}{c}{\textbf{Provable Acc. ($\varepsilon $)}} &  \multicolumn{1}{c}{\textbf{Time per epoch (s)}} 
+  &\multicolumn{1}{c}{\textbf{Batch}}& \multicolumn{1}{c}{\textbf{Clean Acc.}} & \multicolumn{3}{c}{\textbf{Provable Acc. ($\varepsilon $)}} &  \multicolumn{1}{c}{\textbf{T./epoch (s)}} 
     \\
     \cmidrule{4-6}
     & \multicolumn{1}{c}{ } & \multicolumn{1}{c}{ } &\multicolumn{1}{c}{36/255} & \multicolumn{1}{c}{72/255} &  \multicolumn{1}{c}{108/255} & \multicolumn{1}{c}{\textbf{}} 
@@ -275,10 +275,13 @@ Our layers  only provide an upper bound on the Lipschitz constant, while orthono
 In Tables~\ref{table:c10-comp-bs} and~\ref{table:c100-comp-bs}, we tried three different batch sizes (64, 128 and 256) for training our networks on CIFAR10 and CIFAR100 datasets, we remark a gain in standard accuracy in reducing the batch size for all settings. As the perturbation becomes larger, the gain in accuracy is reduced and can even in some cases we may loose some points in robustness.
 
 
+
+
+
 \begin{figure}[h]
     \centering
     \begin{tabular}{cc}
-    \includegraphics[width=0.49\textwidth]{sections/4_certification/images/cert_acc_margin_eps_c10.pdf}&\includegraphics[width=0.49\textwidth]{sections/4_certification/images/cert_acc_margin_eps_c100.pdf}
+    \includegraphics[width=0.48\textwidth]{sections/4_certification/images/cert_acc_margin_eps_c10.pdf}&\includegraphics[width=0.48\textwidth]{sections/4_certification/images/cert_acc_margin_eps_c100.pdf}
     \end{tabular}
     \caption{Certifiably robust accuracy in function of the perturbation $\varepsilon$ for our CPL-S  network with different margin parameters on CIFAR10 and CIFAR100 datasets.}
     \label{fig:cert-acc-margin}

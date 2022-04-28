@@ -1,0 +1,74 @@
+\section{A First Independence Test}
+Here we extend the framework proposed in~\cite{jitkrittum2017adaptive} to the $\ell^p$ geometry for any $p\geq 1$ and design of a new nonparametric statistical tests of dependence: that is, tests of whether a joint distribution $P_{XY}$ factorizes into the product of marginals $P_X\otimes P_Y$ with the null hypothesis that $H_0$: X and Y are independent. Since $d_{L^{p},k,J}$ is a random metric, it holds that
+$d_{L^{p},k,J}^p(P_{X,Y},P_X\otimes P_Y)=0$ $\Gamma$-almost surely, if and only if  $X\perp Y$.
+
+\paragraph{Estimation.} Let $\{(x_i,y_i)\}_{i=1}^n$ samples drawn independently from $P_{XY}$, denote $\widehat{P}_{XY}:=\frac{1}{n}\sum_{i=1}^n\delta_{(x_i,y_i)}$, $\widehat{P}_X:=\frac{1}{n}\sum_{i=1}^n\delta_{x_i}$ and $\widehat{P}_Y:=\frac{1}{n}\sum_{i=1}^n\delta_{y_i}$ the empirical distributions of respectively $P_{XY}$, $P_X$ and $P_Y$. Then a simple unbiased estimator of the random kernel-based $\ell^p$ distance to the $p$ between $P_{XY}$ and $P_X\otimes P_Y$ can be obtained by considering 
+\begin{align*}
+    \text{UI}_{n,p}&:= d_{L^{p},k,J}^p(\widehat{P}_{XY},\widehat{P}_X\otimes\widehat{P}_Y)\\
+    &=\frac{1}{J}\sum_{j=1}^J\left|\mu_{\widehat{P}_{XY},k}(\mathbf{t}_j)-\mu_{\widehat{P}_X\otimes\widehat{P}_Y,k}(\mathbf{t}_j)\right|^p
+\end{align*}
+In general as soon as we have access to samples of a given distribution and that we can evaluate the kernel, obtaining a point-wise estimator of the mean embedding is quite straightforward. For example one has for any $\mathbf{t}\in\mathcal{X}\times\mathcal{Y}$
+\begin{align}
+\label{eq-ME-joint}
+    \mu_{\widehat{P}_{XY},k}(\mathbf{t})=\frac{1}{n}\sum_{i=1}^n k(\mathbf{t},(x_i,y_i)).
+\end{align}
+and therefore assuming that evaluating the kernel $k$ can be performed in $\mathcal{O}(d)$ algebraic operations, in general computing~(\ref{eq-ME-joint}) for a given $\mathbf{t}$ can be performed in $\mathcal{O}(nd)$ algebraic operations where $n$ is the number of samples available. Concerning the empirical distribution $\widehat{P}_X\otimes \widehat{P}_Y$,  we have access to $n^2$ samples, thus evaluate its empirical mean embedding may cost $\mathcal{O}(dn^2)$ algebraic operations if one wants to take into account all the samples available. Therefore computing $\text{UI}_{n,p}$ may be performed in $\mathcal{O}(Jdn^2)$ algebraic operations. However, if the kernel $k$ is the tensor-product of two kernels $k_{\mathcal{X}}$ and $k_{\mathcal{Y}}$ on respectively $\mathcal{X}$ and $\mathcal{Y}$, then the computational cost can be reduced to $\mathcal{O}(Jdn)$. Indeed in that case we have for any $\mathbf{t}:=(t^{(1)},t^{(2)})\in\mathcal{X}\times\mathcal{Y}$
+\begin{align*}
+     \mu_{\widehat{P}_X\otimes\widehat{P}_Y,k_{\mathcal{X}}\cdot k_{\mathcal{Y}}}(\mathbf{t})&= \mu_{\widehat{P}_X,k_{\mathcal{X}}}(t^{(1)}) \mu_{\widehat{P}_Y,k_{\mathcal{Y}}}(t^{(2)}).
+\end{align*}
+% One can also replace in the statistic $\text{UI}_{n,p}$, $\mu_{\widehat{P}_X\otimes\widehat{P}_Y,k_{\mathcal{X}}\cdot k_{\mathcal{Y}}}(\mathbf{t})$ by an unbiased estimator of $\mu_{P_X\otimes P_Y,k_{\mathcal{X}}\cdot k_{\mathcal{Y}}}(\mathbf{t})$ defined as
+% \begin{align*}
+%     \widehat{\mu}_{P_X\otimes P_Y}(\mathbf{t})&:=\frac{1}{n(n-1)}\sum_{i=1}^n\sum_{j\neq i}k_{\mathcal{X}}(x_i,t^{(1)})k_{\mathcal{Y}}(y_j,t^{(2)})
+% \end{align*}
+% which can be computed in linear time with respect to the number of samples $n$ by just rewriting the nested double sums as
+% \begin{align*}
+% \widehat{\mu}_{P_X\otimes P_Y}(\mathbf{t}) &=    \frac{n^2}{n(n-1)}\mu_{\widehat{P}_X\otimes\widehat{P}_Y,k_{\mathcal{X}}\cdot k_{\mathcal{Y}}}(\mathbf{t})\\
+% &- \frac{1}{n(n-1)}\sum_{q=1}^n k_{\mathcal{X}}(x_q,t^{(1)}))k_{\mathcal{Y}}(y_q,t^{(2)}).
+% \end{align*}
+
+When $p\in\{1,2\}$, one can obtain the asymptotic distribution for any fixed locations $(\mathbf{t}_j)_{j=1}^J$ which is either a sum of correlated Nakagami variables ($p=1$) or a sum of correlated chi square variables ($p=2$). Moreover one can show that under the alternative hypothesis, $\Gamma$-almost surely, $n^{p/2}\text{UI}_{n,p}$ is  arbitrarily large as $n$ goes to infinity. For a fixed level $\alpha$, the test rejects $H_0$ if $n^{p/2}\text{UI}_{n,p}$ exceeds the ($1 - \alpha$)-quantile of its asymptotic null distribution. This test is therefore consistent. However computing the quantiles of the asymptotic null distribution can be computationally costly as it requires a bootstrap or permutation procedure. In the following, we consider a different approach where the statistic is normalized.
+
+\textbf{Normalized Statistic.} For the purpose of an independence test, we will consider a normalized variant of $\text{UI}_{n,p}$ which has tractable asymptotic null distribution when $p\in\{1,2\}$. For that purpose, denote
+\begin{align*}
+    \widehat{u}(\mathbf{t}):=\mu_{\widehat{P}_{XY},k}(\mathbf{t})-\mu_{\widehat{P}_X\otimes \widehat{P}_Y}(\mathbf{t}).
+\end{align*}
+and define for all $i,j\in\{1,\dots,J\}$, 
+\begin{align*}
+\Sigma_{i,j} = \text{Cov}(\widehat{u}\left(\mathbf{t}_i),\widehat{u}(\mathbf{t}_j)\right).
+\end{align*}
+Let $\widehat{\Sigma}$ be a consistent and unbiased estimator of $\Sigma\in\mathbb{R}^{J\times J}$ and consider for any $\lambda>0$, $\widehat{\Sigma}_{\lambda}:=\widehat{\Sigma} + \lambda \text{Id}_J $. For example one can consider 
+\begin{align*}
+    \widehat{\Sigma}:=(\mathbf{K}_{\mathcal{X}}-n^{-1}\mathbf{K}_{\mathcal{X}}\mathbf{1}\mathbf{1}^T)\circ(\mathbf{K}_{\mathcal{Y}}-n^{-1}\mathbf{K}_{\mathcal{Y}}\mathbf{1}\mathbf{1}^T)- \widehat{\mathbf{u}}\mathbf{1}^T
+\end{align*}
+where $\mathbf{K}_{\mathcal{X}}=(k_{\mathcal{X}}(t_i^{(1)},x_j))_{i,j}\in\mathbb{R}^{J\times n}$, $\mathbf{K}_{\mathcal{Y}}=(k_{\mathcal{Y}}(t_i^{(2)},y_j))_{i,j}\in\mathbb{R}^{J\times n}$, $\circ$ denotes the Hadamard product of matrices, and 
+\begin{align*}
+    \widehat{\mathbf{u}}&:=(\widehat{u}(\mathbf{t}_1),\dots,\widehat{u}(\mathbf{t}_j)).
+    % \text{where\quad } u^{b}(\mathbf{t})&:=\mu_{\widehat{P}_{XY},k}(\mathbf{t})-\mu_{\widehat{P}_X\otimes\widehat{P}_Y,k_{\mathcal{X}}\cdot k_{\mathcal{Y}}}(\mathbf{t}).
+\end{align*}
+%Then by denoting $\widehat{\mathbf{u}}:=(\widehat{u}(\mathbf{t}_1),\dots,\widehat{u}(\mathbf{t}_J))^T$, 
+
+We can now consider the following normalized statistic:
+\begin{align*}
+    \text{NUI}_{n,p,\lambda}:=\Vert  \widehat{\Sigma}_{\lambda}^{-1/2}\widehat{\mathbf{u}}\Vert_{p}^p.
+\end{align*}
+Note that $\text{UI}_{n,p}=\Vert \widehat{\mathbf{u}}\Vert_{p}^p$, and therefore $\text{NUI}_{n,p}$ is a normalized version of it for which we also have the asymptotic distribution and the consistency.
+% define for all $\mathbf{t}\in\mathcal{X}\times\mathcal{Y}$, $x,x'\in\mathcal{X}$ and $y,y'\in\mathcal{Y}$
+% \begin{align*}
+% \omega_{\mathbf{t}}\left((x,y),(x',y')\right):=&\frac{1}{2}(k_\mathcal{X}(x,t^{(1)})- k_\mathcal{X}(x',t^{(1)}))\\
+% &(k_\mathcal{Y}(y,t^{(2)})- k_\mathcal{Y}(y',t^{(2)}))
+% \end{align*}
+
+% Therefore we have for any $\mathbf{t}\in\mathcal{X}\times\mathcal{Y}$,
+% \begin{align*}
+% u(\mathbf{t})=\frac{2}{n(n-1)}\sum_{i<j}\omega_{\mathbf{t}}\left((x_i,y_i),(x_j,y_j)\right)
+% \end{align*}
+\begin{prop}
+Under $H_0$,
+$n^{p/2}\text{NUI}_{n,p}$ follows sum of independent naka or a sum of independent chi square. Under $H_1$, the statistic is arbitrarely large as $n$ goes to infinity.
+\end{prop}
+
+\textbf{Improving the Power of the test.} Here we aim at learning the locations where the distributions differs the most and the kernel in a class of tensor-product kernel in order to gain power.
+
+
+% \textbf{Smooth Characteristic Function.} Explain that the exact same reasoning hold and give the statistic of interest.
+% Let $(H_{\mathcal{X}},k_{\mathcal{X}})$ and $(H_{\mathcal{Y}},k_{\mathcal{Y}})$ be RKHSs on respectively $\mathcal{X}$ and $\mathcal{Y}$. Assume that $k_{\mathcal{X}}$ and $k_{\mathcal{Y}}$ are bounded and that $k_{\mathcal{X}}\cdot k_\mathcal{Y}$ is a continuous and characteristic kernel on $\mathcal{X}\times\mathcal{Y}$. 

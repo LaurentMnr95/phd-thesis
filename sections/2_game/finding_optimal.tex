@@ -118,7 +118,8 @@ For $\mu\in\mathcal{M}_{1}^{+}(\Theta)$, one has
 Let us first show that for $\alpha\geq 0$, $\sup_{\QQ_i\in\Gamma_{i,\varepsilon}}\mathbb{E}_{\QQ_i,\mu}\left[\loss(\theta,(x,y))\right]-\alpha\text{KL}\left(\QQ_i\Big|\Big|\frac{1}{\numsamples}\mathbb{U}_{(x_i,y_i)}\right)$ admits a solution. Let $\alpha\geq 0$,
 $(\QQ_{\alpha,i}^{n})_{n\geq 0}$ a sequence such that
 \begin{align*}
-  \mathbb{E}_{\QQ_{\alpha,i}^{n},\mu}\left[\loss(\theta,(x,y))\right]-\alpha\text{KL}\left(\QQ_{\alpha,i}^{n}\Big|\Big|\frac{1}{\numsamples}\mathbb{U}_{(x_i,y_i)}\right)\xrightarrow[n]{} \sup_{\QQ_i\in\Gamma_{i,\varepsilon}}\mathbb{E}_{\QQ_i,\mu}\left[\loss(\theta,(x,y))\right]-\alpha\text{KL}\left(\QQ_i\Big|\Big|\frac{1}{\numsamples}\mathbb{U}_{(x_i,y_i)}\right).
+  \mathbb{E}_{\QQ_{\alpha,i}^{n},\mu}\left[\loss(\theta,(x,y))\right]&-\alpha\text{KL}\left(\QQ_{\alpha,i}^{n}\Big|\Big|\frac{1}{\numsamples}\mathbb{U}_{(x_i,y_i)}\right)\\
+  &\xrightarrow[n]{} \sup_{\QQ_i\in\Gamma_{i,\varepsilon}}\mathbb{E}_{\QQ_i,\mu}\left[\loss(\theta,(x,y))\right]-\alpha\text{KL}\left(\QQ_i\Big|\Big|\frac{1}{\numsamples}\mathbb{U}_{(x_i,y_i)}\right).
 \end{align*}
 As $\Gamma_{i,\varepsilon}$ is tight ($(\mathcal{X},d)$ is a proper metric space therefore all the closed ball are compact) and by Prokhorov's theorem, we can extract a subsequence which converges  toward  $\QQ^{*}_{\alpha,i}$. Moreover, $\loss$ is upper semi-continuous (u.s.c), thus $\QQ\rightarrow \mathbb{E}_{\QQ,\mu}\left[\loss(\theta,(x,y))\right]$ is also u.s.c.\footnote{Indeed by considering a decreasing sequence of continuous and bounded functions which converge towards $\mathbb{E}_{\mu}\left[\loss(\theta,(x,y))\right]$ and by definition of the weak convergence the result follows.} Moreover 
 $\QQ\rightarrow - \alpha \text{KL}\left(\QQ\Big|\Big|\frac{1}{\numsamples}\mathbb{U}_{(x_i,y_i)}\right)$ is also u.s.c. \footnote{for $\alpha=0$ the result is clear, and if $\alpha>0$, note that $\text{KL}\left(\cdot\Big|\Big|\frac{1}{\numsamples}\mathbb{U}_{(x_i,y_i)}\right)$ is lower semi-continuous}, therefore, by considering the limit superior as $n$ goes to infinity we obtain that
@@ -134,11 +135,13 @@ Let us denote $\QQ^{*}_{\alpha_i^{(\ell)},i}$ and $\QQ^{*}_i$ the solutions of  
 and 
 $\max_{\QQ_i\in\Gamma_{i,\varepsilon}}\mathbb{E}_{\QQ_i,\mu}\left[\loss(\theta,(x,y))\right]$ respectively.  Since $\Gamma_{i,\varepsilon}$ is tight, $(\QQ^{*}_{\alpha_i^{(\ell)},i})_{\ell\geq 0}$ is also tight and we can extract by Prokhorov's theorem a subsequence which converges towards $\QQ^{*}$. Moreover we have
 \begin{align*}
- \mathbb{E}_{\QQ^{*}_i,\mu}\left[\loss(\theta,(x,y))\right] -\alpha_i^{(\ell)}\text{KL}\left(\QQ^{*}_i\Big|\Big|\frac{1}{\numsamples}\mathbb{U}_{(x_i,y_i)}\right)\leq \mathbb{E}_{\QQ^{*}_{\alpha_i^{(\ell)},i},\mu}\left[\loss(\theta,(x,y))\right] -\alpha_i^{(\ell)}\text{KL}\left(\QQ^{*}_{\alpha_i^{(\ell)},i}\Big|\Big|\frac{1}{\numsamples}\mathbb{U}_{(x_i,y_i)}\right)
+ \mathbb{E}_{\QQ^{*}_i,\mu}\left[\loss(\theta,(x,y))\right] &-\alpha_i^{(\ell)}\text{KL}\left(\QQ^{*}_i\Big|\Big|\frac{1}{\numsamples}\mathbb{U}_{(x_i,y_i)}\right)\\
+ &\leq \mathbb{E}_{\QQ^{*}_{\alpha_i^{(\ell)},i},\mu}\left[\loss(\theta,(x,y))\right] -\alpha_i^{(\ell)}\text{KL}\left(\QQ^{*}_{\alpha_i^{(\ell)},i}\Big|\Big|\frac{1}{\numsamples}\mathbb{U}_{(x_i,y_i)}\right)
 \end{align*}
 from which follows that
 \begin{align*}
-0\leq \mathbb{E}_{\QQ^{*}_i,\mu}\left[\loss(\theta,(x,y))\right] -  \mathbb{E}_{\QQ^{*}_{\alpha_i^{(\ell)},i},\mu}\left[\loss(\theta,(x,y))\right]\leq \alpha_i^{(\ell)}\left(\text{KL}\left(\QQ^{*}_i\Big|\Big|\frac{1}{\numsamples}\mathbb{U}_{(x_i,y_i)}\right)- \text{KL}\left(\QQ^{*}_{\alpha_i^{(\ell)},i}\Big|\Big|\frac{1}{\numsamples}\mathbb{U}_{(x_i,y_i)}\right)\right)
+0\leq \mathbb{E}_{\QQ^{*}_i,\mu}\left[\loss(\theta,(x,y))\right] &-  \mathbb{E}_{\QQ^{*}_{\alpha_i^{(\ell)},i},\mu}\left[\loss(\theta,(x,y))\right]\\
+&\leq \alpha_i^{(\ell)}\left(\text{KL}\left(\QQ^{*}_i\Big|\Big|\frac{1}{\numsamples}\mathbb{U}_{(x_i,y_i)}\right)- \text{KL}\left(\QQ^{*}_{\alpha_i^{(\ell)},i}\Big|\Big|\frac{1}{\numsamples}\mathbb{U}_{(x_i,y_i)}\right)\right)
 \end{align*}
 Then by considering the limit superior we obtain that
 \begin{align*}
@@ -194,9 +197,12 @@ Let also consider $(\mu^{(\textbf{m})}_n)_{n\geq 0}$ and $(\mu_n)_{n\geq 0}$ two
 \end{align*}
 We first remarks that
 \begin{align*}
-\widehat{\mathcal{R}}^{\bm{\varepsilon},\textbf{m}}_{adv,\bm{\alpha}}- \widehat{\mathcal{R}}^{\bm{\varepsilon},*}_{adv,\bm{\alpha}}&\leq \widehat{\mathcal{R}}^{\bm{\varepsilon},\textbf{m}}_{adv,\bm{\alpha}} - \widehat{\mathcal{R}}^{\bm{\varepsilon},\textbf{m}}_{adv,\bm{\alpha}}(\mu_n) + \widehat{\mathcal{R}}^{\bm{\varepsilon},\textbf{m}}_{adv,\bm{\alpha}}(\mu_n) - \widehat{\mathcal{R}}^{\bm{\varepsilon}}_{adv,\bm{\alpha}}(\mu_n)+ \widehat{\mathcal{R}}^{\bm{\varepsilon}}_{adv,\bm{\alpha}}(\mu_n)-
+\widehat{\mathcal{R}}^{\bm{\varepsilon},\textbf{m}}_{adv,\bm{\alpha}}- \widehat{\mathcal{R}}^{\bm{\varepsilon},*}_{adv,\bm{\alpha}}&\leq \widehat{\mathcal{R}}^{\bm{\varepsilon},\textbf{m}}_{adv,\bm{\alpha}} - \widehat{\mathcal{R}}^{\bm{\varepsilon},\textbf{m}}_{adv,\bm{\alpha}}(\mu_n)\\
+& + \widehat{\mathcal{R}}^{\bm{\varepsilon},\textbf{m}}_{adv,\bm{\alpha}}(\mu_n) - \widehat{\mathcal{R}}^{\bm{\varepsilon}}_{adv,\bm{\alpha}}(\mu_n)\\
+&+ \widehat{\mathcal{R}}^{\bm{\varepsilon}}_{adv,\bm{\alpha}}(\mu_n)-
 \widehat{\mathcal{R}}^{\bm{\varepsilon},*}_{adv,\bm{\alpha}} \\
-&\leq \sup_{\mu\in \mathcal{M}^+_1(\Theta)}\Big|\widehat{\mathcal{R}}^{\bm{\varepsilon},\textbf{m}}_{adv,\bm{\alpha}}(\mu) - \widehat{\mathcal{R}}^{\bm{\varepsilon}}_{adv,\bm{\alpha}}(\mu) \Big| + \widehat{\mathcal{R}}^{\bm{\varepsilon}}_{adv,\bm{\alpha}}(\mu_n)-
+&\leq \sup_{\mu\in \mathcal{M}^+_1(\Theta)}\Big|\widehat{\mathcal{R}}^{\bm{\varepsilon},\textbf{m}}_{adv,\bm{\alpha}}(\mu) - \widehat{\mathcal{R}}^{\bm{\varepsilon}}_{adv,\bm{\alpha}}(\mu) \Big|\\
+& + \widehat{\mathcal{R}}^{\bm{\varepsilon}}_{adv,\bm{\alpha}}(\mu_n)-
 \widehat{\mathcal{R}}^{\bm{\varepsilon},*}_{adv,\bm{\alpha}},
 \end{align*}
 and by considering the limit, we obtain that
@@ -206,8 +212,9 @@ and by considering the limit, we obtain that
 Simarly we have that
 \begin{align*}
 \widehat{\mathcal{R}}^{\bm{\varepsilon},*}_{adv,\bm{\alpha}} - \widehat{\mathcal{R}}^{\bm{\varepsilon},\textbf{m}}_{adv,\bm{\alpha}}&\leq \widehat{\mathcal{R}}^{\bm{\varepsilon},*}_{adv,\bm{\alpha}} -
-\widehat{\mathcal{R}}^{\bm{\varepsilon}}_{adv,\bm{\alpha}}(\mu_n^{(\bm{m})})
-+\widehat{\mathcal{R}}^{\bm{\varepsilon}}_{adv,\bm{\alpha}}(\mu_n^{(\bm{m})}) - \widehat{\mathcal{R}}^{\bm{\varepsilon},\textbf{m}}_{adv,\bm{\alpha}}(\mu_n^{(\bm{m})}) + \widehat{\mathcal{R}}^{\bm{\varepsilon},\textbf{m}}_{adv,\bm{\alpha}}(\mu_n^{(\bm{m})}) - \widehat{\mathcal{R}}^{\bm{\varepsilon},\textbf{m}}_{adv,\bm{\alpha}}
+\widehat{\mathcal{R}}^{\bm{\varepsilon}}_{adv,\bm{\alpha}}(\mu_n^{(\bm{m})})\\
+&+\widehat{\mathcal{R}}^{\bm{\varepsilon}}_{adv,\bm{\alpha}}(\mu_n^{(\bm{m})}) - \widehat{\mathcal{R}}^{\bm{\varepsilon},\textbf{m}}_{adv,\bm{\alpha}}(\mu_n^{(\bm{m})}) \\
+&+ \widehat{\mathcal{R}}^{\bm{\varepsilon},\textbf{m}}_{adv,\bm{\alpha}}(\mu_n^{(\bm{m})}) - \widehat{\mathcal{R}}^{\bm{\varepsilon},\textbf{m}}_{adv,\bm{\alpha}}
 \end{align*}
 from which follows that 
 \begin{align*}
@@ -223,7 +230,7 @@ Observe that $\loss\geq 0$, therefore because the $\log$ function is 1-Lipschitz
 \begin{align*}
 \Big| \widehat{\mathcal{R}}^{\bm{\varepsilon},*}_{adv,\bm{\alpha}} - \widehat{\mathcal{R}}^{\bm{\varepsilon},\textbf{m}}_{adv,\bm{\alpha}}\Big |
 \leq 
-\sum_{i=1}^\numsamples\frac{\alpha}{\numsamples}  \sup_{\mu\in \mathcal{M}^+_1(\Theta)}\Big | &\frac{1}{m_i}\sum_{j=1}^{m_i}\exp\left(\frac{\mathbb{E}_{\theta \sim \mu}\left[\loss(\theta,u_j^{(i)}))\right]}{\alpha}\right)\\
+\sum_{i=1}^\numsamples\frac{\alpha}{\numsamples}  &\sup_{\mu\in \mathcal{M}^+_1(\Theta)}\Big |\frac{1}{m_i}\sum_{j=1}^{m_i}\exp\left(\frac{\mathbb{E}_{\theta \sim \mu}\left[\loss(\theta,u_j^{(i)}))\right]}{\alpha}\right)\\
     &- \int_{\mathcal{X}\times\mathcal{Y}}\exp\left(\frac{\mathbb{E}_{\theta \sim \mu}\left[\loss(\theta,(x,y))\right]}{\alpha}\right) d\mathbb{U}_{(x_i,y_i)} \Big|.
 \end{align*}
 Let us now denote for all $i=1,\dots,\numsamples$,
@@ -238,8 +245,8 @@ and let us define
 where $\bm{u}^{(i)}:=(u_1^{(i)},\dots,u_1^{(m)})$. By denoting $z^{(i)}=(u_1^{(i)},\dots,u_{k-1}^{(i)},z,u_{k+1}^{(i)},\dots,u_m^{(i)})$, we have that
 \begin{align*}
   |f(\bm{u}^{(1)},\dots,\bm{u}^{(\numsamples)})& - f(\bm{u}^{(1)},\dots,\bm{u}^{(i-1)},\bm{z}^{(i)},\bm{u}^{(i+1)},\dots,\bm{u}^{(\numsamples)})|\\
-  &\leq \frac{\alpha}{\numsamples}\Big | \sup_{\mu\in \mathcal{M}^+_1(\Theta)}\Big |\widehat{R}_i(\mu,\bm{u}^{(i)}) -R_i(\mu)\Big |
-  - \sup_{\mu\in \mathcal{M}^+_1(\Theta)}\Big |\widehat{R}_i(\mu,\bm{z}^{(i)}) -R_i(\mu)\Big | \Big |\\
+  &\leq \frac{\alpha}{\numsamples}\Big | \sup_{\mu\in \mathcal{M}^+_1(\Theta)}\Big |\widehat{R}_i(\mu,\bm{u}^{(i)}) -R_i(\mu)\Big |\\
+ & - \sup_{\mu\in \mathcal{M}^+_1(\Theta)}\Big |\widehat{R}_i(\mu,\bm{z}^{(i)}) -R_i(\mu)\Big | \Big |\\
   &\leq \frac{\alpha}{\numsamples}\Big |\frac{1}{m}\left[\exp\left(\frac{\mathbb{E}_{\theta \sim \mu}\left[\loss(\theta,u_k^{(i)}))\right]}{\alpha}\right) - \exp\left(\frac{\mathbb{E}_{\theta \sim \mu}\left[\loss(\theta,z^{(i)}))\right]}{\alpha}\right) \right]\Big| \\
   &\leq \frac{2\exp(M/\alpha)}{\numsamples m}
 \end{align*}
@@ -253,7 +260,7 @@ Thanks to~\citep[Lemma 26.2]{shalev2014understanding}, we have for all $i\in\{1,
 \end{align*}
 where for any class of function $\mathcal{F}$ defined on $\mathcal{Z}$  and point $\bm{z}:(z_1,\dots,z_q)\in\mathcal{Z}^q$
 \begin{align*}
-    &\mathcal{F}\circ \bm{z}:=\Big\{(f(z_1),\dots,f(z_q)),~f\in\mathcal{F}\Big\} \quad,\quad \text{Rad}(\mathcal{F}\circ \bm{z}):=\frac{1}{q}\mathbb{E}_{\bm{\sigma}\sim\{\pm 1\}}\left[\sup_{f\in\mathcal{F}}\sum_{i=1}^q\sigma_if(z_i)\right]\\
+    &\mathcal{F}\circ \bm{z}:=\Big\{(f(z_1),\dots,f(z_q)),f\in\mathcal{F}\Big\} \quad,\\\quad \text{Rad}(\mathcal{F}\circ \bm{z}):=\frac{1}{q}\mathbb{E}_{\bm{\sigma}\sim\{\pm 1\}}\left[\sup_{f\in\mathcal{F}}\sum_{i=1}^q\sigma_if(z_i)\right],\\
     &\mathcal{F}_i:=\Big\{u\rightarrow\exp\left(\frac{\mathbb{E}_{\theta \sim \mu}\left[\loss(\theta,u))\right]}{\alpha}\right),~\mu\in\mathcal{M}_{1}^{+}(\Theta) \Big\}.
       \end{align*}
 Moreover as $x\rightarrow\exp(x/\alpha)$ is $\frac{\exp(M/\alpha)}{\alpha}$-Lipstchitz on $(-\infty,M]$, by~\citep[Lemma 26.9]{shalev2014understanding}, we have 
@@ -317,8 +324,11 @@ Following the same steps than the proof of Proposition~\ref{prop:control-error-s
 \end{align*}
 Remarks that 
 \begin{align*}
-  \widehat{\mathcal{R}}_{adv,\bm{\alpha}}^{\varepsilon,*} - \widehat{\mathcal{R}}_{adv}^{\varepsilon,*}&\leq \widehat{\mathcal{R}}_{adv,\bm{\alpha}}^{\varepsilon,*} - \widehat{\mathcal{R}}_{adv,\bm{\alpha}}^{\varepsilon}(\mu_n) + \widehat{\mathcal{R}}_{adv,\bm{\alpha}}^{\varepsilon}(\mu_n) -   \widehat{\mathcal{R}}_{adv}^{\varepsilon}(\mu_n)+ \widehat{\mathcal{R}}_{adv}^{\varepsilon}(\mu_n)-\widehat{\mathcal{R}}_{adv}^{\varepsilon,*}\\
-  &\leq \sup_{\mu\in\mathcal{M}_1^{+}(\Theta)}\Big|\widehat{\mathcal{R}}_{adv,\bm{\alpha}}^{\varepsilon}(\mu) -   \widehat{\mathcal{R}}_{adv}^{\varepsilon}(\mu)  \Big| + \widehat{\mathcal{R}}_{adv}^{\varepsilon}(\mu_n)-\widehat{\mathcal{R}}_{adv}^{\varepsilon,*}
+  \widehat{\mathcal{R}}_{adv,\bm{\alpha}}^{\varepsilon,*} - \widehat{\mathcal{R}}_{adv}^{\varepsilon,*}&\leq \widehat{\mathcal{R}}_{adv,\bm{\alpha}}^{\varepsilon,*} - \widehat{\mathcal{R}}_{adv,\bm{\alpha}}^{\varepsilon}(\mu_n)\\
+  & + \widehat{\mathcal{R}}_{adv,\bm{\alpha}}^{\varepsilon}(\mu_n) -   \widehat{\mathcal{R}}_{adv}^{\varepsilon}(\mu_n)\\
+  &+ \widehat{\mathcal{R}}_{adv}^{\varepsilon}(\mu_n)-\widehat{\mathcal{R}}_{adv}^{\varepsilon,*}\\
+  &\leq \sup_{\mu\in\mathcal{M}_1^{+}(\Theta)}\Big|\widehat{\mathcal{R}}_{adv,\bm{\alpha}}^{\varepsilon}(\mu) -   \widehat{\mathcal{R}}_{adv}^{\varepsilon}(\mu)  \Big|\\
+  & + \widehat{\mathcal{R}}_{adv}^{\varepsilon}(\mu_n)-\widehat{\mathcal{R}}_{adv}^{\varepsilon,*}
 \end{align*}
 Then by considering the limit we obtain that 
 \begin{align*}
@@ -330,7 +340,7 @@ Similarly, we obtain that
 \end{align*}
 from which follows that
 \begin{align*}
- \Big| \widehat{\mathcal{R}}_{adv,\bm{\alpha}}^{\varepsilon,*} - \widehat{\mathcal{R}}_{adv}^{\varepsilon,*}\Big|&\leq \frac{1}{\numsamples}\sum_{i=1}^\numsamples\sup_{\mu\in\mathcal{M}_1^{+}(\Theta)}\Big|&\alpha\log\left(\int_{\mathcal{X}\times\mathcal{Y}}\exp\left(\frac{\mathbb{E}_{\mu}[\loss(\theta,(x,y))]}{\alpha} \right) d\mathbb{U}_{(x_i,y_i)}\right)\\
+ \Big| \widehat{\mathcal{R}}_{adv,\bm{\alpha}}^{\varepsilon,*} - \widehat{\mathcal{R}}_{adv}^{\varepsilon,*}\Big|\leq \frac{1}{\numsamples}\sum_{i=1}^\numsamples&\sup_{\mu\in\mathcal{M}_1^{+}(\Theta)}\Big|\alpha\log\left(\int_{\mathcal{X}\times\mathcal{Y}}\exp\left(\frac{\mathbb{E}_{\mu}[\loss(\theta,(x,y))]}{\alpha} \right) d\mathbb{U}_{(x_i,y_i)}\right)\\
  &-\sup_{u\in S^{\varepsilon}_{(x_i,y_i)}}\mathbb{E}_{\mu}[\loss(\theta,u)] \Big|.
 \end{align*}
 Let $\mu\in\mathcal{M}_1^{+}(\Theta)$ and $i\in\{1,\dots,\numsamples\}$, then we have
@@ -340,7 +350,8 @@ Let $\mu\in\mathcal{M}_1^{+}(\Theta)$ and $i\in\{1,\dots,\numsamples\}$, then we
  &=\alpha  \Big| \log\left(\int_{A_{\beta,\mu}^{(x_i,y_i)}}\exp\left(\frac{\mathbb{E}_{\mu}[\loss(\theta,(x,y))]-\sup_{u\in S^{\varepsilon}_{(x_i,y_i)}}\mathbb{E}_{\mu}[\loss(\theta,u)]}{\alpha} \right) d\mathbb{U}_{(x_i,y_i)}\right. \\
  &+ \left.\int_{(A_{\beta,\mu}^{(x_i,y_i)})^{c}}\exp\left(\frac{\mathbb{E}_{\mu}[\loss(\theta,(x,y))]-\sup_{u\in S^{\varepsilon}_{(x_i,y_i)}}\mathbb{E}_{\mu}[\loss(\theta,u)]}{\alpha} \right) d\mathbb{U}_{(x_i,y_i)}\right)  \Big|\\
  &\leq \alpha \Big | \log\left(\exp(-\frac\beta\alpha)\mathbb{U}_{(x_i,y_i)}\left(A_{\beta,\mu}^{(x_i,y_i)}\right) \right)\Big | \\
- &+ \alpha  \Big|\log\left(1+ \frac{\exp(\beta/\alpha)}{\mathbb{U}_{(x_i,y_i)}\left(A_{\beta,\mu}^{(x_i,y_i)}\right)}\int_{(A_{\beta,\mu}^{(x_i,y_i)})^{c}}\exp\left(\frac{\mathbb{E}_{\mu}[\loss(\theta,(x,y))]-\sup_{u\in S^{\varepsilon}_{(x_i,y_i)}}\mathbb{E}_{\mu}[\loss(\theta,u)]}{\alpha} \right) d\mathbb{U}_{(x_i,y_i)}\right)  \Big|\\
+ &+ \alpha  \Big|\log\left(1+\right.\\
+ &\left.\frac{\exp(\beta/\alpha)}{\mathbb{U}_{(x_i,y_i)}\left(A_{\beta,\mu}^{(x_i,y_i)}\right)}\int_{(A_{\beta,\mu}^{(x_i,y_i)})^{c}}\exp\left(\frac{\mathbb{E}_{\mu}[\loss(\theta,(x,y))]-\sup_{u\in S^{\varepsilon}_{(x_i,y_i)}}\mathbb{E}_{\mu}[\loss(\theta,u)]}{\alpha} \right) d\mathbb{U}_{(x_i,y_i)}\right)  \Big|\\
  &\leq \alpha\log(1/C_\beta)+\beta +\frac{\alpha}{C_\beta}\\
  &\leq 2\alpha\log(1/C_\beta)+\beta
 \end{align*}
@@ -407,7 +418,8 @@ Thanks to Danskin theorem, if $\QQ^*$ is a best response to $\bm{\lambda}$, then
 \begin{align*}
 \lVert \bm{\lambda}_t-\bm{\lambda}^*\rVert^2&\leq \lVert \bm{\lambda}_{t-1}-\eta \bm{g}_t-\bm{\lambda}^*\rVert^2\\
 &=\lVert \bm{\lambda}_{t-1}-\bm{\lambda}^*\rVert^2-2\eta \langle\bm{g}_t, \bm{\lambda}_{t-1}-\bm{\lambda}^*\rangle+ \eta^2\lVert \bm{g}_t\rVert^2\\
-&\leq \lVert \bm{\lambda}_{t-1}-\bm{\lambda}^*\rVert^2-2\eta \langle\bm{g}^*_t, \bm{\lambda}_{t-1}-\bm{\lambda}^*\rangle+2\eta\langle\bm{g}^*_t-\bm{g}_t, \bm{\lambda}_{t-1}-\bm{\lambda}^*\rangle+\eta^2 M^2 l\\
+&\leq \lVert \bm{\lambda}_{t-1}-\bm{\lambda}^*\rVert^2-2\eta \langle\bm{g}^*_t, \bm{\lambda}_{t-1}-\bm{\lambda}^*\rangle\\
+&+2\eta\langle\bm{g}^*_t-\bm{g}_t, \bm{\lambda}_{t-1}-\bm{\lambda}^*\rangle+\eta^2 M^2 l\\
 &\leq \lVert \bm{\lambda}_{t-1}-\bm{\lambda}^*\rVert^2-2\eta\left(\risk^\varepsilon(\bm{\lambda}_t)-\risk^\varepsilon(\bm{\lambda}^*)\right) +4\eta\delta+\eta^2  M^2 l%\lVert \bm{\lambda}_{t-1}-\bm{\lambda}^*\rVert_1
 \end{align*}
 We then deduce by summing:

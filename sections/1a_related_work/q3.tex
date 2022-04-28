@@ -92,7 +92,7 @@ The BCOP layer (Block Convolution Orthogonal Parameterization) uses an iterative
  M\times\left(I+\frac12Q+\frac38Q^2+\dots+(-1)^p\begin{pmatrix} \frac12\\p \end{pmatrix}
 Q^p+\dots \right).
 \end{align*}
-with $Q = I-A^TA$ 
+with $Q = I-M^TM$ 
 To build a ``convolutional layer'' from the BCOP procedure, the authors proposed to work directly on the kernels of the convolutions, proposing block operations to orthogonalize convolutions.
 
 Two other alternatives, the SOC layer (Skew Orthogonal Convolution) and the Cayley layer, used two different parametrization of the Special Orthogonal Group $SO_n(\RR)$ using skew-symmetric matrices. Indeed, in Riemmanian geometry, the space skew-symmetric matrices is isomorphic to the tangent space of $SO_n(\RR)$ at any point. 
@@ -101,7 +101,7 @@ SOC layers uses the expontial mapping of a skew symmetric matrix defined using t
 \begin{align*}
   \exp{A}:=\sum_{k=0}^{\infty}\frac{A^k}{k!}
 \end{align*}
-which defines an orthogonal matrix, indeed $(\exp{A})^T\exp{A} = \exp(A^T)\exp(A) = \exp(-A)\exp(A) = \exp(A-A)=I$ . More precisely, the application $A\mapsto\exp{A}$ defines a surjective mapping of $SO_n(\RR)$ from the space of skew-symmetric matrices. To approximate the exponential of a matrix, the authors proposed to use a finite number of terms in its Taylor series expansion.  To be adapted to convolutions, a skew-symmetric linear transformation $A = M-M^T$ can be  computed in a Deep Learning Framework using the  convolution and convolution-transpose operators.
+which defines an orthogonal matrix, indeed $(\exp{A})^T\exp{A}=I$ . More precisely, the application $A\mapsto\exp{A}$ defines a surjective mapping of $SO_n(\RR)$ from the space of skew-symmetric matrices. To approximate the exponential of a matrix, the authors proposed to use a finite number of terms in its Taylor series expansion.  To be adapted to convolutions, a skew-symmetric linear transformation $A = M-M^T$ can be  computed in a Deep Learning Framework using the  convolution and convolution-transpose operators.
 
 
 
