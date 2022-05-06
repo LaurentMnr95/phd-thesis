@@ -86,6 +86,12 @@ With the recent success of Deep Learning algorithms, in particular in computer v
 In this manuscript, we will focus on the task of classification in Machine Learning. The purpose of this task is to ``learn'' how to classify some input $x$ into some label(s). The input can be an image, a text, an audio, etc. For instance, in computer vision, a known dataset is ImageNet where the goal is to learn how to classify high quality images into $1000$ labels~\citep{imagenet_cvpr09}. In natural language processing, the IMDB Movie Review Sentiment Classification dataset~\citep{maas-EtAl:2011:ACL-HLT2011} aims at classifying positive or negative sentiments from movie reviews. To learn a classifier, the task is often supervised, i.e, we have access to labeled inputs, which constitutes the so-called training set. To assess the quality of the learnt model, we evaluate it on other images that constitute the test set.
 
 \subsection{A Learning Approach for Classification}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Images/tradeoff_bias_variance.png}
+    \caption{Bias-Complexiry tradeoff. A model with low complexity will have a low variance but an high bias. A model with high complexity will have a low bias but an high variance.}
+    \label{fig:tradeoff_bias_accuracy}
+\end{figure}
 From now, we will assume that the inputs are in some space $\XX$ and the labels form a set $\mathcal{Y}:=\{1,\dots,K\}$. To learn an adequate classification model, we denote $\{(x_1,y_1),\dots,(x_\numsamples,y_\numsamples)\}$ the $\numsamples$ elements of $\XX\times\YY$ forming the training set. We furthermore assume that these inputs are independent and identically distributed (i.i.d.) from some distribution $\PP$ on $\XX\times\YY$. The aim is now to learn a function/hypothesis from these samples $h:\XX\to\YY$ to classify an input $x$ with a label $y$. To assess the quality of a classifier, the metric of interest is often the misclassification rate of the model, or the $0/1$ loss risk, and it is defined as:
 \begin{align*}
 \risk_{0/1}(h):=\PP(h(x)\neq y) = \EE_{(x,y)\sim\PP}\left[\mathbf{1}_{h(x)\neq y}\right]
@@ -97,20 +103,23 @@ As the sampling distribution $\PP$ is usually unknown, the optimal Bayes classif
 \end{align*}
 
 This problem is called Empirical Risk Minimization (ERM). The theory of this problem has been widely studied and is well understood. It is often argued that there is a tradeoff on the ``size'' of $\mathcal{H}$: having a too small $\mathcal{H}$ may lead to underfitting, i.e. not enough parameters to describe the optimal possible function while a too large $\mathcal{H}$ may lead to overfitting, i.e. fitting too much training data. We often talk about bias-complexity tradeoff (see Figure~\ref{fig:tradeoff_bias_accuracy}). A penalty term $\Omega_{\mathcal{H}}(\mathbf{f})$ can also be added to the ERM objective to prevent from overfitting. This tradeoff was recently questioned by the double descent~\citep{belkin2019reconciling} phenomenon where overparametrized (i.e. number of parameters largely over the number of training samples) regimes lower the risk.
-\begin{figure}
-    \centering
-    \includegraphics[width=0.5\textwidth]{Images/tradeoff_bias_variance.png}
-    \caption{Bias-Complexiry tradeoff. A model with low complexity will have a low variance but an high bias. A model with high complexity will have a low bias but an high variance.}
-    \label{fig:tradeoff_bias_accuracy}
-\end{figure}
-\begin{tcolorbox}[colback=grund,colframe=rahmen]
+
 The presence of adversaries in classification questions the knowledge we have in standard statistical learning. Indeed most standard results do not hold in presence of adversaries, hence, opening a new research area dedicated to studying and understanding the classification problem in presence of adversarial attacks, and more importantly, deepens our understanding of  machine learning/deep learning in high dimensional regimes.
-\end{tcolorbox}
+
+
 
 
 \subsection{Classification in Presence of Adversarial Attacks}
 
-Though a model can be very well performing on natural samples, small perturbations of these natural samples can lead to unexpected and critical behaviours of classification models~\citep{biggio2013evasion,Szegedy2013IntriguingPO}. To formalize that, we will assume the existence of a ``perception'' distance $d:\XX^2\to\mathbb{R}$ such that a perturbation $x'$ of an input $x$ remains imperceptible if $d(x,x')\leq \varepsilon$ for some constant $\varepsilon\geq0$. This ``perception'' distance is difficult to define in practice. For images, the $\lVert\cdot\rVert_\infty$ distance over pixels is often used, but is not able to capture all imperceptible perturbations.  This choice is purely arbitrary: for instance, we will highlight in the manuscript that $\lVert\cdot\rVert_2$ perturbations can also be imperceptible while having a large $\lVert\cdot\rVert_\infty$. Image classification algorithms are also vulnerable to geometric perturbations, i.e. rotations and translations~\citep{kanbak2018geometric,engstrom2019exploring}.
+Though a model can be very well performing on natural samples, small perturbations of these natural samples can lead to unexpected and critical behaviours of classification models~\citep{biggio2013evasion,Szegedy2013IntriguingPO}. To formalize that, we will assume the existence of a ``perception'' distance $d:\XX^2\to\mathbb{R}$ such that a perturbation $x'$ of an input $x$ remains imperceptible if $d(x,x')\leq \varepsilon$ for some constant $\varepsilon\geq0$. This ``perception'' distance is difficult to define in practice. For images, the $\lVert\cdot\rVert_\infty$ distance over pixels is often used, but is not able to capture all imperceptible perturbations.  This choice is purely arbitrary: for instance, we will highlight in the manuscript that $\lVert\cdot\rVert_2$ perturbations can also be imperceptible while having a large $\lVert\cdot\rVert_\infty$. Image classification algorithms are also vulnerable to geometric perturbations, i.e. rotations and translations~\citep{kanbak2018geometric,engstrom2019exploring}. A typical example of an adversarial attack is shown in Figure~\ref{fig:adv-example}.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\textwidth]{Images/adv_image.png}
+    \caption{Example of a pixel-level adversarial attack on a Stop Sign. It underlines the safety issues triggered by the possibility of such attacks.}
+    \label{fig:adv-example}
+\end{figure}
 
 Therefore, the goal of an attacker is to craft an adversarial input $x'$ from an input $x$ that is imperceptible , i.e. $d(x,x')\leq \varepsilon$ and misclassifies the input, i.e. $h(x')\neq y$. Such a sample $x'$ is called an adversarial attack. The used criterion cannot be the misclassification rate anymore, we need to take into account the possible presence of an adversary that maliciously perturbs the input. We then define the robust/adversarial misclassification rate or robust/adversarial $0/1$ loss risk: 
 \begin{align*}
@@ -146,20 +155,19 @@ A line of research, following~\cite{pinot2020randomization}, to understand adver
 \end{tcolorbox}
 \medskip
 
-In game theory, there are many types of equilibria. In this manuscript, we will focus on Stackelberg and Nash equilibria. We will show the existence of both when both the classifier and the attacker play randomized strategies. To reach such equilibria, the classifier will be random, and the attacker will move randomly the samples at a maximum distance of $\varepsilon$. Then, we will propose two different algorithms to compute the optimal randomized classifier in the case of a finite number of possible classifiers. We will finally propose a heuristic algorithm to train a mixture of neural networks and show experimentally the improvements we achieve over standard methods.
+In game theory, there are many types of equilibria. In this manuscript, we will focus on Stackelberg and Nash equilibria. We will show the existence of both when both the classifier and the attacker play randomized strategies. To reach such equilibria, the classifier will be random, and the attacker will move randomly the samples at a maximum distance of $\varepsilon$. Then, we will propose two different algorithms to compute the optimal randomized classifier in the case of a finite number of possible classifiers. We will finally propose a heuristic algorithm to train a mixture of neural networks and show experimentally the improvements we achieve over standard methods. This work was published at ICML2021~\citep{pmlr-v139-meunier21a}.
 
-This work \textbf{Mixed Nash Equilibria in the Adversarial Examples Game} was published at ICML2021.
 
 
 
 \subsection{Loss Consistency in Classification in Presence of an Adversary}
-In standard classification, consistency with regards to $0/1$ loss is a desired property for the surrogate loss $\loss$ used to train the model. In short, a loss $\loss$ is said to be consistent if for every probability distribution, a sequence of classifiers $(f_n)$ that minimizes the risk associated with the loss $\loss$, it also minimizes the $0/1$ loss risk. Usually, in standard classification, the problem is simplified thanks to the notion of calibration. We will see that the question of consistency in the adversarial problem is much harder. 
+In standard classification, consistency with regards to $0/1$ loss is a desired property for the surrogate loss $\loss$ used to train the model. In short, a loss $\loss$ is said to be consistent if for every probability distribution, a sequence of classifiers $(f_n)$ that minimizes the risk associated with the loss $\loss$, it also minimizes the $0/1$ loss risk. Usually, in standard classification, the problem is simplified thanks to the notion of calibration. We will see that the question of consistency in the adversarial case is much harder. 
 \medskip
 \begin{tcolorbox}[colback=grund,colframe=rahmen,title=Question 2]
 \textbf{Which losses are consistent with regards to the $0/1$ loss in the adversarial classification setting?}
 \end{tcolorbox}
 \medskip
-We tackle this question by showing that usual convex losses are not calibrated for the adversarial classification loss. Hence this negative result emphasizes the difficulty of understanding the adversarial attack problem, and building provable defense mechanisms. 
+We tackle this question by showing that usual convex losses are not calibrated for the adversarial classification loss. Hence this negative result emphasizes the difficulty of understanding the adversarial attack problem, and building provable defense mechanisms. We pave a way towards solving this question by proposing candidate losses and giving arguments for their consistency. This work has not been submitted for peer-reviewing yet. 
 \subsection{Building Certifiable Models}
 
 The last problem we deal with in this manuscript is the implementation of robust certifiable models. In short, a classifier is said to be certifiable at an input $x$ at level $\varepsilon$ if one can ensure there exist no adversarial examples in the ball of radius $\varepsilon$. This problem is challenging since it is far from trivial to come up with non vacuous bounds that are exploitable in practice.
@@ -168,30 +176,30 @@ The last problem we deal with in this manuscript is the implementation of robust
 \textbf{How to efficiently implement certifiable models with non-vacuous guarantees?}
 \end{tcolorbox}
 \medskip
-To this end, we propose two methods that enforce Lipschitzness on the predictions of neural networks:
-\begin{enumerate}
-    \item The first one consists in noise injection. We show that by adding a noise on an input of a classifier, we are able to get guarantees on the decision up to some level $\varepsilon$. This work \textbf{Theoretical evidence for adversarial robustness through randomization} was published at NeurIPS2019.
-    \item A second one consists in building contractive blocks in a ResNet architecture. This method draws its inspiration from the continuous flow interpretation of residual networks. More precisely, we show that using a gradient flow of a convex function, our network is $1$-Lipschitz. We then design such a function, showing empirically and theoretically the robustness benefits of this approach. 
-
-\end{enumerate}
+To this end, we propose  a general method that enforces Lipschitzness on the predictions of neural networks. This method draws its inspiration from the continuous flow interpretation of residual networks. We provide discretization strategies and recover many existing methods to build $1$-Lipschitz layers in neural networks. In particular, we show that using a gradient flow of a convex function, our network is $1$-Lipschitz. Based on this insight, we design a Lipschitz layer, that we call Convex Potential Layer (CPL). We showing empirically and theoretically the robustness benefits of this approach. This work is under review and its preprint is available~\citep{meunier2021scalable}
 
 % \section{Other Works in Appendix}
 \subsection{Additional Works}
 Additionally to the works we present in the main document, we also present some other contributions we made during the thesis. These are deferred to the appendices. 
 
-Regarding adversarial examples, we will present:
+Regarding adversarial examples, we will present additional works complete the study we lead in the main document:
 \begin{itemize}
-    \item \textbf{Adversarial Attacks on Linear Contextual Bandits (see Appendix~\ref{paper:banditsattacks}):} we build provable attacks against online recommendation systems, namely Linear Contextual Bandits. This work was published at NeurIPS2020.
-    \item \textbf{ROPUST: Improving Robustness through Fine-tuning with Photonic Processors and Synthetic Gradients (see Appendix~\ref{paper:ropust}):} we use an Optical Processor Unit over existing defenses to improve adversarial robustness. This work was published at a workshop on Adversarial Attacks at ICML2021.
+    \item \textbf{On the robustness of randomized classifiers to adversarial examples
+    (see Appendix~\ref{paper:rando}):} we show that by adding a noise on an input of a classifier, we are able to get guarantees on the decision up to some level $\varepsilon$. This work was published at NeurIPS2019~\citep{pinot2019theoretical} and under review in an extended journal version~\citep{pinot2021robustness}.
+    \item \textbf{Yet another but more efficient black-box adversarial attack: tiling and evolution strategies (see Appendix~\ref{paper:dfo-attacks}):} we provide a method based on evolutionary strategies to craft black-box adversarial attacks. This work is a preprint and has not been published~\citep{meunier2019yet}.
+    \item \textbf{Advocating for Multiple Defense Strategies against Adversarial Examples    (see Appendix~\ref{paper:ecml_rat}):} We show that, in high-dimensional settings, the balls overlaps for two different $\ell^p$ norms are fundammentally different. This induces to rethink robustness against attacks using different norms. This work was published at a workshop at ECML2020~\citep{araujo2020advocating}.
+    \item \textbf{Adversarial Attacks on Linear Contextual Bandits (see Appendix~\ref{paper:banditsattacks}):} we build provable attacks against online recommendation systems, namely Linear Contextual Bandits. This work was published at NeurIPS2020~\citep{garcelon2020adversarial}.
+    \item \textbf{ROPUST: Improving Robustness through Fine-tuning with Photonic Processors and Synthetic Gradients (see Appendix~\ref{paper:ropust}):} we use an Optical Processor Unit (OPU) over existing SOTA defenses to improve adversarial robustness. This work was published at ICASSP2022~\citep{cappelli2021ropust}.
 \end{itemize}
-We  published a paper in optimal transport named \textbf{Equitable and Optimal Transport with Multiple Agents (see Appendix~\ref{paper:eot})} where we introduce a way to deal with multiple costs in optimal transport by equitably partitioning transport among costs.
-We also published many works in the field of evolutionary algorithms:
+We  published a paper in optimal transport on \textbf{Equitable and Optimal Transport with Multiple Agents (see Appendix~\ref{paper:eot})} at AISTATS 2021~\citep{scetbon2021equitable} where we introduce a way to deal with multiple costs in optimal transport by equitably partitioning transport among costs. We also a published a paper at xxx on Conditional Indepedence Testing~\citep{scetbon2021ell} on \textbf{ an $\ell^p$-based Kernel Conditional Independence Test (see Appendix~\ref{paper:kerneltest})}. In this paper we present a new kernel-based Conditional Indepedence Test. Its advantages are its computational simplicity and a very simple asymptotic distribution under null hypothesis. Moreover, it performs competitively with other test for Conditional Independence.
+
+With Olivier Teytaud, research scientist at Meta AI and co-supervisor of this thesis, we also published some works in the field of evolutionary algorithms:
 \begin{itemize}
 
-    \item \textbf{Variance Reduction for Better Sampling in Continuous Domains (see Appendix~\ref{paper:rescaling})}: we show that, in one shot optimization, the optimal search distribution, used for the sampling, might be more peaked around the center of the distribution than the prior distribution modelling our uncertainty about the location of the optimum. This work was published at PPSN2020.
-    \item \textbf{On averaging the best samples in evolutionary computation (see Appendix~\ref{paper:kbest}):}  we prove mathematically that a single parent leads to a sub-optimal simple regret in the case of the sphere function. We provide a theoretically-based selection rate that leads to better progress rates. This work was published at PPSN2020.
-    \item \textbf{Asymptotic convergence rates for averaging strategies (see Appendix~\ref{paper:kbestgen}):} we extend the results from the previous papers to a wide class of functions including $C^3$ functions with unique optima. This work was published at FOGA2021.
-    \item  \textbf{Black-Box Optimization Revisited: Improving Algorithm Selection Wizards through Massive Benchmarking (see Appendix~\ref{paper:benchmark}):} We propose a wide range of benchmarks integrated in Nevergrad~\citep{nevergrad} platform. This work was published in the journal TEVC.
+    \item \textbf{Variance Reduction for Better Sampling in Continuous Domains (see Appendix~\ref{paper:ppsn-rescaling})}: we show that, in one shot optimization, the optimal search distribution, used for the sampling, might be more peaked around the center of the distribution than the prior distribution modelling our uncertainty about the location of the optimum. This work was published at PPSN2020~\citep{ppsnrescaling}.
+    \item \textbf{On averaging the best samples in evolutionary computation (see Appendix~\ref{paper:ppsn-kbest}):}  we prove mathematically that a single parent leads to a sub-optimal simple regret in the case of the sphere function. We provide a theoretically-based selection rate that leads to better progress rates. This work was published at PPSN2020~\citep*{ppsnkbest}.
+    \item \textbf{Asymptotic convergence rates for averaging strategies (see Appendix~\ref{paper:foga}):} we extend the results from the previous paper to a wide class of functions including $C^3$ functions with unique optima. This work was published at FOGA2021~\citep{meunier2021asymptotic}.
+    \item  \textbf{Black-Box Optimization Revisited: Improving Algorithm Selection Wizards through Massive Benchmarking (see Appendix~\ref{paper:benchmark}):} We propose a wide range of benchmarks integrated in Nevergrad~\citep{nevergrad} platform. This work was published in the journal TEVC~\citep{meunier2021black}.
     
 \end{itemize}
 % In addition to these works, we also add interest in adversarial attacks against online recommendation systems, namely Linear Contextual Bandits. We designed algorithms that provably fool in 

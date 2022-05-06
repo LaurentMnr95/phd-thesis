@@ -151,13 +151,31 @@ Let $\XX$ be a Polish space satisfying the midpoint property. Then strong dualit
 \end{align*}
 Moreover the supremum of the right-end term is attained. 
 \end{thm}
-Note that in the original version of the theorem, \citet{pydi2021many} did not prove that the supremum is attained. We add the proof for this property in Appendix xxx. 
+Note that in the original version of the theorem, \citet{pydi2021many} did not prove that the supremum is attained. 
+\begin{proof}
+    To prove that, note that for every $\QQ$,
+\begin{align*}
+    \inf_{f\in\mathcal{F}(\XX)} \risk_{\QQ}(f) = (1-q)+\inf_{f\in\mathcal{C}(\XX),~0\leq f\leq 1} \int f d(q\QQ_1 +(q-1)\QQ_{-1})
+\end{align*}
+where $q =\QQ[y=1]$ and $\QQ_i = \QQ[\cdot\mid y=i]$. When $f$ is continuous and bounded, the function:
+\begin{align*}
+   \mu\in\mathcal{M}(\XX)\mapsto\int f d\mu
+\end{align*}
+is continuous for the weak topology of measures, then: 
+\begin{align*}
+    \mu\in\mathcal{M}(\XX)\mapsto\inf_{f\in\mathcal{C}(\XX),~0\leq f\leq 1}\int f d\mu 
+\end{align*}
+is upper semi continuous for the weak topology of measures, as it is the infinum of continuous functions. Then using the compacity of $\mathcal{A}_\varepsilon(\PP)$, we deduce that the supremum is attained.
+\end{proof}
+
 % We are now ready to study the link between the adversarial risk associated with a $0/1$-like shifted odd loss and the $0/1$ loss.
 
 
 \paragraph{Connections between $0/1$-like margin loss and $0/1$ loss: a min-max viewpoint.} Thanks the the above concepts, we can now present some results identifying the similarity and the differences between the  $0/1$ loss and a $0/1$-like margin losses. We first, show that for a given fixed probability distribution $\PP$, the adversarial optimal risk associated with a $0/1$-like margin loss and the $0/1$ loss are equal.
 
 \begin{thm}
+
+
 \label{thm:equalityrisk}
 Let $\XX$ be a Polish space satisfying the midpoint property. Let $\varepsilon\geq 0$. Let $\PP$ be a Borel probability distribution over $\XX\times\YY$. Let ${\phi}$ be a $0/1$-like margin loss. Then, we have:
 \begin{align*}
@@ -238,11 +256,38 @@ Let assume that $\XX$ be a Polish space satisfying the midpoint property. Let $\
 \end{coro}
 
 
-\paragraph{A step towards consistency.} From the previous results, we are able to prove a first result toward teh demonstration of consistency. This result is much weaker than consistency result, but it guarrantees \textcolor{blue}{[...]}
+\begin{proof}
+    We have:
+    \begin{align*}
+         \inf_{f\in\mathcal{F}(\XX)}\sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)} \risk_{\phi,\QQ}(f) &= \risk_{\phi_\varepsilon,\PP}^\star = \risk_{\varepsilon,\PP}^\star&\quad\text{by Theorem~\ref{thm:equalityrisk}} \\
+         &=\inf_{f\in\mathcal{F}(\XX)}\sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)} \risk_{\QQ}(f) \\
+         = \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)} \inf_{f\in\mathcal{F}(\XX)}\risk_{\QQ}(f)\\
+         &=\sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)} \risk^\star_{\QQ}(f) = \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)} \risk^\star_{\phi,\QQ}(f)&\quad\text{by Lemma~\ref{lem:equalityriskstandard}}\\
+        & =  \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)}\inf_{f\in\mathcal{F}(\XX)} \risk_{\phi,\QQ}(f)\\
+    \end{align*}
+ $\QQ\mapsto\inf_{f\in\mathcal{F}(\XX)}\risk_{\phi,\QQ}(f) =\inf_{f\in\mathcal{F}(\XX)}\risk_{\QQ}(f)  $ is  upper semi-continuous for the weak topology of measures. Moreover, $\mathcal{A}_\varepsilon(\PP)$ is compact for the weak topology of measures, then $\QQ\mapsto\inf_{f\in\mathcal{F}(\XX)}\risk_{\phi,\QQ}(f)$ admits a maximum over  $\mathcal{A}_\varepsilon(\PP)$. And  $\QQ$ is an optimal attack for the loss $\phi$  if and only if it is an optimal attack for the $0/1$ loss.
+    \end{proof}
+    
+
+\paragraph{A step towards consistency.} From the previous results, we are able to prove a first result toward the demonstration of consistency. This result is much weaker than consistency result, but it guarrantees that if a sequence minimizes the adversarial risk, then it minimizes the risk for optimal attacks, i.e. in a game where the attacker plays before the classifier
 \begin{prop}
 \label{prop:pseudo}
-Let assume that $\XX$ be a Polish space satisfying the midpoint property. Let $\varepsilon\geq 0$. Let $\PP$ be a Borel probability distribution over $\XX\times\YY$.  Let $\QQ^\star$ be an optimal attack of level $\varepsilon$. Let $(f_n)_n$ be a sequence of $\mathcal{F}(\XX)$ such that $\risk_{\phi_\varepsilon,\PP}(f_n)\to\risk_{\phi_\varepsilon,\PP}^\star$. Then $\risk_{\QQ^\star}(f_n)\to\risk_{\varepsilon,\PP}^\star$.
+Let assume that $\XX$ be a Polish space satisfying the midpoint property. Let $\varepsilon\geq 0$. Let $\PP$ be a Borel probability distribution over $\XX\times\YY$.  Let $\QQ^\star$ be an optimal attack of level $\varepsilon$. Let $(f_n)_{n\in\mathbb{N}}$ be a sequence of $\mathcal{F}(\XX)$ such that $\risk_{\phi_\varepsilon,\PP}(f_n)\to\risk_{\phi_\varepsilon,\PP}^\star$. Then $\risk_{\QQ^\star}(f_n)\to\risk_{\varepsilon,\PP}^\star$.
 \end{prop}
 
+\begin{proof}
+Let $(f_n)_{n\in\mathbb{N}}$ be a sequence of $\mathcal{F}(\XX)$ such that $\risk_{\phi_\varepsilon,\PP}(f_n)\to\risk_{\phi_\varepsilon,\PP}^\star$. Let $\QQ^\star$ be an optimal attack of level $\varepsilon$. From Corollary~\ref{coro:nash}, we get that:
+\begin{align*}
+    \risk_{\phi_\varepsilon,\PP}^\star =   \risk_{\phi,\QQ^\star}^\star\quad.
+\end{align*} Then we get 
+\begin{align*}
+   0\leq \risk_{\phi,\QQ^\star}(f_n)- \risk_{\phi,\QQ^\star}^\star \leq \risk_{\phi_\varepsilon,\PP}(f_n)-\risk_{\phi_\varepsilon,\PP}^\star\quad.
+\end{align*}
+We then deduce that: $\risk_{\phi,\QQ^\star}(f_n)\to \risk_{\phi,\QQ^\star}^\star$. Since $\phi$ is consistent in the standard classification setting, we deduce that 
+\begin{align*}
+    \risk_{\QQ^\star}(f_n)\to \risk_{\QQ^\star}^\star\quad.
+\end{align*}
+\end{proof}
+ 
 
 We hope this result and its proof may lead to a full proof of consistency. This result is significantly weaker than consistency as stated in the following remark. In the proof of the previous results, we did not use the assumptions that losses are shifted. In our opinion, it is the key element that we miss and need to use to conclude the consistency of this family of losses. The shift in the loss would force the classifier to goes to $\pm \infty$ on the $\varepsilon$ neighbourhood support of the distribution of $\PP$. This question is complicated and is left as further work.  
