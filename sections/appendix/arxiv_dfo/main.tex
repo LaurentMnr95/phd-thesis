@@ -1,5 +1,5 @@
 \chapter{Black-box adversarial attacks: tiling and evolution strategies}
-
+\label{paper:dfo-attacks}
 
 \newcommand{\fix}{\marginpar{FIX}}
 \newcommand{\new}{\marginpar{NEW}}
@@ -537,6 +537,7 @@ In this paper, we proposed a new framework for crafting black box adversarial at
 %Use unnumbered third level headings for the acknowledgments. All acknowledgments, including those to funding agencies, go at the end of the paper.
 
     
+\newpage
 
 \section{Appendix: Algorithms}
 \subsection{The (1+1)-ES algorithm}
@@ -556,7 +557,7 @@ In this paper, we proposed a new framework for crafting black box adversarial at
 \ENDFOR
 \end{algorithmic}
 \end{algorithm}
-
+\newpage
 \subsection{CMA-ES algorithm}
 \begin{algorithm}
 \caption{\label{cmaalg}CMA-ES algorithm. The $T$ subscript denotes transposition.}
@@ -578,7 +579,7 @@ $$m\leftarrow \sum_{i=1}^\mu w_i x_{i:\lambda}$$
 \ENDFOR
 \end{algorithmic}
 \end{algorithm}
-
+\newpage
 \section{Appendix: Additional plots for the tiling trick}
 \label{tilsup}
 \begin{figure}[htb]
@@ -597,8 +598,8 @@ $$m\leftarrow \sum_{i=1}^\mu w_i x_{i:\lambda}$$
 \includegraphics[width=.23\textwidth]{sections/appendix/arxiv_dfo/images/rand_01.pdf}\\
 \caption{\label{til2}Random attack success rate for different noise intensities $\epsilon\in\{0.01,0.03,0.05,0.1\}$ (from right to left) against different architectures. We just randomly draw one tiled attack and check if it is successful.}
 \end{figure}
-
-\section{Results with ``Carlini\&Wagner'' loss}
+\newpage
+\section{Appendix: Results with ``Carlini\&Wagner'' loss}
 \label{cwsec}
 In this section, we follow the same experimental setup as in Section~\ref{unt_sota}, but we built our attacks with the ``Carlini\&Wagner'' loss instead of the cross entropy. We remark the results are comparable and similar.
 

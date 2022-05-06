@@ -2,6 +2,8 @@
 
  
 \chapter{Variance Reduction for Better Sampling in Continuous Domains}
+\label{paper:ppsn-rescaling}
+
 Design of experiments, random search, initialization of population-based methods, or sampling inside an epoch of an evolutionary algorithm uses a sample drawn according to some probability distribution for approximating the location of an optimum. Recent papers have shown that the optimal {\textit{search}} distribution, used for the sampling, might be more peaked around the center of the distribution than the {\textit{prior}} distribution modelling our uncertainty about the location of the optimum.
 We confirm this statement, provide explicit values for this reshaping of the search distribution depending on the population size $\lambda$ and the dimension $d$, and validate our results experimentally.
 
@@ -319,6 +321,8 @@ of the regret.
 \caption{Same experiment as Fig.~\ref{doexp}, but separately over each objective function. Results are still averaged over 6 distinct budgets ($30$, $100$, $3000$, $10000$, $30000$, $100000$) and 3 distinct dimensionalities ($20$, $200$, $2000$). {\texttt{MetaTuneRecentering} performs well in each case, and is not limited to the sphere function for which it was derived. Variants of LHS are sometimes excellent and sometimes not visible at all (only the 30 best performing methods are shown).}}
     \label{toto3}
 \end{figure}
+
+
 %
 \begin{figure}[t]
     \centering %top trimming was 97, but that removed too much
@@ -510,7 +514,7 @@ P\left(U\leq -x\right) \leq \exp{\left(-\frac14 \frac{x^2}{2\mu+d}\right)}.
 % \end{enumerate}
 \end{property}
 Proofs for the concentration inequalities~\ref{concentration1} and~\ref{concentration2} can be found in~\cite[Theorem~7]{chi2magical}. 
-\section{Proof of Theorem~\ref{thm:suff} (Sufficient condition)}
+\section{Appendix: Proof of Theorem~\ref{thm:suff} (Sufficient condition)}
 \label{sec:suff}
 \begin{proof}
 

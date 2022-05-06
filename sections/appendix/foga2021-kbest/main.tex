@@ -1,4 +1,5 @@
 \chapter{Asymptotic convergence rates for averaging strategies}
+\label{paper:foga}
 \section{Introduction}
 Finding the minimum of a function from a set of $\lambda$ points $(x_i)_{i\leq \lambda}$ and their images $(f(x_i))_{i\leq \lambda}$ is a standard task used for instance in hyper-parameter tuning \cite{bergstra2012random}, or control problems. While random search estimate of the optimum consists in returning $\arg\min f(x_i)_{i\leq \lambda}$, in this paper we focus on the similar strategy that consists in averaging the $\mu$ best samples, i.e. returning $\frac1\mu\sum_{i=1}^\mu x_{(i)}$ where $f(x_{(1)})\leq\ldots\leq f(x_{(\lambda)})$.
 
@@ -8,7 +9,7 @@ These kinds of strategies are used in many evolutionary algorithms such as CMA-E
 \subsection{Related Work}
 
 \subsubsection{Better than picking up the best}
-Given a finite number of samples $\lambda$ equipped with their fitness values, we can simply pick up the best, or average the ``best ones''~\cite{beyerbenefitofsex,ppsnkbest}, or apply a surrogate model~\cite{sm1,sm2,sm3,AST,sm4,bach}. Overall, the best is quite robust, but the surrogate or the averaging usually provides  better convergence rates. Using surrogate modeling is fast when the dimension is moderate and the objective function is smooth (simple regret in $O(\lambda^{-m/d})$ for $\lambda$ points in dimension $d$ with $m$ times differentiability, leading to superlinear rates in evolutionary computation~\cite{AST}). In this paper, we are interested in the rates obtained by averaging the best samples for a wide class of functions. We extend the results of~\cite{ppsnkbest} which only hold for the sphere function.
+Given a finite number of samples $\lambda$ equipped with their fitness values, we can simply pick up the best, or average the ``best ones''~\cite{beyerbenefitofsex,ppsnkbest}, or apply a surrogate model~\cite{sm1,sm2,sm3,AST,bach}. Overall, the best is quite robust, but the surrogate or the averaging usually provides  better convergence rates. Using surrogate modeling is fast when the dimension is moderate and the objective function is smooth (simple regret in $O(\lambda^{-m/d})$ for $\lambda$ points in dimension $d$ with $m$ times differentiability, leading to superlinear rates in evolutionary computation~\cite{AST}). In this paper, we are interested in the rates obtained by averaging the best samples for a wide class of functions. We extend the results of~\cite{ppsnkbest} which only hold for the sphere function.
 
 \subsubsection{Weighted averaging}
 Among the various forms of averaging,
