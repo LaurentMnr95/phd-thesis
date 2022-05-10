@@ -19,7 +19,7 @@ Architectures description for our Convex Potential Layers (CPL) neural networks 
 connected layers. They will be reported respectively as CPL-S, CPL-M, CPL-L and CPL-XL.}
 \end{table}
 
-To evaluate our new $1$-Lipschitz Convex Potential Layers, we carry out an extensive set of experiments. In this section, we first describe  the details of our experimental setup. We then recall  the concurrent approaches that build $1$-Lipschitz Neural Networks and stress their limitations. Our experimental results are finally summarized in ection~\ref{sec:setting-xp}. By computing the certified and empirical adversarial  accuracy of our networks on CIFAR10 and CIFAR100 classification tasks~\citep{krizhevsky2009learning}, we show that our architecture is competitive with state-of-the-art methods (Sections~\ref{sec:results}). We also study the influence of some hyperparameters and demonstrate the stability and the scalability of our approach by training very deep neural networks up to 1000 layers without normalization tricks or gradient clipping.
+To evaluate our new $1$-Lipschitz Convex Potential Layers, we conducted an extensive set of experiments. In this section, we first describe  the details of our experimental setup. We then recall  the concurrent approaches that build $1$-Lipschitz Neural Networks and stress their limitations. Our experimental results are finally summarized in Section~\ref{sec:setting-xp}. By computing the certified and empirical adversarial  accuracy of our networks on CIFAR10 and CIFAR100 classification tasks~\citep{krizhevsky2009learning}, we show that our architecture is competitive with state-of-the-art methods (Sections~\ref{sec:results}). We also study the influence of some hyperparameters and demonstrate the stability and the scalability of our approach by training very deep neural networks up to 1000 layers without normalization tricks or gradient clipping.
 
 
 
@@ -33,13 +33,13 @@ To evaluate our new $1$-Lipschitz Convex Potential Layers, we carry out an exten
 \subsection{Training and Architectural Details}
 \label{sec:setting-xp}
 
-We demonstrate the effectiveness of our approach on a classification task with CIFAR10 and CIFAR100 datasets~\citep{krizhevsky2009learning}. We use a similar training configuration to the one proposed in~\citep{trockman2021orthogonalizing}
+We demonstrate the effectiveness of our approach on a classification task with CIFAR10 and CIFAR100 datasets~\citep{krizhevsky2009learning}. We use a similar training configuration to the one proposed in~\citep{trockman2021orthogonalizing}.
 We trained our networks with a batch size of $256$ over $200$ epochs.
-We use standard data augmentation (\ie, random cropping and flipping), a learning rate of $0.001$ with Adam optimizer \citep{diederik2014adam} without weight decay and a piecewise triangular learning rate scheduler. We used a margin parameter in the loss set to $0.7$.
+We use standard data augmentation (i.e. random cropping and flipping), a learning rate of $0.001$ with Adam optimizer \citep{diederik2014adam} without weight decay and a piecewise triangular learning rate scheduler. We used a margin parameter in the loss set to $0.7$.
 
-As other usual convolutional neural networks, we first stack few Convolutional CPLs and then stack some Linear CPLs for classification tasks. To validate the performance  and the scalability of our layers,  we will evaluate four different variations of different hyperparameters as described in Table~\ref{table:model-desc}, respectively named CPL-S, CPL-M, CPL-L and CPL-XL, ranked according to the number of parameters they have. In all our experiments, we made $3$ independent trainings to evaluate accurately the models. All reported results are the average of these $3$ runs.
+As other usual convolutional neural networks, we first stack few Convolutional CPLs and then stack some Linear CPLs for classification tasks. To validate the performance  and the scalability of our layers,  we  evaluate four different variations of different hyperparameters as described in Table~\ref{table:model-desc}, respectively named CPL-S, CPL-M, CPL-L and CPL-XL, ranked according to the number of parameters they have. In all our experiments, we made $3$ independent trainings to evaluate accurately the models. All reported results are the average of these $3$ runs.
 
-\subsection{Concurrent Approaches} We compare our networks with SOC~\citep{skew2021sahil} and Cayley~\cite{trockman2021orthogonalizing} networks which are to our knowledge the best performing approaches for deterministic $1$-Lipschitz Neural Networks. Since our layers are fundamentally different from these ones, we cannot compare with the same architectures. We reproduced SOC results for with $10$ and $20$ layers, that we call respectively SOC-$10$ and SOC-$20$ in the same training setting, \emph{i.e.} normalized inputs, cross entropy loss, SGD optimizer with learning rate $0.1$ and multi-step learning rate scheduler. For Cayley layers networks, we reproduced their best reported model, \emph{i.e.} KWLarge with width factor of $3$. 
+\subsection{Concurrent Approaches} We compare our networks with SOC~\citep{skew2021sahil} and Cayley~\cite{trockman2021orthogonalizing} networks which are to our knowledge the best performing approaches for deterministic $1$-Lipschitz Neural Networks. Since our layers are fundamentally different from these ones, we cannot compare with the same architectures. We reproduced SOC results for with $10$ and $20$ layers, that we call respectively SOC-$10$ and SOC-$20$ in the same training setting, {i.e.} normalized inputs, cross entropy loss, SGD optimizer with learning rate $0.1$ and multi-step learning rate scheduler. For Cayley layers networks, we reproduced their best reported model, {i.e.} KWLarge with width factor of $3$. 
 
 The work of~\citet{singla2021householder} propose three methods to improve certifiable accuracies from SOC layers: a new HouseHolder activation function (HH),  last layer normalization (LLN), and certificate regularization (CR). The code associated with this approach is not open-sourced yet, so we just reported the results from their paper in ours results (Tables~\ref{table:c10-comp} and~\ref{table:c100-comp}) under the name SOC+. We were being able to implement the LLN method in all models. This method largely improve the result of all methods on CIFAR100, so we used it for all networks we compared on CIFAR100 (ours and concurrent approaches).
 
@@ -62,7 +62,7 @@ The work of~\citet{singla2021householder} propose three methods to improve certi
     S[table-format=2.2]
   }
   \toprule
-    & \multicolumn{1}{c}{\textbf{Clean Accuracy}} & \multicolumn{3}{c}{\textbf{Provable Accuracy ($\varepsilon $)}} &  \multicolumn{1}{c}{\textbf{Time per epoch (s)}} 
+    & \multicolumn{1}{c}{\textbf{Standard Accuracy}} & \multicolumn{3}{c}{\textbf{Provable Accuracy ($\varepsilon $)}} &  \multicolumn{1}{c}{\textbf{Time per epoch (s)}} 
     \\
     \cmidrule{3-5}
     & \multicolumn{1}{c}{ } & \multicolumn{1}{c}{36/255} & \multicolumn{1}{c}{72/255} &  \multicolumn{1}{c}{108/255} & \multicolumn{1}{c}{\textbf{}} 
@@ -106,7 +106,7 @@ The work of~\citet{singla2021householder} propose three methods to improve certi
     S[table-format=2.2]
   }
   \toprule
-    & \multicolumn{1}{c}{\textbf{Clean Accuracy}} & \multicolumn{3}{c}{\textbf{Provable Accuracy ($\varepsilon $)}} &  \multicolumn{1}{c}{\textbf{Time per epoch (s)}} 
+    & \multicolumn{1}{c}{\textbf{Standard Accuracy}} & \multicolumn{3}{c}{\textbf{Provable Accuracy ($\varepsilon $)}} &  \multicolumn{1}{c}{\textbf{Time per epoch (s)}} 
     \\
     \cmidrule{3-5}
     & \multicolumn{1}{c}{ } & \multicolumn{1}{c}{36/255} & \multicolumn{1}{c}{72/255} &  \multicolumn{1}{c}{108/255} & \multicolumn{1}{c}{\textbf{}} 
@@ -145,12 +145,12 @@ We provide results on provable $\ell_2$ robustness as well as empirical robustne
     \begin{tabular}{cc}
     \includegraphics[width =0.48\textwidth]{sections/4_certification/images/cert_acc_eps_c10.pdf} & \includegraphics[width =0.48\textwidth]{sections/4_certification/images/cert_acc_eps_c100.pdf}
     \end{tabular}
-    \caption{Certifiably robust accuracy in function of the perturbation $\varepsilon$ for our CPL networks and its concurrent approaches (SOC and Cayley models) on CIFAR10 and CIFAR100 datasets.}
+    \caption{Certifiably robust accuracy  w.r.t. the perturbation $\varepsilon$ for our CPL networks and its concurrent approaches (SOC and Cayley models) on CIFAR10 and CIFAR100 datasets.}
     \label{fig:cert-acc}
 \end{figure}
 
 \paragraph{Certified Adversarial Robustness.} 
-Results on CIFAR10 and CIFAR100 dataset are reported respectively in Tables~\ref{table:c10-comp} and~\ref{table:c100-comp}. We also plotted certified accuracy in function of $\varepsilon$ on Figure~\ref{fig:cert-acc}. On CIFAR10, our method outperforms the concurrent approaches in terms of standard and certified accuracies for every level of $\varepsilon$ except SOC+ that uses additional tricks we did not use. On CIFAR100, our method performs slightly under the SOC networks but better than Cayley networks. Overall, our methods reach competitive results with SOC and Cayley layers. 
+Results on CIFAR10 and CIFAR100 dataset are reported respectively in Tables~\ref{table:c10-comp} and~\ref{table:c100-comp}. We also plotted certified accuracy w.r.t. $\varepsilon$ on Figure~\ref{fig:cert-acc}. On CIFAR10, our method outperforms the concurrent approaches in terms of standard and certified accuracies for every level of $\varepsilon$ except SOC+ that uses additional tricks we did not use. On CIFAR100, our method performs slightly under the SOC networks but better than Cayley networks. Overall, our methods reach competitive results with SOC and Cayley layers. 
 
 Note that we observe a small gain using larger and deeper architectures for our models. This gain is less important as $\varepsilon$ increases but the gain is non negligible for standard accuracies. In term of training time, our small architecture (CPL-S) trains very fast compared to other methods, while larger ones are longer to train.
 
@@ -160,12 +160,12 @@ Note that we observe a small gain using larger and deeper architectures for our 
     \begin{tabular}{cc}
     \includegraphics[width =0.48\textwidth]{sections/4_certification/images/pgd_acc_eps_c10.pdf} & \includegraphics[width =0.48\textwidth]{sections/4_certification/images/pgd_acc_eps_c100.pdf}
     \end{tabular}
-    \caption{Accuracy against PGD attack with 10 iterations in function of the perturbation $\varepsilon$ for our CPL networks and its concurrent approaches on CIFAR10 and CIFAR100 datasets.}
+    \caption{Accuracy against PGD attack with 10 iterations w.r.t. the perturbation $\varepsilon$ for our CPL networks and its concurrent approaches on CIFAR10 and CIFAR100 datasets.}
     \label{fig:pgd-acc}
 \end{figure}
-\paragraph{Empirical Adversarial Robustness.} We also reported in Figure~\ref{fig:pgd-acc} the accuracy of all the models against PGD $\ell_2$-attack~\citep{kurakin2016adversarial,madry2018towards} for various levels of $\epsilon$. We used $10$ iterations for this attack. We remark here that our methods brings a large gain of robust accuracy over all other methods. On CIFAR10 for $\varepsilon = 0.8$, the gain of CPL-S over SOC-10 approach is more than $10\%$. For CIFAR100, the gain is about $10\%$ too for $\varepsilon=0.6$. We remark that using larger architectures lead in a more substantial gain in empirical robustness. 
+\paragraph{Empirical Adversarial Robustness.} We also reported in Figure~\ref{fig:pgd-acc} the accuracy of all the models against PGD $\ell_2$-attack~\citep{kurakin2016adversarial,madry2018towards} for various levels of $\epsilon$. We used $10$ iterations for this attack. We remark here that our method brings a large gain of robust accuracy over all other methods. On CIFAR10 for $\varepsilon = 0.8$, the gain of CPL-S over SOC-10 approach is more than $10\%$. For CIFAR100, the gain is about $10\%$ too for $\varepsilon=0.6$. We remark that using larger architectures lead in a more substantial gain in empirical robustness. 
 
-Our layers  only provide an upper bound on the Lipschitz constant, while orthonormal layers as Cayley and SOC are built to exactly preserve the norms. This might negatively influence the certified accuracy since the effective Lipschitz constant is smaller than the theoretical one, hence leading to suboptimal certificates. This might explain why our method performs so well of empirical robustness task.
+Our layers  only provide an upper bound on the Lipschitz constant, while orthonormal layers such as Cayley and SOC are built to exactly preserve the norms. This might negatively influence the certified accuracy since the effective Lipschitz constant is smaller than the theoretical one, hence leading to suboptimal certificates. This might explain why our method performs so well for empirical robustness tasks.
 
 
 
@@ -191,7 +191,7 @@ Our layers  only provide an upper bound on the Lipschitz constant, while orthono
     S[table-format=2.2]
   }
   \toprule
-  &\multicolumn{1}{c}{\textbf{Batch}}& \multicolumn{1}{c}{\textbf{Clean Acc.}} & \multicolumn{3}{c}{\textbf{Provable Accuracy ($\varepsilon $)}} &  \multicolumn{1}{c}{\textbf{T./epoch (s)}} 
+  &\multicolumn{1}{c}{\textbf{Batch}}& \multicolumn{1}{c}{\textbf{Standard Acc.}} & \multicolumn{3}{c}{\textbf{Provable Accuracy ($\varepsilon $)}} &  \multicolumn{1}{c}{\textbf{T./epoch (s)}} 
     \\
     \cmidrule{4-6}
     & \multicolumn{1}{c}{ } & \multicolumn{1}{c}{ } &\multicolumn{1}{c}{36/255} & \multicolumn{1}{c}{72/255} &  \multicolumn{1}{c}{108/255} & \multicolumn{1}{c}{\textbf{}} 
@@ -241,7 +241,7 @@ Our layers  only provide an upper bound on the Lipschitz constant, while orthono
     S[table-format=2.2]
   }
   \toprule
-  &\multicolumn{1}{c}{\textbf{Batch}}& \multicolumn{1}{c}{\textbf{Clean Acc.}} & \multicolumn{3}{c}{\textbf{Provable Acc. ($\varepsilon $)}} &  \multicolumn{1}{c}{\textbf{T./epoch (s)}} 
+  &\multicolumn{1}{c}{\textbf{Batch}}& \multicolumn{1}{c}{\textbf{Standard Acc.}} & \multicolumn{3}{c}{\textbf{Provable Acc. ($\varepsilon $)}} &  \multicolumn{1}{c}{\textbf{T./epoch (s)}} 
     \\
     \cmidrule{4-6}
     & \multicolumn{1}{c}{ } & \multicolumn{1}{c}{ } &\multicolumn{1}{c}{36/255} & \multicolumn{1}{c}{72/255} &  \multicolumn{1}{c}{108/255} & \multicolumn{1}{c}{\textbf{}} 
@@ -272,7 +272,7 @@ Our layers  only provide an upper bound on the Lipschitz constant, while orthono
 \end{table*}%
 
 \paragraph{Effect of Batch Size in Training.}
-In Tables~\ref{table:c10-comp-bs} and~\ref{table:c100-comp-bs}, we tried three different batch sizes (64, 128 and 256) for training our networks on CIFAR10 and CIFAR100 datasets, we remark a gain in standard accuracy in reducing the batch size for all settings. As the perturbation becomes larger, the gain in accuracy is reduced and can even in some cases we may loose some points in robustness.
+In Tables~\ref{table:c10-comp-bs} and~\ref{table:c100-comp-bs}, we tried three different batch sizes (64, 128 and 256) for training our networks on CIFAR10 and CIFAR100 datasets, we remark a gain in standard accuracy in reducing the batch size for all settings. As the perturbation becomes larger, the gain in accuracy is reduced and even in some cases we may loose some points in robustness.
 
 
 
@@ -283,7 +283,7 @@ In Tables~\ref{table:c10-comp-bs} and~\ref{table:c100-comp-bs}, we tried three d
     \begin{tabular}{cc}
     \includegraphics[width=0.48\textwidth]{sections/4_certification/images/cert_acc_margin_eps_c10.pdf}&\includegraphics[width=0.48\textwidth]{sections/4_certification/images/cert_acc_margin_eps_c100.pdf}
     \end{tabular}
-    \caption{Certifiably robust accuracy in function of the perturbation $\varepsilon$ for our CPL-S  network with different margin parameters on CIFAR10 and CIFAR100 datasets.}
+    \caption{Certifiably robust accuracy w.r.t. the perturbation $\varepsilon$ for our CPL-S  network with different margin parameters on CIFAR10 and CIFAR100 datasets.}
     \label{fig:cert-acc-margin}
 \end{figure}
 
@@ -293,12 +293,12 @@ In Tables~\ref{table:c10-comp-bs} and~\ref{table:c100-comp-bs}, we tried three d
     \begin{tabular}{cc}
     \includegraphics[width=0.49\textwidth]{sections/4_certification/images/pgd_acc_margin_eps_c10.pdf}&\includegraphics[width=0.49\textwidth]{sections/4_certification/images/pgd_acc_margin_eps_c100.pdf}
     \end{tabular}
-    \caption{Certifiably robust accuracy in function of the perturbation $\varepsilon$ for our CPL-S  network with different margin parameters on CIFAR10 and CIFAR100 datasets.}
+    \caption{Certifiably robust accuracy w.r.t. the perturbation $\varepsilon$ for our CPL-S  network with different margin parameters on CIFAR10 and CIFAR100 datasets.}
     \label{fig:pgd-acc-margin}
 \end{figure}
 
 \paragraph{Effect of the Margin Parameter.}
-In these experiments we varied the margin parameter in the margin loss in Figures~\ref{fig:cert-acc-margin} and~\ref{fig:pgd-acc-margin}. It clearly exhibits a tradeoff between standard and robust accuracy. When the margin is large, the standard accuracy is low, but the level of robustness remain high even for ``large'' perturbations. On the opposite, when the margin is small, we get a high standard accuracy but we are unable to keep a good robustness level as the perturbation increases. It is verified both on certified and empirical robustness.
+In these experiments we varied the margin parameter in the margin loss in Figures~\ref{fig:cert-acc-margin} and~\ref{fig:pgd-acc-margin}. It clearly exhibits a tradeoff between standard and robust accuracy. When the margin is large, the standard accuracy is low, but the level of robustness remain high even for ``large'' perturbations. On the opposite, when the margin is small, we obtain a high standard accuracy but we are unable to keep a good robustness level as the perturbation increases. It is verified both on certified and empirical robustness.
 
 
 
@@ -309,7 +309,7 @@ In these experiments we varied the margin parameter in the margin loss in Figure
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.5\textwidth]{sections/4_certification/images/final_cifar10_veryverydeep.pdf}
-    \caption{Standard test accuracy in function of the number of epochs (log-scale) for various depths for our neural networks ($100,300,500,700,1000$).}
+    \caption{Standard test accuracy w.r.t. the number of epochs (log-scale) for various depths for our neural networks ($100,300,500,700,1000$).}
     \label{fig:verydeep}
 \end{figure}
 
@@ -322,11 +322,11 @@ Indeed, spectral normalization might be too restrictive: dividing by the spectra
 small.
 While more computationally expensive (spectral normalization can be done with $1$ Power Method iteration), orthogonal projections prevent both exploding and vanishing issues. 
 
-On the contrary the architecture proposed in this paper has the advantage to naturally control the gradient norm of the output with respect to a given layer.
+On the contrary the architecture proposed  has the advantage to naturally control the gradient norm of the output with respect to a given layer.
 Therefore, our architecture can get the best of both worlds: limiting exploding and vanishing issues while maintaining scalability. 
 To demonstrate the scalability of our approach, we experiment the ability to scale our architecture to very high depth (up to 1000 layers) without any additional normalization/regularization tricks, such as Dropout~\citep{srivastava2014dropout}, Batch Normalization~\citep{ioffe2015batch} or gradient clipping~\citep{pascanu2013difficulty}.
 With the work done by~\cite{xiao2018dynamical}, which leverage Dynamical Isometry and a Mean Field Theory to train a $10000$ layers neural network, we believe, to the best of our knowledge, to be the second to perform such training. 
-For sake of computation efficiency, we limit this experiment to architecture with $30$ feature maps.
+For the sake of computation efficiency, we limit this experiment to architecture with $30$ feature maps.
 We report the accuracy in terms of epochs for our architecture in Figure~\ref{fig:verydeep} for a varying number of convolutional layers.
 It is worth noting that for the deepest networks, it may take a few epochs before the start of convergence.
 As \cite{xiao2018dynamical}, we remark there is no gain in using very deep architecture for this task.
@@ -334,18 +334,21 @@ As \cite{xiao2018dynamical}, we remark there is no gain in using very deep archi
 
 \subsection{Relaxing linear layers}
 
-\begin{center}
+\begin{table*}
 \begin{tabular}{lrrr}
 \toprule
   & \multicolumn{1}{c}{\textbf{h = 1.0}} & \multicolumn{1}{c}{\textbf{h = 0.1}} & \multicolumn{1}{c}{\textbf{h = 0.01}} \\
 \midrule
-\textbf{Clean} & 85.10 & 82.23 & 78.53 \\
+\textbf{Standard} & 85.10 & 82.23 & 78.53 \\
 \textbf{PGD ($\varepsilon = 36/255$}) & 61.45 & 62.99 & 60.98 \\
 \bottomrule
-\end{tabular}%
-\end{center}
-The table above shows the result of the relaxed training of our StableBlock architecture, i.e. we fixed the step $h_t$ in the discretized convex potential flow of Proposition~\ref{prop:discrete_convex_potentials}.
-Increasing the constant $h$ allows for an important improvement  in the clean accuracy, but we loose in robust empirical accuracy.
+\end{tabular}
+\caption{Level of accuracy of CPL networks when the constraints on the step-size is relaxed. We fixed the step-size $h$ to different values and measured standard and empirically robust accuracy. Here the CPL-M model is used.}
+\label{table:relaxstep}
+\end{table*}
+
+Table~\ref{table:relaxstep} shows the result of the relaxed training of our CPL architecture, i.e. we fixed the step $h_t$ in the discretized convex potential flow of Proposition~\ref{prop:discrete_convex_potentials}.
+Increasing the constant $h$ allows for an important improvement  in the standard accuracy, but we loose in robust empirical accuracy.
 While computing the certified accuracy is not possible in this case due to the unknown value of the Lipschitz constant, we can still notice that the training of the network are still stable without normalization tricks, and offer a non-negligible level of robustness. 
 
 

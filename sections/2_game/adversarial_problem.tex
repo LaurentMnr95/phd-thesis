@@ -18,7 +18,7 @@ $$
     \end{array}
 \right.
 $$ 
-Given access to $\PP$, the adversary aims to maximize the expected risk, but can only move each point by at most $1$ on the real line. In this context, we study two classifiers: $f_1(x) = -x -1/2$ and $f_2(x)=x-1/2$\footnote{$(X,Y) \sim \PP$ is misclassified by $f_i$ if and only if $f_i(X)Y \leq 0$}. Both $f_1$ and $f_2$ have a standard risk of $1/4$. In the presence of an adversary, the risk (\emph{a.k.a.} the adversarial risk) increases to $1$. Here, using a randomized classifier can make the system more robust. Consider $f$ where $f=f_1$ w.p. $1/2$ and $f_2$ otherwise. The standard risk of $f$ remains $1/4$ but its adversarial risk is $3/4<1$. Indeed, when attacking $f$, any adversary will have to choose between moving points from $0$ to $1$ or to $-1$. Either way, the attack only works half of the time; hence an overall adversarial risk of $3/4$. Furthermore, if $f$ knows the strategy the adversary uses, it can always update the probability it gives to $f_1$ and $f_2$ to get a better (possibly deterministic) defense. For example, if the adversary chooses to always move $0$ to $1$, the classifier can set $f=f_1$ w.p. $1$ to retrieve an adversarial risk of $1/2$ instead of $3/4$. %In other words, if the adversary can only use a deterministic attack, then there exists no equilibrium in the game.
+Given access to $\PP$, the adversary aims to maximize the expected risk, but can only move each point by at most $1$ on the real line. In this context, we study two classifiers: $f_1(x) = -x -1/2$ and $f_2(x)=x-1/2$\footnote{$(X,Y) \sim \PP$ is misclassified by $f_i$ if and only if $f_i(X)Y \leq 0$}. Both $f_1$ and $f_2$ have a standard risk of $1/4$. In the presence of an adversary, the risk (\emph{a.k.a.} the adversarial risk) increases to $1$. Here, using a randomized classifier can make the system more robust. Consider $f$ where $f=f_1$ w.p. $1/2$ and $f_2$ otherwise. The standard risk of $f$ remains $1/4$ but its adversarial risk is $3/4<1$. Indeed, when attacking $f$, any adversary will have to choose between moving points from $0$ to $1$ or to $-1$. Either ways, the attack only works half of the time; hence an overall adversarial risk of $3/4$. Furthermore, if $f$ knows the strategy the adversary uses, it can always update the probability it gives to $f_1$ and $f_2$ to get a better (possibly deterministic) defense. For example, if the adversary chooses to always move $0$ to $1$, the classifier can set $f=f_1$ w.p. $1$ to retrieve an adversarial risk of $1/2$ instead of $3/4$. %In other words, if the adversary can only use a deterministic attack, then there exists no equilibrium in the game.
 
 Now, what happens if the adversary can use randomized strategies, meaning that for each point it can flip a coin before deciding where to move? In this case, the adversary could decide to move points from $0$ to $1$ w.p. $1/2$ and to $-1$ otherwise. This strategy is still optimal with an adversarial risk of $3/4$ but now the classifier cannot use its knowledge of the adversary's strategy to lower the risk. We are in a state where neither the adversary nor the classifier can benefit from unilaterally changing its strategy. In the game theory terminology, this state is called a Mixed Nash equilibrium. %Previous works studying adversarial examples from the scope of game theory investigated the existence of Mixed Nash equilibria in restricted settings where the adversary can by reduced to a set of parameters~\citep{7533509,DBLP:journals/corr/abs-1906-02816,bose2021adversarial}. But, as pointed out in \citep{pinot2020randomization} and \citep{pydi2019adversarial}, studying the existence of a Mixed Nash equilibrium in a more general framework is a challenging open problem. In the present paper we tackle the following question.
 
@@ -35,10 +35,10 @@ In the adversarial examples framework, the loss of interest is the $0/1$ loss, f
 
 \subsection{Measure Theoretic Lemmas}
 
-We first recall and prove some important lemmas about theoretic measure.
+We first recall and prove some important lemmas about measure theory.
 \begin{lemma}[Fubini's theorem]
 \label{lem:fubini}
-Let $l:\Theta\times(\XX\times\YY)\rightarrow [0,\infty)$ satisfying Assumption~\ref{ass:loss}. Then for all $\mu\in\mathcal{M}^1_+(\Theta)$, $\int \loss(\theta,\cdot)d\mu(\theta)$ is Borel measurable; for  $\QQ\in\mathcal{M}^1_+(\XX\times\YY)$, $\int \loss(\cdot,(x,y))d\QQ(x,y)$ is Borel measurable. Moreover: $\int \loss(\theta,(x,y))d\mu(\theta)d\QQ(x,y)=\int \loss(\theta,(x,y))d\QQ(x,y)d\mu(\theta)$
+Let $\loss:\Theta\times(\XX\times\YY)\rightarrow [0,\infty)$ satisfying Assumption~\ref{ass:loss}. Then for all $\mu\in\mathcal{M}^1_+(\Theta)$, $\int \loss(\theta,\cdot)d\mu(\theta)$ is Borel measurable; for  $\QQ\in\mathcal{M}^1_+(\XX\times\YY)$, $\int \loss(\cdot,(x,y))d\QQ(x,y)$ is Borel measurable. Moreover: $\int \loss(\theta,(x,y))d\mu(\theta)d\QQ(x,y)=\int \loss(\theta,(x,y))d\QQ(x,y)d\mu(\theta)$
 \end{lemma}
 
 \begin{lemma}
@@ -47,24 +47,24 @@ Let $\loss:\Theta\times(\XX\times\YY)\rightarrow [0,\infty)$ satisfying Assumpti
 Then for all $\mu\in\mathcal{M}^1_+(\Theta)$, $(x,y)\mapsto\int \loss(\theta,(x,y))d\mu(\theta)$ is upper semi-continuous and hence Borel measurable.  
 \end{lemma}
 \begin{proof}
-Let $(x_n,y_n)_n$ be a sequence of $\XX\times\YY$ converging to $(x,y)\in\XX\times\YY$.  For all $\theta\in\Theta$, $M-\loss(\theta,\cdot)$ is non negative and lower semi-continuous. Then by Fatou's Lemma applied:
+Let $(x_n,y_n)_n$ be a sequence of $\XX\times\YY$ converging to $(x,y)\in\XX\times\YY$.  Let $M$ be an upper bound on the loss $\loss$. For all $\theta\in\Theta$, $M-\loss(\theta,\cdot)$ is non negative and lower semi-continuous. Then by Fatou's Lemma :
 \begin{align*}
    \int M-\loss(\theta,(x,y))d\mu(\theta)&\leq\int \liminf_{n\to\infty}  M-\loss(\theta,(x_n,y_n))d\mu(\theta)\\
    &\leq  \liminf_{n\to\infty}  \int M-\loss(\theta,(x_n,y_n))d\mu(\theta) 
 \end{align*}
 
- We deduce that: $\int M- \loss(\theta,\cdot)d\mu(\theta)$ is lower semi-continuous and then $\int \loss(\theta,\cdot)d\mu(\theta)$ is upper-semi continuous.
+We then have: $\int M- \loss(\theta,\cdot)d\mu(\theta)$ is lower semi-continuous and then $\int \loss(\theta,\cdot)d\mu(\theta)$ is upper-semi continuous.
 \end{proof}
 
 
 \begin{lemma}
 \label{lem:usc2}
 
-Let $\loss:\Theta\times(\XX\times\YY)\rightarrow [0,\infty)$ satisfying Assumption~\ref{ass:loss}
-Then for all $\mu\in\mathcal{M}^1_+(\Theta)$, $\QQ\mapsto\int \loss(\theta,(x,y))d\mu(\theta)d\QQ(x,y)$ is upper semi-continuous for weak topology of measures. 
+Let $\loss:\Theta\times(\XX\times\YY)\rightarrow [0,\infty)$ satisfying Assumption~\ref{ass:loss}.
+Then for all $\mu\in\mathcal{M}^1_+(\Theta)$, $\QQ\mapsto\int \loss(\theta,(x,y))d\mu(\theta)d\QQ(x,y)$ is upper semi-continuous for the weak topology of measures. 
 \end{lemma}
 \begin{proof}
- $-\int \loss(\theta,\cdot)d\mu(\theta) $ is lower semi-continuous from Lemma~\ref{lem:usc1}. Then $M-\int \loss(\theta,\cdot)d\mu(\theta) $ is lower semi-continuous and non negative. Let denote $v$ this function. Let $(v_n)_n$ be a non-decreasing sequence of continuous bounded functions such that $v_n\to v$. Let $(\QQ_k)_k$ converging weakly towards $\QQ$. Then by monotone convergence:
+ $-\int \loss(\theta,\cdot)d\mu(\theta) $ is lower semi-continuous from Lemma~\ref{lem:usc1}. Then $M-\int \loss(\theta,\cdot)d\mu(\theta) $ is lower semi-continuous and non negative. Letus  denote $v$ this function. Let $(v_n)_n$ be a non-decreasing sequence of continuous bounded functions such that $v_n\to v$. Let $(\QQ_k)_k$ converge weakly towards $\QQ$. Then by monotone convergence theorem:
  
  \begin{align*}
      \int vd\QQ = \lim_n \int v_nd\QQ =\lim_n \lim_k\int v_nd\QQ_k\leq \liminf_k \int vd\QQ_k
@@ -78,19 +78,19 @@ Then for all $\mu\in\mathcal{M}^1_+(\Theta)$, $\QQ\mapsto\int \loss(\theta,(x,y)
 
 
 
-\begin{lemma}
-\label{lem:measure-sup}
-Let $\loss:\Theta\times(\XX\times\YY)\rightarrow [0,\infty)$ satisfying Assumption~\ref{ass:loss}.
-Then for all $\mu\in\mathcal{M}^1_+(\Theta)$, $(x,y)\mapsto \sup_{(x',y'),d(x,x')\leq\varepsilon,y=y'} \int \loss(\theta,(x',y'))d\mu(\theta)$ is universally measurable (i.e. measurable for all Borel probability measures). And hence the adversarial risk is well defined. 
-\end{lemma}
-\begin{proof}
-Let $\phi :(x,y)\mapsto \sup_{(x',y'),d(x,x')\leq\varepsilon,y=y'} \int \loss(\theta,(x',y'))d\mu(\theta)$. Then for $u\in\bar{\mathbb{R}}$:
-\begin{align*}
-&\left\{\phi(x,y)>u\right\}\\
-&=\text{Proj}_1\left\{((x,y),(x',y'))\mid\int \loss(\theta,(x',y'))d\mu(\theta)-c_\varepsilon((x,y),(x',y'))>u\right\}
-\end{align*}
-By Lemma~\ref{lem:usc2}: $((x,y),(x',y'))\mapsto \int \loss(\theta,(x',y'))d\mu(\theta)-c_\varepsilon((x,y),(x',y'))$ is upper-semicontinuous hence Borel measurable. So its level sets are Borel sets, and by~\citet[Proposition 7.39]{bertsekas2004stochastic}, the projection of a Borel set is analytic. And then $\left\{\phi(x,y)>u\right\}$ universally measurable thanks to~\citet[Corollary 7.42.1]{bertsekas2004stochastic}. We deduce that $\phi$ is universally measurable.
-\end{proof}
+% \begin{lemma}
+% \label{lem:measure-sup}
+% Let $\loss:\Theta\times(\XX\times\YY)\rightarrow [0,\infty)$ satisfying Assumption~\ref{ass:loss}.
+% Then for all $\mu\in\mathcal{M}^1_+(\Theta)$, $(x,y)\mapsto \sup_{(x',y'),d(x,x')\leq\varepsilon,y=y'} \int \loss(\theta,(x',y'))d\mu(\theta)$ is universally measurable (i.e. measurable for all Borel probability measures). And hence the adversarial risk is well defined. 
+% \end{lemma}
+% \begin{proof}
+% Let $\phi :(x,y)\mapsto \sup_{(x',y'),d(x,x')\leq\varepsilon,y=y'} \int \loss(\theta,(x',y'))d\mu(\theta)$. Then for $u\in\bar{\mathbb{R}}$:
+% \begin{align*}
+% &\left\{\phi(x,y)>u\right\}\\
+% &=\text{Proj}_1\left\{((x,y),(x',y'))\mid\int \loss(\theta,(x',y'))d\mu(\theta)-c_\varepsilon((x,y),(x',y'))>u\right\}
+% \end{align*}
+% By Lemma~\ref{lem:usc2}: $((x,y),(x',y'))\mapsto \int \loss(\theta,(x',y'))d\mu(\theta)-c_\varepsilon((x,y),(x',y'))$ is upper-semicontinuous hence Borel measurable. So its level sets are Borel sets, and by~\citet[Proposition 7.39]{bertsekas2004stochastic}, the projection of a Borel set is analytic. And then $\left\{\phi(x,y)>u\right\}$ universally measurable thanks to~\citet[Corollary 7.42.1]{bertsekas2004stochastic}. We deduce that $\phi$ is universally measurable.
+% \end{proof}
 
 
 
@@ -104,7 +104,7 @@ The standard risk for a single classifier $\theta$ associated with the loss $\lo
 \begin{align*}
     \risk_\varepsilon(\mu):=\mathbb{E}_{(x,y)\sim \PP}\left[\sup_{x'\in\XX,~d(x,x')\leq\varepsilon}\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(x',y))\right]\right].
 \end{align*}
-For instance, for the $0/1$ loss, the inner maximization problem, consists in maximizing the probability of misclassification for a given couple $(x,y)$. Note that $\risk(\delta_\theta)=\risk(\theta)$ and $\risk_\varepsilon(\delta_\theta)=\risk_\varepsilon(\theta)$. In the remainder of this section, we study the adversarial risk minimization problems with randomized and deterministic classifiers and denote
+For instance, for the $0/1$ loss, the inner maximization problem, consists in maximizing the probability of misclassification for a given pair $(x,y)$. Note that $\risk(\delta_\theta)=\risk(\theta)$ and $\risk_\varepsilon(\delta_\theta)=\risk_\varepsilon(\theta)$. In the remainder of this section, we study the adversarial risk minimization problems with randomized and deterministic classifiers and denote
 \begin{align}
 \label{eq:advriskmin}
     \valuerand_\varepsilon:=\inf_{\mu\in\mathcal{M}^1_+(\Theta)} \risk_\varepsilon(\mu),~\valuedet_\varepsilon:=\inf_{\theta\in\Theta} \risk_\varepsilon(\theta)
@@ -112,13 +112,13 @@ For instance, for the $0/1$ loss, the inner maximization problem, consists in ma
 Note that we can show that the standard risk infima are equal :  $\valuerand_0=\valuedet_0$. 
 \begin{prop}
 \label{prop:eqstandardrisk}
-Let $\PP$ be a Borel probability distribution on $\XX\times\YY$, and $l$ a loss satisfying Assumption~\ref{ass:loss}, then:
+Let $\PP$ be a Borel probability distribution on $\XX\times\YY$, and $\loss$ a loss satisfying Assumption~\ref{ass:loss}, then:
 \begin{align*}
         \inf_{\mu\in\mathcal{M}^1_+(\Theta)} \risk(\mu) =\inf_{\theta\in\Theta} \risk(\theta)
 \end{align*}
 \end{prop}
 \begin{proof}
-It is clear that:         $\inf_{\mu\in\mathcal{M}^1_+(\Theta)} \risk(\mu) \leq \inf_{\theta\in\Theta} \risk(\theta)$. Now, let $\mu\in\mathcal{M}^1_+(\Theta)$, then:
+We have $\inf_{\mu\in\mathcal{M}^1_+(\Theta)} \risk(\mu) \leq \inf_{\theta\in\Theta} \risk(\theta)$. Now, let $\mu\in\mathcal{M}^1_+(\Theta)$, then:
 \begin{align*}
     \risk(\mu)= \mathbb{E}_{\theta\sim\mu}(\risk(\theta))&\geq \essinf_\mu \mathbb{E}_{\theta\sim\mu} \left(\risk(\theta)\right)\\
     &\geq\inf_{\theta\in\Theta} \risk(\theta).
@@ -146,7 +146,7 @@ An attacker that can move the initial distribution $\PP$ anywhere in $\mathcal{A
 In other words, for a point $(x,y)\sim\PP$, the attacker could choose a distribution $q(\cdot\mid(x,y))$ whose support is included in $\{(x',y')\mid d(x,x')\leq \epsilon,~y=y'\}$ from which he will sample the adversarial attack. In this sense, we say the attacker is allowed to be randomized.
 % This set allows to move every single point in the support of $\PP$ and moving its mass everywhere as far as the perturbation is smaller than $\varepsilon$ and does not change the `true' label. In this problem, the attacker can then play randomized strategies to move the samples inside the balls of radius $\varepsilon$. \textcolor{red}{Pas hyper limpide je trouve}
 
-\textbf{Link with DRO.} We immediately remark that $\mathcal{A}_\varepsilon(\PP)$ correspond in the Wasserstein-$\infty$ set associated with
+\textbf{Link with DRO.} We immediately remark that $\mathcal{A}_\varepsilon(\PP)$ corresponds to the Wasserstein-$\infty$ set associated with
 the cost
 \begin{align*}
     d'((x,y),(x',y'))\mapsto \left\{
@@ -156,7 +156,7 @@ the cost
         \end{array}
     \right.
 \end{align*}
-We also remark, such a set can be defined from usual (not $\infty$) Wasserstein uncertainty sets:  for an arbitrary $\varepsilon>0$, we define the cost $c_\varepsilon$ as follows
+Such a set can be defined from usual (not $\infty$) Wasserstein uncertainty sets:  for an arbitrary $\varepsilon>0$, we define the cost $c_\varepsilon$ as follows
 \begin{align*}
 c_\varepsilon((x,y),(x',y')) := \left\{
     \begin{array}{ll}
@@ -174,13 +174,13 @@ Moreover, $\mathcal{A}_{\varepsilon}(\PP)$ is convex and compact for the weak to
 \end{prop}
 \begin{proof}
 Let $\eta>0$. Let $\QQ\in\mathcal{A}_\varepsilon(\PP)$. There exists $\gamma\in
-\mathcal{M}^+_1\left((\XX\times\YY)^2\right)$ such that, $d(x,x')\leq\varepsilon$, $y=y'$ $\gamma$-almost surely, and $\Pi_{1\sharp}\gamma=\PP$, and $\Pi_{2\sharp}\gamma=\QQ$. Then $\int c_\varepsilon d \gamma = 0\leq \eta$. Then, we deduce that $W_{c_\varepsilon}(\PP,\QQ)\leq \eta$, and $\QQ\in\mathcal{B}_{c_\varepsilon}(\PP,\eta)$. Reciprocally, let $\QQ\in\mathcal{B}_{c_\varepsilon}(\PP,\eta)$. Then, since the infimum is attained in the Wasserstein definition, there exists $\gamma\in
+\mathcal{M}^+_1\left((\XX\times\YY)^2\right)$ such that, $d(x,x')\leq\varepsilon$, $y=y'$ $\gamma$-almost surely, and $\Pi_{1\sharp}\gamma=\PP$, and $\Pi_{2\sharp}\gamma=\QQ$. Then $\int c_\varepsilon d \gamma = 0\leq \eta$. Then, $W_{c_\varepsilon}(\PP,\QQ)\leq \eta$, and $\QQ\in\mathcal{B}_{c_\varepsilon}(\PP,\eta)$. Reciprocally, let $\QQ\in\mathcal{B}_{c_\varepsilon}(\PP,\eta)$. Then, since the infimum is attained in the Wasserstein definition, there exists $\gamma\in
 \mathcal{M}^+_1\left((\XX\times\YY)^2\right)$ such that $\int c_\varepsilon d \gamma \leq \eta$. Since $c_\varepsilon((x,x'),(y,y'))=+\infty$ when $d(x,x')>\varepsilon$ and $y\neq y'$, we deduce that, $d(x,x')\leq\varepsilon$ and $y=y'$, $\gamma$-almost surely. Then $\QQ\in\mathcal{A}_\varepsilon(\PP)$. We have then shown that: $\mathcal{A}_\varepsilon(\PP)=\mathcal{B}_{c_\varepsilon}(\PP,\eta)$.
 
-The convexity of $\mathcal{A}_\varepsilon(\PP)$ is then immediate from the relation with the Wasserstein uncertainty set.
+The convexity of $\mathcal{A}_\varepsilon(\PP)$ is  immediate from the relation with the Wasserstein uncertainty set.
 
-Let us show first that $\mathcal{A}_\varepsilon(\PP)$ is relatively compact for weak topology. To do so we will show that $\mathcal{A}_\varepsilon(\PP)$ is tight and apply Prokhorov's theorem. Let $\delta>0$, $(\XX\times \YY,d\oplus d')$ being a Polish space, $\{\PP\}$ is tight then there exists $K_\delta$ compact such that $\PP(K_\delta)\geq1-\delta$.
-Let $\Tilde{K}_\delta:=\left\{(x',y')\mid \exists (x,y)\in K_\delta,~ d(x',x)\leq\varepsilon,~y=y'\right\}$.  Recalling that $(\XX,d)$ is proper (i.e. the closed balls are compact), so $\Tilde{K}_\delta$ is compact. Moreover for $\QQ\in\mathcal{A}_\varepsilon(\PP)$, $\QQ(\Tilde{K}_\delta)\geq \PP(K_\delta)\geq 1-\delta$. And then, Prokhorov's theorem holds, and $\mathcal{A}_\varepsilon(\PP)$ is relatively compact for weak topology.
+Let us show first that $\mathcal{A}_\varepsilon(\PP)$ is relatively compact for the weak topology. To do so we will show that $\mathcal{A}_\varepsilon(\PP)$ is tight and apply Prokhorov theorem. Let $\delta>0$, $(\XX\times \YY,d\oplus d')$ being a Polish space, $\{\PP\}$ is tight then there exists $K_\delta$ compact such that $\PP(K_\delta)\geq1-\delta$.
+Let $\Tilde{K}_\delta:=\left\{(x',y')\mid \exists (x,y)\in K_\delta,~ d(x',x)\leq\varepsilon,~y=y'\right\}$.  Recalling that $(\XX,d)$ is proper (i.e. the closed balls are compact), so $\Tilde{K}_\delta$ is compact. Moreover for $\QQ\in\mathcal{A}_\varepsilon(\PP)$, $\QQ(\Tilde{K}_\delta)\geq \PP(K_\delta)\geq 1-\delta$. And then, Prokhorov's theorem holds, and $\mathcal{A}_\varepsilon(\PP)$ is relatively compact for the weak topology.
 
 Let us now prove that $\mathcal{A}_\varepsilon(\PP)$ is closed to conclude.  Let $(\QQ_n)_n$ be a sequence of $\mathcal{A}_\varepsilon(\PP)$ converging towards some $\QQ$ for weak topology. For each $n$, there exists $\gamma_n\in \mathcal{M}^1_+(\XX\times\YY)$ such that $d(x,x')\leq\varepsilon$ and $y=y'$ $\gamma_n$-almost surely and $\Pi_{1\sharp}\gamma_n=\PP$, $\Pi_{2\sharp}\gamma_n=\QQ_n$. $\{\QQ_n,n\geq0\}$ is relatively compact, then tight, then $\bigcup_n \Gamma_{\PP,\QQ_n}$ is tight, then relatively compact by Prokhorov's theorem. $(\gamma_n)_n\in\bigcup_n \Gamma_{\PP,\QQ_n}$, then up to an extraction,  $\gamma_n\to\gamma$. Then $d(x,x')\leq\varepsilon$ and $y=y'$ $\gamma$-almost surely, and by continuity, $\Pi_{1\sharp}\gamma=\PP$ and by continuity, $\Pi_{2\sharp}\gamma=\QQ$. And hence $\mathcal{A}_\varepsilon(\PP)$ is closed.
 
@@ -231,7 +231,7 @@ Then we deduce the expected result:
 \begin{align*}
 \risk_\varepsilon(\mu)= \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)}\mathbb{E}_{(x,y)\sim\QQ}\left[\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(x,y))\right]\right]
 \end{align*}
-Let us show that the optimum is attained. $\QQ\mapsto\mathbb{E}_{(x,y)\sim\QQ}\left[\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(x,y))\right]\right]$ is upper semi continuous by Lemma~\ref{lem:usc2} for the weak topology of measures, and $\mathcal{A}_\varepsilon(\PP)$ is compact by Proposition~\ref{prop:wass_ball}, then by~\citep[Proposition 7.32]{bertsekas2004stochastic}, the supremum is attained for a certain $\QQ^*\in\mathcal{A}_\varepsilon(\PP)$. 
+Let us show that the optimum is attained. $\QQ\mapsto\mathbb{E}_{(x,y)\sim\QQ}\left[\mathbb{E}_{\theta\sim\mu}\left[\loss(\theta,(x,y))\right]\right]$ is upper semi continuous by Lemma~\ref{lem:usc2} for the weak topology of measures, and $\mathcal{A}_\varepsilon(\PP)$ is compact by Proposition~\ref{prop:wass_ball}, then by Prop. 7.32 from ~\citep{bertsekas2004stochastic}, the supremum is attained for a certain $\QQ^*\in\mathcal{A}_\varepsilon(\PP)$. 
 
 \end{proof}
 
@@ -358,11 +358,11 @@ Thanks to Proposition~\ref{sec:adv-problem}, the adversarial risk minimization p
     \inf_{\mu\in\mathcal{M}^1_+(\Theta)} \sup_{\QQ\in\mathcal{A}_{\varepsilon}(\PP)}\mathbb{E}_{(x,y)\sim\QQ,\theta\sim\mu}\left[\loss(\theta,(x,y))\right].
 \label{eq:primal_pb}
 \end{align}
-In this game the classifier objective is to find the best distribution $\mu \in \mathcal{M}_1^+(\Theta)$ while the adversary is manipulating the data distribution. For the classifier, solving the infimum problem in Equation~\eqref{eq:primal_pb} simply amounts to solving the adversarial risk minimization problem -- Problem~\eqref{eq:advriskmin}, whether the classifier is randomized or not. Then, given a randomized classifier $\mu \in \mathcal{M}_1^+(\Theta)$, the goal of the attacker is to find a new data-set distribution $\mathbb{Q}$ in the set of adversarial distributions $\mathcal{A}_{\varepsilon}(\PP)$ that maximizes the risk of $\mu$. More formally, the adversary looks for $$\mathbb{Q} \in \argmaxB_{\QQ\in\mathcal{A}_{\varepsilon}(\PP)} \mathbb{E}_{(x,y)\sim\QQ,\theta\sim\mu}\left[\loss(\theta,(x,y))\right]. $$
+In this game, the classifier's objective is to find the best distribution $\mu \in \mathcal{M}_1^+(\Theta)$ while the adversary is manipulating the data distribution. For the classifier, solving the infimum problem in Equation~\eqref{eq:primal_pb} simply amounts to solving the adversarial risk minimization problem -- Problem~\eqref{eq:advriskmin}, whether the classifier is randomized or not. Then, given a randomized classifier $\mu \in \mathcal{M}_1^+(\Theta)$, the goal of the attacker is to find a new data-set distribution $\mathbb{Q}$ in the set of adversarial distributions $\mathcal{A}_{\varepsilon}(\PP)$ that maximizes the risk of $\mu$. More formally, the adversary looks for $$\mathbb{Q} \in \argmaxB_{\QQ\in\mathcal{A}_{\varepsilon}(\PP)} \mathbb{E}_{(x,y)\sim\QQ,\theta\sim\mu}\left[\loss(\theta,(x,y))\right]. $$
 In the game theoretic terminology, $\mathbb{Q}$ is also called the best response of the attacker to the classifier $\mu$.
 
 \begin{rmq}
-Note that for a given classifier $\mu$ there always exists a ``deterministic'' best response, i.e. every single point $(x,y)$ is mapped to another single point $T(x,y)$. Let $T:\XX\times\YY\to\XX\times\YY$ be defined such that for all $(x,y)\in\XX\times\YY$, $\EE_{\theta\sim\mu}\left[\loss(T(x,y))\right] = \sup_{x',~d(x,x')\leq\varepsilon}\EE_{\theta\sim\mu}\left[ L(x',y)\right]$. Thanks to~\citep[Proposition 7.50]{bertsekas2004stochastic}, $T$ is $\PP$-measurable. Moreover, we get that $\QQ = (T,id)_\sharp \PP$ belongs to the best response to $\mu$. Therefore, $T$ is the optimal ``deterministic'' attack against the classifier $\mu$.
+Note that for a given classifier $\mu$ there always exists a ``deterministic'' best response, i.e. every single point $(x,y)$ is mapped to another single point $T(x,y)$. Let $T:\XX\times\YY\to\XX\times\YY$ be defined such that for all $(x,y)\in\XX\times\YY$, $\EE_{\theta\sim\mu}\left[\loss(T(x,y))\right] = \sup_{x',~d(x,x')\leq\varepsilon}\EE_{\theta\sim\mu}\left[ L(x',y)\right]$. Thanks to Prop. 7.50 from ~\citep{bertsekas2004stochastic}, $T$ is $\PP$-measurable. Moreover, we get that $\QQ = (T,id)_\sharp \PP$ belongs to the best response to $\mu$. Therefore, $T$ is the optimal ``deterministic'' attack against the classifier $\mu$.
 \end{rmq}
 
 
@@ -462,7 +462,7 @@ The supremum is always attained. If $\Theta$ is a compact set, and for all $(x,y
 
 
 \begin{proof}
-$\mathcal{A}_\varepsilon(\PP)$, endowed with the weak topology of measures, is a Hausdorff compact convex space, thanks to Proposition~\ref{prop:wass_ball}. Moreover, $\mathcal{M}^1_+(\Theta)$ is clearly convex and $(\QQ,\mu)\mapsto \int ld\mu d\QQ$ is bilinear, hence concave-convex. Moreover thanks to Lemma~\ref{lem:usc2}, for all $\mu$, $\QQ\mapsto \int ld\mu d\QQ$ is upper semi-continuous. Then Fan's theorem applies and strong duality holds.
+$\mathcal{A}_\varepsilon(\PP)$, endowed with the weak topology of measures, is a Hausdorff compact convex space, thanks to Proposition~\ref{prop:wass_ball}. Moreover, $\mathcal{M}^1_+(\Theta)$ is clearly convex and $(\QQ,\mu)\mapsto \int \loss d\mu d\QQ$ is bilinear, hence concave-convex. Moreover thanks to Lemma~\ref{lem:usc2}, for all $\mu$, $\QQ\mapsto \int \loss d\mu d\QQ$ is upper semi-continuous. Then Fan's theorem applies and strong duality holds.
 \end{proof}
  \begin{corollary}
 \label{cor:nash-eq}

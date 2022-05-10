@@ -3,9 +3,9 @@
 To account for the possibility of an adversary manipulating the inputs at test time, we need to revisit the standard risk minimization problem by penalizing any classification model that might change its decision when the point of interest is slightly changed. Essentially, this is done by replacing the standard (pointwise) $0/1$ loss with an adversarial version that mimics its behavior locally but also penalizes any error in a given region around the point on which it is evaluated.
 
 
-Yet, just like the $0/1$ loss, its adversarial counterpart is not convex, which renders the risk minimization difficult. To circumvent this limitation, we take inspiration from the standard learning theory approach which consists in solving a simpler optimization problem where the non-convex loss function is replaced by a convex surrogate. In general, the surrogate loss is chosen to have a property called \emph{consistency}~\citep{zhang2004statistical,bartlett2006convexity,steinwart2007compare}, which essentially guarantees that any sequence of classifiers that minimizes the surrogate objective must also be a sequence that minimizes the Bayes risk. In the context of standard classification, a large family of convex losses, called \textit{classifier-consistent}, exhibits this property. This class notoriously includes the hinge loss, the logistic loss and the square loss. 
+Yet, just like the $0/1$ loss, its adversarial counterpart is not convex, which renders the risk minimization difficult. To circumvent this limitation, we take inspiration from the standard learning theory approach which consists in solving a simpler optimization problem where the non-convex loss function is replaced by a convex surrogate. In general, the surrogate loss is chosen to have a property called \emph{consistency}~\citep{zhang2004statistical,bartlett2006convexity,steinwart2007compare}, which guarantees that any sequence of classifiers that minimizes the surrogate objective must also be a sequence that minimizes the Bayes risk. In the context of standard classification, a large family of convex losses, called \textit{classifier-consistent}, exhibits this property. This class notoriously includes the hinge loss, the logistic loss and the square loss. 
 
-However, the adversarial version of these surrogate losses needs not to have the same consistency properties with respect to the adversarial $0/1$ loss. In fact, most existing results in the standard framework rely on a reduction of the global consistency problem to a local point-wise problem, called \textit{calibration}. However, the same approach is not feasible in the adversarial setting, because the new losses are by nature non-point-wise. Then the optimum for a given input may depend on yet a whole other set of inputs~\citep{awasthi2021calibration,awasthi2021finer}. Studying the concepts of calibration and consistency in an adversarial context remains an open and understudied issue. 
+However, the adversarial version of these surrogate losses needs not to have the same consistency properties with respect to the adversarial $0/1$ loss. In fact, most existing results in the standard framework rely on a reduction of the global consistency problem to a local point-wise problem, called \textit{calibration}. However, the same approach is not feasible in the adversarial setting, because the new losses are by nature non-point-wise. Then the optimum for a given input may depend on yet a whole other set of inputs~\citep{awasthi2021calibration,awasthi2021finer}. Studying the concepts of calibration and consistency in the adversarial setting remains an open and understudied problem. 
 %In fact, this is a rather complex area of research as the results can easily become meaningless or inaccurate when obtained without scrupulous and rigorous analysis. 
 Furthermore, this is a complex and technical area of research, that requires a rigorous analysis, since small tweaks in definitions can quickly make results meaningless or inaccurate.
 This difficulty is illustrated in the literature, where articles published in high profile conferences tend to contradict or refute each other~\cite{bao2020calibrated,awasthi2021calibration,awasthi2021finer}. 
@@ -17,12 +17,12 @@ This difficulty is illustrated in the literature, where articles published in hi
 %\subsection{Setting and Notations}
 
 %\subsection{Setting and Notations}
-\paragraph{Notations.} In this section, let us consider a classification task with input space $\mathcal{X}$ and output space $\mathcal{Y}=\{-1,+1\}$. Let $(\mathcal{X},d)$ be a proper Polish (i.e. completely separable) metric space representing the inputs space. For all $x\in\mathcal{X}$ and $\delta>0$, we denote $B_\delta(x)$ the closed ball of radius $\delta$ and center $x$. We also assume that for all $x\in\mathcal{X}$ and $\delta>0$,  $B_\delta(x)$ contains at least two points\footnote{For instance, for any norm $\lVert\cdot\rVert$,  $(\mathbb{R}^d,\lVert \cdot \rVert)$ is a Polish metric space satisfying this property.}. Let us also endow $\mathcal{Y}$ with the trivial metric  $d'(y,y') = \mathbf{1}_{y\neq y'}$. Then the space $(\mathcal{X}\times\mathcal{Y},d\oplus d')$ is a proper Polish space. For any Polish space $\mathcal{Z}$, we denote $\mathcal{M}_+^1(\mathcal{Z})$ the Polish space of Borel probability measures on $\mathcal{Z}$. We will denote $\mathcal{F}(\mathcal{Z})$ the space of real valued Borel measurable functions on $\mathcal{Z}$. Finally, we denote $\bar{\RR}:=\RR\cup\{\-\infty,+\infty\}$.
+\paragraph{Setting.} In this section, let us consider a classification task with input space $\mathcal{X}$ and output space $\mathcal{Y}=\{-1,+1\}$. Let $(\mathcal{X},d)$ be a proper Polish (i.e. completely separable) metric space representing the inputs space. For all $x\in\mathcal{X}$ and $\delta>0$, we denote $B_\delta(x)$ the closed ball of radius $\delta$ and center $x$. We also assume that for all $x\in\mathcal{X}$ and $\delta>0$,  $B_\delta(x)$ contains at least two points\footnote{For instance, for any norm $\lVert\cdot\rVert$,  $(\mathbb{R}^d,\lVert \cdot \rVert)$ is a Polish metric space satisfying this property.}. Let us also endow $\mathcal{Y}$ with the trivial metric  $d'(y,y') = \mathbf{1}_{y\neq y'}$. Then the space $(\mathcal{X}\times\mathcal{Y},d\oplus d')$ is a proper Polish space. For any Polish space $\mathcal{Z}$, we denote $\mathcal{M}_+^1(\mathcal{Z})$ the Polish space of Borel probability measures on $\mathcal{Z}$. We will denote $\mathcal{F}(\mathcal{Z})$ the space of real valued Borel measurable functions on $\mathcal{Z}$. Finally, we denote $\bar{\RR}:=\RR\cup\{\-\infty,+\infty\}$.
 
 
 \subsection{Notions of Calibration and Consistency}
 
-The $0/1$-loss is both non-continuous and non-convex, and its direct minimization is a difficult problem. The concepts of calibration and consistency aim at identifying the properties that a loss must satisfy in order to be a good surrogate for the minimization of the $0/1$-loss. In this section, we define these two concepts and explain the difference between them. First of all, we need to give a general definition of a loss function.
+The $0/1$-loss is both non-continuous and non-convex, and its direct minimization is a difficult problem. The concepts of calibration and consistency aim at identifying the properties that a loss must satisfy in order to be a good surrogate for the minimization of the $0/1$-loss. In this section, we define these two concepts and explain the difference between them. First, we need to give a general definition of a loss function.
 
 \begin{definition}[Loss function] A loss function is a function $L:\mathcal{X}\times\mathcal{Y}\times \mathcal{F}(\mathcal{X})\to \mathbb{R}$ such that $L(\cdot,\cdot,f)$ is a Borel measurable for all $f\in\mathcal{F}(\mathcal{X})$. 
 \end{definition}
@@ -38,7 +38,7 @@ We also define the optimal risk associated with the loss $L$ as
 \end{align*}
 \end{definition}
 
-Essentially, the risk of a classifier is defined as the average loss over the distribution $\PP$. When the loss $L$ is difficult to optimize in practice (e.g when it is non-convex or non-differentiable),  it is often preferred to optimize a surrogate loss function instead. In the literature~\citep{zhang2004statistical,bartlett2006convexity,steinwart2007compare}, the notion of surrogate losses has been studied as a consistency problem. In a nutshell, a surrogate loss is said to be consistent if any minimizing sequence of classifiers for the risk associated with the surrogate loss is also one for the risk associated with $L$. Formally, the notion of consistency is as  follows.
+In the literature~\citep{zhang2004statistical,bartlett2006convexity,steinwart2007compare}, the notion of surrogate losses has been studied as a consistency problem. Formally, the notion of consistency is as  follows.
 
 \begin{definition}[Consistency]
 Let $L_1$ and $L_2$ be two loss functions. For a given $\PP\in\mathcal{M}_1^+(\XX\times\YY)$, $L_2$ is said to be consistent for $\PP$ with respect to $L_1$ if for all sequences $(f_n)_n \in \mathcal{F}(\mathcal{X})^\mathbb{N}$ :
@@ -58,7 +58,7 @@ Note that one can reformulate equivalently the previous definition as follows.  
 Consistency is in general a difficult problem to study because of its high dependency on the distribution $\PP$ at hand. Accordingly, several previous works~\citep{zhang2004statistical,bartlett2002rademacher,steinwart2007compare} introduced a weaker notion to study consistency from pointwise viewpoint. The simplified notion is called \textit{calibration} and corresponds to consistency when $\PP$ is a combination of Dirac distributions. The main building block in the analysis of the calibration problem is the calibration function, defined as follows.
 
 \begin{definition}[Calibration function]
-Let $L$ be a loss function. The calibration function $\mathcal{C}_L$ is 
+Let $L$ be a loss function. The calibration function $\mathcal{C}_L$ writes as
 \begin{align*}
     \mathcal{C}_L(x,\eta,f):=\eta L(x,1,f) +(1-\eta) L(x,-1,f),
 \end{align*}
@@ -69,43 +69,43 @@ for any $\eta\in[0,1]$, $x\in\mathcal{X}$ and $f\in\mathcal{F}(\mathcal{X})$. We
 
 \end{definition}
 
-Note that for any $x\in\XX$ and $\eta\in[0,1]$, $\mathcal{C}_L(x,\eta,f) =\risk_{L,\PP}(f)$ with $\PP = \eta \delta_{(x,+1)}+ (1-\eta)\delta_{(x,-1)}$. The calibration function thus corresponds then to a pointwise notion of the risk, evaluated at point $x$. We now define what one means by calibration of a surrogate loss.
+Note that for any $x\in\XX$ and $\eta\in[0,1]$, $\mathcal{C}_L(x,\eta,f) =\risk_{L,\PP}(f)$ with $\PP = \eta \delta_{(x,+1)}+ (1-\eta)\delta_{(x,-1)}$. The calibration function thus corresponds to a pointwise notion of the risk, evaluated at point $x$. We now define what is meant by calibration of a surrogate loss.
 
 \begin{definition}[Calibration]
-Let $L_1$ and $L_2$ be two loss functions. We say that $L_2$ is \emph{calibrated} with regards to $L_1$ if for every $\epsilon>0$, $\eta\in[0,1]$ and $x\in\mathcal{X}$, there exists $ \delta>0$ such that for all $f\in\mathcal{F}(\mathcal{X})$,
+Let $L_1$ and $L_2$ be two loss functions. We say that $L_2$ is \emph{calibrated} with regard to $L_1$ if for every $\epsilon>0$, $\eta\in[0,1]$ and $x\in\mathcal{X}$, there exists $ \delta>0$ such that for all $f\in\mathcal{F}(\mathcal{X})$,
 \begin{align*}
     \mathcal{C}_{L_2}(x,\eta,f)- &\mathcal{C}^\star_{L_2}(x,\eta)\leq\delta\implies\mathcal{C}_{L_1}(x,\eta,f)- \mathcal{C}^\star_{L_1}(x,\eta)\leq \epsilon.
 \end{align*}
 
-Furthermore, we say that $L_2$ is \emph{uniformly calibrated} with regards to $L_1$ if for every $\epsilon>0$, there exists $ \delta>0$ such that for all $\eta\in[0,1]$, $x\in\mathcal{X}$ and $f\in\mathcal{F}(\mathcal{X})$ we have
+Furthermore, we say that $L_2$ is \emph{uniformly calibrated} with regard to $L_1$ if for every $\epsilon>0$, there exists $ \delta>0$ such that for all $\eta\in[0,1]$, $x\in\mathcal{X}$ and $f\in\mathcal{F}(\mathcal{X})$ we have
 \begin{align*}
     \mathcal{C}_{L_2}(x,\eta,f)- \mathcal{C}^\star_{L_2}(x,\eta)\leq\delta\implies\mathcal{C}_{L_1}(x,\eta,f)- \mathcal{C}^\star_{L_1}(x,\eta)\leq \epsilon.
 \end{align*}
 \end{definition}
 
 \textcolor{black}{
-Similarly to consistency, one also give a sequential characterization for calibration and uniform calibration: $L_2$ is \emph{calibrated} with regards to $L_1$ if for all $\eta\in[0,1]$, $x\in\mathcal{X}$, for all $(f_n)_n\in\mathcal{F}(\XX)^\mathbb{N}$:
+Similarly to consistency, one can also introduce a sequential characterization for calibration and uniform calibration: $L_2$ is \emph{calibrated} with regard to $L_1$ if for all $\eta\in[0,1]$, $x\in\mathcal{X}$, for all $(f_n)_n\in\mathcal{F}(\XX)^\mathbb{N}$:
 \begin{align*}
-   \mathcal{C}_{L_2}(x,\eta,f)&- \mathcal{C}^\star_{L_2}(x,\eta)\xrightarrow[n\to\infty]{} 0
-   \implies \mathcal{C}_{L_1}(x,\eta,f)- \mathcal{C}^\star_{L_1}(x,\eta)\xrightarrow[n\to\infty]{} 0\quad.
+   \mathcal{C}_{L_2}(x,\eta,f_n)&- \mathcal{C}^\star_{L_2}(x,\eta)\xrightarrow[n\to\infty]{} 0
+   \implies \mathcal{C}_{L_1}(x,\eta,f_n)- \mathcal{C}^\star_{L_1}(x,\eta)\xrightarrow[n\to\infty]{} 0\quad.
 \end{align*}
 } 
 \textcolor{black}{
-Also, $L_2$ is \emph{uniformly calibrated} with regards to $L_1$ if for all $(f_n)_n\in\mathcal{F}(\XX)^\mathbb{N}$:
+Also, $L_2$ is \emph{uniformly calibrated} with regard to $L_1$ if for all $(f_n)_n\in\mathcal{F}(\XX)^\mathbb{N}$:
 \begin{align*}
-    \sup_{\eta\in[0,1],x\in\mathcal{X}} &\mathcal{C}_{L_2}(x,\eta,f)- \mathcal{C}^\star_{L_2}(x,\eta)\xrightarrow[n\to\infty]{} 0\\\
-    &\implies\sup_{\eta\in[0,1],x\in\mathcal{X}} \mathcal{C}_{L_1}(x,\eta,f)- \mathcal{C}^\star_{L_1}(x,\eta)\xrightarrow[n\to\infty]{} 0\quad.
+    \sup_{\eta\in[0,1],x\in\mathcal{X}} &\mathcal{C}_{L_2}(x,\eta,f_n)- \mathcal{C}^\star_{L_2}(x,\eta)\xrightarrow[n\to\infty]{} 0\\\
+    &\implies\sup_{\eta\in[0,1],x\in\mathcal{X}} \mathcal{C}_{L_1}(x,\eta,f_n)- \mathcal{C}^\star_{L_1}(x,\eta)\xrightarrow[n\to\infty]{} 0\quad.
 \end{align*} }
 
 %\textcolor{blue}{Raf: I would choose one of the characterization (sequential or not) and use it for both calibration and consictency.}
 
 \textbf{Connection between calibration and consistency.}
-It is always true that calibration is a necessary condition for consistency. Yet there is no reason, in general, for the converse to be true. However, in the specific context usually studied in the literature (i.e., the standard classification with a well-defined $0/1$-loss), the notions of consistency and calibration have been shown to be equivalent.~\citep{zhang2004statistical,bartlett2006convexity,steinwart2007compare}. In the next section, we come back on existing results regarding calibration and consistency in this specific (standard) classification setting. 
+Calibration is a necessary condition for consistency. In general, the converse is not true. However, in the specific context of standard classification with a well-defined $0/1$-loss, the notions of consistency and calibration have been shown to be equivalent~\citep{zhang2004statistical,bartlett2006convexity,steinwart2007compare}. The next section discusses existing results on calibration and consistency in the standard classification setting. 
 
 
 \subsection{Existing Results in the Standard Classification Setting}
 
-Classification is a standard task in machine learning that consists in finding a classification function $h:\XX\to\YY$ that maps an input $x$ to a label $y$. In binary classification, $h$ is often defined as the sign of a real valued function $f \in \mathcal{F}(\XX)$. The loss usually used to characterize classification tasks corresponds to the accuracy of the classifier $h$. When $h$ is defined as above, this loss is defined as follows.
+In binary classification, $h$ is often defined as the sign of a real valued function $f \in \mathcal{F}(\XX)$. The loss usually used to characterize classification tasks corresponds to the accuracy of the classifier $h$. When $h$ is defined as above, this loss is defined as follows.
 
 
 
@@ -113,17 +113,17 @@ Classification is a standard task in machine learning that consists in finding a
 \begin{definition}[$0/1$ loss]
 Let $f \in \mathcal{F}(\XX)$. We define the \emph{$0/1$ loss} as follows
 \begin{align*}
-     l_{0/1}(x,y,f)=\mathbf{1}_{y\times\text{sign}(f(x))\leq 0}
+     \loss_{0/1}(x,y,f)=\mathbf{1}_{y\times\text{sign}(f(x))\leq 0}
 \end{align*}
- with a convention for the sign, e.g. $sign(0) = 1$.  We will denote $\risk_{\PP}(f) :=\risk_{l_{0/1},\PP}(f)$,  $\risk_{\PP}^\star :=\risk_{l_{0/1},\PP}^\star$, $\mathcal{C}(x,\eta,f):= \mathcal{C}_{l_{0/1}}(x,\eta,f)$ and $\mathcal{C}^\star(x,\eta):= \mathcal{C}^\star_{l_{0/1}}(x,\eta)$.
+ with a convention for the sign, e.g. $sign(0) = 1$.  We will denote $\risk_{\PP}(f) :=\risk_{\loss_{0/1},\PP}(f)$,  $\risk_{\PP}^\star :=\risk_{\loss_{0/1},\PP}^\star$, $\mathcal{C}(x,\eta,f):= \mathcal{C}_{\loss{0/1}}(x,\eta,f)$ and $\mathcal{C}^\star(x,\eta):= \mathcal{C}^\star_{\loss_{0/1}}(x,\eta)$.
 \end{definition}
 
-Note that this $0/1$-loss is different from the one introduced by~\citet{bao2020calibrated,awasthi2021calibration,awasthi2021finer}: they used $\mathbf{1}_{y\times f(x)\leq 0}$ which is an usual $0/1$ loss but unadapted to consistency and calibrated study. This loss penalizes indecision: i.e. predicting $0$ would lead to a pointwise risk of $1$ for $y=1$ and $y=-1$ while the $0/1$ loss $l_{0/1}$ returns $1$ for $y=1$ and $0$ for $y=-1$. This definition was used by~\citet{bao2020calibrated,awasthi2021calibration,awasthi2021finer} to prove their calibration and consistency results. While~\citet{bartlett2006convexity} was not explicit on the choice for the $0/1$ loss,~\citet{steinwart2007compare} explicitly mentions that the $0/1$ loss is not a margin loss. The use of this loss is not suited for studying consistency and leads to inaccurate results as shown in the following counterexample. On $\mathcal{X}= \RR$, let $\PP$ defined as 
-$\PP = \frac12\left(\delta_{x=0,y=1}+\delta_{x=0,y=-1}\right)$ and $\phi:\mathbb{R}\to\mathbb{R}$ be a margin based loss. The $\phi$-risk minimization problem writes $\inf_{\alpha} \frac{1}{2} (\phi(\alpha)+\phi(-\alpha))$. For any convex functional $\phi$ the optimum is attained for $\alpha=0$. $f_n:x\mapsto 0$ is a minimizing sequence for the $\phi$-risk. However $R_{l_{\leq}}(f_n)=1$ for all $n$ and $R_{l_{\leq}}^*=\frac{1}{2}$. Then we deduce that no convex margin based loss is consistent wrt $l_{\leq}$. Consequently, the $0/1$ loss to be used in adversarial consistency needs to be $l_{0/1,\varepsilon}(x,y,f) = \sup_{x'\in B_\varepsilon(x)} \mathbf{1}_{y\text{sign}(f(x))\leq 0}$, otherwise the obtained results might be innacurate.
+Note that this $0/1$-loss is different from the one introduced by~\citet{bao2020calibrated,awasthi2021calibration,awasthi2021finer}: they used $\loss_{\leq}(x,y,f)=\mathbf{1}_{y\times f(x)\leq 0}$ which is a usual $0/1$ loss but not adapted to consistency and calibration study. This loss penalizes indecision: i.e. predicting $0$ would lead to a pointwise risk of $1$ for $y=1$ and $y=-1$ while the $0/1$ loss $\loss_{0/1}$ returns $1$ for $y=1$ and $0$ for $y=-1$. This definition was used by~\citet{bao2020calibrated,awasthi2021calibration,awasthi2021finer} to prove their calibration and consistency results. While~\citet{bartlett2006convexity} was not explicit on the choice of the $0/1$ loss,~\citet{steinwart2007compare} explicitly mentions that the $0/1$ loss is not a margin loss. The use of this loss is not suited for studying consistency and leads to inaccurate results as shown in the following counterexample. On $\mathcal{X}= \RR$, let $\PP$ be defined as 
+$\PP = \frac12\left(\delta_{x=0,y=1}+\delta_{x=0,y=-1}\right)$ and $\phi:\mathbb{R}\to\mathbb{R}$ be a margin  loss. The $\phi$-risk minimization problem writes $\inf_{\alpha} \frac{1}{2} (\phi(\alpha)+\phi(-\alpha))$. For any convex functional $\phi$ the optimum is attained for $\alpha=0$. $f_n:x\mapsto 0$ is a minimizing sequence for the $\phi$-risk. However, $\risk_{\loss_{\leq}}(f_n)=1$ for all $n$ and $\risk_{\loss_{\leq}}^*=\frac{1}{2}$. Then we deduce that no convex margin loss is consistent w.r.t. $\loss_{\leq}$. Consequently, the $0/1$ loss to be used in adversarial consistency needs to satisfy $\loss_{0/1,\varepsilon}(x,y,f) = \sup_{x'\in B_\varepsilon(x)} \mathbf{1}_{y\text{sign}(f(x))\leq 0}$, otherwise the obtained results might be inaccurate.
 
 
 
-Some of the most prominent works~\citep{zhang2004statistical,bartlett2006convexity,steinwart2007compare} among them focus on the concept of margin losses, as defined below. 
+Some of the most prominent works~\citep{zhang2004statistical,bartlett2006convexity,steinwart2007compare} focus on the concept of margin losses, as defined below. 
 
 \begin{definition}[Margin loss]
 A loss $L$ is said to be a \emph{margin loss} if there exists a measurable function $\phi:\RR\to\RR_+$ such that: 
@@ -131,27 +131,27 @@ A loss $L$ is said to be a \emph{margin loss} if there exists a measurable funct
     L(x,y,f) = \phi(yf(x))
 \end{align*}
 \end{definition}
-For simplicity, we will shortly say that $\phi$ is a margin loss function and we will denote $\risk_\phi$ and $\mathcal{C}_\phi$ the risk associated with the margin loss $\phi$. Notably, it has been demonstrated in several previous works\citet{zhang2004statistical,bartlett2006convexity,steinwart2007compare} that, for a margin loss $\phi$, we have always have
+Without loss of generality, we will  say that $\phi$ is a margin loss function, and we will denote $\risk_\phi$  the risk associated with the margin loss $\phi$ and $\mathcal{C}_\phi$ the calibration function. Notably, it has been demonstrated in several previous works~\citep{zhang2004statistical,bartlett2006convexity,steinwart2007compare} that, for a margin loss $\phi$, we always have
 $ \mathcal{C}^\star_\phi(x,\eta) = \inf_{\alpha\in\RR}\eta \phi(\alpha)+(1-\eta)\phi(-\alpha)$. This is in particular one of the main observation allowing to show the following strong result about the connection between consistency and calibration.
 
 \begin{thm}[\citet{zhang2004statistical,bartlett2006convexity,steinwart2007compare}]
 \label{thm:cal-standard}
 Let $\phi:\RR\to\RR_+$ be  a continuous margin loss. Then the three following assertions are equivalent.
     \begin{enumerate}
-    \item $\phi$ is calibrated with regards to $l_{0/1}$,
-    \item $\phi$ is uniformly calibrated $l_{0/1}$,
-    \item $\phi$ is consistent with regards to $l_{0/1}$.
+    \item $\phi$ is calibrated with regard to $\loss_{0/1}$,
+    \item $\phi$ is uniformly calibrated w.r.t. $\loss_{0/1}$,
+    \item $\phi$ is consistent with regard to $\loss_{0/1}$.
     \end{enumerate} 
 Moreover, if $\phi$ is convex and differentiable at $0$, then $\phi$ is calibrated if and only $\phi'(0)<0$.
 \end{thm}
 
 
-The Hinge loss $\phi(t) = \max (1-t,0)$ and the logistic loss $\phi(t) = \log(1+e^{-t})$ are classical examples of convex consistent losses. Convexity is a desirable property for faster optimization of the loss, but there exist other non-convex losses that are calibrated as the ramp loss ($\phi(t) = xxx$) or the sigmoid loss ($\phi(t) = (1+e^t)^{-1}$). In the next section, we present the adversarial classification setting for which Theorem~\ref{thm:cal-standard} may not hold anymore. 
+The Hinge loss $\phi(t) = \max (1-t,0)$ and the logistic loss $\phi(t) = \log(1+e^{-t})$ are classical examples of convex consistent losses. Convexity is a desirable property for faster optimization of the loss, but there exist other non-convex losses that are calibrated such as the ramp loss ($\phi(t) = \max (1-t,0) + \max (1+t,0)$) or the sigmoid loss ($\phi(t) = (1+e^t)^{-1}$). In the next section, we present the adversarial classification setting for which Theorem~\ref{thm:cal-standard} may not hold anymore. 
 
 
 
 \begin{rmq}
-The equivalence between calibration and consistency is a consequence from the fact that, over the large space of measurable functions, minimizing the loss pointwisely in the input by desintegrating with regards to $x$ is equivalent to minimize the whole risk over measurable functions. This result is very powerful and simplify the study of calibration in the standard setting. 
+The equivalence between calibration and consistency is a consequence of the fact that, over the large space of measurable functions, minimizing the loss pointwisely in the input by desintegrating with regard to $x$ is equivalent to minimizing the whole risk over measurable functions. This result is very powerful and simplify the study of calibration in the standard setting. 
 \end{rmq}
 
 
@@ -160,34 +160,34 @@ The equivalence between calibration and consistency is a consequence from the fa
 
 %Thanks to Remark~\ref{xxx}, we remove any doubt on which $0/1$ loss to consider when studying consistency. Hence, the loss used when studying consistency in the adversarial setting. We then define the adversarial $0/1$ loss as follows.
 
-We now consider the adversarial classification setting where an adversary tries to manipulate the inputs at test time. Given  $\varepsilon>0$, they can move each point $x \sim \mathbb{P}$ to another point $x'$ which is at distance at most $\epsilon$ from $x$\footnote{Note that after shifting $x$ to $x'$, the point need not be in the support of $\PP$ anymore.}. The goal of this adversary is to maximize the $0/1$ risk the shifted points from $\mathbb{P}$. Formally, the loss associated to adversarial classification is defined as follows.
+We now consider the adversarial classification setting where an adversary tries to manipulate the inputs at test time. Given  $\varepsilon>0$, they can move each point $x \sim \mathbb{P}$ to another point $x'$ which is at distance at most $\epsilon$ from $x$\footnote{Note that after shifting $x$ to $x'$, the point needs not to be in the support of $\PP$ anymore.}. The goal of this adversary is to maximize the $0/1$ risk the shifted points from $\mathbb{P}$. Formally, the  appropriated loss with adversarial classification is defined as follows.
 
 \begin{definition}[Adversarial $0/1$ loss]
 Let $\varepsilon\geq0$. We define the adversarial $0/1$ loss of level $\varepsilon$ associated as:
 \begin{align*}
-    l_{0/1,\varepsilon}(x,y,f) = \sup_{x'\in B_\varepsilon(x)} \mathbf{1}_{y\text{sign}(f(x))\leq 0}
+    \loss_{0/1,\varepsilon}(x,y,f) = \sup_{x'\in B_\varepsilon(x)} \mathbf{1}_{y\text{sign}(f(x))\leq 0}
 \end{align*}
-We will denote $\risk_{\varepsilon,\PP}(f) :=\risk_{l_{0/1,\varepsilon},\PP}^\star(f)$,  $\risk_{\varepsilon,\PP}^\star :=\risk_{l_{0/1,\varepsilon},\PP}^\star$, $\mathcal{C}_\varepsilon(x,\eta,f):= \mathcal{C}_{l_{0/1,\varepsilon}}(x,\eta,f)$ and $\mathcal{C}^\star_\varepsilon(x,\eta):= \mathcal{C}^\star_{l_{0/1},\varepsilon}(x,\eta)$ for every $\PP$, $x$, $f$ and $\eta$. 
+We will denote $\risk_{\varepsilon,\PP}(f) :=\risk_{\loss_{0/1,\varepsilon},\PP}^\star(f)$,  $\risk_{\varepsilon,\PP}^\star :=\risk_{\loss_{0/1,\varepsilon},\PP}^\star$, $\mathcal{C}_\varepsilon(x,\eta,f):= \mathcal{C}_{\loss_{0/1,\varepsilon}}(x,\eta,f)$ and $\mathcal{C}^\star_\varepsilon(x,\eta):= \mathcal{C}^\star_{\loss_{0/1},\varepsilon}(x,\eta)$ for every $\PP$, $x$, $f$ and $\eta$. 
 \end{definition}
 
 
 
 
-\paragraph{Specificity of the adversarial case}
-The adversarial risk minimization problem is much more challenging than its standard counterpart because an inner supremum is added to the optimization objective. With this inner supremum, it is no longer possible to reduce the distributional problem to a pointwise minimization as it is usually done in the standard classification framework. In fact, the notions of consistency and calibration are significantly different in the adversarial setting. This means that the results obtained in the standard classification may no longer be valid in the adversarial setting (e.g., the calibration need not be sufficient for consistency), which makes the study of consistency much more complicated. As a first step towards analyzing the adversarial classification problem, we now adapt the notion of margin loss to the adversarial setting.
+\paragraph{Specificity of the adversarial case.}
+The adversarial risk minimization problem is much more challenging than its standard counterpart because an inner supremum is added to the optimization objective. With this inner supremum, it is no longer possible to reduce the distributional problem to a pointwise minimization as it is usually done in the standard classification framework. In fact, the notions of consistency and calibration are significantly different in the adversarial setting. This means that the results obtained in the standard classification may no longer be valid in the adversarial setting (e.g., the calibration needs not be sufficient for consistency), which makes the study of consistency much more complicated. As a first step towards analyzing the adversarial classification problem, we now adapt the notion of margin loss to the adversarial setting.
 
 \begin{definition}[Adversarial margin loss]
 Let $\phi:\RR\to\RR_+$ be a margin loss and $\varepsilon\geq0$. We define the adversarial loss of level $\varepsilon$ associated with $\phi$ as:
 \begin{align*}
-    \phi_\varepsilon(x,y,f) = \sup_{x'\in B_\varepsilon(x)} \phi(yf(x'))
+    \phi_\varepsilon(x,y,f) = \sup_{x'\in B_\varepsilon(x)} \phi(yf(x'))\quad.
 \end{align*}
-We say that $\phi$ is adversarially calibrated (resp. uniformly calibrated, resp. consistent) at level $\varepsilon$ if $\phi_\varepsilon$ is calibrated (resp. uniformly calibrated, resp. consistent) wrt $l_{0/1,\varepsilon}$.
+We say that $\phi$ is adversarially calibrated (resp. uniformly calibrated, resp. consistent) at level $\varepsilon$ if $\phi_\varepsilon$ is calibrated (resp. uniformly calibrated, resp. consistent) w.r.t. $\loss_{0/1,\varepsilon}$.
 \end{definition}
 
 
 
 
-We can make a first observation: the calibration functions for $\phi$ and $\phi_\varepsilon$ are actually equal. This property might seem counter-intuitive at first sight as the adversarial risk is most of the time strictly larger than its standard counterpart. However, the calibration functions are only pointwise dependent, hence having the same prediction for any element of the ball $B_\varepsilon(x)$ suffices to reach the optimal calibration $\mathcal{C}^\star_\phi(x,\eta)$.
+The calibration functions for $\phi$ and $\phi_\varepsilon$ are actually equal. This property might seem counter-intuitive at first glance as the adversarial risk is most of the time strictly larger than its standard counterpart. However, the calibration functions are only pointwise dependent, hence having the same prediction for any element of the ball $B_\varepsilon(x)$ suffices to reach the optimal calibration $\mathcal{C}^\star_\phi(x,\eta)$.
 
 
 
@@ -202,31 +202,30 @@ The last equality also holds for the adversarial $0/1$ loss.
 \end{prop}
 
 \paragraph{$\mathcal{H}$-consistency and  $\mathcal{H}$-calibration}
-\citet{bao2020calibrated,awasthi2021calibration,awasthi2021finer} proposed to study $\mathcal{H}$-calibration and $\mathcal{H}$-consistency in the adversarial setting, i.e. calibration and consistency when minimizing sequences are in $\mathcal{H}$.  Similarly to the calibration function, the $\mathcal{H}$-calibration function is defined as follows.
+\citet{bao2020calibrated} and \citet{awasthi2021calibration,awasthi2021finer} proposed to study $\mathcal{H}$-calibration and $\mathcal{H}$-consistency in the adversarial setting, i.e. calibration and consistency when minimizing sequences in $\mathcal{H}$.  Similarly to the calibration function, the $\mathcal{H}$-calibration function is defined as follows.
 
 \begin{definition}[$\mathcal{H}$-calibration function]
-    Let $\mathcal{H}\subset \mathcal{F}(\mathcal{X})$. Let $L$ be a loss function. We also define the optimal $\mathcal{H}$-calibration function:
+    Let $\mathcal{H}\subset \mathcal{F}(\mathcal{X})$. Let $L$ be a loss function. The \emph{optimal $\mathcal{H}$-calibration function} is defined as
     \begin{align*}
             \mathcal{C}^\star_{L,\mathcal{H}}(x,\eta):=\inf_{f\in\mathcal{H}}\mathcal{C}_L(x,\eta,f)
     \end{align*}
     
 \end{definition}
     
-We also define what are $\mathcal{H}$-calibrated losses.
     
 \begin{definition}[$\mathcal{H}$-calibration]
-Let $\mathcal{H}\subset \mathcal{F}(\mathcal{X})$. Let $\mathcal{H}\subset \mathcal{F}(\mathcal{X})$. Let $L_1$ and $L_2$ be two loss functions. We say that $L_2$ is \emph{$\mathcal{H}$-calibrated} with regards to $L_1$ if for every $\epsilon>0$,  for all $\eta\in[0,1]$, $x\in\mathcal{X}$, there exists $ \delta>0$ for every $f\in\mathcal{H}$: 
+Let $\mathcal{H}\subset \mathcal{F}(\mathcal{X})$. Let $\mathcal{H}\subset \mathcal{F}(\mathcal{X})$. Let $L_1$ and $L_2$ be two loss functions. We say that $L_2$ is \emph{$\mathcal{H}$-calibrated} with regard to $L_1$ if for every $\epsilon>0$,  for all $\eta\in[0,1]$, $x\in\mathcal{X}$, there exists $ \delta>0$ for every $f\in\mathcal{H}$: 
 \begin{align*}
     \mathcal{C}_{L_2}(x,\eta,f)- &\mathcal{C}^\star_{L_2,\mathcal{H}}(x,\eta)\leq\delta\implies\mathcal{C}_{L_1}(x,\eta,f)- \mathcal{C}^\star_{L_1,\mathcal{H}}(x,\eta)\leq \epsilon\quad.
 \end{align*}
-Furthermore, we say that $L_2$ is \emph{uniformly $\mathcal{H}$-calibrated} with regards to $L_1$ if for every $\epsilon>0$, there exists $ \delta>0$, for all $\eta\in[0,1]$, $x\in\mathcal{X}$, for every $f\in\mathcal{H}$: 
+Furthermore, we say that $L_2$ is \emph{uniformly $\mathcal{H}$-calibrated} with regard to $L_1$ if for every $\epsilon>0$, there exists $ \delta>0$, for all $\eta\in[0,1]$, $x\in\mathcal{X}$, for every $f\in\mathcal{H}$: 
 \begin{align*}
     \mathcal{C}_{L_2}(x,\eta,f)- \mathcal{C}^\star_{L_2,\mathcal{H}}(x,\eta)\leq\delta\implies\mathcal{C}_{L_1}(x,\eta,f)- \mathcal{C}^\star_{L_1,\mathcal{H}}(x,\eta)\leq \epsilon\quad.
 \end{align*}
 \end{definition}
     
 
-However, even in the standard classification setting, the link between both notions in this extended setting is not clear at all since a pointwise minimization of the risk cannot be done. To our knowledge, there is only one research paper~\citep{long2013consistency} that focuses on this notion in standard setting. They do it in the restricted case of realisability, i.e. when the standard optimal risk associated with the $0/1$ loss equals $0$.  We believe that studying  $\mathcal{H}$-consistency and  $\mathcal{H}$-calibration in the adversarial setting is a bit anticipated. For these reasons, in Chapter~\ref{chap:calibration}) we mainly focus on calibration and consistency on the space of measurable functions $\mathcal{F}(\XX)$ although some results can be adapted to $\mathcal{H}$-calibration. 
+However, even in the standard classification setting, the link between both notions in this extended setting is not clear at all since a pointwise minimization of the risk cannot be done. To the best our knowledge, there is only one paper~\citep{long2013consistency} that focuses on this notion in standard setting. The authors studied the restricted case of realizability, i.e. when the standard optimal risk associated with the $0/1$ loss equals $0$.  We believe that studying  $\mathcal{H}$-consistency and  $\mathcal{H}$-calibration in the adversarial setting is a bit early. In Chapter~\ref{chap:calibration}, we mainly focus on calibration and consistency on the space of measurable functions $\mathcal{F}(\XX)$ even if some results can be adapted to $\mathcal{H}$-calibration. 
 
 % \section{Related Work}
 
@@ -239,7 +238,7 @@ However, even in the standard classification setting, the link between both noti
 % % \end{enumerate}
 
 
-% \paragraph{Calibration and Consistency.} The $0/1$ loss is both non-continuous and non-convex, and its direct minimization is known to be an NP-hard problem~\cite{xxx}. The concepts of calibration and consistency aim at identifying the proprieties that a loss should satisfy in order to be a good surrogate for the minimization of the $0/1$-loss. The problem of consistency consists in finding loss for which minimizing sequences are also minimizing sequences for the $0/1$ loss for a given distribution on an $(x,y)$ input-label space. In the binary classification setting, when minimizing over the space of all measurable classifiers, the problem has been shown~\citep{bartlett2006convexity,steinwart2007compare} to be equivalent to the calibration problem, that aims minimizing the loss pointwisely for each $x$. Surrogate loss are expected to have nice optimization properties as differentiability and convexity.~\citep{zhang2004statistical,bartlett2006convexity,steinwart2007compare} have shown that a wide class of convex margin losses are calibrated with regards to the $0/1$ loss. 
+% \paragraph{Calibration and Consistency.} The $0/1$ loss is both non-continuous and non-convex, and its direct minimization is known to be an NP-hard problem~\cite{xxx}. The concepts of calibration and consistency aim at identifying the proprieties that a loss should satisfy in order to be a good surrogate for the minimization of the $0/1$-loss. The problem of consistency consists in finding loss for which minimizing sequences are also minimizing sequences for the $0/1$ loss for a given distribution on an $(x,y)$ input-label space. In the binary classification setting, when minimizing over the space of all measurable classifiers, the problem has been shown~\citep{bartlett2006convexity,steinwart2007compare} to be equivalent to the calibration problem, that aims minimizing the loss pointwisely for each $x$. Surrogate loss are expected to have nice optimization properties as differentiability and convexity.~\citep{zhang2004statistical,bartlett2006convexity,steinwart2007compare} have shown that a wide class of convex margin losses are calibrated with regard to the $0/1$ loss. 
 
 
 
@@ -251,8 +250,8 @@ However, even in the standard classification setting, the link between both noti
 % \section{Related Work and Discussions}
 % We now explain the differences between our approach and the one proposed by~\citet{bao2020calibrated,awasthi2021calibration,awasthi2021finer}. The two main differences are the choice of the $0/1$ loss and the studied notion of consistency and calibration.
 % \paragraph{Alternative $0/1$ loss}
-% An alternative $0/1$ loss would the following: $l_{\leq}(f(x),y)=\mathbf{1}_{yf(x)\leq 0}$. This loss penalizes indecision: i.e. predicting $0$ would lead to a pointwise risk of $1$ for $y=1$ and $y=-1$ while the $0/1$ loss $l_{0/1}$ returns $1$ for $y=1$ and $0$ for $y=-1$. This definition was used by~\citet{bao2020calibrated,awasthi2021calibration,awasthi2021finer} to prove their calibration and consistency results. While~\citet{bartlett2006convexity} was not explicit on the choice for the $0/1$ loss,~\citet{steinwart2007compare} explicitly mentions that the $0/1$ loss is not a margin loss. The use of this loss is not suited for studying consistency and leads to inaccurate results as shown in the following counterexample. On $\mathcal{X}= \RR$, let $\PP$ defined as 
-% $\PP = \frac12\left(\delta_{x=0,y=1}+\delta_{x=0,y=-1}\right)$ and $\phi:\mathbb{R}\to\mathbb{R}$ be a margin based loss. The $\phi$-risk minimization problem writes $\inf_{\alpha} \frac{1}{2} (\phi(\alpha)+\phi(-\alpha))$. For any convex functional $\phi$ the optimum is attained for $\alpha=0$. $f_n:x\mapsto 0$ is a minimizing sequence for the $\phi$-risk. However $R_{l_{\leq}}(f_n)=1$ for all $n$ and $R_{l_{\leq}}^*=\frac{1}{2}$. Then we deduce that no convex margin based loss is consistent wrt $l_{\leq}$. Consequently, the $0/1$ loss to be used in adversarial consistency needs to be $l_{0/1,\varepsilon}(x,y,f) = \sup_{x'\in B_\varepsilon(x)} \mathbf{1}_{y\text{sign}(f(x))\leq 0}$, otherwise the obtained results might be innacurate.
+% An alternative $0/1$ loss would the following: $\loss_{\leq}(f(x),y)=\mathbf{1}_{yf(x)\leq 0}$. This loss penalizes indecision: i.e. predicting $0$ would lead to a pointwise risk of $1$ for $y=1$ and $y=-1$ while the $0/1$ loss $\loss_{0/1}$ returns $1$ for $y=1$ and $0$ for $y=-1$. This definition was used by~\citet{bao2020calibrated,awasthi2021calibration,awasthi2021finer} to prove their calibration and consistency results. While~\citet{bartlett2006convexity} was not explicit on the choice for the $0/1$ loss,~\citet{steinwart2007compare} explicitly mentions that the $0/1$ loss is not a margin loss. The use of this loss is not suited for studying consistency and leads to inaccurate results as shown in the following counterexample. On $\mathcal{X}= \RR$, let $\PP$ defined as 
+% $\PP = \frac12\left(\delta_{x=0,y=1}+\delta_{x=0,y=-1}\right)$ and $\phi:\mathbb{R}\to\mathbb{R}$ be a margin based loss. The $\phi$-risk minimization problem writes $\inf_{\alpha} \frac{1}{2} (\phi(\alpha)+\phi(-\alpha))$. For any convex functional $\phi$ the optimum is attained for $\alpha=0$. $f_n:x\mapsto 0$ is a minimizing sequence for the $\phi$-risk. However $R_{\loss_{\leq}}(f_n)=1$ for all $n$ and $R_{\loss_{\leq}}^*=\frac{1}{2}$. Then we deduce that no convex margin based loss is consistent wrt $\loss_{\leq}$. Consequently, the $0/1$ loss to be used in adversarial consistency needs to be $\loss_{0/1,\varepsilon}(x,y,f) = \sup_{x'\in B_\varepsilon(x)} \mathbf{1}_{y\text{sign}(f(x))\leq 0}$, otherwise the obtained results might be innacurate.
 
 
 

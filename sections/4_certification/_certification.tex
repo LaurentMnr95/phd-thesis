@@ -1,6 +1,7 @@
 \chapter{A Dynamical System Perspective for Lipschitz Neural Networks}
+\label{chap:dynam}
 \minitoc
-In this chapter, we study the design of Lipschitz Layers under the light of the dynamical system interpretation of Neural Networks. We recall briefly the continuous time interpretation.
+In this chapter, we study the design of Lipschitz Layers under the light of the dynamical system interpretation of Neural Networks, hence answering \textbf{Question 3: xxx}. We recall briefly the continuous time interpretation of Residual Networks.
 Let $(F_{t})_{t\in[0,T]}$ be a family of functions on $\RR^d$, we define the continuous time Residual Networks flow associated with $F_t$ as:
 \begin{align*}
   \left\{
@@ -10,11 +11,11 @@ Let $(F_{t})_{t\in[0,T]}$ be a family of functions on $\RR^d$, we define the con
   \end{array}
   \right.
 \end{align*}
-
+Typically, $ F_{{t}}$ designates a two layer neural network. Note that this can be interpreted as the forward pass of a Neural Networks
 From this continuous and dynamical interpretation, we  analyze the Lipschitzness property of Neural Networks. We then study the discretization schemes that can preserve the Lipschitzness properties. With this point of view, we can readily recover several previous methods that build 1-Lipschitz neural networks~\citep{trockman2021orthogonalizing,skew2021sahil}.
 Therefore, the dynamical system perspective offers a general and flexible framework to build Lipschitz Neural Networks facilitating the discovery of new approaches.
 In this vein, we introduce convex potentials in the design of the Residual Network flow and show that this choice of parametrization yields to by-design $1$-Lipschitz neural networks.
 At the very core of our approach lies a new $1$-Lipschitz non-linear operator that we call {\em Convex Potential Layer} which allows us to adapt convex potential flows to the discretized case. 
 These blocks enjoy the desirable property of stabilizing the training of the neural network by controlling the gradient norm, hence overcoming the exploding gradient issue.
-We experimentally demonstrate our approach by training large-scale neural networks on several datasets, reaching state-of-the art results in terms of under-attack and certified accuracy.
+We experimentally demonstrate our approach by training large-scale neural networks on several datasets, reaching state-of-the art results in terms of under-attack and certifiably-robust accuracy.
 \input{sections/4_certification/resnet}

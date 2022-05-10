@@ -4,10 +4,10 @@ A classification task aims at learning a function that assigns a label to a give
 In this section, we formalize the task of classification. First, we define the notions of inputs and labels:
 \begin{itemize}
     \item Consider an input space $\XX$, typically images. We assume this space is endowed with an arbitrary metric $d$, possibly a perception distance or any $\ell_p$ norm. In the following of the manuscript, unless it is specified, $(\XX,d)$ will be a \textit{proper} (i.e. closed balls are compact) \textit{Polish} (i.e. completely separable) metric space. Note that for any norm $\lVert\cdot\rVert$,  $(\mathbb{R}^d,\lVert\cdot\rVert)$ is a proper Polish metric space.
-    \item Each input $x\in \XX$ has to be associated with a label $y$. A label is a descriptor of the input. The set of labels is discrete and we designate it by $\YY:=\{1,\dots,K\}$. $\YY$ is endowed with the trivial metric  $d'(y,y') = \mathbf{1}_{y\neq y'}$. Note that $(\XX\times\YY,d\oplus d')$ is also a proper Polish space.
+    \item Each input $x\in \XX$ has to be associated with a label $y$. A label is a descriptor of the input. The set of labels is discrete, and we designate it by $\YY:=\{1,\dots,K\}$. $\YY$ is endowed with the trivial metric  $d'(y,y') = \mathbf{1}_{y\neq y'}$. Note that $(\XX\times\YY,d\oplus d')$ is also a proper Polish space.
 \end{itemize}
 
-The purpose of classification is to learn a classifier $h:\XX\to\YY$. It is usual to learn a function $f:\XX\to\RR^K$ such that: $h(x) = \argmaxB_{k\in\YY}f_k(x)$. In a classification problem in machine learning, the data is assumed to be sampled from an unknown probability distribution $\PP$ over $\XX\times\YY$. We will assume from now that all the probability distributions we consider are Borel distributions. For any Polish Space $\mathcal{Z}$, we will denote $\mathcal{B}(\mathcal{Z})$ the Borel $\sigma$-algebra and the set of Borel distributions over $\mathcal{Z}$  will be denoted $\mathcal{M}_+^1(\mathcal{Z})$. We recall that on Polish space, all Borel probability distributions are Radon measures. We also recall the notion of \textit{universal measurability}: a set $A\subset \mathcal{Z}$ is said to be universally measurable if it is measurable for every \textit{complete} Borel probability measure. 
+The purpose of classification is to learn a classifier $h:\XX\to\YY$. It is usual to learn a function $f:\XX\to\RR^K$ such that: $h(x) = \argmaxB_{k\in\YY}f_k(x)$. In a classification problem in machine learning, the data is assumed to be sampled from an unknown probability distribution $\PP$ over $\XX\times\YY$. We will assume from now that all the probability distributions we consider are Borel distributions. For any Polish Space $\mathcal{Z}$, we will denote $\mathcal{B}(\mathcal{Z})$ the Borel $\sigma$-algebra and the set of Borel distributions over $\mathcal{Z}$  will be denoted $\mathcal{M}_1^+(\mathcal{Z})$. We recall that on Polish space, all Borel probability distributions are Radon measures. We also recall the notion of \textit{universal measurability}: a set $A\subset \mathcal{Z}$ is said to be universally measurable if it is measurable for every \textit{complete} Borel probability measure. We also recall the notion of \emph{weak topology} on the space of probability distribution: we say that $\PP_n$ converges weakly towards $\PP$ if for every bounded continuous function $f$, $\int fd\PP_n\to\int f d\PP$. Note that calling this property weak topology is an abuse of language, it is closer to a notion of weak-$\star$ topology. 
 
 When $\ZZ$ and $\ZZ'$ are two measurable spaces endowed with their Borel $\sigma$-algebra (unless specified), we will denote $\mathcal{F}(\ZZ,\ZZ')$ the space of measurable functions from $\ZZ$ to $\ZZ'$. Without loss of generality, when $\ZZ'=\RR$, we will simply denote: $\mathcal{F}(\ZZ):=\mathcal{F}(\ZZ,\ZZ')$.
 
@@ -30,10 +30,10 @@ The Optimal Bayes risk is defined as the optimal risk over measurable classifier
  \end{align}
 If $f:\XX\to\RR^K$, then the risk of $f$ is defined as $\risk_{\PP}(f):=\PP(\argmaxB_{k\in\YY}f_k(x)\neq y)$
 \end{definition}
-Note that this quantity is well defined when $h$ or $f$ is Borel or universally measurable. The optimal classifier is called the /emph{Optimal Bayes  classifier} and is defined as $h^\star(x) = \argmaxB_k\PP(y=k\mid x)$. We remark that the disintegration theorem ensures that $x\mapsto \PP(y=k\mid x)$ is indeed Borel measurable. 
+Note that this quantity is well-defined when $h$ or $f$ is Borel or universally measurable. The optimal classifier is called the \emph{Optimal Bayes  classifier} and is defined as $h^\star(x) = \argmaxB_k\PP(y=k\mid x)$. We remark that the disintegration theorem ensures that $x\mapsto \PP(y=k\mid x)$ is indeed Borel measurable. 
 
-In practice, the access to the Optimal Bayes  classifier is not possible because it requires full knowledge of the probability distribution $\PP$ which is not the case in general. Instead, in the supervised learning setting, the learner has access to data points $\{(x_1,y_1),\dots,(x_\numsamples,y_\numsamples)\}$, that constitutes the \emph{training set}. Knowing the Optimal Bayes classifier on training points is not sufficient to generalize on points out of the training set. Hence one needs to reduce the search space of measurable functions to a much smaller one, denoted $\mathcal{H}$ in the sequel. The $0/1$ loss is not convex neither continuous, and minimizing directly the 0/1 loss risk  on $\mathcal{H}$ might be NP-hard even for simple set of hypotheses as linear classifiers. We usually minimize a well-chosen surrogate loss function $\loss$. A \textit{loss function} $\loss:\mathbb{R}^K\times\YY\to\mathbb{R}$ is a non negative Borel measurable function. An example of such a loss is the cross entropy loss defined as $\loss(f(x),y)=-\sum_{i=1}^K \mathbf{1}_{y=i}\log f_i(x)$
-where $f_i(x)$ is the probability learnt by the model with input $x$ belonging to the class $i$. Hence the objective is to minimize the empirical risk associated with $\mathcal{H}$ using the loss $\loss$  defined as:
+In practice, the access to the Optimal Bayes  classifier is not possible because it requires full knowledge of the probability distribution $\PP$ which is not the case in general. Instead, in the supervised learning setting, the learner has access to data points $\{(x_1,y_1),\dots,(x_\numsamples,y_\numsamples)\}$, that constitutes the \emph{training set}. Knowing the Optimal Bayes classifier on training points is not sufficient to generalize on points out of the training set. Hence, one needs to reduce the search space of measurable functions to a much smaller one, denoted $\mathcal{H}$ in the sequel. The $0/1$ loss is not convex neither continuous, and minimizing directly the 0/1 loss risk  on $\mathcal{H}$ might be NP-hard even for simple set of hypotheses as linear classifiers. We usually minimize a well-chosen surrogate loss function $\loss$. A \textit{loss function} $\loss:\mathbb{R}^K\times\YY\to\mathbb{R}$ is a non-negative Borel measurable function. An example of such a loss is the cross entropy loss defined as $\loss(f(x),y)=-\sum_{i=1}^K \mathbf{1}_{y=i}\log f_i(x)$
+where $f_i(x)$ is the probability learned by the model with input $x$ belonging to the class $i$. Hence, the objective is to minimize the empirical risk associated with $\mathcal{H}$ using the loss $\loss$  defined as:
 \begin{align*}
 \riskemp_{\loss}(f):= \frac{1}{\numsamples}\sum_{i=1}^\numsamples \loss(f(x_i),y_i).
 \end{align*}
@@ -50,6 +50,8 @@ where $f_i(x)$ is the probability learnt by the model with input $x$ belonging t
 %     \item \textbf{ImageNet~\citep{imagenet_cvpr09}:} ImageNet refers to a dataset containing $1.2$ million of images labeled into $1000$ classes. Images are of diverse qualities, but models often takes input of dimension $224\times224\times 3$ (dimension $150528$ in total). The current state-of-the-art on ImageNet is about $87\%$. Further than the standard dataset, ImageNet project is still in development: the project gathers $14197122$ images and $21841$ labels on August 31th, 2021.   
 
 
+
+
 % \end{itemize}
 
 
@@ -61,7 +63,7 @@ where $W_i$ are called the weight matrices and $b_i$ the biases. In the case of 
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\textwidth]{Images/conv_net.jpeg}
+    \includegraphics[width=0.9\textwidth]{Images/conv_net.jpeg}
     \caption{Illustration of a convolutional neural network: stacking convolutional operators and non-linear activation functions.}
     \label{fig:convnet}
 \end{figure}
@@ -83,10 +85,10 @@ A margin loss is a loss $\loss$ such that there exist a measurable function $\ph
 \begin{align*}
     \eta\phi(\alpha)+(1-\eta)\phi(-\alpha)-\min_{\beta\in\RR}\left[ \eta\phi(\beta)+(1-\eta)\phi(-\beta)\right]\leq \delta\implies sign\left((\eta-\frac12)\alpha\right)=1
 \end{align*}
-We remark the notion of calibration is basically a pointwise notion of consistency with $\eta$ corresponding to $\PP(y=1|x)$.~\citet{zhang2004statistical,bartlett2006convexity,steinwart2007compare} proved the equivalence of the two notions in the case of standard-binary classification. In particular they show that a wide range of convex margin losses are actually classification-consistent: if $\phi$ is convex and differentiable at $0$, then $\phi$ is calibrated if and only if $\phi'(0)<0$.
+We remark the notion of calibration is basically a pointwise notion of consistency with $\eta$ corresponding to $\PP(y=1|x)$.~\citet{zhang2004statistical,bartlett2006convexity,steinwart2007compare} proved the equivalence of the two notions in the case of standard-binary classification. In particular, they show that a wide range of convex margin losses are actually classification-consistent: if $\phi$ is convex and differentiable at $0$, then $\phi$ is calibrated if and only if $\phi'(0)<0$.
 
 
-The problem of consistency have been investagated in the case of multi-label classification by~\citet{zhang2004multi}. The results can be similarily derived and it was show that large range of convex functions are actually consistent for classification problems.
+The problem of consistency have been investigated in the case of multi-label classification by~\citet{zhang2004multi}. The results can be similarly derived, and it was show that large range of convex functions are actually consistent for classification problems.
 
 % We say that a loss $L_2$ is said to be consistent with respect to a loss $L_1$ if consistency holds for every distribution $\PP$. 
 
@@ -118,7 +120,7 @@ The problem of consistency have been investagated in the case of multi-label cla
 % \end{definition}
 
 \subsection{Empirical Risk Minimization and Generalization}
-
+\label{sec:erm-results}
 As mentioned earlier, the learner has access to training points  $\{(x_1,y_1),\dots,(x_\numsamples,y_\numsamples)\}$ and not to the whole distribution. We aim at learning the classifier on a set of functions $\mathcal{H}$. The classifier $\hat{f}_\numsamples $ is then chosen to minimize the empirical risk given a loss $\loss$:
 \begin{align*}
     \hat{f}_\numsamples = \argminB_{f\in\mathcal{H}}\riskemp_{\loss}(f)= \argminB_{f\in\mathcal{H}}\frac{1}{\numsamples}\sum_{i=1}^\numsamples \loss(f(x_i),y_i).
@@ -137,7 +139,7 @@ with $\risk_{\loss,\mathcal{H}}^\star = \inf_{f\in\mathcal{H}}\risk_\loss(f)$. T
     \item \textbf{The approximation risk}: the approximation risk is the error made by optimizing over $\mathcal{H}$ instead of minimization over the whole space of measurable functions. As  the function space $\mathcal{H}$ grows, the approximation naturally decreases. 
 \end{itemize}
 
-This decomposition induces a tradeoff on the complexity of $\mathcal{H}$ named \emph{bias-complexity tradeoff} or \emph{bias-variance tradeoff}. On one hand, if $\mathcal{H}$ is not enough rich, then the estimation risk would be small but the approximation error can be large, it is called \emph{underfitting}. On the other hand, if $\mathcal{H}$ is is too rich, then the approximation risk would be small but the estimation error large, it is called \emph{overfitting}. To overcome these issues in practice, it is usual to add a regularization parameter to the empirical risk depending on the set $\mathcal{H}$:
+This decomposition induces a tradeoff on the complexity of $\mathcal{H}$ named \emph{bias-complexity tradeoff} or \emph{bias-variance tradeoff}. On one hand, if $\mathcal{H}$ is not enough rich, then the estimation risk would be small, but the approximation error can be large, it is called \emph{underfitting}. On the other hand, if $\mathcal{H}$ is too rich, then the approximation risk would be small but the estimation error large, it is called \emph{overfitting}. To overcome these issues in practice, it is usual to add a regularization parameter to the empirical risk depending on the set $\mathcal{H}$:
 \begin{align*}
     \hat{f}_\numsamples = \argminB_{f\in\mathcal{H}}\riskemp_{\loss}(f) +\lambda\times\Omega_\mathcal{H}(f)= \argminB_{f\in\mathcal{H}}\frac{1}{\numsamples}\sum_{i=1}^\numsamples \loss(f(x_i),y_i)+\lambda\times\Omega_\mathcal{H}(f).
 \end{align*}
@@ -155,15 +157,20 @@ The convergence of the right-end term is referred as uniform convergence or Prov
 
 The Rademacher complexity was introduced by~\cite{bartlett2002rademacher} to study the problem of uniform convergence. Given a set of functions~$\mathcal{H}$, and a set of observations $S=\{z_1,\dots,z_\numsamples\}$ from a distribution $\PP$, the empirical Rademacher complexity is defined as:
 \begin{align*}
-    \widehat{Rad}_S(\mathcal{H}):=\frac2\numsamples\mathbb{E}_{\sigma}\left[\sup_{h\in\mathcal{H}}\lvert\sum_{i=1}^\numsamples\sigma_i h(z_i)\rvert\right]
+    \widehat{\text{Rad}}_S(\mathcal{H}):=\frac2\numsamples\mathbb{E}_{\sigma}\left[\sup_{h\in\mathcal{H}}\lvert\sum_{i=1}^\numsamples\sigma_i h(z_i)\rvert\right]
 \end{align*}
-where $\sigma_i$ are independent samples from Rademacher law: $P[\sigma_i =+1] = P[\sigma_i =-1]=\frac12$. When $\mathcal{H}$ is not too complex (for instance, finite set or linear classifiers), one can bound the Rademacher complexity  by $O(n^{-1/2})$. The Rademacher complexity upperbounds the uniform risk error as follows:
+where $\sigma_i$ are independent samples from Rademacher law: $P[\sigma_i =+1] = P[\sigma_i =-1]=\frac12$. The Rademacher complexity satisfy the following composition property of Rademacher complexity: when $\phi$ is a $M$-Lipschitz function:
 \begin{align*}
-    \mathbb{E}_{S\sim\PP^\numsamples}\left[\sup_{h\in\mathcal{H}}\lvert e_S(h)-e_\PP(h)\rvert\right]\leq 2\mathbb{E}_{S\sim\PP^\numsamples}\left[\widehat{Rad}_S(\mathcal{H})\right]
+    \widehat{\text{Rad}}_S(\phi\circ\mathcal{H}) \leq M\widehat{\text{Rad}}_S(\mathcal{H})
+\end{align*}
+This property is particularly useful because it allows to study the Rademacher complexity regardless the loss function.
+When $\mathcal{H}$ is not too complex (for instance, finite set or linear classifiers), one can bound the Rademacher complexity  by $O(n^{-1/2})$. It was proven by~\citet{bartlett2002rademacher} that the Rademacher complexity upperbounds the uniform risk error as follows:
+\begin{align*}
+    \mathbb{E}_{S\sim\PP^\numsamples}\left[\sup_{h\in\mathcal{H}}\lvert e_S(h)-e_\PP(h)\rvert\right]\leq 2\mathbb{E}_{S\sim\PP^\numsamples}\left[\widehat{\text{Rad}}_S(\mathcal{H})\right]
 \end{align*}
 where $e_\PP(h)=\mathbb{E}_{z\sim\PP}\left[h(z)\right]$ and $e_S(h)=\frac1\numsamples \sum_{i=1}^\numsamples h(z_i)$. This property leads to the following generalization error bound derived from classical concentration bounds: with probability $1-\delta$ (over the sampling $S$), for every $h\in \mathcal{H}$:
 \begin{align*}
-    e_S(h)-e_\PP(h)\leq 2  \widehat{Rad}_S(\mathcal{H})+4\sqrt{\frac{2\log(4/\delta)}{n}}\quad.
+    e_S(h)-e_\PP(h)\leq 2  \widehat{\text{Rad}}_S(\mathcal{H})+4\sqrt{\frac{2\log(4/\delta)}{n}}\quad.
 \end{align*}
 
 

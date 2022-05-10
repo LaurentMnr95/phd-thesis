@@ -2,39 +2,39 @@
 \minitoc
 \section{Summary of the Thesis}
 
-In this thesis, we studied the problem of  classication in presernce of adversaries from different point of views for theoretical and practical finalities. We have tried to analyze the problem using both a high level
+In this thesis, we studied the problem of  classification in presence of adversaries from different points of view for theoretical and practical purposes. We have tried to analyze the problem using both a high level
 and a more precise analysis. We summarize our findings as follows.
 \begin{tcolorbox}[colback=grund,colframe=rahmen,title=Summary of contributions]
 \begin{enumerate}
-    \item We provide a better understanding of the adversarial problem studying the nature of equilibria in this game. We proved the existence of mixed Nash equilibria for very general assumptions. We hope this research directions will lead to principled results that can be used in practice for better defending against adversarial examples.
-    \item We studied and closed the problem of calibration in the adversarial binary-classification setting providing necessary and sufficient conditions. We paved a way to prove consistency results, and hope being able to conclude on consistency of shifted odd losses. It remains to find necessary and sufficient conditions for consistency.
-    \item We derived a principled way based on dynamical system to build $1$-Lipschitz layers. Interestingly, we recovered some existing methods from the literature, but we were also able to build new interesting layers, namely the Convex Potential Layers. We hope this work would lead to study other possible dynamical systems and provide new provably robust neural networks.
+    \item We provided a better understanding of the adversarial attacks problem by studying the nature of equilibria in this game and then, proved the existence of mixed Nash equilibria for very general settings. There is a hope this research direction will lead to principled results that can be used in practice for better defending against adversarial examples using randomized classifiers.
+    \item We studied and closed the problem of calibration in the adversarial binary-classification setting providing necessary and sufficient conditions. We paved the way to prove consistency results, and hope being able to conclude on consistency of shifted odd losses. It remains open to find necessary and sufficient conditions for consistency.
+    \item We derived a principled way based on dynamical system to build $1$-Lipschitz layers. Interestingly, we recovered some existing methods from the literature, but we were also able to build new well-performing layers, namely the Convex Potential Layers. We hope this work would lead to study other possible dynamical systems and provide new provably robust neural networks.
 \end{enumerate}
 \end{tcolorbox}
-Although this thesis proposed some solutions to the adversarial problem, we also opened many questions that would require further investigation. 
+Although this thesis proposed some solutions to the adversarial attacks problem, we also opened many questions that would require further investigation. 
 \section{Open Questions}
 
 
 
-\subsection{Optimizing the Adversarial Attacks problem}
+\subsection{Optimizing the Adversarial Attacks Problem}
 
-The optimization of the adversarial attacks problem is an open from multiple point of views.
-The adversarial risk minimization problem writes
+The optimization of the adversarial attacks problem is still an open from multiple point of views.
+Recall that the adversarial risk minimization problem writes
 \begin{align*}
     \inf_{h\in\mathcal{H}} \mathbb{E}_{(x,y)\sim\PP}\left[\sup_{x'\in\XX\mid~d(x,x')\leq\varepsilon}\loss(h(x),y)\right]
 \end{align*}
-In classification, the end-objective is the accuracy, hence one need to optimize the $0/1$ loss. However, optimizing the $0/1$ loss is not computationally tractable. In the adversarial setting, the choice of a good surrogate loss $\loss$ to the $0/1$ loss  is a difficult question. In particular, we have shown that no convex losses can be a good surrogate in Chapter~\ref{chap:calibration}.   We paved a way that tends to show there might exist continuous and differentiable losses that are consistent with regards to the $0/1$ loss, but it is still an open problem.
+In classification, the end-objective is the accuracy, hence one need to optimize the $0/1$ loss. However, optimizing the $0/1$ loss is not computationally tractable. In the adversarial setting, the choice of a good surrogate loss $\loss$ to the $0/1$ loss  is a difficult question. In particular, we have shown that no convex losses can be a good surrogate in Chapter~\ref{chap:calibration}. We have seen there might exist continuous and differentiable losses that are consistent with regard to the $0/1$ loss, but it is still an open problem.
 \begin{tcolorbox}[colback=grund,colframe=rahmen]
     \begin{center}
         \emph{Does there exist a simple principled way to train the adversarial attacks problem for both the classifier and the attacker?}
     \end{center}
 \end{tcolorbox}
-Since no convex loss can be a good surrogate for the adversarial classification problem, the optimization of a suitable empirical risk  would be a  non-convex optimization problem which is misunderstood. The difficulty of this problem is also highlighted by the inner supremum which also non-convex. Then there is still a gap to bridge to understand the optimization of the adversarial problem. 
-In Chapter~\ref{chap:game}, we proposed the following adversarial problem where the classifier and the attacker are 
+Since no convex loss can be a good surrogate for the adversarial classification problem, the optimization of a suitable empirical risk  would be a  non-convex optimization problem which is misunderstood so far. The difficulty of this problem is also highlighted by the inner supremum which is also non-convex. Then there is still a gap to bridge to understand the optimization of the adversarial problem. 
+In Chapter~\ref{chap:game}, we proposed the following adversarial problem where the classifier and the attacker compete as follows 
 \begin{align*}
     \inf_{\mu \in\mathcal{M}_1^+(\mathcal{H})}\sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)} \mathbb{E}_{\mu\sim\mathcal{H},(x,y)\sim\QQ}\left[\loss(h(x),y)\right]
 \end{align*}
-This naturally leads to understand the adversarial problem as game between the attacker and the classifier with utility $\mathbb{E}_{\mu\sim\mathcal{H},(x,y)\sim\QQ}\left[L(h(x),y)\right]$. We show the existence of Nash equilibria for this game in Chapter~\ref{chap:game}. Although, we propose a way to learn the optimal mixtures of classifiers when their number is finite, the question of  computating equilibria has not been studied and would be a natural further step. On one hand, it would help building a robust classifier against every attacks in $\mathcal{A}_\varepsilon(\PP)$, and on the other hand, the  attacker that would be build would robust to change in the mixture of classifiers. This problem is a min-max optimization problem over the state of distributions, hence a difficult problem. Although the problem writes as a convex-concave problem over the space of distributions, the utility is not geodisically convex-concave in the Wassertein-2 space. Applying directly results on Wasserstein Gradient Flow is not possible. Deriving a tractable algorithm with convergence guarantees seems difficult. There have been some attempts by the Machine Learning community to understand find mixed Nash equilibri aby optimizing  using optimization over distribution techniques~\citep{hsieh2019finding,domingo2020mean} with applications to Generative Adversarial Networks for instance. Understanding and finding equilibria in games  in Machine Learning as the adversarial attacks problem and GANs is essential for the community to understand better these problems. 
+This naturally leads to understand the adversarial problem as game between the attacker and the classifier with utility $\mathbb{E}_{\mu\sim\mathcal{H},(x,y)\sim\QQ}\left[L(h(x),y)\right]$. We showed the existence of Nash equilibria for this game in Chapter~\ref{chap:game}. Although, we propose a way to learn the optimal mixtures of classifiers when their number is finite, the question of  computing equilibria has not been studied and would be a natural further step. On one hand, it would help to build a robust classifier against every attack in $\mathcal{A}_\varepsilon(\PP)$, and on the other hand, the  attacker that would have been built would be robust to change in the mixture of classifiers. This problem is a min-max optimization problem over the set of probability distributions, hence a difficult problem. Although the problem writes as a convex-concave problem over the space of distributions, the utility is not geodisically convex-concave in the Wassertein-2 space. Applying directly results on Wasserstein Gradient Flow is not possible. Deriving a tractable algorithm with convergence guarantees is also difficult. There have been some attempts by the Machine Learning community to  find mixed Nash equilibria using optimization over distribution techniques~\citep{hsieh2019finding,domingo2020mean} with applications to Generative Adversarial Networks for instance. Understanding and finding equilibria in games  in Machine Learning such as the adversarial attacks problem and GANs is essential for the community to understand better these problems. 
 
 % As proven in Chapter~\ref{chap:game} we can restate it as  
 
@@ -42,10 +42,10 @@ This naturally leads to understand the adversarial problem as game between the a
 
 
 % Beyond equilibria questions, it raises multiple questions. 
-\subsection{Understansing the Learning Theory in the Adversarial Setting}
-The learning theory have focused on analysing what can be infered on the error outside the training set, often called generalization error. To analyse it, the risk is decomposed with bias-complexity. This bias complexity tradeoff has been question recently by double descent phenomenon~\citep{belkin2018overfitting,belkin2019reconciling}, suggesting that higher complexity models might lead to lower generalization errors. These recent findings underline the lack of understanding we have about generalization of Neural Networks.
+\subsection{Understanding the Learning Dynamics in the Adversarial Setting}
+Statistical and Computational learning theory have focused on analyzing what can be inferred on the error outside the training set, often called generalization error. To analyze it, the risk is decomposed in bias-complexity form. This bias complexity tradeoff has been question recently by double descent phenomenon~\citep{belkin2018overfitting,belkin2019reconciling}, suggesting that higher complexity models might lead to lower generalization errors. These recent findings underline the lack of understanding we have about generalization of Neural Networks.
 
-Analysing generalization in the adversarial setting case is an underdeveloped question. There have been some works using Rademacher complexity~\citep{yin2019rademacher,awasthi2020adversarialx} to craft uniform convergence bounds. But, to our knowledge, very few works have focused on  understanding the bias-complexity tradeoff in the adversarial case.
+Analyzing generalization in the adversarial setting case is still an underdeveloped question. There have been some works using Rademacher complexity~\citep{yin2019rademacher,awasthi2020adversarial} to craft uniform convergence bounds. But, to our knowledge, very few works have focused on  understanding the bias-complexity tradeoff in the adversarial case.
 
 \begin{tcolorbox}[colback=grund,colframe=rahmen]
     \begin{center}
@@ -53,17 +53,17 @@ Analysing generalization in the adversarial setting case is an underdeveloped qu
     \end{center}
 \end{tcolorbox}
 
-This problem can be attacked from different angles. First, understanding the need or not of randomization for obtaining optimally robust classifiers is an important problem. From Chapter~\ref{chap:game} and~\citet{pydi2021many}, the answer of this question depends mostly on two things: the set of hypotheses $\mathcal{H}$ and the distribution $\PP$. If $\mathcal{H}$ is small and cannot be optimal for $\PP$, there might be an interest for randomization, while when it is  complex and sufficiently expressice, for instance the set of measurable functions~\citep{pydi2021many}, there is no need for randomization. 
+This problem can be attacked from different angles. First, understanding the need or not of randomization for obtaining optimally robust classifiers is an important problem. From Chapter~\ref{chap:game} and~\citet{pydi2021many}, the answer of this question depends mostly on two things: the set of hypotheses $\mathcal{H}$ and the distribution $\PP$. If $\mathcal{H}$ is small and cannot be optimal for $\PP$, there might be an interest for randomization, while when it is  complex and sufficiently expressive, for instance the set of measurable functions~\citep{pydi2021many}, there is no need for randomization. 
 
-However, choosing complex set of hypothesese might lead to overfitting, justifying the need of understanding generalization properties of randomized classifiers in the adversarial setting. While the question of uniform convergence bounds have been treated, generalization of randomized classifiers in the adversaial setting has only been partly tackled by~\citet{viallard2021pac} under the PAC-Bayes framework~\citep{guedj2019primer} . 
+However, choosing complex sets of hypotheses might lead to overfitting, justifying the need of understanding generalization properties of randomized classifiers in the adversarial setting. While the question of uniform convergence bounds have been treated, generalization of randomized classifiers in the adversarial setting has only been partly tackled by~\citet{viallard2021pac} under the PAC-Bayes framework~\citep{guedj2019primer} . 
 
-Beyond PAC-like bounds,  convergence rates of optimal classifiers in the adversarial setting like it was done by~\citet{fischer2020sobolev} in the case of kernel least squares regression in an important and not studied problem. Even the question of the choice of the norm for the convergence is difficult since the adversarial settigs involves points outside the support of the distribution. 
+Beyond PAC-like bounds,  convergence rates of optimal classifiers in the adversarial setting as it was done by~\citet{fischer2020sobolev} in the case of kernel least squares regression is an important and yet not studied problem. Even the question of the choice of the norm for the convergence is difficult since the adversarial setting involves points outside the support of the distribution. 
 
 
 
 \subsection{Scaling Provably Robust Neural Networks}
 
-In Chapter~\ref{chap:calibration}, we provide a general method to build provably Lipschitz layers. However, every single methods only lead to limited results on CIFAR10 dataset~\citep{cifar-10} with standard accuracies under $80\%$ and certifiable accuracies under $65\%$ for $\varepsilon=36/255$. The performances are far under the state-of-the-art on CIFAR10 standard classification task ($>95\%$). There is still a huge gap we need to bridge to have performant certifiably robust neural networks. Since we are unable to reach decent performances on simple datasets, the question of being robust on larger datasets as ImageNet~\citep{imagenet_cvpr09} is a bit anticipated.
+In Chapter~\ref{chap:calibration}, we provided a general method to build provably Lipschitz layers. However, every single methods only lead to limited results on CIFAR10 dataset~\citep{cifar-10} with standard accuracies under $80\%$ and certifiable accuracies under $65\%$ for $\varepsilon=36/255$. The performances are far under the state-of-the-art on CIFAR10 standard classification task ($>95\%$). There is still a huge gap we need to bridge to have performant certifiably robust neural networks. Since we are unable to reach decent performances on simple datasets, the question of being robust on larger datasets as ImageNet~\citep{imagenet_cvpr09} is a bit anticipated.
 
 \begin{tcolorbox}[colback=grund,colframe=rahmen]
     \begin{center}
@@ -72,14 +72,14 @@ In Chapter~\ref{chap:calibration}, we provide a general method to build provably
 
 \end{tcolorbox}
 
-Building robust neural networks with deterministic non-vacuous guarantees is an active research area and one may w. Current methods that scale on ImageNets relies on non-deterministic bounds using for instance randomized smoothing~\citep{KolterRandomizedSmoothing,salman2019provably}. The advantages and the weaknesses of these methods rely in the same fact. While deterministic methods highly rely on the structure of the networks, randomized smoothing methods are agnostic to the structure of neeural Networks. One may hope using the structure of deep neural networks to get provable strategies. The question of robustness is also understudied for the recent Transformers~\citep{vaswani2017attention} neural networks whose basic element is an attention block:
+Building robust neural networks with deterministic non-vacuous guarantees is an active research area. Current methods that scale on ImageNet dataset rely on non-deterministic bounds using for instance randomized smoothing~\citep{KolterRandomizedSmoothing,salman2019provably}. The advantages and the weaknesses of these methods are the same: while deterministic methods highly depend on the structure of the networks, randomized smoothing methods are agnostic to the structure of neural networks. One may hope using the structure of deep neural networks to get provable strategies. The question of robustness is also understudied for the recent Transformers~\citep{vaswani2017attention} neural networks whose basic element is an attention block:
 \begin{align*}
     \text{Attention}(Q,K,V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_K}}\right)V
 \end{align*}
-where $d_K$ is the common dimension of $Q$ and $K$. The Transformers architectures are today state of the art both in NLP tasks~\citep{devlin2018bert} and computer vision tasks~\citep{dosovitskiy2020image}. Due to the recency of these approaches, their robustness have not been investigated. This question definitely worth more attention! 
+where $d_K$ is the common dimension of $Q$ and $K$. The Transformers architectures are today state of the art both in NLP tasks~\citep{devlin2018bert} and computer vision tasks~\citep{dosovitskiy2020image}. These approaches are very recent, and their robustness have not been investigated yet. This question definitely worth more attention! 
 
 
-Beyond, this question of scalability and robustness of architectures, one may ask the question of the feasability of such tasks. Enforcing Lipschitz constraints on the networks may hinder the networks performances. In complex datasets like ImageNet, it might not be possible to get simultaneously nice performances and non-vacuous certificates. Moreover, the proposed defenses often rely on a single norm, often the $\ell^2$. Designing networks that are ``universarlly'' robust for human perception  is an utopia, that we may never reach.  
+Beyond, this question of scalability and robustness of architectures, one may ask the feasibility of such tasks. Enforcing Lipschitz constraints on the networks may hinder the networks performances. In complex datasets like ImageNet, it might not be possible to get simultaneously good performances and non-vacuous certificates. Moreover, the proposed defenses often rely on a single norm, often the $\ell^2$ norm. Designing networks that are ``universally'' robust for human perception  is a utopia, that we may never reach.  
 
 
 

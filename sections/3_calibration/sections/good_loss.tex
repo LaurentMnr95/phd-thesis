@@ -61,26 +61,26 @@ for any $\eta\in[0,1]$, $x\in\mathcal{X}$ and $f\in\mathcal{F}(\mathcal{X})$. We
 Note that for any $x\in\XX$ and $\eta\in[0,1]$, $\mathcal{C}_L(x,\eta,f) =\risk_{L,\PP}(f)$ with $\PP = \eta \delta_{(x,+1)}+ (1-\eta)\delta_{(x,-1)}$. The calibration function thus corresponds then to a pointwise notion of the risk, evaluated at point $x$. We now define what one means by calibration of a surrogate loss.
 
 \begin{definition}[Calibration]
-Let $L_1$ and $L_2$ be two loss functions. We say that $L_2$ is \emph{calibrated} with regards to $L_1$ if for every $\epsilon>0$, $\eta\in[0,1]$ and $x\in\mathcal{X}$, there exists $ \delta>0$ such that for all $f\in\mathcal{F}(\mathcal{X})$,
+Let $L_1$ and $L_2$ be two loss functions. We say that $L_2$ is \emph{calibrated} with regard to $L_1$ if for every $\epsilon>0$, $\eta\in[0,1]$ and $x\in\mathcal{X}$, there exists $ \delta>0$ such that for all $f\in\mathcal{F}(\mathcal{X})$,
 \begin{align*}
     \mathcal{C}_{L_2}(x,\eta,f)- &\mathcal{C}^\star_{L_2}(x,\eta)\leq\delta\implies\mathcal{C}_{L_1}(x,\eta,f)- \mathcal{C}^\star_{L_1}(x,\eta)\leq \epsilon.
 \end{align*}
 
-Furthermore, we say that $L_2$ is \emph{uniformly calibrated} with regards to $L_1$ if for every $\epsilon>0$, there exists $ \delta>0$ such that for all $\eta\in[0,1]$, $x\in\mathcal{X}$ and $f\in\mathcal{F}(\mathcal{X})$ we have
+Furthermore, we say that $L_2$ is \emph{uniformly calibrated} with regard to $L_1$ if for every $\epsilon>0$, there exists $ \delta>0$ such that for all $\eta\in[0,1]$, $x\in\mathcal{X}$ and $f\in\mathcal{F}(\mathcal{X})$ we have
 \begin{align*}
     \mathcal{C}_{L_2}(x,\eta,f)- \mathcal{C}^\star_{L_2}(x,\eta)\leq\delta\implies\mathcal{C}_{L_1}(x,\eta,f)- \mathcal{C}^\star_{L_1}(x,\eta)\leq \epsilon.
 \end{align*}
 \end{definition}
 
 \textcolor{red}{
-Similarly to consistency, one also give a sequential characterization for calibration and uniform calibration: $L_2$ is \emph{calibrated} with regards to $L_1$ if for all $\eta\in[0,1]$, $x\in\mathcal{X}$, for all $(f_n)_n\in\mathcal{F}(\XX)^\mathbb{N}$:
+Similarly to consistency, one also give a sequential characterization for calibration and uniform calibration: $L_2$ is \emph{calibrated} with regard to $L_1$ if for all $\eta\in[0,1]$, $x\in\mathcal{X}$, for all $(f_n)_n\in\mathcal{F}(\XX)^\mathbb{N}$:
 \begin{align*}
    \mathcal{C}_{L_2}(x,\eta,f)&- \mathcal{C}^\star_{L_2}(x,\eta)\xrightarrow[n\to\infty]{} 0
    \implies \mathcal{C}_{L_1}(x,\eta,f)- \mathcal{C}^\star_{L_1}(x,\eta)\xrightarrow[n\to\infty]{} 0\quad.
 \end{align*}
 } 
 \textcolor{red}{
-Also, $L_2$ is \emph{uniformly calibrated} with regards to $L_1$ if for all $(f_n)_n\in\mathcal{F}(\XX)^\mathbb{N}$:
+Also, $L_2$ is \emph{uniformly calibrated} with regard to $L_1$ if for all $(f_n)_n\in\mathcal{F}(\XX)^\mathbb{N}$:
 \begin{align*}
     \sup_{\eta\in[0,1],x\in\mathcal{X}} \mathcal{C}_{L_2}(x,\eta,f)- \mathcal{C}^\star_{L_2}(x,\eta)\xrightarrow[n\to\infty]{} 0\implies\sup_{\eta\in[0,1],x\in\mathcal{X}} \mathcal{C}_{L_1}(x,\eta,f)- \mathcal{C}^\star_{L_1}(x,\eta)\xrightarrow[n\to\infty]{} 0\quad.
 \end{align*} }
@@ -121,9 +121,9 @@ $ \mathcal{C}^\star_\phi(x,\eta) = \inf_{\alpha\in\RR}\eta \phi(\alpha)+(1-\eta)
 \label{thm:cal-standard}
 Let $\phi:\RR\to\RR_+$ be  a continuous margin loss. Then the three following assertions are equivalent.
     \begin{enumerate}
-    \item $\phi$ is calibrated with regards to $l_{0/1}$,
+    \item $\phi$ is calibrated with regard to $l_{0/1}$,
     \item $\phi$ is uniformly calibrated $l_{0/1}$,
-    \item $\phi$ is consistent with regards to $l_{0/1}$.
+    \item $\phi$ is consistent with regard to $l_{0/1}$.
     \end{enumerate} 
 Moreover, if $\phi$ is convex and differentiable at $0$, then $\phi$ is calibrated if and only $\phi'(0)<0$.
 \end{thm}
@@ -134,7 +134,7 @@ The Hinge loss $\phi(t) = \max (1-t,0)$ and the logistic loss $\phi(t) = \log(1+
 
 
 \begin{rmq}
-The equivalence between calibration and consistency is a consequence from the fact that, over the large space of measurable functions, minimizing the loss pointwisely in the input by desintegrating with regards to $x$ is equivalent to minimize the whole risk over measurable functions. This result is very powerful and simplify the study of calibration in the standard setting. 
+The equivalence between calibration and consistency is a consequence from the fact that, over the large space of measurable functions, minimizing the loss pointwisely in the input by desintegrating with regard to $x$ is equivalent to minimize the whole risk over measurable functions. This result is very powerful and simplify the study of calibration in the standard setting. 
 \end{rmq}
 
 

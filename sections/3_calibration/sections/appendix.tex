@@ -65,7 +65,7 @@ Let show that if $0\in\argminB_{\alpha\in\RR} \phi(\alpha)+\phi(-\alpha)$ then $
      \mathcal{C}_{\phi_\varepsilon}(x,\frac12,f_n) = \max\left(\phi(\frac1n),\phi(-\frac1n)\right)\xrightarrow[n\to\infty]{} \phi(0) %= \inf_{\alpha\in\RR}\frac12\left(\phi(\alpha)+\phi(-\alpha)\right)
 \end{align*}
 As, $\phi(0) = \inf_{\alpha\in\RR}\frac12\left(\phi(\alpha)+\phi(-\alpha)\right)$, the above means that $(f_n)_n$ is a minimizing sequence for $\alpha \mapsto \frac12 \left(\phi(\alpha)+\phi(-\alpha)\right)$. 
-Then thanks to Proposition~\ref{prop:calib-equality}, $(f_n)_n$ is also a minimizing sequence for $f \mapsto\mathcal{C}_{\phi_\varepsilon}(x,\frac12,f)$. However, for every integer $n$, we have $\mathcal{C}_{0/1,\varepsilon}(x,\frac12,f_n) =1\neq\frac12$. As  $\inf_{f\in\mathcal{F}(\XX)}\mathcal{C}_{\varepsilon}(x,\frac12,f)=\frac12$, $\phi$ is not calibrated with regards to the $0/1$ loss in the adversarial setting at level $\varepsilon$. We also immediately notice that if $\phi$ is  calibrated with to  $0/1$ loss in the adversarial setting at level $\varepsilon$ then $\phi$ is calibrated in the standard setting. 
+Then thanks to Proposition~\ref{prop:calib-equality}, $(f_n)_n$ is also a minimizing sequence for $f \mapsto\mathcal{C}_{\phi_\varepsilon}(x,\frac12,f)$. However, for every integer $n$, we have $\mathcal{C}_{0/1,\varepsilon}(x,\frac12,f_n) =1\neq\frac12$. As  $\inf_{f\in\mathcal{F}(\XX)}\mathcal{C}_{\varepsilon}(x,\frac12,f)=\frac12$, $\phi$ is not calibrated with regard to the $0/1$ loss in the adversarial setting at level $\varepsilon$. We also immediately notice that if $\phi$ is  calibrated with to  $0/1$ loss in the adversarial setting at level $\varepsilon$ then $\phi$ is calibrated in the standard setting. 
 
 % Reciprocally, let us assume that  $\phi$ is calibrated in the standard setting and that if $0\not\in\argminB_\alpha \phi(\alpha)+\phi(-\alpha)$ then $\phi$ is  calibrated with to  $0/1$ loss in the adversarial setting at level $\varepsilon$.
 
@@ -101,7 +101,7 @@ Then we deduce, $\mathcal{C}_{\varepsilon}(x,\eta,f) - \mathcal{C}_{\varepsilon}
 
 
 
-\textbf{Case $\eta=\frac12$:} This shows us that calibration problems will only arise when $\eta = \frac{1}{2}$, i.e. on points where the Bayes classifier is indecise. For this case, we will reason by contradiction: we can construct a sequence of points $\alpha_n$ and $\beta_n$, whose risk converge to the same optimal value, while one sequence remains close to some positive value, and the other to some negative value. Assume that for all $n$, there exist $f_n\in\mathcal{F}(\XX)$ and $x_n\in\XX$ such that 
+\textbf{Case $\eta=\frac12$:} This shows us that calibration problems will only arise when $\eta = \frac{1}{2}$, i.e. on points where the Bayes classifier is indecisive. For this case, we will reason by contradiction: we can construct a sequence of points $\alpha_n$ and $\beta_n$, whose risk converge to the same optimal value, while one sequence remains close to some positive value, and the other to some negative value. Assume that for all $n$, there exist $f_n\in\mathcal{F}(\XX)$ and $x_n\in\XX$ such that 
 \begin{align*}
     \mathcal{C}_{\phi_\varepsilon}(x_n,\frac12,f_n) - \mathcal{C}_{\phi_\varepsilon}^\star(x_n,\frac12)\leq \frac1n\text{ and exists $u_n,v_n\in B_\varepsilon(x_n)$},~ f_n(u_n)\times f_n(v_n)\leq 0.
 \end{align*}
@@ -111,7 +111,7 @@ Moreover, we have, thanks to Lemma~\ref{xxx}:
 \begin{align*}
   0\leq \frac12 \phi(\alpha_n) +  \frac12 \phi(-\alpha_n)- \inf_{\alpha\in\RR}\frac12 \phi(\alpha)+\frac12\phi(-\alpha)\leq \mathcal{C}_{\phi_\varepsilon}(x,\frac12,f_n) - \mathcal{C}_{\phi_\varepsilon}^\star(x,\frac12)\leq \frac1n
 \end{align*}
-Then we deduce that $(\alpha_n)_n$ is a minimizing sequence for  $u\mapsto\frac12\phi(u)+\frac12\phi(-u)$ and similarly $(\beta_n)_n$ is also a minimizing sequence for  $u\mapsto\frac12\phi(u)+\frac12\phi(-u)$ . Now note that there always exist $\alpha, \beta\in \bar{\RR}$ such that, up to an extraction of a subsequence, we have $\alpha_n\xrightarrow[n\to\infty]{} \alpha$ and $\beta_n \xrightarrow[n\to\infty]{} \beta$. Furthermore by continuity of $\phi$ and since $0\not\in\argminB\phi(u)+\phi(-u)$, $\alpha\neq0$ and $\beta\neq 0$. Without loss of generality one can assume that $\alpha<0<\beta$, then for $n$ sufficiently large, $\alpha_n<0<\beta_n$. Moreover have 
+Then we deduce that $(\alpha_n)_n$ is a minimizing sequence for  $u\mapsto\frac12\phi(u)+\frac12\phi(-u)$ and similarly $(\beta_n)_n$ is also a minimizing sequence for  $u\mapsto\frac12\phi(u)+\frac12\phi(-u)$ . Now note that there always exist $\alpha, \beta\in \bar{\RR}$ such that, up to an extraction of a subsequence, we have $\alpha_n\xrightarrow[n\to\infty]{} \alpha$ and $\beta_n \xrightarrow[n\to\infty]{} \beta$. Furthermore, by continuity of $\phi$ and since $0\not\in\argminB\phi(u)+\phi(-u)$, $\alpha\neq0$ and $\beta\neq 0$. Without loss of generality one can assume that $\alpha<0<\beta$, then for $n$ sufficiently large, $\alpha_n<0<\beta_n$. Moreover have 
 \begin{align*}
      0&\leq\frac12\max\left(\phi(\alpha_n),\phi(\beta_n)\right)+\frac12\max\left(\phi(-\alpha_n),\phi(-\beta_n)\right)- \mathcal{C}^\star_{\phi_\varepsilon}(x,\frac12)\\
      &\leq \mathcal{C}_{\phi_\varepsilon}(x,\frac12,f_n) - \mathcal{C}_{\phi_\varepsilon}^\star(x,\frac12)\leq \frac1n
@@ -315,7 +315,7 @@ which concludes the proof.
 %      \mathcal{C}_{\phi_\varepsilon}(x,\frac12,f_n) = \max\left(\phi(\frac1n),\phi(-\frac1n)\right)\xrightarrow[n\to\infty]{} \phi(0) %= \inf_{\alpha\in\RR}\frac12\left(\phi(\alpha)+\phi(-\alpha)\right)
 % \end{align*}
 % As, $\phi(0) = \inf_{\alpha\in\RR}\frac12\left(\phi(\alpha)+\phi(-\alpha)\right)$, the above means that $(f_n)_n$ is a minimizing sequence for $\alpha \mapsto \frac12 \left(\phi(\alpha)+\phi(-\alpha)\right)$. 
-% Then thanks to Lemma~\ref{lem:min-cal-adv}, $(f_n)_n$ is also a minimizing sequence for $f \mapsto\mathcal{C}_{\phi_\varepsilon}(x,\frac12,f)$. However, for every integer $n$, we have $\mathcal{C}_{0/1,\varepsilon}(x,\frac12,f_n) =1\neq\frac12$. As  $\inf_{f\in\mathcal{F}(\XX)}\mathcal{C}_{\varepsilon}(x,\frac12,f)=\frac12$, $\phi$ is not calibrated with regards to the $0/1$ loss in the adversarial setting at level $\varepsilon$. We also immediately notice that if $\phi$ is  calibrated with to  $0/1$ loss in the adversarial setting at level $\varepsilon$ then $\phi$ is calibrated in the standard setting. 
+% Then thanks to Lemma~\ref{lem:min-cal-adv}, $(f_n)_n$ is also a minimizing sequence for $f \mapsto\mathcal{C}_{\phi_\varepsilon}(x,\frac12,f)$. However, for every integer $n$, we have $\mathcal{C}_{0/1,\varepsilon}(x,\frac12,f_n) =1\neq\frac12$. As  $\inf_{f\in\mathcal{F}(\XX)}\mathcal{C}_{\varepsilon}(x,\frac12,f)=\frac12$, $\phi$ is not calibrated with regard to the $0/1$ loss in the adversarial setting at level $\varepsilon$. We also immediately notice that if $\phi$ is  calibrated with to  $0/1$ loss in the adversarial setting at level $\varepsilon$ then $\phi$ is calibrated in the standard setting. 
 
 % % Reciprocally, let us assume that  $\phi$ is calibrated in the standard setting and that if $0\not\in\argminB_\alpha \phi(\alpha)+\phi(-\alpha)$ then $\phi$ is  calibrated with to  $0/1$ loss in the adversarial setting at level $\varepsilon$.
 
@@ -544,11 +544,11 @@ Let $\mathcal{H}\subset \mathcal{F}(\mathcal{X})$. Let $L$ be a loss function. W
 
 
 \begin{defn}[$\mathcal{H}$-calibration]
-Let $\mathcal{H}\subset \mathcal{F}(\mathcal{X})$. Let $\mathcal{H}\subset \mathcal{F}(\mathcal{X})$. Let $L_1$ and $L_2$ be two loss functions. We say that $L_2$ is \emph{$\mathcal{H}$-calibrated} with regards to $L_1$ if for every $\epsilon>0$,  for all $\eta\in[0,1]$, $x\in\mathcal{X}$, there exists $ \delta>0$ for every $f\in\mathcal{H}$: 
+Let $\mathcal{H}\subset \mathcal{F}(\mathcal{X})$. Let $\mathcal{H}\subset \mathcal{F}(\mathcal{X})$. Let $L_1$ and $L_2$ be two loss functions. We say that $L_2$ is \emph{$\mathcal{H}$-calibrated} with regard to $L_1$ if for every $\epsilon>0$,  for all $\eta\in[0,1]$, $x\in\mathcal{X}$, there exists $ \delta>0$ for every $f\in\mathcal{H}$: 
 \begin{align*}
     \mathcal{C}_{L_2}(x,\eta,f)- &\mathcal{C}^\star_{L_2,\mathcal{H}}(x,\eta)\leq\delta\implies\mathcal{C}_{L_1}(x,\eta,f)- \mathcal{C}^\star_{L_1,\mathcal{H}}(x,\eta)\leq \epsilon\quad.
 \end{align*}
-Furthermore, we say that $L_2$ is \emph{uniformly $\mathcal{H}$-calibrated} with regards to $L_1$ if for every $\epsilon>0$, there exists $ \delta>0$, for all $\eta\in[0,1]$, $x\in\mathcal{X}$, for every $f\in\mathcal{H}$: 
+Furthermore, we say that $L_2$ is \emph{uniformly $\mathcal{H}$-calibrated} with regard to $L_1$ if for every $\epsilon>0$, there exists $ \delta>0$, for all $\eta\in[0,1]$, $x\in\mathcal{X}$, for every $f\in\mathcal{H}$: 
 \begin{align*}
     \mathcal{C}_{L_2}(x,\eta,f)- \mathcal{C}^\star_{L_2,\mathcal{H}}(x,\eta)\leq\delta\implies\mathcal{C}_{L_1}(x,\eta,f)- \mathcal{C}^\star_{L_1,\mathcal{H}}(x,\eta)\leq \epsilon\quad.
 \end{align*}

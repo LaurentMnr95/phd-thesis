@@ -1,6 +1,6 @@
 \section{Robustness and Lipchitzness}
 
-In this section, we have interest in the deep link that exist between adversarial examples and Lipschitzness. Indeed, a Lipschitz function is a function that do not vary a lot when varying its input and a classifier is robust if a small perturbation do not change the prediction. Formally, we recall a classifier $h$ is \emph{certifiably robust at level $\varepsilon$} at input $x$ with label $y$ if there exist a property depending on $h$, $x$, $y$ and $\varepsilon$ that implies that for all $x'$ such that $d(x,x')\leq\varepsilon$, $h(x') = y$. We first recall a property linking  Lipschitzness to Robustness. Then, we present the existing methods for building Lipschitz Neural Networks. 
+In this section, we overview the deep link that exist between adversarial examples and Lipschitzness. Indeed, a Lipschitz function is a function that does not vary a lot when changing its input and a classifier is robust if a small perturbation does not change the prediction. Formally, we recall a classifier $h$ is \emph{certifiably robust at level $\varepsilon$} at input $x$ with label $y$ if there exists a property depending on $h$, $x$, $y$ and $\varepsilon$ that implies that for all $x'$ such that $d(x,x')\leq\varepsilon$, $h(x') = y$. We first recall a property linking  Lipschitzness to Robustness. Then, we present the existing methods for building Lipschitz Neural Networks. 
 
 
 
@@ -30,12 +30,12 @@ then we have for every $\tau$ such that $\lVert \tau \rVert_2 \leq \varepsilon$:
 \end{equation*}
 \end{prop}
 From Proposition~\ref{proposition:tsuzuku}, it is straightforward to compute a robustness certificate for a given point.
-Consequently, in order to build robust neural networks the margin needs to be large and the Lipschitz constant small to get optimal guarantees on the robustness for neural networks. Beyond adversarial robustness, Lipschitzness is very used in Wasserstein Generative Adversarial Networks. Indeed the discriminator objective writes as a Wasserstein-$1$ distance in its dual form:
+Consequently, in order to build robust neural networks the margin needs to be large and the Lipschitz constant small to get optimal guarantees on the robustness for neural networks. Beyond adversarial robustness, Lipschitzness has shown its utility in Wasserstein Generative Adversarial Networks. Indeed, the discriminator objective writes as a Wasserstein-$1$ distance in its dual form:
 \begin{align*}
-  W_1(\PP,G_\sharp \PP_z) = \sup_{f~1\text{-Lip}}\mathbb{E}_{x\sim\PP}[f(x)] -\mathbb{E}_{z\sim\PP_z}[f(G(z))]
+  W_1(\PP,G_\sharp \PP_z) = \sup_{f:~1\text{-Lip}}\mathbb{E}_{x\sim\PP}[f(x)] -\mathbb{E}_{z\sim\PP_z}[f(G(z))]
 \end{align*}
-where $\PP_z$ denotes the latent space, and $G$ the generator function. It worth noting that Wasserstein GANs highly improved the stability of training for GANs. 
-\paragraph{Lipschitz Constant of Neural Networks.}  A neural network is a function $f$ defined succession of linear and non-linear activation functions $\sigma$:
+where $\PP_z$ denotes the latent space, and $G$ the generator function. It is worth noting that Wasserstein GANs highly improved the stability of training for GANs. 
+\paragraph{Lipschitz Constant of Neural Networks.}  A neural network is a function $f$ defined as a succession of linear and non-linear activation functions $\sigma$:
 \begin{align*}
   f(x) = \left(A_L\sigma\left(A_{L-1}\dots \sigma\left(A_1x+b_1\right)\dots\right)+b_L\right)
 \end{align*}
@@ -45,13 +45,13 @@ Assuming that $\sigma$ is $1$-Lipschitz, we have:
 \end{align*}
 with $\lVert A\rVert_2$ is the spectral norm of $A$ defined as
 \begin{align*}
-  \lVert A\rVert_2 = \max_{x\neq 0} \frac{\lVert Ax\rVert_2}{\lVert x\rVert_2} = \lambda_{max}(A^TA)\quad.
+  \lVert A\rVert_2 = \max_{x\neq 0} \frac{\lVert Ax\rVert_2}{\lVert x\rVert_2} = \sqrt{\lambda_{max}(A^TA)}
 \end{align*}
-where $\lambda_{max}(A^TA)$ denotes the greatest eigen value of $A^TA$. Note that $\lVert A\rVert_2$ is also the greatest singular value of $A$.  
-Then the Lipschitz constant of $f$ is upperbounded by $\lVert A_1\rVert_2\dots \lVert A_L\rVert_2$. Hence to control the Lipschitz constant of a neural network, it is usual to control the spectral norm of each layer. It could be done either in penalizing this upperbound or imposing a spectral norm equals smaller than $1$ for each layer. 
+where $\lambda_{max}(A^TA)$ denotes the greatest eigenvalue of $A^TA$. Note that $\lVert A\rVert_2$ is also the greatest singular value of $A$.  
+Then the Lipschitz constant of $f$ is upperbounded by $\lVert A_1\rVert_2\dots \lVert A_L\rVert_2$. Hence, to control the Lipschitz constant of a neural network, it is usual to control the spectral norm of each layer. It could be done either in penalizing this upperbound or imposing a spectral norm  equals or smaller than $1$ for each layer. 
 
 \paragraph{Lipschitz Regularization of Neural Networks.}  Based on the insight that Lipschitz Neural Networks are more robust to adversarial attacks, researchers have developed several techniques to regularize and constrain the Lipschitz constant of neural networks by adding a regularization $\Omega(f)$ to the classification objective to encourage a smaller Lipschitz constant.
-However the computation of the Lipschitz constant of neural networks has been shown to be NP-hard~\citep{scaman2018lipschitz}.  Most methods therefore tackle the problem by reducing or constraining the Lipschitz constant at the layer level.
+However, the computation of the Lipschitz constant of neural networks has been shown to be NP-hard~\citep{scaman2018lipschitz}.  Most methods therefore tackle the problem by reducing or constraining the Lipschitz constant at the layer level.
 For instance, the work of~\citet{cisse2017parseval,huang2020controllable} and ~\citet{wang2020orthogonal} exploit the orthogonality of the weights matrices to build Lipschitz layers.
 Other approaches~\citep{gouk2018regularisation,jia2017improving,sedghi2018singular,singla2021fantastic,araujo2021lipschitz} proposed to estimate or upper-bound the spectral norm of convolutional and dense layers using for instance the power iteration method~\citep{golub2000eigenvalue}.
 While these methods have shown interesting results in terms of accuracy, empirical robustness and efficiency, they can not provide provable guarantees since the Lipschitz constant of the trained networks remains unknown or vacuous.
@@ -77,31 +77,31 @@ While these methods have shown interesting results in terms of accuracy, empiric
     \STATE{\textbf{return} $h$}
   \end{algorithmic}
   \end{algorithm}
-Many research proposed methods to build 1-Lipschitz layers in order to boost adversarial robustness. These approaches provide deterministic guarantees for adversarial robustness. One can either normalize the weight matrices by their largest singular values making the layer $1$-Lipschitz, \emph{e.g.}~\citep{yoshida2017spectral,miyato2018spectral,farnia2018generalizable,anil2019sorting} or project the weight matrices on the Stiefel manifold \citep{li2019preventing,trockman2021orthogonalizing,skew2021sahil}.
+Several works proposed methods to build 1-Lipschitz layers in order to boost adversarial robustness. These worls provide deterministic guarantees for adversarial robustness. One can either normalize the weight matrices by their largest singular values making the layer $1$-Lipschitz, as in~\citep{yoshida2017spectral,miyato2018spectral,farnia2018generalizable,anil2019sorting} or project the weight matrices on the Stiefel manifold \citep{li2019preventing,trockman2021orthogonalizing,skew2021sahil}.
 
-The first natural idea to learn $1$-Lipschitz layers is to normalize the matrices in the forward pass of a Neural Networks : $A_i\leftarrow \frac{A_i}{\lVert A_i\rVert_2}$. This natural idea was exploited by~\citet{miyato2018spectral}. A key difficulty is the computation of the spectral norm $\lVert A_i\rVert_2$. The authors proposed to use the power iteration method to compute the spectral norm (see Algorithm~\ref{algorithm:spectralnorm}). The number of iterations might be prohibitive, hence the authors proposed to use only one step in the training phase to make it faster. This method effectively approximated well the sprectral norm of the last layer. However, this method present some disadvantages. The spectral normalization has for effect crushing all smaller singular values. A consequence is the gradient vanishing that is very present in this structure. 
+The first natural idea to learn $1$-Lipschitz layers is to normalize the matrices in the forward pass of a Neural Networks : $A_i\leftarrow \frac{A_i}{\lVert A_i\rVert_2}$. This natural idea was exploited by~\citet{miyato2018spectral}. A key difficulty is the computation of the spectral norm $\lVert A_i\rVert_2$. The authors proposed to use the power iteration method to compute the spectral norm (see Algorithm~\ref{algorithm:spectralnorm}). The number of iterations might be prohibitive, hence the authors proposed to use only one step in the training phase to make it faster. This method effectively approximates well the spectral norm of the last layer. However, this method presents some disadvantages. The spectral normalization has for side effect reducing the  importance of smaller singular values. A consequence is the gradient vanishing that is very present in this structure. 
 
-Also, several works~\citep{anil2019sorting,singla2021householder,huang2021local} proposed methods leveraging the properties of activation functions to constraints the Lipschitz of Neural Networks. These works are usually useful to help  improving the performance of linear orthogonal layers.
+Other approaches~\citep{anil2019sorting,singla2021householder,huang2021local} proposed methods leveraging the properties of activation functions to constraint the Lipschitz constant of Neural Networks. These works are usually useful to help  to improve the performance of linear orthogonal layers. We now present how methods that focus on learning orthogonal layers.
 
 
 
-\paragraph{Learning Orthogonal layers} A workaround for the limitations of previously presented methods is to build norm preserving linear layers, i.e. orthogonal layers. We recall a matrix $\Omega\in\RR^{d\times d}$ is said to be orthogonal if for every $x\in\RR^d$, $\lVert\Omega x\rVert_2 = \lVert x\rVert_2$. Indeed such layers exactly preserve the norm, hence avoid crushing all singular values and gradient vanishing issues. Recently, there have been a trend in aiming at learning Orthogonal Layers in neural networks.  The following approaches consist of projecting the weights matrices onto an orthogonal space in order to preserve gradient norms and enhance adversarial robustness by guaranteeing low Lipschitz constants. While both works have similar objectives, their execution is different .It is a difficult question to conciliate the convolution structure with orthogonality of linear layers. The presented works of \citet{li2019preventing}, \citet{trockman2021orthogonalizing} and \citet{skew2021sahil} (denoted BCOP, Cayley and SOC respectively) present the advantage of being ``compatible''  with convolutional structure in layers. 
+\paragraph{Learning Orthogonal layers} A workaround for the limitations of previously presented methods is to build norm preserving linear layers, i.e. orthogonal layers. We recall a matrix $\Omega\in\RR^{d\times d}$ is said to be orthogonal if for every $x\in\RR^d$, $\lVert\Omega x\rVert_2 = \lVert x\rVert_2$. Indeed, such layers exactly preserve the norm, hence avoiding the  reducing the importance all singular values and gradient vanishing issues. Recently, there have been a trend in aiming at learning Orthogonal Layers in neural networks.  While all works have similar objectives, their execution is different. It is a difficult question to conciliate the convolution structure with orthogonality of linear layers. The presented works of \citet{li2019preventing}, \citet{trockman2021orthogonalizing} and \citet{skew2021sahil} (denoted BCOP, Cayley and SOC respectively) present the advantage of being ``compatible''  with convolutional structure in layers. 
 
 The BCOP layer (Block Convolution Orthogonal Parameterization) uses an iterative algorithm proposed by \citet{bjorck1971iterative} to orthogonalize a linear transformation. The BCOP layer relies on the following algorithm to orthonormalize a linear operator $M$:
 \begin{align*}
  M\times\left(I+\frac12Q+\frac38Q^2+\dots+(-1)^p\begin{pmatrix} \frac12\\p \end{pmatrix}
-Q^p+\dots \right).
+Q^p+\dots \right)
 \end{align*}
-with $Q = I-M^TM$ 
+with $Q = I-M^TM$.
 To build a ``convolutional layer'' from the BCOP procedure, the authors proposed to work directly on the kernels of the convolutions, proposing block operations to orthogonalize convolutions.
 
-Two other alternatives, the SOC layer (Skew Orthogonal Convolution) and the Cayley layer, used two different parametrization of the Special Orthogonal Group $SO_n(\RR)$ using skew-symmetric matrices. Indeed, in Riemmanian geometry, the space skew-symmetric matrices is isomorphic to the tangent space of $SO_n(\RR)$ at any point. 
+Two other alternatives, the SOC layer (Skew Orthogonal Convolution) and the Cayley layer, used two different parametrizations of the Special Orthogonal Group $SO_n(\RR)$ using skew-symmetric matrices. Indeed, in Riemmanian geometry, the space of skew-symmetric matrices is isomorphic to the tangent space of $SO_n(\RR)$ at any point. 
 
-SOC layers uses the expontial mapping of a skew symmetric matrix defined using the following Taylor expansion:
+SOC layers use the exponential mapping of a skew symmetric matrix defined using the following Taylor expansion:
 \begin{align*}
   \exp{A}:=\sum_{k=0}^{\infty}\frac{A^k}{k!}
 \end{align*}
-which defines an orthogonal matrix, indeed $(\exp{A})^T\exp{A}=I$ . More precisely, the application $A\mapsto\exp{A}$ defines a surjective mapping of $SO_n(\RR)$ from the space of skew-symmetric matrices. To approximate the exponential of a matrix, the authors proposed to use a finite number of terms in its Taylor series expansion.  To be adapted to convolutions, a skew-symmetric linear transformation $A = M-M^T$ can be  computed in a Deep Learning Framework using the  convolution and convolution-transpose operators.
+which defines an orthogonal matrix, indeed $(\exp{A})^T\exp{A}=I$. More precisely, the application $A\mapsto\exp{A}$ defines a surjective mapping of $SO_n(\RR)$ from the space of skew-symmetric matrices. To approximate the exponential of a matrix, the authors proposed to use a finite number of terms in its Taylor series expansion.  To be adapted to convolutions, a skew-symmetric linear transformation $A = M-M^T$ can be  computed in a Deep Learning libraries as Pytorch or Tensorflow using the  convolution and convolution-transpose operators.
 
 
 
@@ -109,7 +109,7 @@ The Cayley method proposed by~\citet{trockman2021orthogonalizing} use the Cayley
 \begin{align*}
    \text{Cayley}(A)= (I - A)^{-1} (I + A) \quad.
 \end{align*}
-Like exponential mapping, the Cayley Tranform defines  a surjective mapping of $SO_n(\RR)$ from the space of skew-symmetric matrices. To craft such operators, the authors proposed to work in the Fourier domain and directly on the kernels to compute the Cayley Transform.
+Akin exponential mapping, the Cayley Transform defines  a surjective mapping of $SO_n(\RR)$ from the space of skew-symmetric matrices. To craft such operators, the authors proposed to work in the Fourier domain and directly on the kernels to compute the Cayley Transform.
 
 \paragraph{Reshaped Kernel Methods.}
 It has been shown by~\citet{cisse2017parseval} and \citet{tsuzuku2018lipschitz} that the spectral norm of a convolution can be upper-bounded by the norm of a reshaped kernel matrix. Consequently, orthogonalizing directly this matrix upper-bound the spectral norm of the convolution by $1$.
@@ -119,7 +119,7 @@ While this method is more computationally efficient than orthogonalizing the who
 
 \subsection{Residual Networks}
 
-During the training phase in neural networks, it may occur some issues as gradient vanishing or gradient expolosion~\citep{hochreiter2001gradient}. These issues limited the emergence of scalable and very deep neural networks until~\cite{he2016deep} proposed the Residual Network (ResNet) architecture defined as follows.
+During the training phase in neural networks, it may occur some issues such as gradient vanishing or gradient explosion~\citep{hochreiter2001gradient}. These issues limited the emergence of scalable and very deep neural networks until~\cite{he2016deep} proposed the Residual Network (ResNet) architecture defined with the following forward pass: 
 \begin{align*}
   \left\{
     \begin{array}{ll}
@@ -128,9 +128,13 @@ During the training phase in neural networks, it may occur some issues as gradie
   \end{array}
   \right.
 \end{align*}
-where $F_{{t}}(x_{t})$ is typically a two layer neural networks. The ResNet uses residual connection that have the effect of limiting gradient vanishing issues. Combined with batch normalization, the issue of gradient explosion can also be mitigated, hence opening the possibility to very deep and stable architecture. 
+where $F_{{t}}(x_{t})$ is typically a two layer neural networks:
+\begin{align*}
+  F_{{t}}(x_{t}) = W_{2,t}\sigma(W_{1,t}x_t)
+\end{align*} 
+for some weight matrices $ W_{1,t},  W_{2,t}$ and activation function $\sigma$. The ResNet uses residual connection that have the effect of limiting gradient vanishing issues. Combined with batch normalization, the issue of gradient explosion can also be mitigated, hence opening the possibility to very deep and stable architecture. 
 
-To theoretically analyse the ResNet architecture, several works~\citep{haber2017stable,e17Proposal,lu18beyond,chen2018neural} proposed a ``continuous time'' interpretation inspired by dynamical systems that can be defined as follows.
+To theoretically analyze the ResNet architecture, several works~\citep{haber2017stable,e17Proposal,lu18beyond,chen2018neural} proposed a ``continuous time'' interpretation of the forward pass inspired by dynamical systems that can be defined as follows.
 
 \begin{definition}\label{def:flow}
 Let $(F_{t})_{t\in[0,T]}$ be a family of functions on $\RR^d$, we define the continuous time Residual Networks flow associated with $F_t$ as:
@@ -148,11 +152,11 @@ This continuous time interpretation helps as it allows us to consider the stabil
 A dynamical system is said to be \emph{stable} if two trajectories starting from an input and another one remain sufficiently close to each other all along the propagation. This stability property takes all its sense in the context of adversarial classification.
 
 It was argued by~\citet{haber2017stable} that when $F_{t}$ does not depend on $t$ or vary slowly with time\footnote{This blurry definition of "vary slowly" makes the property difficult to apply.}, the stability can be characterized by the eigenvalues of the Jacobian matrix $\nabla_x F_{t}(x_t)$: 
-the dynamical system is stable if the real part of the eigenvalues of the Jacobian stay negative throughout the propagation.
+the dynamical system is stable if the real part of the eigenvalues of the Jacobian remains negative throughout the propagation.
 This property however only relies on intuition and this condition might be difficult to  verify in practice.
-In the following, in order to derive stability properties, we study gradient flows and convex potentials, which are sub-classes of Residual networks.
+In Chapter~\ref{chap:dynam}, in order to derive stability properties, we study gradient flows and convex potentials, which are subclasses of Residual networks.
 
-Other works~\citep{huang2020adversarial,li2020implicit} also proposed to enhance adversarial robustness using dynamical systems interpretations of Residual Networks. Both works argues that using particular discretization scheme would make gradient attacks more difficult to compute due to numerical stability. These works did not provide any provable guarantees for such approaches.
+Other works~\citep{huang2020adversarial,li2020implicit} also proposed to enhance adversarial robustness using dynamical systems interpretations of Residual Networks. Both works argue that using particular discretization schemes would make gradient attacks more difficult to compute due to numerical stability. These works did not provide any provable guarantees for such approaches. We bridge this gap providing principled guarantees for Residual Networks.
 
 
 

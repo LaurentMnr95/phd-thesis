@@ -1,17 +1,17 @@
 \section{Game Theory in a Nutshell}
 
-Game theory studies strategic interactions among agents assuming their actions are rational. It has many applications in social science~\citep{moulin1986game} and more recently in machine learning~\citep{goodfellow2014generative} for instance. In this section, we recall main concepts in game theory that will help us better understanding the problem of adversarial examples. 
+Game theory studies strategic interactions among agents assuming their actions are rational. It has many applications in social science~\citep{moulin1986game} and more recently in machine learning~\citep{goodfellow2014generative} for instance. In this section, we recall the main concepts in game theory that will help us better understanding the problem of adversarial examples. 
 
 
 \subsection{Two-player zero-sum games}
 
-An important subclass of game theoretic problems are two-person zero-sum games.  In such a game there are two players namely Player 1 and Player 2 with opposite objectives. When Player 1 plays an action $x$ in some space $\mathcal{A}_1$ and Player 2 players an action $y$ in some space $\mathcal{A}_2$, Player 1 receives a reward $u_1(x,y)$ (also named utility) and Player 2 receives a reward $u_2(x,y)= -u_1(x,y)$. The objective for each player is to find what is the best strategy to play against the other player to maximize their utility. These strategies are of two types:
+An important subclass of game theoretic problems are two-person zero-sum games.  In such a game there are two players namely Player 1 and Player 2 with opposite objectives. When Player 1 plays an action $x$ in some space $\mathcal{A}_1$ and Player 2 plays an action $y$ in some space $\mathcal{A}_2$, Player 1 receives a reward $u_1(x,y)$ (also named utility) and Player 2 receives a reward $u_2(x,y)= -u_1(x,y)$. The objective for each player is to find what is the best strategy to play against the other player to maximize their utility. These strategies are of two types:
 \begin{itemize}
-    \item \textbf{deterministic strategies:} the player plays a strategy $x$ (for Player 1) or $y$ (for Player 2). 
+    \item \textbf{deterministic strategies:} the player plays a strategy $x$ (for Player 1) or $y$ (for Player 2),
     \item \textbf{mixed strategies:} the player pick up $x$ (for Player 1) or $y$ (for Player 2) randomly according to some probability distribution $\mu$. In this case, the utility functions are averaged according to the strategies $\mu$ and $\nu$ for respectively Player 1 and Player 2.  The average reward of the Player 1 is then $\mathbb{E}_{x\sim\mu,y\sim\nu}\left[u_1(x,y)\right]$.
 \end{itemize}
 
-An important matter is the order of play in the game: the strategies might be different if the player know what was the action of the player before him. This leads us to the notion of best response. Assume that a mixed strategy $\mu$ was played by Player 1, then the set of best responses for Player 2 to Player 1 strategy is a strategy that maximizes the utility: $\arg\max_{\nu}\mathbb{E}_{x\sim\mu,y\sim\nu}\left[u_1(x,y)\right]$. We denote this set $BR_2(\mu)$. Game theory aims at studying and computing the nature of strategies in response to other players strategies.
+An important feature is the order of play in the game: the strategies might be different if the player knows what was the action of the player before him. This leads us to the notion of best response. Assume that a mixed strategy $\mu$ was played by Player 1, then the set of the best responses for Player 2 to Player 1 strategy is a strategy that maximizes the utility: $\arg\max_{\nu}\mathbb{E}_{x\sim\mu,y\sim\nu}\left[u_1(x,y)\right]$. We denote this set $BR_2(\mu)$. Game theory aims at studying and computing the nature of strategies in response to other players strategies.
 
 \subsection{Equilibria in two-player zero-sum games}
 
@@ -19,7 +19,7 @@ An important matter is the order of play in the game: the strategies might be di
 
 In game theory, optimal strategies for players are studied under the name of equilibria. Depending on the game, we might have interest in two types of equilibria: Nash equilibria where players do not cooperate and have to choose a strategy simultaneously, and Stackelberg equilibria where a player defines its strategy before the other one. We only focus on two-player zero-sum game.
 
-\paragraph{Nash Equilbria.} In a Nash equilibrium, each player is assumed to know the equilibrium strategies of the othe player, and no player has anything to gain by changing only their own strategy. In other words, it is the strategy a rational player should adopt without any cooperation with the other. Note that the existence of Nash equilibrium is not always guaranteed. Formally, a Nash equilibrium is a tuple of actions $(x^\star,y^\star)$ for Players 1 and 2 such that for all other actions $x$ for Player 1 and $y$ for Player 2 we have:
+\paragraph{Nash Equilibria.} In a Nash equilibrium, each player is assumed to know the equilibrium strategies of the player, and no player has anything to gain by changing only their own strategy. In other words, it is the strategy a rational player should adopt without any cooperation with the other. Note that the existence of a Nash equilibrium is not always guaranteed. Formally, a Nash equilibrium is a tuple of actions $(x^\star,y^\star)$ for Players 1 and 2 such that for all other actions $x$ for Player 1 and $y$ for Player 2 we have:
 \begin{align*}
     u_1(x^\star,y^\star)\geq u_1(x,y^\star)\text{ and } u_2(x^\star,y^\star)\geq u_2(x^\star,y)
 \end{align*}
@@ -27,11 +27,11 @@ Note that here the strategies can be either mixed or deterministic. In a two-pla
 \begin{align*}
     u_1(x,y^\star)\leq u_1(x^\star,y^\star)\leq u_1(x^\star,y)
 \end{align*}
-We remark that a Nash equilbrium is defined as a best response to each other strategy, i.e. $(x^\star,y^\star)$ is a Nash equilibrium if and only if $x^\star\in BR_1(y^\star)$ and $y^\star\in BR_2(x^\star)$. We can then come to a necessary and sufficient condition for the existence of Nash equilibria in the case of a two-player zero-sum game:
+We remark that a Nash equilibrium is defined as a best response to each other strategy, i.e. $(x^\star,y^\star)$ is a Nash equilibrium if and only if $x^\star\in BR_1(y^\star)$ and $y^\star\in BR_2(x^\star)$. We can then come to a necessary and sufficient condition for the existence of Nash equilibria in the case of a two-player zero-sum game:
 \begin{align*}
     \max_x\min_y u_1(x,y) = \min_y\max_x u_1(x,y)
 \end{align*}
-It is a strong duality condition on the function $u_1$, with the additional property that the optima are  attained. If there is duality but the optima are not attained, we can state the existence of $\delta$-approximate Nash equilbria for every $\delta>0$, i.e. $(x^\delta,y^\delta)$ such that:
+It is a strong duality condition on the function $u_1$, with the additional property that the optima are  attained. If there is duality, but the optima are not attained, we can state the existence of $\delta$-approximate Nash equilibria for every $\delta>0$, i.e. $(x^\delta,y^\delta)$ such that:
 \begin{align*}
     u_1(x^\delta,y^\delta)\geq u_1(x,y^\delta)-\delta\text{ and } u_2(x^\delta,y^\delta)\geq u_2(x^\delta,y)-\delta
 \end{align*}
@@ -43,7 +43,7 @@ It is a strong duality condition on the function $u_1$, with the additional prop
 
 \subsection{Strong Duality Theorems}
 
-\paragraph{Finite action sets.} In a two-player zero-sum game where the actions space is finite for both players, the rewards can be casted in a matrix $A\in R^{n\times m}$ where $A_{ij} =u_1(x_i,y_j)$. In this case, Von Neumann~\citep{von1937uber} proved that there always exists a mixed equilibrium. A mixed strategy of $n$ actions can be embedded in the probability simplex:
+\paragraph{Finite action sets.} In a two-player zero-sum game where the actions space is finite for both players, the rewards can be cast in a matrix $A\in R^{n\times m}$ where $A_{ij} =u_1(x_i,y_j)$. In this case, Von Neumann~\citep{von1937uber} proved that there always exists a mixed equilibrium. A mixed strategy of $n$ actions can be embedded in the probability simplex:
 \begin{align*}
     \Delta_n := \left\{(p_1,\dots,p_n)\in\RR_+^n| \sum_{i=1}^n p_i = 1  \right\}
 \end{align*}
@@ -65,7 +65,7 @@ Let $X$ be a compact convex set and $Y$ be a convex set of a linear topological 
 Moreover, if $Y$ is compact, then the infimum is attained.
 \end{thm}
 
-Note that a function is said to be \emph{quasi-convex} if it lower level sets are convex sets. In particular, convex functions are quasi-convex. 
+Note that a function is said to be \emph{quasi-convex} if its lower level sets are convex sets. In particular, convex functions are quasi-convex. 
 \begin{thm}[Fan's Theorem~\citep{fan1953minimax}]
 Let $X$ be a compact convex set and $Y$ be a convex set (not necessarily topological). Let $u:X\times Y\to\RR$ be a function such that for all $y\in Y$, $u(\cdot,y)$ is concave and upper semi-continuous; and for all $x\in X$, $u(x,\cdot)$ is convex, then:
 \begin{align*}
@@ -74,7 +74,7 @@ Let $X$ be a compact convex set and $Y$ be a convex set (not necessarily topolog
 Moreover, if $Y$ is compact and for all $x\in X$, $u(x,\cdot)$ is lower semi-continuous, the infimum is attained.
 \end{thm}
 
-The hypotheses are close since both concerns convexity or quasi convexity of the reward function and the semi-continuity of the partial reward. The differences are subtle and there are cases where one may use either Sion's or Fan's Theorem. For infinite action sets, it is usual to consider mixed strategies as probability distributions on $X$ or $Y$. In this case, we often endow $\mathcal{M}^1_+(\XX)$ and $\mathcal{M}^1_+(\YY)$ with the weak-$*$ (or narrow) topology of measures and use Sion's or Fan's Theorem directly on these probability spaces.
+The hypotheses are close since both concern convexity or quasi convexity of the reward function and the semi-continuity of the partial reward. The differences are subtle and there are cases where one may use either Sion's or Fan's Theorem. For infinite action sets, it is usual to consider mixed strategies as probability distributions on $X$ or $Y$. In this case, we often endow $\mathcal{M}^1_+(\XX)$ and $\mathcal{M}^1_+(\YY)$ with the weak-$*$ (or narrow) topology of measures and use Sion's or Fan's Theorem directly on these probability spaces.
 
 % \subsection{Computation of Nash Equilibria}
 
@@ -86,11 +86,17 @@ The hypotheses are close since both concerns convexity or quasi convexity of the
 
 
 \section{Optimal Transport concepts}
-Optimal Transport have gained interest in Machine Learning applications during the past years. Indeed, Optimal Transport has the ability to model many problems as Generative Adversarial Networks~\citep{arjovsky2017wasserstein}, and in Adversarial Learning~\citep{sinha2017certifying,pydi2019adversarial,bhagoji2019lower}. In particular, it will be a central tool in this thesis with the notion of distributionally robust optimisation introduced in Section~\ref{sec:dro}. The computation methods for optimal transport problems have also been considerably improved recently. Originally introduced by Monge, this Optimal Transport was a problem where the aim was to move some quantity $x$ to some places $y$ while minimizing the total cost of transport.  Let $\ZZ$ be a Polish space. Let $\PP$ and $\QQ$ be two Borel probability distributions over $\ZZ$ and $c:\ZZ^2\to\bar{\RR}_+$ be a non-negative function. Formally, the problem was posed as follows:
+Optimal Transport have gained interest in Machine Learning applications during the past years. Indeed, Optimal Transport has the ability to model many problems, e.g. Generative Adversarial Networks~\citep{arjovsky2017wasserstein}, or Adversarial Learning~\citep{sinha2017certifying,pydi2019adversarial,bhagoji2019lower}. In particular, it will be a central tool in this thesis with the notion of distributionally robust optimization introduced in Section~\ref{sec:dro}. The computation methods for optimal transport problems have also been considerably improved recently. Originally introduced by Monge, this Optimal Transport was a problem where the aim was to move some quantity $x$ to some places $y$ while minimizing the total cost of transport.  Let $\ZZ$ be a Polish space. Let $\PP$ and $\QQ$ be two Borel probability distributions over $\ZZ$ and $c:\ZZ^2\to\bar{\RR}_+$ be a non-negative function. Formally, the problem was posed as follows:
 \begin{align*}
     \inf_{T\mid~T_\sharp\PP = \QQ}\mathbb{E}_{z\sim\PP}\left[c(z,T(z))\right]
 \end{align*}
-where $T$ is a measurable mapping. The main problem with the previous problem, is that there may exist no mapping from $\PP$ to $\QQ$ , for instance when $\PP$ is a single dirac and $\QQ$ support contains more than two points. To overcome this issue, Kantorovich proposed to interest in couplings in mappings. Formally couplings between distributions are defined as follows.
+where $T$ is a measurable mapping and $T_\sharp\PP$ defines the pushforward measure of $\PP$ by the function $T$:
+\begin{align*}
+    T_\sharp\PP (A) = \PP\left[T^{-1}(A)\right] 
+\end{align*}
+for all measurable sets $A$.
+
+The main difficulty with the previous problem, is that there may exist no mapping from $\PP$ to $\QQ$, for instance when $\PP$ is a single Dirac distribution and $\QQ$ support contains more than two points. To overcome this issue, Kantorovich proposed to interest in couplings in mappings. Formally couplings between distributions are defined as follows.
 
 
 
@@ -108,40 +114,41 @@ Let $\ZZ$ be a Polish space. Let $c:\ZZ^2\to\bar{\RR}_+$ be a lower semi-continu
     W_c(\PP,\QQ):=\inf_{\gamma\in\Gamma_{\PP,\QQ}}\int c(x,y) d\gamma(x,y) = \inf_{\gamma\in\Gamma_{\PP,\QQ}}\mathbb{E}_{(x,y)\sim\gamma}\left[c(x,y) \right]
 \end{align*} 
 \end{definition}
-A clear introduction to this problem can be found in~\cite{villani2003topics}. In particular, it was proved that the infimum is attained. When $\XX$ is endowed with ground metric $d$, one can endow the space of probability distributions with bounded $p$-moments with a metric named the Wasserstein-$p$ metric defined as:
+A clear introduction to this problem can be found in~\cite{villani2003topics}. In particular, it was proved that the infimum is attained. When $\XX$ is endowed with a ground metric $d$, one can endow the space of probability distributions with bounded $p$-moments with a metric named the $p$-Wasserstein metric defined as:
 \begin{align*}
     D_p(\PP,\QQ):=\inf_{\gamma\in\Gamma_{\PP,\QQ}}\mathbb{E}_{(x,y)\sim\gamma}\left[d^p(x,y) \right]^{1/p}
 \end{align*}
-With this metric, the space of probability distributions with bounded $p$-moments metrizes the weak topology of measures. When $p=\infty$, the $D_\infty$ be be defined in the limit as:
+With this metric, the space of probability distributions with bounded $p$-moments metrizes the weak topology of measures. When $p=\infty$, the $D_\infty$ can be defined in the limit as:
 \begin{align*}
     D_\infty(\PP,\QQ):=\inf_{\gamma\in\Gamma_{\PP,\QQ}}\gamma-\esssup_{(x,y)} d(x,y) 
 \end{align*}
-The Wasserstein-$\infty$ metric can be extended to other costs and will be denoted $W_{\infty,c}$.
+The $\infty$-Wasserstein metric can be extended to other costs and will be denoted $W_{\infty,c}$.
 
 \paragraph{Entropic Regularized Optimal Transport.} The computation time of the exact Optimal Transport solution is often prohibitive: the complexity is supercubic in the number of samples in the empirical distributions.~\cite{cuturi2013sinkhorn,peyre2019computational} proposed an entropic regularization of Optimal Transport to accelerate the computation, which writes
 \begin{align*}
-    W_c^\varepsilon(\PP,\QQ):=\inf_{\gamma\in\Gamma_{\PP,\QQ}}\int c(x,y) d\gamma(x,y) = \inf_{\gamma\in\Gamma_{\PP,\QQ}}\mathbb{E}_{(x,y)\sim\gamma}\left[c(x,y) \right] +\varepsilon\times KL(\gamma||\PP\otimes \QQ)
+    W_c^\varepsilon(\PP,\QQ)&:=\inf_{\gamma\in\Gamma_{\PP,\QQ}}\int c(x,y) d\gamma(x,y)+\varepsilon\times KL(\gamma||\PP\otimes \QQ)\\ 
+    &= \inf_{\gamma\in\Gamma_{\PP,\QQ}}\mathbb{E}_{(x,y)\sim\gamma}\left[c(x,y) \right] +\varepsilon\times KL(\gamma||\PP\otimes \QQ)
 \end{align*} 
-where $KL$ is the Kullback Leibler Leibler divergence defined as $\KL(\mu||\nu) = \int\log{\frac{d\mu}{d\nu}}d\mu+\int  d\nu - \int d\mu$  if $\mu\ll \nu$, and $+\infty$ otherwise. To solves this problem,~\cite{cuturi2013sinkhorn} proposed to use Sinkhorn iterations which considerably accelerate the computation of an approximate solution to the optimal transport problem.
+where $KL$ is the Kullback-Leibler divergence defined as $\KL(\mu||\nu) = \int\log{\frac{d\mu}{d\nu}}d\mu+\int  d\nu - \int d\mu$  if $\mu\ll \nu$, and $+\infty$ otherwise. To solves this problem,~\cite{cuturi2013sinkhorn} proposed to use Sinkhorn iterations which considerably accelerate the computation of an approximate solution to the optimal transport problem.
 
-\paragraph{Kantorivch Duality.} A fundammental theorem in Optimal Transportation is the Kantorovich duality theorem as follows.
+\paragraph{Kantorivch Duality.} A fundamental theorem in Optimal Transportation is the Kantorovich duality theorem which writes as follows.
 
 \begin{thm}[Kantorovich duality]
     Let $\ZZ$ be a Polish space. Let $c:\ZZ^2\to\bar{\RR}_+$ be a lower semi-continuous non-negative function. Let $\PP$ and $\QQ$ be two Borel probability distributions over $\ZZ$. Then   the following strong duality theorem holds:
 \begin{align*}
     W_c(\PP,\QQ)=\sup_{f,g\in C(\ZZ),~f\oplus g\leq c}   \int fd\PP+\int fd\QQ
 \end{align*}
-where for all $x,y\in\ZZ$, $f\oplus g(x,y):=f(x)+g(y)$. 
+where for all $x,y\in\ZZ$, $f\oplus g(x,y):=f(x)+g(y)$ and $\mathcal{C}(\ZZ)$ is the set of continuous functions over $\ZZ$. 
 \end{thm}
 One can find a proof of this result in~\citep{villani2003topics}. The main arguments are that the dual of continuous functions on  a compact space is the space of Radon measures, and the Rockafellar duality theorem.  We can also mention its entropic regularized version.
 
 
 \begin{thm}[Kantorovich duality]
-    Let $\ZZ$ be a Polish space . Let $c:\ZZ^2\to\bar{\RR}_+$ be a lower semi-continuous non-negative function. Let $\PP$ and $\QQ$ be two Borel probability distributions over $\ZZ$. Then   the following strong duality theorem holds:
+    Let $\ZZ$ be a Polish space. Let $c:\ZZ^2\to\bar{\RR}_+$ be a lower semi-continuous non-negative function. Let $\PP$ and $\QQ$ be two Borel probability distributions over $\ZZ$. Then   the following strong duality theorem holds:
 \begin{align*}
     W_c(\PP,\QQ)=\sup_{f,g\in C(\ZZ)}   \int fd\PP+\int fd\QQ -\varepsilon\left( \int e^{\frac{f(x)+g(y)-c(x,y)}{\varepsilon}}d\mu(x)d\nu(y)-1\right)
 \end{align*}
-where for all $x,y\in\ZZ$, $f\oplus g(x,y):=f(x)+g(y)$. 
+where for all $x,y\in\ZZ$, $f\oplus g(x,y):=f(x)+g(y)$ and $\mathcal{C}(\ZZ)$ is the set of continuous functions over $\ZZ$. 
 \end{thm}
 
 

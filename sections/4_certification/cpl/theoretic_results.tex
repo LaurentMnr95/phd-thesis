@@ -22,13 +22,13 @@ for all $x\in\RR^d$, and $t\in [ 0,T]$. Then the flow associated with $F_t$ sati
   \begin{align*}
     \frac{d}{dt} \lVert x_t-z_t\rVert_2^2 & = 2 \big\langle x_t-z_t,\frac{d}{dt}( x_t-z_t)\big\rangle\\
       &=2 \big\langle x_t-z_t,F_{\theta_{t}}(x_{t})-F_{\theta_{t}}(z_{t})\big\rangle \\
-      &=  2 \big\langle x_t-z_t,\int_0^1\nabla_xF_{\theta_{t}}(x_{t}+s(z_t-z_t))(x_t-z_t)ds\big\rangle\\
+      &=  2 \big\langle x_t-z_t,\int_0^1\nabla_xF_{\theta_{t}}(z_{t}+s(x_t-z_t))(x_t-z_t)ds\big\rangle\\
       &\textrm{by Taylor-Lagrange formula}\\ 
-      &=  2 \int_0^1\big\langle x_t-z_t,\nabla_xF_{\theta_{t}}(x_{t}+s(z_t-z_t))(x_t-z_t)\big\rangle ds\\
-       &=  2 \int_0^1\big\langle x_t-z_t,S(\nabla_xF_{\theta_{t}}(x_{t}+s(z_t-z_t)))(x_t-z_t)\big\rangle ds
+      &=  2 \int_0^1\big\langle x_t-z_t,\nabla_xF_{\theta_{t}}(z_{t}+s(x_t-z_t))(x_t-z_t)\big\rangle ds\\
+       &=  2 \int_0^1\big\langle x_t-z_t,S(\nabla_xF_{\theta_{t}}(z_{t}+s(x_t-z_t)))(x_t-z_t)\big\rangle ds
   \end{align*}
   In the last step, we used that for every skew-symmetric matrix $A$ and vector $x$, $\langle x,Ax\rangle = 0$.
-  Since $\mu_tI\preceq S(\nabla_xF_{\theta_{t}}(x_{t}+s(z_t-y_t)))\preceq  \lambda_tI$, we get
+  Since $\mu_tI\preceq S(\nabla_xF_{\theta_{t}}(z_{t}+s(x_t-z_t)))\preceq  \lambda_tI$, we get
   \begin{align*}
    2\mu_t \lVert x_t-z_t\rVert_2^2 \leq \frac{d}{dt} \lVert x_t-z_t\rVert_2^2 \leq 2\lambda_t \lVert x_t-z_t\rVert_2^2
   \end{align*}
@@ -44,7 +44,7 @@ The symmetric part plays even a more important role since one can show that a tw
     \partial_i\partial_j F_k =  -\partial_i\partial_k F_j =-\partial_k\partial_i F_j = \partial_k\partial_j F_i = \partial_j\partial_k F_i = -\partial_j\partial_i F_k = -\partial_i\partial_j F_k
 \end{align*}
 So we have $\partial_i\partial_j F_k =0$ and then $F$ is linear: there exists a skew-symmetric matrix $A$ such that $F(x)=Ax$.
-Moreover, constraining $S(\nabla_x F_{t}(x))$ in the general case is technically difficult and a solution resorts to a more intuitive parametrization of  $F_t$ as the sum of two functions $F_{1,t}$ and $F_{2,t}$ whose Jacobian matrix are respectively symmetric  and skew-symmetric.  Thus, such a parametrization enforces $F_{2,t}$  to be linear and skew-symmetric. For the choice of $F_{1,t}$, we propose to rely on potential functions: a function  $F_{1,t}:\RR^d \to \RR^d$ derives from a simpler family of scalar valued function in $\RR^d$, called the \emph{potential}, via the gradient operation. Moreover, since the Hessian of the potential is symmetric, the Jacobian for $F_{1,t}$ is then also symmetric.  If we had the convex property to this potential, its Hessian has positive eigenvalues. Therefore we introduce the following corollary. 
+Moreover, constraining $S(\nabla_x F_{t}(x))$ in the general case is technically difficult and a solution resorts to a more intuitive parametrization of  $F_t$ as the sum of two functions $F_{1,t}$ and $F_{2,t}$ whose Jacobian matrix are respectively symmetric  and skew-symmetric.  Thus, such a parametrization enforces $F_{2,t}$  to be linear and skew-symmetric. For the choice of $F_{1,t}$, we propose to rely on potential functions: a function  $F_{1,t}:\RR^d \to \RR^d$ derives from a simpler family of scalar valued function in $\RR^d$, called the \emph{potential}, via the gradient operation. Moreover, since the Hessian of the potential is symmetric, the Jacobian for $F_{1,t}$ is then also symmetric.  If we had the convex property to this potential, its Hessian would have positive eigenvalues. Therefore, we introduce the following corollary. 
 
 \begin{corollary} 
 \label{cor:conv-skew}Let $(f_{t})_{t\in[0,T]}$ be a family of convex differentiable functions on $\RR^d$ and $(A_t)_{t\in[0,T]}$ a family of skew symmetric matrices. Let us define 
@@ -67,7 +67,7 @@ However, the discretization of such flow is challenging in order to maintain thi
 
 \subsection{Discretized Flows}
 
-To study the discretization of  the previous flow, let $t=1,\dots,T$ be the discretized time steps and from now we consider the flow defined by  $F_t(x) = -\nabla f_{t}(x)+A_t x$, with $(f_{t})_{t=1,\dots,T}$  a family of convex differentiable functions on $\RR^d$ and $(A_t)_{t=1,\dots,T}$ a family of skew symmetric matrices. The most basic method the explicit Euler scheme as defined by: 
+To study the discretization of  the previous flow, let $t=1,\dots,T$ be the discretized time steps and from now we consider the flow defined by  $F_t(x) = -\nabla f_{t}(x)+A_t x$, with $(f_{t})_{t=1,\dots,T}$  a family of convex differentiable functions on $\RR^d$ and $(A_t)_{t=1,\dots,T}$ a family of skew symmetric matrices. The most basic is method the explicit Euler scheme as defined by: 
 \begin{align*}
 x_{t+1} = x_t+ F_t(x_t)
 \end{align*}
@@ -75,7 +75,7 @@ However, if $A_t\neq 0$, this discretized system might not satisfy $\lVert x_t-z
 \begin{align*}
 \lVert x_{t+1}-z_{t+1}\rVert^2 - \lVert x_{t}-z_{t}\rVert^2 =\lVert A_t\left(x_{t}-z_{t}\right)\rVert^2.
 \end{align*}
-Thus explicit Euler scheme cannot guarantee Lipschitzness when $A_t\neq 0$. To overcome this difficulty, the discretization step can be split in two parts, one for $\nabla_x f_t$ and one for $A_t$: 
+Thus explicit Euler scheme cannot guarantee Lipschitzness when $A_t\neq 0$. To overcome this difficulty, the discretization step can be split into two parts, one for $\nabla_x f_t$ and one for $A_t$: 
 \begin{align*}
    \left\{
     \begin{array}{ll}
@@ -90,13 +90,13 @@ This type of discretization scheme  can be found for instance from Proximal Grad
 
 To apply the explicit Euler scheme to $\nabla_x f_t$, an  additional smoothness property on the potential functions is required  to generalize the Lipschitzness guarantee to the discretized flows. Recall that a function $f$ is said to be \emph{$L$-smooth} if it is differentiable and if $x\mapsto\nabla_x f(x)$ is $L$-Lipschitz. 
 \begin{prop}\label{prop:discrete_convex_potentials}
-Let $t\in\{1,\cdots,T\}$ Let us assume that $f_{t}$ is $L_t$-smooth. We  define the following discretized ResNet gradient flow using $h_t$ as a step size:
+Let $t\in\{1,\cdots,T\}$. Let us assume that $f_{t}$ is $M_t$-smooth. We  define the following discretized ResNet gradient flow using $h_t$ as a step size:
 \begin{align*}
     \begin{array}{ll}
     x_{t+\frac12} &= x_{t}-h_{t}\nabla_xf_{t}(x_{t})\\
   \end{array}
  \end{align*}
-Consider now two trajectories $x_t$ and $z_t$ with initial points $x_0=x$ and $z_0=z$ respectively,  if $0\leq h_t\leq \frac{2}{L_t}$,  then 
+Consider now two trajectories $x_t$ and $z_t$ with initial points $x_0=x$ and $z_0=z$ respectively,  if $0\leq h_t\leq \frac{2}{M_t}$,  then 
 $$\lVert x_{t+\frac12}-z_{t+\frac12}\rVert_2\leq \lVert x_t-z_t\rVert_2$$
 \end{prop}
 \begin{proof}
@@ -108,16 +108,16 @@ $$\lVert x_{t+\frac12}-z_{t+\frac12}\rVert_2\leq \lVert x_t-z_t\rVert_2$$
   This equality allows us to derive the equivalence between  $c_{t+1} \leq c_t$ and: 
   \begin{align*}
      \frac{h_t}{2}
-     \lVert  \nabla F_{\theta_{t}}(x_t) - \nabla F_{\theta_{t}}(z_t)\rVert_2^2
+     \lVert  \nabla_x F_{\theta_{t}}(x_t) - \nabla_x F_{\theta_{t}}(z_t)\rVert_2^2
      \leq
-     \langle x_t -z_t, \nabla F_{\theta_{t}}(z_t) - \nabla F_{\theta_{t}}(z_t) \rangle 
+     \langle x_t -z_t, \nabla F_{\theta_{t}}(x_t) - \nabla F_{\theta_{t}}(z_t) \rangle 
   \end{align*}
   Moreover, assuming that $F_{\theta_t}$ being  that:
   \begin{align*}
-     \frac{1}{L_t} &\lVert \nabla_xF_{\theta_{t}}(x_t) - \nabla_xF_{\theta_{t}}(z_t)\rVert_2^2 
+     \frac{1}{M_t} &\lVert \nabla_xF_{\theta_{t}}(x_t) - \nabla_xF_{\theta_{t}}(z_t)\rVert_2^2 
      \leq\big\langle x_t -z_t, \nabla_xF_{\theta_{t}}(x_t) - \nabla_xF_{\theta_{t}}(z_t) \big\rangle
   \end{align*}
-  We can see with this last inequality that if we enforce  $h_t \leq \frac{2}{L_t}$, we get $c_{t+\frac12} \leq c_t$ which concludes the proof.
+  We can see with this last inequality that if we enforce  $h_t \leq \frac{2}{M_t}$, we get $c_{t+\frac12} \leq c_t$ which concludes the proof.
   \end{proof}
   
 
@@ -129,19 +129,19 @@ Another solution relies on the implicit Euler scheme: $ x_{t+\frac12} = x_{t}-\n
 \begin{align*}
  x_{t+\frac12} =\argminB_{x\in\RR^d} \frac 12\lVert x-x_t\rVert^2+ f_t(x)  
 \end{align*}
-We recognized here the proximal operator of $f_t$ that is uniquely defined since $f_t$ is convex. Moreover we have for two trajectories $x_t$ and $z_t$:
+We recognized here the proximal operator of $f_t$ that is uniquely defined since $f_t$ is convex. Moreover, we have for two trajectories $x_t$ and $z_t$:
 \begin{align*}
    \lVert x_t-z_t\rVert^2_2& =  \lVert x_{t+\frac12}-z_{t+\frac12} +\nabla_xf_{t}(x_{t+\frac12})-\nabla_xf_{t}(z_{t+\frac12}) \rVert^2_2 \\
    &=  \lVert x_{t+\frac12}-z_{t+\frac12}\rVert^2 + 2\langle x_t-z_t,\nabla_xf_{t}(x_{t+\frac12})-\nabla_xf_{t}(z_{t+\frac12})\rangle \\
    &+\lVert\nabla_xf_{t}(x_{t+\frac12})-\nabla_xf_{t}(z_{t+\frac12}) \rVert^2_2 \\
    &\geq  \lVert x_{t+\frac12}-z_{t+\frac12}\rVert^2 
 \end{align*}
-where the last inequality is deduced from the convexity of $f_t$. So, without any further assumption on $f_t$, the discretized implicit convex potential flow is $1$-Lipschitz. Then, this strategy defines a $1$-Lipschitz flow without further assumption on $f_t$ than convexity. To compute such a layer, one could solve the proximal operator strongly convex-minimization optimization problem. However, This strategy is not computationally efficient and not scalable and preliminary experiments did not show competitive results and the training time is prohibitive. We leave this solution for future work. 
+where the last inequality is deduced from the convexity of $f_t$. So, without any further assumption on $f_t$, the discretized implicit convex potential flow is $1$-Lipschitz. Then, this strategy defines a $1$-Lipschitz flow without further assumption on $f_t$ than convexity. To compute such a layer, one could compute the proximal operator which is a  strongly convex-minimization optimization problem. However, This strategy is not computationally efficient and not scalable and preliminary experiments did not show competitive results while the training time is prohibitive. We leave this solution for future work. 
 
 \end{rmq}
 \subsection{Discretization scheme for $A_t$}
 
-The second step of discretization involves the term with skew-symmetric matrix $A_t$. As mentioned earlier, the challenge is that the \emph{explicit Euler discretization} is not contractive. More precisely,  the following property 
+The second step of discretization involves the term with skew-symmetric matrices $A_t$. As mentioned earlier, the challenge is that the \emph{explicit Euler discretization} is not contractive. More precisely,  the following property 
 $$\lVert x_{t+1} - z_{t+1}\rVert\geq \lVert x_{t+\frac12} - z_{t+\frac12}\rVert$$ 
 is satisfied with equality only in the special and useless case of $x_{t+\frac12} - z_{t+\frac12} \in \text{ker}(A_t)$. Moreover, the implicit Euler discretization induces an increasing norm and hence does not satisfy the desired property of norm preservation neither. 
 
@@ -152,14 +152,14 @@ We thus propose to use \emph{Midpoint Euler} method, defined as follows:
 \iff&x_{t+1} = \left(I-\frac{A_t}{2}\right)^{-1}\left(I+\frac{A_t}{2}\right)x_{t+\frac12}.
 \end{align*} 
 Since $A_t$ is skew-symmetric, $I-\frac{A_t}{2}$ is invertible. This update corresponds to the Cayley Transform of $\frac{A_t}{2}$ that induces an orthogonal mapping. 
-This kind of layers was introduced and extensively studied in~\citet{trockman2021orthogonalizing}.  
+This kind of layers was introduced and extensively studied in~\citep{trockman2021orthogonalizing}.  
 
 
 \paragraph{Exact Flow.} One can define the simple differential equation corresponding to the flow associated with $A_t$  
 \begin{align*}
         \frac{du_t}{ds} = A_t u_s,\quad u_0 = x_{t+\frac12},
 \end{align*}
-There exists an exact solution exists since $A_t$ is linear. By taking the value at $s=\frac12$, we obtained the following transformation:  
+There exists an exact solution  since $A_t$ is linear. By taking the value at $s=\frac12$, we obtain the following transformation:  
  \begin{align*}
 x_{t+1} := u_{\frac12}=e^{\frac{A}{2}} x_{t+\frac12}.
 \end{align*}
@@ -169,7 +169,7 @@ This step is therefore clearly norm preserving but the matrix exponentiation is 
 \section{Parametrizing Convex Potentials Layers}
 \label{sec:param}
 
-As presented in the previous section, parametrizing the skew symmetric updates has been extensively studied by~\citet{trockman2021orthogonalizing,skew2021sahil}. In this chapter, we focus on  the parametrization of symmetric update with the convex potentials proposed in~\ref{prop:discrete_convex_potentials}. For that purpose, the Input Convex Neural Network (ICNN) \citep{amos2017input} provide a relevant starting point that we will extend. 
+As presented in the previous section, parametrizing the skew symmetric updates has been studied by~\citet{trockman2021orthogonalizing,skew2021sahil}. Here, we focus on  the parametrization of symmetric updates with the convex potentials proposed in Proposition~\ref{prop:discrete_convex_potentials}. For that purpose, the Input Convex Neural Network (ICNN) \citep{amos2017input} provide a relevant starting point that we will extend. 
 
 \subsection{Gradient of ICNN}
 We use $1$-layer ICNN~\citep{amos2017input} to define an efficient computation of Convex Potentials Flows. For any vectors $w_1,\dots w_k\in\mathbb{R}^d$, and bias terms  $b_1,\dots,b_k\in \mathbb{R}$, and for $\phi$ a convex function,  the potential $F$ defined as:
@@ -181,12 +181,12 @@ defines  a convex function in $x$ as the composition of a linear and a convex fu
     x\mapsto \sum_{i=1}^kw_i\phi'(w_i^\top x+b_i) = \mathbf{W}^\top \phi'(\mathbf{W} x+\mathbf{b})
 \end{align*}
 with $\mathbf{W}\in \mathbb{R}^{k\times d}$ and $\mathbf{b}\in\mathbb{R}^{k}$ are respectively the matrix and vector obtained by the concatenation of, respectively, $w_i^\top$ and $b_i$, and $\phi'$ is applied element-wise.  
-Moreover, assuming $\phi'$ is $L$-Lipschitz, we have that $F_{w,b}$ is  $L\lVert\mathbf{W}\rVert_2^2$-smooth. $\lVert\mathbf{W}\rVert_2$ denotes the spectral norm of $\mathbf{W}$.
+Moreover, assuming $\phi'$ is $M$-Lipschitz, we have that $F_{w,b}$ is  $M\lVert\mathbf{W}\rVert_2^2$-smooth. $\lVert\mathbf{W}\rVert_2$ denotes the spectral norm of $\mathbf{W}$.
 % , \ie, the greatest singular value of $\mathbf{W}$ defined as:
 % \begin{align*}
 %    \lVert\mathbf{W}\rVert_2 :=\max_{x\neq 0} \frac{\lVert \mathbf{W}x\rVert_2}{\lVert x\rVert_2}
 % \end{align*}
-The reciprocal also holds: if $\sigma:\RR\to\RR$ is a non-decreasing $L$-Lipschitz function, $\mathbf{W}\in \RR^{k\times d}$ and $b\in \RR^{k}$, there exists a convex $L\lVert\mathbf{W}\rVert_2^2$-smooth function $F_{w,b}$ such that 
+The reciprocal also holds: if $\sigma:\RR\to\RR$ is a non-decreasing $M$-Lipschitz function, $\mathbf{W}\in \RR^{k\times d}$ and $b\in \RR^{k}$, there exists a convex $M\lVert\mathbf{W}\rVert_2^2$-smooth function $F_{w,b}$ such that 
 $$\nabla_xF_{w,b}(x) =  \mathbf{W}^\top \sigma(\mathbf{W} x+\mathbf{b}),$$ where $\sigma$ is applied element-wise. The next section shows how this property can be used to implement the building block and training of such layers. 
 
 
@@ -200,17 +200,17 @@ Written in a matrix form, this layer can be implemented with every linear operat
 In the context of image classification, it is beneficial to use convolutions\footnote{For instance, one can leverage the \texttt{Conv2D} and \texttt{Conv2D\_transpose} functions of the PyTorch framework~\citep{paszke2019pytorch}} instead of generic linear transforms represented by a dense matrix. 
 
 \begin{rmq}
-When $\mathbf{W}\in\RR^{1\times d}$, $b =0$ and $\sigma=\textsc{ReLU}$, the \emph{Convex Potential Layer} is equivalent to the HouseHolder activation function introduced in~\citet{singla2021householder}.
+When $\mathbf{W}\in\RR^{1\times d}$, $b =0$ and $\sigma:x\mapsto\textsc{ReLU(x)}= \max(x,0)$, the \emph{Convex Potential Layer} is equivalent to the HouseHolder activation function introduced in~\citet{singla2021householder}.
 \end{rmq}
 
 Residual Networks~\citep{he2016deep} are also composed of other types of layers which increase or decrease the dimensionality of the flow.
 Typically, in a classical setting, the number of input channels is gradually increased, while the size of the image is reduced with pooling layers.
-In order to build a $1$-Lipschitz Residual Network, all operations need to be properly scale or normalize in order to maintain the Lipschitz constant.
+In order to build a $1$-Lipschitz Residual Network, all operations need to be properly scaled or normalized in order to maintain the Lipschitz constant.
 
-\paragraph{Increasing dimensionsionality.} To increase the number of channels in a convolutional Convex Potential Layer, a zero-padding operation can be easily performed: an input $x$ of size $c\times h \times w$ can be extended to some $x'$ of size  $c'\times h \times w$, where $c'>c$, which equals $x$ on the $c$ first channels and $0$ on the $c'-c$ other channels.
+\paragraph{Increasing dimensionsionality.} To increase the number of channels in a convolutional Convex Potential Layer, a zero-padding operation can be performed: an input $x$ of size $c\times h \times w$ can be extended to some $x'$ of size  $c'\times h \times w$, where $c'>c$, which equals $x$ on the $c$ first channels and $0$ on the $c'-c$ other channels.
 \paragraph{Reducing dimensionsionality.} Dimensionality reduction is another essential operation in neural networks. On one hand, its  goal is to  reduce the number of parameters and thus the amount of computation required to build the network. On the other hand it allows the model to progressively map the input space on the output dimension, which corresponds in many cases to the number of different labels $K$. 
 In this context, several operations exist:
-pooling layers are used to extract information present in a region of the feature map generated by a convolution layer. One can easily adapt pooling layers (\emph{e.g.} max and average) to make them $1$-Lipschitz~\citep{bartlett2017spectrally}.
+pooling layers are used to extract information present in a region of the feature map generated by a convolution layer. One can adapt pooling layers (\emph{e.g.} max and average) to make them $1$-Lipschitz~\citep{bartlett2017spectrally}.
 Finally, a simple method to reduce the dimension is the product with a non-square matrix. We simply implement it as  the truncation of the output. This obviously maintains the Lipschitz constant.
 
 
@@ -234,16 +234,16 @@ Finally, a simple method to reduce the dimension is the product with a non-squar
 
 \subsection{Computing spectral norms}
 Our Convex Potential Layer, described in Equation~\ref{equation:stable_block}, can be adapted to any kind of linear transformations (\emph{i.e.} Dense or Convolutional) but requires the computation of the spectral norm for these transformations.
-Given that computation of the spectral norm of a linear operator is known to be NP-hard~\citep{steinberg2005computation}, an efficient approximate method is required during training to keep the complexity tractable. 
+The exact computation of the spectral norm of a linear operator is computationally prohibitive, an efficient approximate method is required during training to keep the complexity tractable. 
 
 
 Many techniques exist to approximate the spectral norm (or the largest singular value), and most of them exhibit a trade-off between efficiency and accuracy.
 Several methods exploit the structure of convolutional layers to build an upper bound on the spectral norm of the linear transform performed by the convolution~\citep{jia2017improving,singla2021fantastic,araujo2021lipschitz}.
-While these methods are generally efficient, they can less relevant and adapted to certain settings. For instance in our context, using a loose upper bound of the spectral norm will hinder the expressive power of the layer and make it too contracting.
+While these methods are generally efficient, they are less relevant  in certain settings. For instance in our context, using a loose upper bound of the spectral norm will hinder the expressive power of the layer and make it too contracting.
 
-For these reasons we rely on the Power Iteration Method (PM).  This method converges at a geometric rate towards the largest singular value of a matrix. More precisely the convergence rate for a given matrix $\mathbf{W}$ is $\textstyle O((\frac{\lambda_2}{\lambda_1})^k)$ after $k$ iterations, independently from the choice for the starting vector, where $\lambda_1>\lambda_2$ are the two largest singular values of $\mathbf{W}$. While it can appear to be computationally expensive due to the large number of required iterations for convergence, it is possible to drastically reduce the number of iterations during training. Indeed, as in~\citep{miyato2018spectral}, by considering that the weights' matrices $\mathbf{W}$ change slowly during training, one can perform only one iteration of the PM for each step of the training and let the algorithm slowly converges along with the training process\footnote{Note that a typical training requires approximately 200K steps where 100 steps of PM is usually enough for convergence}.
+For these reasons we rely on the Power Iteration Method (PM).  This method converges at a geometric rate towards the largest singular value of a matrix. More precisely the convergence rate for a given matrix $\mathbf{W}$ is $\textstyle O((\frac{\lambda_2}{\lambda_1})^k)$ after $k$ iterations, independently of the choice of the starting vector, where $\lambda_1>\lambda_2$ are the two largest singular values of $\mathbf{W}$. While it can appear computationally expensive due to the large number of required iterations for convergence, it is possible to drastically reduce the number of iterations during training. Indeed, as in~\citep{miyato2018spectral}, by considering that the weights' matrices $\mathbf{W}$ change slowly during training, one can perform only one iteration of the PM for each step of the training and let the algorithm slowly converges along with the training process\footnote{Note that a typical training requires approximately 200K steps where 100 steps of PM is usually enough for convergence}.
 We describe with more details in Algorithm~\ref{algorithm:stable_block}, the operations performed during a forward pass with a Convex Potential Layer. 
 
-However for evaluation purpose, we need to compute the certified adversarial robustness, and this requires to ensure the convergence of the PM. Therefore, we perform $100$ iterations for each layer\footnote{$100$ iterations of Power Method is sufficient to converge with a geometric rate.} at inference time. Also note that at inference time, the computation of the spectral norm only needs to be performed once for each layer. 
+However, for evaluation purpose, we need to compute the certified adversarial robustness, and this requires to ensure the convergence of the PM. Therefore, we perform $100$ iterations for each layer\footnote{$100$ iterations of Power Method is sufficient to converge with a geometric rate.} at inference time. Also note that at inference time, the computation of the spectral norm only needs to be performed once for each layer. 
 
 

@@ -1,23 +1,23 @@
 \section{Towards Adversarial Consistency}
 \label{sec:consistency}
-In this section, we focus our study on the problem of adversarial consistency. In a first part, taking inspiration from~\citet{long2013consistency,awasthi2021calibration}, we study the $\varepsilon$-realisable case, i.e. the case where the adversarial risk at level $\varepsilon$ equals zero. In a second part, we analyze the behaviour of a candidate class of losses.
+We focus our study now on the problem of adversarial consistency. In a first part, taking inspiration from~\citet{long2013consistency,awasthi2021calibration}, we study the $\varepsilon$-realisable case, i.e. the case where the adversarial risk at level $\varepsilon$ equals zero. In a second part, we analyze the behavior of a candidate class of losses, namely the \emph{$0/1$-like margin losses}.
 
 
 
-\subsection{The Realisable Case}
-The feasible setting is an important case where there are no possible adversaries for the Bayes optimal classifier. Formally, this means that the risk of adversity is $0$, as shown in the following definition.
+\subsection{The Realizable Case}
+The realizable case is important since there are no possible adversaries for the Bayes optimal classifier. Formally, this means that the adversarial risk equals $0$, as stated in the following definition.
 
 \begin{definition}[$\varepsilon$-realisability]
 Let $\PP$ be a Borel probability distribution on $\XX\times\YY$ and $\varepsilon\geq0$. We say that $\PP$ is \emph{$\varepsilon$-realisable} if $\risk_{\varepsilon,\PP}^\star = 0$.
 \end{definition}
 
 
-In the case of realisable probability distribution, calibrated (and consequently consistent) margin losses in the standard classification setting are also calibrated and consistent in the adversarial case. 
+In the case of realizable probability distribution, calibrated (and consequently consistent) margin losses in the standard classification setting are also calibrated and consistent in the adversarial case. 
 \begin{prop}
 \label{prop:realizable} 
 Let $\varepsilon>0$. Let $\PP$ be an $\varepsilon$-realisable distribution and $\phi$ be a calibrated margin loss in the standard setting. Then $\phi$ is adversarially consistent at level $\varepsilon$. 
 \end{prop}
-The intuition behind this result is that if a probability distribution is $\varepsilon$-realisable, the marginal distributions are sufficiently separated so that there are no possible adversarial attacks, each point in the $\epsilon$-neighbourhood of the support of the distribution can be classified independently of each other. To formally prove this result, we need a preliminary lemma.
+The intuition behind this result is that if a probability distribution is $\varepsilon$-realisable, the marginal distributions are sufficiently separated, so that there are no possible adversarial attacks, each point in the $\epsilon$-neighbourhood of the support of the distribution can be classified independently of each other. To formally prove this result, we need a preliminary lemma.
 
 
 \begin{lemma}
@@ -66,7 +66,7 @@ We have:
     &\leq p\times\inf_{\alpha\in\RR}\phi(\alpha) + 2\epsilon
 \end{align*}
 
-Similarly we get that:
+Similarly, we have:
 \begin{align*}
 (1-p)\times\EE_{\PP_{-1}}\left[\sup_{x'\in B_\varepsilon(x)}\phi(-g(x))\right] \leq(1-p)\times\inf_{\alpha\in\RR}\phi(\alpha)+2\epsilon
 \end{align*}
@@ -76,7 +76,7 @@ We get: $\risk_{\phi_\varepsilon,\PP}(g)\leq \inf_{\alpha\in\RR}\phi(\alpha)+4\e
 
 
 
-We are now set to prove the result of consistency in the realisable case.
+We are now ready to prove the result of consistency in the realizable case.
 \begin{proof}
 Let $0<\epsilon<1$. Thanks to Theorem~\ref{thm:cal-standard}, $\phi$ is uniformly calibrated for standard classification, then, there exists $\delta>0$ such that for all $f\in\mathcal{F}(\XX)$ and for all $x$:
 \begin{align*}
@@ -90,12 +90,13 @@ Let now $f\in\mathcal{F}(\XX)$ be such that  $\risk_{\phi_\varepsilon,\PP}(f)\le
 
 Then by Markov inequality:
 \begin{align*}
-    \PP\left[\sup_{x'\in B_\varepsilon(x)}\phi(yf(x))-\inf \phi\geq\delta\right]\leq\frac{\EE_{\PP}\left[\sup_{x'\in B_\varepsilon(x)}\phi(yf(x))-\inf \phi\right]}{\delta}\leq \epsilon
+    \PP\left[\sup_{x'\in B_\varepsilon(x)}\phi(yf(x))-\inf_{\alpha\in\RR}\phi(\alpha)\geq\delta\right]&\leq\frac{\EE_{\PP}\left[\sup_{x'\in B_\varepsilon(x)}\phi(yf(x))-\inf_{\alpha\in\RR}\phi(\alpha)\right]}{\delta}\\
+    &\leq \epsilon
 \end{align*}
 
-So we have $\PP\left[\forall x'\in B_\varepsilon(x),\phi(yf(x))-\inf \phi\leq\delta\right]\geq1-\epsilon$ and then 
+So we have $\PP\left[\forall x'\in B_\varepsilon(x),\phi(yf(x))-\inf_{\alpha\in\RR}\phi(\alpha)\leq\delta\right]\geq1-\epsilon$ and then 
 \begin{align*}
-    \PP\left[\forall x'\in B_\varepsilon(x),\mathbf{1}_{y\text{sign}f(x)\leq 0} = 0\right]\geq1-\epsilon\quad.
+    \PP\left[\forall x'\in B_\varepsilon(x),\mathbf{1}_{y\text{sign}(f(x))\leq 0} = 0\right]\geq1-\epsilon\quad.
 \end{align*}
  Since $\PP$ is $\varepsilon$-realisable, we have $\risk_{\varepsilon,\PP}^\star=0$ and:
 \begin{align*}
@@ -120,14 +121,14 @@ $\phi$ is a \emph{$0/1$-like margin loss} if there exists $\lambda\geq0$, $\tau\
 \end{align*}
 \end{definition}
 
-Note here that the losses here are not necessarily shifted, making this condition weaker. Consequently, we cannot hope that such losses are consistent neither calibrated, but they might help in paving a way towards consistency.  Note also that if $\phi$ is a odd or shifted odd loss, one can always find a rescaling of $\phi$ such that $\phi$ becomes a $0/1$-like margin loss. Note also that such a rescaling does neither change the notion of consistency and calibration for $\phi$ nor for its rescaled version.
+Note here that the losses here are not necessarily shifted, making this condition weaker. Consequently, we cannot hope that such losses are consistent neither calibrated, but they might help in finding the path towards consistency.  Note also that if $\phi$ is an odd or shifted odd loss, one can always find a rescaling of $\phi$ such that $\phi$ becomes a $0/1$-like margin loss. Note also that such a rescaling does neither change the notion of consistency and calibration for $\phi$ nor for its rescaled version.
 
 
 
 
 
 
-Based on min-max arguments, we provide below some results better characterizing$0/1$-like margin loss functions in the adversarial setting. Let us first recall the notions of \emph{midpoint property} and \emph{adversarial distributions set} that will be useful from now on as well as an important existing result from~\citet{pydi2021many}. 
+Based on min-max arguments, we provide below some results better characterizing $0/1$-like margin loss functions in the adversarial setting. Let us first recall the notions of \emph{midpoint property} and \emph{adversarial distributions set} that will be useful from now on as well as an important existing result from~\citet{pydi2021many}. 
 
 \begin{definition}
 Let $(\mathcal{X},d)$ be a proper Polish metric space. We say that $\XX$ satisfy the \emph{midpoint property} if for all $x_1,x_2\in\XX$ there exist $x\in\XX$ such that $d(x,x_1) = d(x,x_2) =\frac{d(x_1,x_2)}{2}$.
@@ -145,15 +146,16 @@ We define the set of \emph{adversarial distributions} $\mathcal{A}_\varepsilon(\
 
 
 \begin{thm}[\citet{pydi2021many}]
+\label{thm:eq01loss}
 Let $\XX$ be a Polish space satisfying the midpoint property. Then strong duality holds:
 \begin{align*}
 \risk^\star_\varepsilon(\PP) = \inf_{f\in\mathcal{F}(\XX)}\sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)} \risk_{\QQ}(f) =    \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)} \inf_{f\in\mathcal{F}(\XX)} \risk_{\QQ}(f)
 \end{align*}
-Moreover the supremum of the right-end term is attained. 
+Moreover the supremum of the right-hand term is attained. 
 \end{thm}
 Note that in the original version of the theorem, \citet{pydi2021many} did not prove that the supremum is attained. 
 \begin{proof}
-    To prove that, note that for every $\QQ$,
+    To prove that, note that for every Borel probability distribution $\QQ$ over $\XX\times\YY$,
 \begin{align*}
     \inf_{f\in\mathcal{F}(\XX)} \risk_{\QQ}(f) = (1-q)+\inf_{f\in\mathcal{C}(\XX),~0\leq f\leq 1} \int f d(q\QQ_1 +(q-1)\QQ_{-1})
 \end{align*}
@@ -171,13 +173,13 @@ is upper semi continuous for the weak topology of measures, as it is the infinum
 % We are now ready to study the link between the adversarial risk associated with a $0/1$-like shifted odd loss and the $0/1$ loss.
 
 
-\paragraph{Connections between $0/1$-like margin loss and $0/1$ loss: a min-max viewpoint.} Thanks the the above concepts, we can now present some results identifying the similarity and the differences between the  $0/1$ loss and a $0/1$-like margin losses. We first, show that for a given fixed probability distribution $\PP$, the adversarial optimal risk associated with a $0/1$-like margin loss and the $0/1$ loss are equal.
+\paragraph{Connections between $0/1$-like margin loss and $0/1$ loss: a min-max viewpoint.} Thanks the the above concepts, we can now present some results identifying the similarity and the differences between the  $0/1$ loss and $0/1$-like margin losses. We first show that for a given fixed probability distribution $\PP$, the adversarial optimal risk associated with a $0/1$-like margin loss and the $0/1$ loss are equal.
 
 \begin{thm}
 
 
 \label{thm:equalityrisk}
-Let $\XX$ be a Polish space satisfying the midpoint property. Let $\varepsilon\geq 0$. Let $\PP$ be a Borel probability distribution over $\XX\times\YY$. Let ${\phi}$ be a $0/1$-like margin loss. Then, we have:
+Let $\XX$ be a Polish space satisfying the midpoint property. Let $\varepsilon\geq 0$, $\PP$ be a Borel probability distribution over $\XX\times\YY$, and ${\phi}$ be a $0/1$-like margin loss. Then, we have:
 \begin{align*}
 \risk^\star_{{\phi}_\varepsilon,\PP} = \risk^\star_{\varepsilon,\PP}
 \end{align*}
@@ -188,23 +190,23 @@ In particular, we note that this property holds true for the standard risk. To p
 
 \begin{lemma}
     \label{lem:equalityriskstandard}
-    Let $\QQ$ be a Borel probability distribution over $\XX\times\YY$. Let ${\phi}$ be a $0/1$-like shifted odd loss, then: $\risk_{\phi,\QQ}^\star =\risk_{\QQ}^\star$.
+    Let $\QQ$ be a Borel probability distribution over $\XX\times\YY$ and ${\phi}$ be a $0/1$-like shifted odd loss, then: $\risk_{\phi,\QQ}^\star =\risk_{\QQ}^\star$.
     \end{lemma}
     
     \begin{proof}
     \citet{bartlett2006convexity,steinwart2007compare} proved that: for every margin losses $\phi$,
     \begin{align*}
-        \risk_{\phi,\QQ}^\star &= \inf_{f\in\mathcal{F}(X)}\mathbb{E}_{(x,y)\sim\QQ}\left[\phi(yf(x))\right] 
-        \\&= \mathbb{E}_{x\sim\QQ_x}\left[\inf_{\alpha\in\RR}\QQ(y=1|x)\phi(\alpha)+(1-\QQ(y=-1|x))\phi(-\alpha)\right]\\
+        \risk_{\phi,\QQ}^\star &= \inf_{f\in\mathcal{F}(\XX)}\mathbb{E}_{(x,y)\sim\QQ}\left[\phi(yf(x))\right] 
+        \\&= \mathbb{E}_{x\sim\QQ_x}\left[\inf_{\alpha\in\RR}\left[\QQ(y=1|x)\phi(\alpha)+(1-\QQ(y=-1|x))\phi(-\alpha)\right]\right]\\
         &= \mathbb{E}_{x\sim\QQ_x}\left[\mathcal{C}_\phi^\star(\QQ(y=1|x),x)\right]\\
     \end{align*}
     We also have $ \risk_{\QQ}^\star =\mathbb{E}_{x\sim\QQ_x}\left[\mathcal{C}^\star(\QQ(y=1|x),x)\right] $. Moreover, if $\phi$ is a $0/1$-like shifted odd loss, then: for every $x\in\XX$ and $\eta\in[0,1]$, $\mathcal{C}_\phi^\star(\eta,x) =\min(\eta,1-\eta)=\mathcal{C}^\star(\eta,x)$. We can then conclude that  $\risk_{\phi,\QQ}^\star =\risk_{\QQ}^\star$.
     \end{proof}
     
-    We are now set to prove Theorem~\ref{thm:equalityrisk}.
+    We can now prove Theorem~\ref{thm:equalityrisk}.
     
     \begin{proof}
-    Let $\epsilon>0$ and $\PP$ be a distribution. Let $f$ such that $\risk_{\varepsilon,\PP}(f) \leq \risk_{\varepsilon,\PP}^\star +\epsilon$. Let $a>0$ such that $\phi(a)\geq 1-\epsilon$ and $\phi(-a)\leq\epsilon$. We define $g$ as: 
+    Let $\epsilon>0$ and $\PP$ be a Borel probability distribution over $\XX\times\YY$. Let $f$ such that $\risk_{\varepsilon,\PP}(f) \leq \risk_{\varepsilon,\PP}^\star +\epsilon$. Let $a>0$ such that $\phi(a)\geq 1-\epsilon$ and $\phi(-a)\leq\epsilon$. We define $g$ as: 
     \begin{align*}
          g(x)= \left\{
         \begin{array}{ll}
@@ -230,7 +232,7 @@ In particular, we note that this property holds true for the standard risk. To p
       \\ &= \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)}  \risk_{\QQ}^\star= \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)}\inf_{f\in\mathcal{F}(\XX)} \risk_{\QQ}(f)  \\
       & =  \inf_{f\in\mathcal{F}(\XX)} \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)}\risk_{\QQ}(f) = \risk_{\varepsilon,\PP}^\star \\
     \end{align*}
-Then finally we get that $\risk_{\phi_\varepsilon,\PP}^\star=  \risk_{\varepsilon,\PP}^\star$.
+The last step is a consequence of Theorem~\ref{thm:eq01loss}. Then finally we get that $\risk_{\phi_\varepsilon,\PP}^\star=  \risk_{\varepsilon,\PP}^\star$.
     
     \end{proof}
 
@@ -240,19 +242,19 @@ From this result, we can derive two interesting corollaries about  $0/1$-like ma
 
 \begin{coro}[Strong duality for $\phi$] 
 \label{coro:nash}
-Let assume that $\XX$ be a Polish space satisfying the midpoint property. Let $\varepsilon\geq 0$. Let $\PP$ be a Borel probability distribution over $\XX\times\YY$. Let ${\phi}$ be a $0/1$-like margin loss. Then, we have:
+Let us assume that $\XX$ is a Polish space satisfying the midpoint property. Let $\varepsilon\geq 0$, $\PP$ be a Borel probability distribution over $\XX\times\YY$, and ${\phi}$ be a $0/1$-like margin loss. Then, we have:
 \begin{align*}
 \inf_{f\in\mathcal{F}(\XX)}\sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)} \risk_{\phi,\QQ}(f) =    \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)} \inf_{f\in\mathcal{F}(\XX)} \risk_{\phi,\QQ}(f)
 \end{align*}
 Moreover the supremum is attained.
 \end{coro}
 
-Note that there is no reason that the infimum is attained. A second interesting corollary is the equality of the set of optimal attacks, i.e. distributions of $\mathcal{A}_\varepsilon(\PP)$ that realizes maximizes the dual problem, for the same for the $0/1$ loss and $0/1$-like margin loss.
+Note that there is no reason that the infimum is attained. A second interesting corollary is the equality of the set of optimal attacks, i.e. distributions of $\mathcal{A}_\varepsilon(\PP)$ that maximize the dual problem:  an optimal attack for the $0/1$ loss is also an optimal attack for a  $0/1$-like margin, and vice versa.
 
 
 \begin{coro}[Optimal attacks]
 \label{coro:optattacks}
-Let assume that $\XX$ be a Polish space satisfying the midpoint property. Let $\varepsilon\geq 0$. Let $\PP$ be a Borel probability distribution over $\XX\times\YY$. Then, an optimal attack $\QQ^\star$  of level $\varepsilon$  exists for both the $0/1$ loss and  $\phi$. Moreover, for $\QQ\in\mathcal{A}_\varepsilon(\PP)$.  $\QQ$ is an optimal attack for the loss $\phi$  if and only if it is an optimal attack for the $0/1$ loss.
+Let assume that $\XX$ be a Polish space satisfying the midpoint property. Let $\varepsilon\geq 0$ and $\PP$ be a Borel probability distribution over $\XX\times\YY$. Then, an optimal attack $\QQ^\star$  of level $\varepsilon$  exists for both the $0/1$ loss and  $\phi$. Moreover, for $\QQ\in\mathcal{A}_\varepsilon(\PP)$.  $\QQ$ is an optimal attack for the loss $\phi$  if and only if it is an optimal attack for the $0/1$ loss.
 \end{coro}
 
 
@@ -261,7 +263,7 @@ Let assume that $\XX$ be a Polish space satisfying the midpoint property. Let $\
     \begin{align*}
          \inf_{f\in\mathcal{F}(\XX)}\sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)} \risk_{\phi,\QQ}(f) &= \risk_{\phi_\varepsilon,\PP}^\star = \risk_{\varepsilon,\PP}^\star&\quad\text{by Theorem~\ref{thm:equalityrisk}} \\
          &=\inf_{f\in\mathcal{F}(\XX)}\sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)} \risk_{\QQ}(f) \\
-         = \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)} \inf_{f\in\mathcal{F}(\XX)}\risk_{\QQ}(f)\\
+         &= \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)} \inf_{f\in\mathcal{F}(\XX)}\risk_{\QQ}(f)\\
          &=\sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)} \risk^\star_{\QQ}(f) = \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)} \risk^\star_{\phi,\QQ}(f)&\quad\text{by Lemma~\ref{lem:equalityriskstandard}}\\
         & =  \sup_{\QQ\in\mathcal{A}_\varepsilon(\PP)}\inf_{f\in\mathcal{F}(\XX)} \risk_{\phi,\QQ}(f)\\
     \end{align*}
@@ -269,10 +271,10 @@ Let assume that $\XX$ be a Polish space satisfying the midpoint property. Let $\
     \end{proof}
     
 
-\paragraph{A step towards consistency.} From the previous results, we are able to prove a first result toward the demonstration of consistency. This result is much weaker than consistency result, but it guarrantees that if a sequence minimizes the adversarial risk, then it minimizes the risk for optimal attacks, i.e. in a game where the attacker plays before the classifier
+\paragraph{A step towards consistency.} From the previous results, we are able to prove a first result toward the demonstration of consistency. This result is much weaker than consistency result, but it guarantees that if a sequence minimizes the adversarial risk, then it minimizes the risk for optimal attacks, i.e. in a game where the attacker plays before the classifier
 \begin{prop}
 \label{prop:pseudo}
-Let assume that $\XX$ be a Polish space satisfying the midpoint property. Let $\varepsilon\geq 0$. Let $\PP$ be a Borel probability distribution over $\XX\times\YY$.  Let $\QQ^\star$ be an optimal attack of level $\varepsilon$. Let $(f_n)_{n\in\mathbb{N}}$ be a sequence of $\mathcal{F}(\XX)$ such that $\risk_{\phi_\varepsilon,\PP}(f_n)\to\risk_{\phi_\varepsilon,\PP}^\star$. Then $\risk_{\QQ^\star}(f_n)\to\risk_{\varepsilon,\PP}^\star$.
+Let us assume that $\XX$ be a Polish space satisfying the midpoint property. Let $\varepsilon\geq 0$ and $\PP$ be a Borel probability distribution over $\XX\times\YY$.  Let $\QQ^\star$ be an optimal attack of level $\varepsilon$. Let $(f_n)_{n\in\mathbb{N}}$ be a sequence of $\mathcal{F}(\XX)$ such that $\risk_{\phi_\varepsilon,\PP}(f_n)\to\risk_{\phi_\varepsilon,\PP}^\star$. Then $\risk_{\QQ^\star}(f_n)\to\risk_{\varepsilon,\PP}^\star$.
 \end{prop}
 
 \begin{proof}
@@ -281,13 +283,13 @@ Let $(f_n)_{n\in\mathbb{N}}$ be a sequence of $\mathcal{F}(\XX)$ such that $\ris
     \risk_{\phi_\varepsilon,\PP}^\star =   \risk_{\phi,\QQ^\star}^\star\quad.
 \end{align*} Then we get 
 \begin{align*}
-   0\leq \risk_{\phi,\QQ^\star}(f_n)- \risk_{\phi,\QQ^\star}^\star \leq \risk_{\phi_\varepsilon,\PP}(f_n)-\risk_{\phi_\varepsilon,\PP}^\star\quad.
+   0\leq \risk_{\phi,\QQ^\star}(f_n)- \risk_{\phi,\QQ^\star}^\star \leq \risk_{\phi_\varepsilon,\PP}(f_n)-\risk_{\phi_\varepsilon,\PP}^\star
 \end{align*}
-We then deduce that: $\risk_{\phi,\QQ^\star}(f_n)\to \risk_{\phi,\QQ^\star}^\star$. Since $\phi$ is consistent in the standard classification setting, we deduce that 
+from which we deduce that: $\risk_{\phi,\QQ^\star}(f_n)\to \risk_{\phi,\QQ^\star}^\star$. Since $\phi$ is consistent in the standard classification setting, we then have     
 \begin{align*}
     \risk_{\QQ^\star}(f_n)\to \risk_{\QQ^\star}^\star\quad.
 \end{align*}
 \end{proof}
  
 
-We hope this result and its proof may lead to a full proof of consistency. This result is significantly weaker than consistency as stated in the following remark. In the proof of the previous results, we did not use the assumptions that losses are shifted. In our opinion, it is the key element that we miss and need to use to conclude the consistency of this family of losses. The shift in the loss would force the classifier to goes to $\pm \infty$ on the $\varepsilon$ neighbourhood support of the distribution of $\PP$. This question is complicated and is left as further work.  
+We hope this result and its proof may lead to a full proof of consistency. This result is significantly weaker than consistency as stated in the following remark. In the proof of the previous results, we did not use the assumptions that losses are shifted. In our opinion, it is the key element that we miss and need to use to conclude the consistency of this family of losses. The shift in the loss would force the classifier to goes to $\pm \infty$ on the $\varepsilon$ neighborhood support of the distribution of $\PP$. This question is complicated and is left as further work.  

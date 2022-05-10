@@ -1,4 +1,4 @@
-\section{A game theoretic approach to adversarial classification}
+\section{A Game Theoretic Approach to Adversarial Classification}
 
 While adversarial classification can be naturally understood as a game between the attacker and the classifier, it has only been very recent that the problem has been studied from a game theoretic perspective. Adversarial examples have been studied under  the notions of Stackelberg game in~\cite{10.1145/2020408.2020495}, and  zero-sum game in~\cite{7533509,DBLP:journals/corr/abs-1906-02816,bose2021adversarial}.
 
@@ -7,21 +7,21 @@ In~\citep{bose2021adversarial}, the authors consider a setting with a convex los
 \begin{align*}
    d(g(x,y,z),x)\leq\varepsilon 
 \end{align*}
-for all $x,y,z$ and $z$ is sampled from a latent distribution $p_z$. The sets of such functions $g$ is denoted $G_\varepsilon$. In this setting the authors show there is no duality gap for the game between the attacker and the learner:
+for all $x,y,z$ and $z$ is sampled from a latent distribution $p_z$. The set of such functions $g$ is denoted $G_\varepsilon$. In this setting the authors show there is no duality gap for the game between the attacker and the learner:
 \begin{align*}
     \min_{f\in\mathcal{H}}\max_{g\in G_\varepsilon}\mathbb{E}_{(x,y)\sim\PP,z\sim p_z}\left[L\left(f(g(x,y,z),y\right)\right] =   \max_{g\in G_\varepsilon}  \min_{f\in\mathcal{H}}\mathbb{E}_{(x,y)\sim\PP,z\sim p_z}\left[L\left(f(g(x,y,z),y\right)\right]
 \end{align*} 
- However, this setting is limited due to the convexityassumptions. As we will see in Chapter~\ref{chap:calibration}, one can prove that no convex loss can be a good surrogate for the $0/1$ loss in the adversarial setting. The goal of the paper is to build a framework to design new zero-shot black-box adversarial attacks from generative attackers. Such an attack is called a \emph{No Box attack}.
+ However, this setting is limited due to the convexity assumptions. As we will see in Chapter~\ref{chap:calibration}, one can prove that no convex loss can be a good surrogate for the $0/1$ loss in the adversarial setting. The goal of the paper is to build a framework to design new zero-shot black-box adversarial attacks from generative attackers. Such an attack is called a \emph{No Box attack}.
 
-\cite{pinot2020randomization} proposed to study the adversarial attacks problem from a game theoretic point of view. The authors proposed to treat the case of binary classification with $0/1$ loss where the classifier can be either allow to deterministically play a continuous function or randomly chose a continuous function. In game theoretic terminology, the classifier can play mixed strategies of continuous functions. On the other side, the attacker is deterministic. Formally, its set of actions is:
+\cite{pinot2020randomization} proposed to study the adversarial attacks problem from a game theoretic point of view. The authors proposed to treat the case of binary classification with $0/1$ loss where the classifier can be either allowed to deterministically play a continuous function or randomly chose a continuous function. In game theoretic terminology, the classifier can play mixed strategies of continuous functions. On the other side, the attacker is deterministic. Formally, its set of actions is:
 \begin{align*}
     \mathcal{F}_\varepsilon = \left\{f\in \mathcal{F}(\XX\times\YY,\XX\times\YY)\mid \forall (x,y)\in\XX\times\YY,~\lVert f_1(x,y)-x\rVert\leq \varepsilon\text{ and }f_2(x,y)=y\right\}
 \end{align*}
-In their work, the authors also assume that the attacker suffers a regularization. the first considered regularization penalizes the average perturbation for the attacker:
+In their work, the authors also assume that the attacker suffers a regularization. The first considered regularization penalizes the average perturbation for the attacker:
 \begin{align*}
     \Omega(f) = \mathbb{E}_{(x,y)\sim\PP}\left[\lVert x- f_1(x,y)\rVert\right]    
 \end{align*}
-The second one penalizes the attacker if he attacks ``too many points'':
+The second one penalizes the attacker if she attacks ``too many points'':
 \begin{align*}
     \Omega(f) = \mathbb{E}_{(x,y)\sim\PP}\left[\mathbf{1}_{x\neq f_1(x,y)}\right]    
 \end{align*}
@@ -29,7 +29,7 @@ Given one of these regularization, the score function for the classifier $h$ and
 \begin{align*}
  \mathbb{E}_\PP\left[L(h(f(x)),y)\right]-\lambda\times\Omega(f)
 \end{align*}
-where $\lambda$ is a non negative constant. In this setting,  the authors show that there do not exist a pure Nash Equilibrium. In particular, the risk for randomized classifiers is stricly smaller than the risk for deterministic classifiers. The question of the nature of equilibria was remained open.
+where $\lambda$ is a non-negative constant. In this setting,  the authors show that there do not exist a pure Nash Equilibrium. In particular, the risk for randomized classifiers is strictly smaller than the risk for deterministic classifiers. The question of the nature of equilibria was remained open.
 
 % More recently,~\citet{pydi2021many} got interest in the adversarial game without any regularization where the atta
 %\textbf{Game Theory.} Some works previously casted the the adversarial risk minimization problem as a two-player game, either using the notion of Stackelberg game~\cite{10.1145/2020408.2020495}, or the concept of zero-sum game~\cite{7533509,DBLP:journals/corr/abs-1906-02816,bose2021adversarial}. These works usually study very restricted versions of the game where the players can be reduced to a convex and compact set a real-valued parameters and where assumptions on the loss function are very strong (e.g. convexity). In that sense, we can prove that when the loss is convex and the set $\Theta$ is convex, the duality gap is zero for deterministic classifiers (see Appendix~\ref{...} for a precise statement).
@@ -87,7 +87,7 @@ Optimal Transport is a key element when studying Adversarial Classification prob
 \begin{align*}
     \risk_{\varepsilon,\PP}^\star = \inf_{h} \PP_{(x,y)}\left[\exists x'\in B_\varepsilon(x),~h(x')\neq y\right]
 \end{align*}
-A recent line of work~\citep{bhagoji2019lower,pydi2019adversarial,trillos2020adversarial} draw important links between   $\risk_{\varepsilon,\PP}^\star$ and Optimal Transport problems in the case of binary classification ($\YY=\{-1,+1\}$) the space $\XX$ satisfy a midpoint property, i.e. for all $x_1,x_2\in\XX$ there exist $x\in\XX$ such that $d(x,x_1) = d(x,x_2) =\frac{d(x_1,x_2)}{2}$. It was shown that in this case:
+A recent line of work~\citep{bhagoji2019lower,pydi2019adversarial,trillos2020adversarial} draw important links between   $\risk_{\varepsilon,\PP}^\star$ and Optimal Transport problems in the case of binary classification ($\YY=\{-1,+1\}$) when the space $\XX$ satisfies a midpoint property, i.e. for all $x_1,x_2\in\XX$ there exists $x\in\XX$ such that $d(x,x_1) = d(x,x_2) =\frac{d(x_1,x_2)}{2}$. It was shown that in this case:
 \begin{align*}
 \risk_{\varepsilon,\PP}^\star = \frac12-\frac12 W_{c_\varepsilon}(\PP,\PP^S)
 \end{align*}
@@ -96,53 +96,53 @@ where $\PP^S := T^S_\sharp \PP$ with $T^S(x,y) = (x,-y)$ and
     c_\varepsilon\left((x,y),(x',y')\right) = \mathbf{1}_{d(x,x')>2\varepsilon,y\neq y'}
 \end{align*}
 
-Note that $T^S$ only switches the label of pair $(x,y)$. When $\varepsilon=0$, $W_{c_\varepsilon}(\PP,\PP^S)$ equals the total variation distance between $\PP$ and $\PP^S$, which was a result proved in~\citep{trillos2020adversarial}.
+Note that $T^S$ only switches the label of a pair $(x,y)$. When $\varepsilon=0$, $W_{c_\varepsilon}(\PP,\PP^S)$ equals the total variation distance between $\PP$ and $\PP^S$, which was a result proved in~\citep{trillos2020adversarial}.
 While this property does not have practical properties yet, there is a hope that this relation might help at building more robust classifiers to adversarial examples. 
 
 \subsection{Distributionally Robust Optimization}
 \label{sec:dro}
-Another close link between adversarial attacks and Optimal Transport can be made under the light of distributionally robust optimization problems. Let $\ZZ$ and $\Theta$ be Polish spaces. Let $\PP$ be a Borel probability distribution over $\ZZ$. Let $f:\Theta\times\ZZ\to\RR$ be an upper semi continuous function in its second variable. Let us consider the following problem:
+Another close link between adversarial attacks and Optimal Transport can be made under the light of distributionally robust optimization. Let $\ZZ$ and $\Theta$ be Polish spaces. Let $\PP$ be a Borel probability distribution over $\ZZ$. Let $f:\Theta\times\ZZ\to\RR$ be an upper semi continuous function in its second variable. Consider the following problem:
 \begin{align}
     \label{eq:min-objective}
     \min_{\theta\in\Theta} \mathbb{E}_{z\sim\PP}\left[f(\theta,z)\right] = \min_{\theta\in\Theta} \int f(\theta,z)d\PP(z)
 \end{align}
-This problem can typically be a risk minimization problem in Machine Learning when $\PP$ is a distribution over input-label pairs and $\Theta$ is a parameter space for the classifier. A distributionally robust optimization (DRO) problem is a problem similar to Equation~\eqref{eq:min-objective}, but the learner aims at being robust to a change in the distribution $\PP$. Typically if $D$ is an uncertainty metric for distribubtions. Formally, the DRO problem is casted as follows:
+This problem can typically be a risk minimization problem in Machine Learning when $\PP$ is a distribution over input-label pairs and $\Theta$ is a parameter space for the classifier. A distributionally robust optimization (DRO) problem is a problem similar to Equation~\eqref{eq:min-objective}, but the learner aims at being robust to a change in the distribution $\PP$. Typically, if $D$ is an uncertainty metric for distributions, the DRO problem writes as follows:
 \begin{align*}
-    \min_{\theta\in\Theta}\sup_{\QQ\in\mathcal{M}^1_+(\ZZ)\mid~D(\PP,\QQ)\leq \varepsilon}\mathbb{E}_{z\sim\QQ}\left[f(z)\right]
+    \min_{\theta\in\Theta}\sup_{\QQ\in\mathcal{M}_1^+(\ZZ)\mid~D(\PP,\QQ)\leq \varepsilon}\mathbb{E}_{z\sim\QQ}\left[f(z)\right]
 \end{align*}
-For instance, $D$ be a Kullback-Leibler divergence or other $f$-divergences~\citep{duchi2016statistics,namkoong2016stochastic}, total variation distances~\citep{jiang2018risk,rahimian2019identifying} or optimal transport distances~\citep{shafieezadeh2015distributionally,raghunathan2018certified,blanchet2019quantifying}.
+For instance, $D$ be the Kullback-Leibler divergence or other $f$-divergences~\citep{duchi2016statistics,namkoong2016stochastic}, total variation distances~\citep{jiang2018risk,rahimian2019identifying} or optimal transport distances~\citep{shafieezadeh2015distributionally,raghunathan2018certified,blanchet2019quantifying}.
 
 In the case of Wasserstein uncertainty sets, let $c:\ZZ\to\bar{\RR}_+$ be a lower semi-continuous non-negative function. Then a  Wasserstein distributionally robust optimization (DRO) problem is defined as follows:
 \begin{align*}
-    \min_{\theta\in\Theta}\sup_{\QQ\in\mathcal{M}^1_+(\ZZ)\mid~W_c(\PP,\QQ)\leq \varepsilon}\mathbb{E}_{z\sim\QQ}\left[f(z)\right]
+    \min_{\theta\in\Theta}\sup_{\QQ\in\mathcal{M}_1^+(\ZZ)\mid~W_c(\PP,\QQ)\leq \varepsilon}\mathbb{E}_{z\sim\QQ}\left[f(z)\right]
 \end{align*}
 
-Then we can define the Wasserstein balls as 
+The Wasserstein balls writes as 
 \begin{align*}
     \mathcal{B}_{c}(\PP,\varepsilon) := \left\{\QQ\in \mathcal{M}^+_1(\mathcal{Z})\mid W_c(\PP,\QQ)\leq \varepsilon\right\}
 \end{align*}
-This problem induces an attack on the distribution $\PP$. Informally, one can interpret a Wassertein ball as an attacker moving each point $x$ of the distribution $\PP$ to a distribution $\QQ_x$ so that the average ``distance'' $\mathbb{E}_{x\sim\PP}\left[\mathbb{E}_{y\sim\QQ_x}\left[c(x,y)\right]\right]$ at most equal to $\varepsilon$. With this interpretation, we can start linking the Wasserstein DRO problem to the adversarial learning problem. Indeed in the adversarial attack problem, the attacker is authorized to move each point to another at distance at most $\varepsilon$, i.e. he is authorized a mapping $T$ such that $d(x,T(x))\leq \varepsilon$ for every $x$ almost surely. 
-\paragraph{Properties of Wasserstein balls.} The Wasserstein balls inherits from nice properties. Since $\QQ\mapsto  W_c(\PP,\QQ)$ is convex, they are convex sets. Moreover the function $\QQ\mapsto  W_c(\PP,\QQ)$ is lower semi-continuous for the narrow topology of measures, then the set $\mathcal{B}_{c}(\PP,\eta) $ is closed for the narrow topology too. Concerning the compactness of this set, if $\ZZ$ is compact then the set $\mathcal{B}_{c}(\PP,\eta) $ is also compact as a closed subset of the compact set $\mathcal{M}^+_1(\mathcal{Z})$.~\cite{yue2020linear} proved the compactness for $l^p$ distances. In general, compactness is a case by case question. 
+This problem induces an attack on the distribution $\PP$. Informally, one can interpret a Wasserstein ball as an attacker moving each point $x$ of the distribution $\PP$ to a distribution $\QQ_x$ so that the average ``distance'' $\mathbb{E}_{x\sim\PP}\left[\mathbb{E}_{y\sim\QQ_x}\left[c(x,y)\right]\right]$ at most equals to $\varepsilon$. With this interpretation, we can start linking the Wasserstein DRO problem to the adversarial learning problem. Indeed, in the adversarial attack problem, the attacker is authorized to move each point to another at distance at most $\varepsilon$, i.e. he is authorized a mapping $T$ such that $d(x,T(x))\leq \varepsilon$ for every $x$ almost surely. 
+\paragraph{Properties of Wasserstein balls.} The Wasserstein balls inherit from nice properties. Since $\QQ\mapsto  W_c(\PP,\QQ)$ is convex, they are convex sets. Moreover, the function $\QQ\mapsto  W_c(\PP,\QQ)$ is lower semi-continuous for the narrow topology of measures, then the set $\mathcal{B}_{c}(\PP,\eta) $ is closed for the narrow topology too. Concerning the compactness of this set, if $\ZZ$ is compact then the set $\mathcal{B}_{c}(\PP,\eta) $ is also compact as a closed subset of the compact set $\mathcal{M}^+_1(\mathcal{Z})$.~\cite{yue2020linear} proved the compactness for $p$-Wassertein balls.
 
 
-\paragraph{Duality results} The problem of computing DRO solutions is difficult become it concerns optimization over distribution. A strong duality leading to a relaxation of the problem was proved by~\cite{blanchet2019quantifying}. We state this theorem as follows.
+\paragraph{Duality results} The problem of computing DRO solutions is difficult since it concerns optimization over distribution. A strong duality leading to a relaxation of the problem was proved by~\cite{blanchet2019quantifying}. We state this theorem as follows.
 
 
 \begin{thm}[Wasserstein DRO duality]
-    Let $\PP$ be a Borel probability distribution over $\ZZ$. Let $f:\ZZ\to\RR$ be an upper semi continuous function. Let $c:\ZZ\to\RR_+$ be a lower semi-continuous non-negative function. 
+    Let $\PP$ be a Borel probability distribution over $\ZZ$. Let $f:\ZZ\to\RR$ be an upper semi continuous function. Let $c:\ZZ\to\RR_+$ be a lower semi-continuous non-negative function. Then the following duality result holds
     \begin{align*}
-        \sup_{\QQ\in\mathcal{M}^1_+(\ZZ)\mid~W_c(\PP,\QQ)\leq \varepsilon}\mathbb{E}_{z\sim\QQ}\left[f(z)\right] = \inf_{\lambda\geq 0}\mathbb{E}_{z\sim\PP}\left[\sup_{z'\in\ZZ}f(z')-\lambda c(z,z')\right] +\lambda\varepsilon
+        \sup_{\QQ\in\mathcal{M}_1^+(\ZZ)\mid~W_c(\PP,\QQ)\leq \varepsilon}\mathbb{E}_{z\sim\QQ}\left[f(z)\right] = \inf_{\lambda\geq 0}\mathbb{E}_{z\sim\PP}\left[\sup_{z'\in\ZZ}f(z')-\lambda c(z,z')\right] +\lambda\varepsilon
     \end{align*}
   
 \end{thm}
 
-This theorem was proved by~\citep{blanchet2019quantifying} using similar arguments to Kantorovich duality. The link with the adversarial attack problem is made clearer with this theorem. Indeed $\mathbb{E}_{z\sim\PP}\left[\sup_{z'\in\ZZ}f(z')-\lambda c(z,z')\right]$ is closed to the adversarial attacks problem. We will make a direct link in the Chapter~\ref{chap:game}. %We next show that the adversarial attack problem is a Wass
+This theorem was proved by~\citep{blanchet2019quantifying} using similar arguments to Kantorovich duality. The link with the adversarial attack problem is made clearer with this theorem. Indeed, $\mathbb{E}_{z\sim\PP}\left[\sup_{z'\in\ZZ}f(z')-\lambda c(z,z')\right]$ is closed to the adversarial attacks problem. We will make a direct link in the Chapter~\ref{chap:game}. %We next show that the adversarial attack problem is a Wass
 
 
-\paragraph{Adversarial classification as a Wasserstein-$\infty$ DRO problem.} The adversarial attack problem was studied under the light of DRO from a statistical point of view~\citep{raghunathan2018certified}, or to prove that adversarial classification is exactly a Wasserstein-$\infty$ problem with a well-suited cost function~\citep{pydi2019adversarial}. The previous result from~\citep{blanchet2019quantifying} does not directly apply to Wasserstein-$\infty$ distances but can be adapted. The Wasserstein-$\infty$ DRO problem can be understood as follows: each point $x$ of the distribution $\PP$ can be moved to a distribution $\QQ_x$ so that the worst-case ``distance'' $c(x,y)$ is smaller that $\varepsilon$. In general, one can prove the following result that proves that the adversarial classification problem is actually a Wasserstein-$\infty$ DRO problem.
+\paragraph{Adversarial classification as a Wasserstein-$\infty$ DRO problem.} The adversarial attack problem was studied under the light of DRO from a statistical point of view~\citep{raghunathan2018certified}, or to prove that adversarial classification is exactly a Wasserstein-$\infty$ problem with a well-suited cost function~\citep{pydi2019adversarial}. The previous result from~\citep{blanchet2019quantifying} does not directly apply to Wasserstein-$\infty$ distances but can be adapted. The Wasserstein-$\infty$ DRO problem can be understood as follows: each point $x$ of the distribution $\PP$ can be moved to a distribution $\QQ_x$ so that the worst-case ``distance'' $c(x,y)$ is smaller that $\varepsilon$. In general, one can state the following result that proves that the adversarial classification problem is actually a Wasserstein-$\infty$ DRO problem.
 
 \begin{thm}[Duality for Wasserstein-$\infty$ DRO]
-Let $\ZZ$ be a Polish space. Let $\PP$ be a probability distribubtion over $\ZZ$. Let $c$ be a non-negative lower-semicontinuous function over $\ZZ^2$ and $f:\ZZ\to \RR$ be a Borel measurable function. Then the following strong duality holds
+Let $\ZZ$ be a Polish space. Let $\PP$ be a probability distribution over $\ZZ$. Let $c$ be a non-negative lower-semicontinuous function over $\ZZ^2$ and $f:\ZZ\to \RR$ be a Borel measurable function. Then the following strong duality holds
     \begin{align*}
         \sup_{\QQ|~W_{\infty,c}(\PP,\QQ)\leq \varepsilon}\mathbb{E}_{z\sim\QQ}\left[f(z)\right] = \mathbb{E}_{z\sim\PP}\left[\sup_{z'\in \ZZ|~c(z,z')\leq\varepsilon} f(z')\right]
     \end{align*}  
@@ -153,19 +153,19 @@ This result can be found in special case in~\citep{pydi2019adversarial}. For sak
      \begin{align*}
         \Tilde{f}:(z,z')\in\ZZ^2\mapsto f(z')-\infty\times\mathbf{1}_{c(z,z')>\varepsilon}\quad. 
      \end{align*}
-     $\Tilde{f}$ is Borel-measurable, hence upper semi-analytic~\citep[Chapter 7]{bertsekas2004stochastic}. We then deduce that 
+     $\Tilde{f}$ is Borel measurable, hence upper semi-analytic~\citep[Chapter 7]{bertsekas2004stochastic}. We then deduce that 
      \begin{align*}
        z\in\ZZ\mapsto \sup_{z'\in\ZZ} \Tilde{f}(z,z') = \sup_{z'\in \ZZ|~c(z,z')\leq\varepsilon} f(z')
      \end{align*}
-     is universally measurable, hence justifying the definition of the left-end term in the Theorem. 
+     is universally measurable, hence justifying the definition of the left-hand term in the Theorem. 
 
-     Now let $\QQ$ such that $W_{\infty,c}(\PP,\QQ)\leq \varepsilon$. There exists $\gamma\in\Gamma_{\PP,\QQ}$ such that $c(z,z')\leq \varepsilon$ $\gamma$-almost surely. Then we deduce
+     Now let $\QQ$ be such that $W_{\infty,c}(\PP,\QQ)\leq \varepsilon$. There exists $\gamma\in\Gamma_{\PP,\QQ}$ such that $c(z,z')\leq \varepsilon$ $\gamma$-almost surely. Then we deduce
 
      \begin{align*}
         \mathbb{E}_{z'\sim\QQ}\left[f(z')\right] &= \mathbb{E}_{(z,z')\sim\gamma}\left[f(z')\right]\leq\mathbb{E}_{(z,z')\sim\gamma}\left[\sup_{z'\in \ZZ|~c(z,z')\leq\varepsilon} f(z')\right] \\
        & \leq\mathbb{E}_{z\sim \PP}\left[\sup_{z'\in \ZZ|~c(z,z')\leq\varepsilon} f(z')\right]
       \end{align*}
-      Hence we deduce that 
+We have then
       \begin{align*}
         \sup_{\QQ|~W_{\infty,c}(\PP,\QQ)\leq \varepsilon}\mathbb{E}_{z\sim\QQ}\left[f(z)\right] \leq\mathbb{E}_{z\sim\PP}\left[\sup_{z'\in \ZZ|~c(z,z')\leq\varepsilon} f(z')\right]
       \end{align*}
@@ -178,7 +178,7 @@ Consequently, we deduce the expected result of the Theorem.
 \end{proof}
     
 
-When the problem is a classification problem (i.e., $\ZZ=\XX\times\YY$ with $\YY = [K]$), one can replace $f$ with  $\loss(f(x),y)$ with $\loss$ a measurable loss function and set the cost $c$ equals to:
+When the problem is a classification problem (i.e., $\ZZ=\XX\times\YY$ with $\YY = \llbracket K\rrbracket$), one can replace $f$ with  $\loss(f(x),y)$ with $\loss$ a measurable loss function and set the cost $c$ equals to:
 \begin{align*}
     c((x,y),(x',y')) := \left\{
         \begin{array}{ll}
@@ -189,7 +189,7 @@ When the problem is a classification problem (i.e., $\ZZ=\XX\times\YY$ with $\YY
 \end{align*} 
 Hence, we recover the Adversarial classification problem using a Wasserstein-$\infty$ DRO problem. We will see in Chapter~\ref{chap:game}, the geometric and topological properties of this set. 
 
-\paragraph{DRO, Game Theory and Adversarial Attacks.} Recently,~\citet{pydi2021many} got interest in the adversarial binary classification game where the attacker can play a randomized strategy in the $\infty$-Wasserstein ball of radius $\varepsilon$ and the classifier is allowed to play any measurable function. In this case the authors proved the existence of Nash Equilibria, meaning that the classifier can be deterministic and optimal and the attacker requires to be ``randomized''. We will discuss and compare to this work in details after Chapter~\ref{chap:game}.
+\paragraph{DRO, Game Theory and Adversarial Attacks.} Recently,~\citet{pydi2021many} studied the adversarial binary classification game where the attacker can play a randomized strategy in the $\infty$-Wasserstein ball of radius $\varepsilon$ and the classifier is allowed to play any measurable function. In this case the authors proved the existence of Nash Equilibria, meaning that the classifier can be deterministic and optimal and the attacker requires to be ``randomized''. We will discuss and compare to this work in details in Chapter~\ref{chap:game}.
 % \subsection{Game Theory and Adversarial Learning}
 
 % While adversarial classification can be naturally understood as a game between the attacker and the classifier, it has only been very recent that the problem has been studied from a game theoretic perspective. Adversarial examples have been studied under  the notions of Stackelberg game in~\cite{10.1145/2020408.2020495}, and  zero-sum game in~\cite{7533509,DBLP:journals/corr/abs-1906-02816,bose2021adversarial}.
