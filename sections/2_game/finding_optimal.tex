@@ -252,7 +252,7 @@ where $\bm{u}^{(i)}:=(u_1^{(i)},\dots,u_1^{(m)})$. By denoting $z^{(i)}=(u_1^{(i
   &= \frac{\alpha}{\numsamples}\Big |\frac{1}{m}\left[\exp\left(\frac{\mathbb{E}_{\theta \sim \mu}\left[\loss(\theta,u_k^{(i)}))\right]}{\alpha}\right) - \exp\left(\frac{\mathbb{E}_{\theta \sim \mu}\left[\loss(\theta,z^{(i)}))\right]}{\alpha}\right) \right]\Big| \\
   &\leq \frac{2\alpha\exp(M/\alpha)}{\numsamples m}
 \end{align*}
-where the last inequality comes from the fact that the loss  $\loss$ is upper bounded by $M$. Then by appling the McDiarmid Inequality, we obtain that with a probability of at least $1-\delta$,
+where the last inequality comes from the fact that the loss  $\loss$ is upper bounded by $M$. Then by applying the McDiarmid Inequality, we obtain that with a probability of at least $1-\delta$,
 \begin{align*}
  \Big| \widehat{\mathcal{R}}^{\star}_{\varepsilon,\bm{\alpha}} - \widehat{\mathcal{R}}^{\textbf{m}}_{\varepsilon,\bm{\alpha}}\Big |\leq\mathbb{E}(f(\bm{u}^{(1)},\dots,\bm{u}^{(\numsamples)}))+\frac{2\alpha\exp(M/\alpha)}{\sqrt{m\numsamples}}\sqrt{\frac{\log(2/\delta)}{2}}.
 \end{align*}
